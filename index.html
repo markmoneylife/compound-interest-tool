@@ -77,29 +77,26 @@
     canvas {
       margin-top: 3rem;
     }
-    .cta {
-      margin-top: 4rem;
+    .cta-section {
       background-color: #2D3C2F;
       color: white;
       padding: 2rem;
+      margin-top: 4rem;
+      border-radius: 0.75rem;
       text-align: center;
-      border-radius: 1rem;
     }
-    .cta h2 {
-      font-size: 1.8rem;
+    .cta-section p {
+      font-size: 1.25rem;
       margin-bottom: 1rem;
     }
-    .cta p {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-    }
-    .cta a {
+    .cta-section button {
       background-color: #FFD54F;
       color: #1A1A1A;
-      padding: 0.8rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
       font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -116,15 +113,20 @@
   <h1>複利試算工具</h1>
   <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
 
-  <!-- 以下保留原有內容不變 -->
   <div class="container">
-    <!-- 表單與圖表 -->
+    <div class="form-section">
+      <label>這裡是複利試算表單區塊（尚未插入）</label>
+    </div>
+    <div class="table-section">
+      <label>這裡是複利計算結果表格（尚未插入）</label>
+    </div>
   </div>
 
-  <section class="cta">
-    <h2>喜歡這個複利工具嗎？</h2>
-    <p>追蹤吳馬克頻道，學會更多實用的理財方法！</p>
-    <a href="https://www.youtube.com/@幸福理財家" target="_blank">前往 YouTube 頻道</a>
-  </section>
+  <div class="cta-section">
+    <p><strong>喜歡這個複利工具嗎？</strong><br>追蹤吳馬克頻道，學會更多實用的理財方法！</p>
+    <a href="https://www.youtube.com/@幸福理財家" target="_blank">
+      <button>前往 YouTube 頻道</button>
+    </a>
+  </div>
 </body>
 </html>
