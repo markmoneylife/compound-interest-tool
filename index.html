@@ -96,18 +96,8 @@
   </style>
 </head>
 <body>
-  <header style="background-color:#2D3C2F; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
-    <div style="font-weight: bold;">吳馬克｜幸福理財家 工具</div>
-    <nav>
-      <a href="https://markmoneylife.com/" style="color: white; margin-left: 1rem; text-decoration: none;">首頁</a>
-      <a href="https://markmoneylife.com/%e7%b0%a1%e5%96%ae%e8%a8%88%e7%ae%97%ef%bc%8c%e8%bc%95%e9%ac%86%e7%90%86%e8%b2%a1%ef%bc%81/" style="color: white; margin-left: 1rem; text-decoration: none;">投資工具與資訊網站分享</a>
-      <a href="https://www.youtube.com/user/rengary" target="_blank" style="color: #FFD54F; margin-left: 1.5rem; text-decoration: none; font-weight: bold;">📺 YouTube 頻道</a>
-    </nav>
-  </header>
-
   <h1>複利試算工具</h1>
   <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
-
   <div class="container">
     <div class="form-section">
       <label>目前年齡</label>
@@ -140,9 +130,7 @@
       <label><input type="checkbox" id="reinvestDividend" checked /> 是否配息再投入</label>
       <div class="checkbox-tip">若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算不滾入本金</div>
       <button onclick="calculateGrowth()">計算</button>
-      <button onclick="downloadExcel()">匯出 Excel</button>
     </div>
-
     <div class="table-section">
       <table id="resultTable">
         <thead>
@@ -158,15 +146,8 @@
       </table>
     </div>
   </div>
-
   <canvas id="stackedChart" height="120"></canvas>
-
   <div id="achievementResult" class="achievement-box"></div>
-
-  <footer style="margin-top: 4rem; text-align: center; font-size: 0.9rem; color: #888;">
-    本工具由 <strong>吳馬克｜幸福理財家</strong> 製作｜<a href="https://markmoneylife.com/" target="_blank">返回主網站</a>
-  </footer>
-
   <script>
     function calculateGrowth() {
       const startAge = parseInt(document.getElementById("startAge").value);
@@ -188,6 +169,9 @@
       let chartLabels = [];
       let investedList = [];
       let valueList = [];
+      let dividendList = [];
+      let growthList = [];
+      let netAssetGrowth = 0;
 
       const tbody = document.querySelector("#resultTable tbody");
       tbody.innerHTML = "";
@@ -212,6 +196,14 @@
         chartLabels.push(`第${i + 1}年`);
         investedList.push(totalInvested);
         valueList.push(totalValue);
+        dividendList.push(Math.round(dividend));
+
+        if (!reinvest) {
+          netAssetGrowth += investThisYear * rate;
+          growthList.push(netAssetGrowth);
+        } else {
+          growthList.push(totalValue - totalInvested);
+        }
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -236,33 +228,41 @@
       const ctx = document.getElementById("stackedChart").getContext("2d");
       if (window.resultChart) window.resultChart.destroy();
       window.resultChart = new Chart(ctx, {
+        type: 'bar',
         data: {
           labels: chartLabels,
           datasets: [
             {
-              type: "bar",
-              label: "投入資金",
+              type: 'bar',
+              label: '投入資金',
               data: investedList,
-              backgroundColor: "#B2D7E7",
-              stack: "stack1"
+              backgroundColor: '#B2D7E7',
+              stack: 'stack1'
             },
             {
-              type: "bar",
-              label: "累積總價值增長",
-              data: valueList.map((v, idx) => v - investedList[idx]),
-              backgroundColor: "#FFD54F",
-              stack: "stack1"
+              type: 'bar',
+              label: '資本增值',
+              data: growthList,
+              backgroundColor: '#FFD54F',
+              stack: 'stack1'
             },
+            ...(!reinvest ? [{
+              type: 'bar',
+              label: '累積已領配息',
+              data: dividendList,
+              backgroundColor: '#FFB74D',
+              stack: 'stack1'
+            }] : []),
             {
-              type: "line",
-              label: "年配息",
-              data: data.map(d => Math.round(d.dividend)),
-              backgroundColor: "#FF8C00",
-              borderColor: "#FF8C00",
-              yAxisID: "y2",
+              type: 'line',
+              label: '年配息',
+              data: dividendList,
+              backgroundColor: '#FF8C00',
+              borderColor: '#FF8C00',
+              yAxisID: 'y2',
               tension: 0.3,
               fill: false,
-              pointStyle: "circle",
+              pointStyle: 'circle',
               pointRadius: 4,
               pointHoverRadius: 6
             }
@@ -271,29 +271,22 @@
         options: {
           responsive: true,
           plugins: {
-            legend: { position: "top" },
-            tooltip: { mode: "index", intersect: false },
-            animation: {
-              duration: 1000,
-              easing: "easeOutBounce"
-            }
+            legend: { position: 'top' },
+            tooltip: { mode: 'index', intersect: false },
+            animation: { duration: 1000, easing: 'easeOutBounce' }
           },
           scales: {
             x: { stacked: true },
             y: {
               stacked: true,
               beginAtZero: true,
-              ticks: {
-                callback: (v) => "$" + v.toLocaleString()
-              }
+              ticks: { callback: (v) => "$" + v.toLocaleString() }
             },
             y2: {
-              position: "right",
+              position: 'right',
               beginAtZero: true,
               grid: { drawOnChartArea: false },
-              ticks: {
-                callback: (v) => "$" + v.toLocaleString()
-              }
+              ticks: { callback: (v) => "$" + v.toLocaleString() }
             }
           }
         }
@@ -309,18 +302,6 @@
         🔹 平均每月可運用金額：<span>$${monthlyCash.toLocaleString()}</span>（不含稅）<br/><br/>
         💡 這筆金額可以每月支應基本生活開銷，也可能成為提早退休的穩定現金流來源。你的投資已經幫你打造出一台會印鈔的機器了！
       `;
-    }
-
-    function downloadExcel() {
-      const wb = XLSX.utils.book_new();
-      const rows = [["年齡", "年份", "投入金額", "累積金額", "預估配息"]];
-      document.querySelectorAll("#resultTable tbody tr").forEach((tr) => {
-        const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent);
-        rows.push(cells);
-      });
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      XLSX.utils.book_append_sheet(wb, ws, "複利試算");
-      XLSX.writeFile(wb, "compound_interest.xlsx");
     }
   </script>
 </body>
