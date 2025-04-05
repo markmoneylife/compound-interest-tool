@@ -78,6 +78,11 @@
     canvas {
       margin-top: 3rem;
     }
+    .checkbox-tip {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
   </style>
 </head>
 <body>
@@ -122,7 +127,8 @@
       <input type="number" id="rate" value="6" />
       <label>預估退休年齡</label>
       <input type="number" id="retireAge" value="45" />
-      <label><input type="checkbox" id="reinvestDividend" checked /> 配息再投入</label>
+      <label><input type="checkbox" id="reinvestDividend" checked /> 是否配息再投入</label>
+      <div class="checkbox-tip">若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算不滾入本金</div>
       <button onclick="calculateGrowth()">計算</button>
       <button onclick="downloadExcel()">匯出 Excel</button>
     </div>
@@ -150,104 +156,109 @@
   </footer>
 
   <script>
-    let exportData = [];
-
     function calculateGrowth() {
       const startAge = parseInt(document.getElementById("startAge").value);
       const startYear = parseInt(document.getElementById("startYear").value);
       const startMonth = parseInt(document.getElementById("startMonth").value);
       const startAmount = parseFloat(document.getElementById("startAmount").value);
       const monthly = parseFloat(document.getElementById("monthly").value);
-      const rate = parseFloat(document.getElementById("rate").value) / 100 / 12;
+      const rate = parseFloat(document.getElementById("rate").value) / 100;
       const retireAge = parseInt(document.getElementById("retireAge").value);
       const reinvest = document.getElementById("reinvestDividend").checked;
+
       const years = retireAge - startAge;
+      const monthsInFirstYear = 12 - startMonth;
 
-      let total = startAmount, dividendTotal = 0;
-      const data = [], labels = [], invested = [];
-      exportData = [];
-      const tableBody = document.querySelector("#resultTable tbody");
-      tableBody.innerHTML = "";
+      let data = [];
+      let totalInvested = 0;
+      let totalValue = startAmount;
+      let chartLabels = [];
+      let investedList = [];
+      let valueList = [];
 
-      for (let i = 0; i <= years * 12; i++) {
-        const yearIndex = Math.floor((i + startMonth) / 12);
-        const year = startYear + yearIndex;
-        const age = startAge + yearIndex;
+      const tbody = document.querySelector("#resultTable tbody");
+      tbody.innerHTML = "";
 
-        let dividend = total * 0.06 / 12;
-        dividendTotal += dividend;
-        if (reinvest) total += dividend;
+      for (let i = 0; i < years; i++) {
+        const age = startAge + i;
+        const year = startYear + i;
+        let months = 12;
+        if (i === 0) months = monthsInFirstYear;
 
-        total = total * (1 + rate) + monthly;
+        let investThisYear = monthly * months;
+        totalInvested += investThisYear;
 
-        if ((i + startMonth + 1) % 12 === 0) {
-          const months = i + 1;
-          const investedAmount = startAmount + monthly * months;
-          data.push(total);
-          invested.push(investedAmount);
-          labels.push(`第${yearIndex + 1}年`);
+        if (reinvest && i > 0) totalValue += data[i - 1].dividend;
+        totalValue += investThisYear;
 
-          tableBody.innerHTML += `<tr>
-            <td>${age}</td>
-            <td>${year}</td>
-            <td>$${investedAmount.toLocaleString()}</td>
-            <td>$${Math.round(total).toLocaleString()}</td>
-            <td>$${Math.round(total * 0.06).toLocaleString()}</td>
-          </tr>`;
+        const dividend = totalValue * rate;
+        data.push({ age, year, invested: totalInvested, value: totalValue, dividend });
 
-          exportData.push({ 年齡: age, 年份: year, 投入金額: investedAmount, 累積金額: Math.round(total), 預估配息: Math.round(total * 0.06) });
-        }
+        chartLabels.push(`第${i + 1}年`);
+        investedList.push(totalInvested);
+        valueList.push(totalValue);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${age}</td>
+          <td>${year}</td>
+          <td>$${investThisYear.toLocaleString()}</td>
+          <td>$${Math.round(totalValue).toLocaleString()}</td>
+          <td>$${Math.round(dividend).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
       }
 
-      tableBody.innerHTML += `<tr style="font-weight:bold; background:#eee">
-        <td colspan="2">總計</td>
-        <td>$${invested[invested.length - 1].toLocaleString()}</td>
-        <td></td>
-        <td>$${Math.round(dividendTotal).toLocaleString()}</td>
-      </tr>`;
+      const trTotal = document.createElement("tr");
+      trTotal.innerHTML = `
+        <td colspan="2"><strong>總計</strong></td>
+        <td><strong>$${totalInvested.toLocaleString()}</strong></td>
+        <td colspan="2"><strong>$${Math.round(totalValue).toLocaleString()}</strong></td>
+      `;
+      tbody.appendChild(trTotal);
 
-      new Chart(document.getElementById("stackedChart"), {
-        type: 'bar',
+      const ctx = document.getElementById("stackedChart").getContext("2d");
+      if (window.resultChart) window.resultChart.destroy();
+      window.resultChart = new Chart(ctx, {
+        type: "bar",
         data: {
-          labels: labels,
+          labels: chartLabels,
           datasets: [
             {
               label: "投入資金",
-              data: invested,
+              data: investedList,
               backgroundColor: "#B2D7E7"
             },
             {
-              label: "累積金額增值",
-              data: data.map((v, i) => v - invested[i]),
+              label: "累積總價值增長",
+              data: valueList.map((v, idx) => v - investedList[idx]),
               backgroundColor: "#FFD54F"
             }
           ]
         },
         options: {
           responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: '投入與增值金額堆疊圖'
-            },
-            tooltip: {
-              mode: 'index',
-              intersect: false
-            },
-          },
+          plugins: { legend: { position: "top" } },
           scales: {
             x: { stacked: true },
-            y: { stacked: true }
+            y: { stacked: true, beginAtZero: true,
+              ticks: { callback: (v) => "$" + v.toLocaleString() }
+            }
           }
         }
       });
     }
 
     function downloadExcel() {
-      const ws = XLSX.utils.json_to_sheet(exportData);
       const wb = XLSX.utils.book_new();
+      const rows = [["年齡", "年份", "投入金額", "累積金額", "預估配息"]];
+      document.querySelectorAll("#resultTable tbody tr").forEach((tr) => {
+        const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent);
+        rows.push(cells);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows);
       XLSX.utils.book_append_sheet(wb, ws, "複利試算");
-      XLSX.writeFile(wb, "compound-growth.xlsx");
+      XLSX.writeFile(wb, "compound_interest.xlsx");
     }
   </script>
 </body>
