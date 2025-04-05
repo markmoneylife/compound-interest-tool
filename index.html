@@ -1,11 +1,125 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>測試畫面</title>
-  </head>
-  <body>
-    <h1>你好，我是馬克</h1>
-    <p>這是一個測試頁面。</p>
-  </body>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>複利試算工具</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Helvetica Neue', sans-serif; background-color: #F5F2E9; color: #1A1A1A; padding: 2rem; max-width: 1200px; margin: auto; }
+    h1 { color: #2D3C2F; text-align: center; }
+    .container { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem; }
+    .form-section, .table-section { flex: 1 1 400px; background-color: #F5F2E9; padding: 1rem; border-radius: 0.5rem; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.5rem; }
+    button { margin-top: 1.5rem; background-color: #2D3C2F; color: white; border: none; padding: 0.7rem 1.2rem; border-radius: 0.5rem; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.5rem; border-bottom: 1px solid #ccc; text-align: right; }
+    th { background-color: #FFD54F; color: #1A1A1A; }
+    .highlight { background-color: #B2D7E7; }
+    canvas { margin-top: 3rem; }
+  </style>
+</head>
+<body>
+  <h1>複利試算工具</h1>
+  <div class="container">
+    <div class="form-section">
+      <label>目前年齡</label><input type="number" id="startAge" value="25" />
+      <label>開始年份</label><input type="number" id="startYear" value="2025" />
+      <label>開始月份</label>
+      <select id="startMonth">
+        <option value="0">1 月</option>
+        <option value="1">2 月</option>
+        <option value="2">3 月</option>
+        <option value="3">4 月</option>
+        <option value="4">5 月</option>
+        <option value="5">6 月</option>
+        <option value="6">7 月</option>
+        <option value="7">8 月</option>
+        <option value="8">9 月</option>
+        <option value="9">10 月</option>
+        <option value="10">11 月</option>
+        <option value="11">12 月</option>
+      </select>
+      <label>初始金額</label><input type="number" id="startAmount" value="0" />
+      <label>每月投入金額</label><input type="number" id="monthly" value="6360" />
+      <label>年報酬率 (%)</label><input type="number" id="rate" value="6" />
+      <label>投入年數</label><input type="number" id="years" value="20" />
+      <label>預估年配息殖利率 (%)</label><input type="number" id="dividendRate" value="6" />
+      <button onclick="calculateGrowth()">計算</button>
+    </div>
+    <div class="table-section">
+      <table id="resultTable">
+        <thead>
+          <tr><th>年齡</th><th>年份</th><th>投入金額</th><th>累積金額</th><th>預估配息</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <canvas id="resultChart" height="300"></canvas>
+  <script>
+    function calculateGrowth() {
+      const startAge = parseInt(document.getElementById('startAge').value);
+      const startAmount = parseFloat(document.getElementById('startAmount').value);
+      const monthly = parseFloat(document.getElementById('monthly').value);
+      const rate = parseFloat(document.getElementById('rate').value) / 100;
+      const years = parseInt(document.getElementById('years').value);
+      const dividendRate = parseFloat(document.getElementById('dividendRate').value) / 100;
+      const startYear = parseInt(document.getElementById('startYear').value);
+      const startMonth = parseInt(document.getElementById('startMonth').value);
+      const yearlyInvestment = monthly * 12;
+      const firstYearMonths = 12 - startMonth;
+      const firstYearInvestment = monthly * firstYearMonths;
+      let total = startAmount;
+      let dividend = 0;
+      const data = [total];
+      const labels = ["第0年"];
+      const tableBody = document.querySelector("#resultTable tbody");
+      tableBody.innerHTML = "";
+      for (let i = 0; i <= years; i++) {
+        const year = startYear + i;
+        const age = startAge + i;
+        const newInvestment = i === 0 ? firstYearInvestment : yearlyInvestment + dividend;
+        const base = i === 0 ? startAmount + newInvestment : data[i - 1] + newInvestment;
+        const totalValue = base * (1 + rate);
+        total = Math.round(totalValue);
+        data[i] = total;
+        dividend = Math.round(total * dividendRate);
+        const isHit = dividendRate >= rate;
+        tableBody.innerHTML += `
+          <tr class="${isHit ? 'highlight' : ''}">
+            <td>${age}</td>
+            <td>${year}</td>
+            <td>$${Math.round(newInvestment).toLocaleString()}</td>
+            <td>$${total.toLocaleString()}</td>
+            <td>$${dividend.toLocaleString()}</td>
+          </tr>
+        `;
+        labels[i] = `第${i}年`;
+      }
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      if (window.resultChart) window.resultChart.destroy();
+      window.resultChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{ label: '累積資產', data, backgroundColor: '#FFD54F', borderRadius: 6 }],
+        },
+        options: {
+          plugins: { legend: { display: false }},
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: value => '$' + value.toLocaleString()
+              }
+            }
+          }
+        }
+      });
+    }
+    calculateGrowth();
+  </script>
+</body>
 </html>
