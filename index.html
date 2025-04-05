@@ -173,10 +173,10 @@
         const investedAmount = startAmount + monthly * i;
         total = total * (1 + rate) + monthly;
 
-        if ((i + startMonth) % 12 === 0) {
+        if ((i + startMonth + 1) % 12 === 0) {
           data.push(total);
           invested.push(investedAmount);
-          labels.push(`第${Math.floor((i + startMonth) / 12)}年`);
+          labels.push(`第${Math.floor((i + startMonth + 1) / 12)}年`);
           const dividend = Math.round(total * 0.06);
           dividendTotal += dividend;
 
