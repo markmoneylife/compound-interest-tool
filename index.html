@@ -83,6 +83,19 @@
       color: #666;
       margin-top: 0.2rem;
     }
+    .achievement-box {
+      margin-top: 2rem;
+      background-color: #fffbea;
+      border-left: 6px solid #FFD54F;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .achievement-box span {
+      font-weight: bold;
+      color: #2D3C2F;
+    }
   </style>
 </head>
 <body>
@@ -150,6 +163,8 @@
   </div>
 
   <canvas id="stackedChart" height="120"></canvas>
+
+  <div id="achievementResult" class="achievement-box"></div>
 
   <footer style="margin-top: 4rem; text-align: center; font-size: 0.9rem; color: #888;">
     本工具由 <strong>吳馬克｜幸福理財家</strong> 製作｜<a href="https://markmoneylife.com/" target="_blank">返回主網站</a>
@@ -261,24 +276,16 @@
         }
       });
 
-      const resultBox = document.createElement("div");
-      resultBox.style.marginTop = "2rem";
-      resultBox.style.fontSize = "1.2rem";
-      resultBox.style.fontWeight = "bold";
-      resultBox.innerHTML = `🎯 預估你在 ${startYear + years - 1} 年退休時，將擁有資產 <span style="color:#2D3C2F">$${Math.round(totalValue).toLocaleString()}</span>，年配息約 <span style="color:#FFD54F">$${Math.round(totalValue * rate).toLocaleString()}</span>`;
-      document.querySelector(".table-section").appendChild(resultBox);
-    }
-
-    function downloadExcel() {
-      const wb = XLSX.utils.book_new();
-      const rows = [["年齡", "年份", "投入金額", "累積金額", "預估配息"]];
-      document.querySelectorAll("#resultTable tbody tr").forEach((tr) => {
-        const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent);
-        rows.push(cells);
-      });
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      XLSX.utils.book_append_sheet(wb, ws, "複利試算");
-      XLSX.writeFile(wb, "compound_interest.xlsx");
+      const monthlyCash = Math.round((totalValue * rate) / 12);
+      const resultBox = document.getElementById("achievementResult");
+      resultBox.innerHTML = `
+        🎉 <strong>恭喜達成！你在 ${startYear + years - 1} 年退休時解鎖以下成就：</strong><br/><br/>
+        🔹 累積資產：<span>$${Math.round(totalValue).toLocaleString()}</span><br/>
+        🔹 投入本金總額：<span>$${totalInvested.toLocaleString()}</span><br/>
+        🔹 年股息收益（依年報酬率 ${(rate * 100).toFixed(0)}% 推算）：<span>$${Math.round(totalValue * rate).toLocaleString()}</span><br/>
+        🔹 平均每月可運用金額：<span>$${monthlyCash.toLocaleString()}</span>（不含稅）<br/><br/>
+        💡 這筆金額可以每月支應基本生活開銷，也可能成為提早退休的穩定現金流來源。你的投資已經幫你打造出一台會印鈔的機器了！
+      `;
     }
   </script>
 </body>
