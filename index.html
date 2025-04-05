@@ -122,8 +122,6 @@
       <input type="number" id="rate" value="6" />
       <label>投入年數</label>
       <input type="number" id="years" value="20" />
-      <label>預估年配息殖利率 (%)</label>
-      <input type="number" id="dividendRate" value="6" />
       <button onclick="calculateGrowth()">計算</button>
     </div>
 
@@ -146,6 +144,10 @@
   <canvas id="resultChart" height="120"></canvas>
   <canvas id="stackedChart" height="120"></canvas>
 
+  <footer style="margin-top: 4rem; text-align: center; font-size: 0.9rem; color: #888;">
+    本工具由 <strong>吳馬克｜幸福理財家</strong> 製作｜<a href="https://markmoneylife.com/" target="_blank">返回主網站</a>
+  </footer>
+
   <script>
     function calculateGrowth() {
       const startAge = parseInt(document.getElementById('startAge').value);
@@ -153,7 +155,7 @@
       const monthly = parseFloat(document.getElementById('monthly').value);
       const rate = parseFloat(document.getElementById('rate').value) / 100;
       const years = parseInt(document.getElementById('years').value);
-      const dividendRate = parseFloat(document.getElementById('dividendRate').value) / 100;
+      const dividendRate = rate;
       const startYear = parseInt(document.getElementById('startYear').value);
       const startMonth = parseInt(document.getElementById('startMonth').value);
       const yearlyInvestment = monthly * 12;
