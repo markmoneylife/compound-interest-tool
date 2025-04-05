@@ -172,6 +172,7 @@
       let data = [];
       let totalInvested = 0;
       let totalValue = startAmount;
+      let totalDividend = 0;
       let chartLabels = [];
       let investedList = [];
       let valueList = [];
@@ -192,6 +193,8 @@
         totalValue += investThisYear;
 
         const dividend = totalValue * rate;
+        totalDividend += dividend;
+
         data.push({ age, year, invested: totalInvested, value: totalValue, dividend });
 
         chartLabels.push(`第${i + 1}年`);
@@ -213,7 +216,8 @@
       trTotal.innerHTML = `
         <td colspan="2"><strong>總計</strong></td>
         <td><strong>$${totalInvested.toLocaleString()}</strong></td>
-        <td colspan="2"><strong>$${Math.round(totalValue).toLocaleString()}</strong></td>
+        <td><strong>$${Math.round(totalValue).toLocaleString()}</strong></td>
+        <td><strong>$${Math.round(totalDividend).toLocaleString()}</strong></td>
       `;
       tbody.appendChild(trTotal);
 
@@ -238,15 +242,31 @@
         },
         options: {
           responsive: true,
-          plugins: { legend: { position: "top" } },
+          plugins: {
+            legend: { position: "top" },
+            tooltip: { mode: "index", intersect: false },
+            animation: {
+              duration: 1000,
+              easing: "easeOutBounce"
+            }
+          },
           scales: {
             x: { stacked: true },
-            y: { stacked: true, beginAtZero: true,
+            y: {
+              stacked: true,
+              beginAtZero: true,
               ticks: { callback: (v) => "$" + v.toLocaleString() }
             }
           }
         }
       });
+
+      const resultBox = document.createElement("div");
+      resultBox.style.marginTop = "2rem";
+      resultBox.style.fontSize = "1.2rem";
+      resultBox.style.fontWeight = "bold";
+      resultBox.innerHTML = `🎯 預估你在 ${startYear + years - 1} 年退休時，將擁有資產 <span style="color:#2D3C2F">$${Math.round(totalValue).toLocaleString()}</span>，年配息約 <span style="color:#FFD54F">$${Math.round(totalValue * rate).toLocaleString()}</span>`;
+      document.querySelector(".table-section").appendChild(resultBox);
     }
 
     function downloadExcel() {
