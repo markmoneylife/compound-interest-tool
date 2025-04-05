@@ -168,15 +168,21 @@
       tableBody.innerHTML = "";
 
       for (let i = 0; i <= years * 12; i++) {
-        const year = startYear + Math.floor((i + startMonth) / 12);
-        const age = startAge + Math.floor((i + startMonth) / 12);
-        const investedAmount = startAmount + monthly * i;
+        const currentMonth = (startMonth + i) % 12;
+        const monthsSinceStart = i + startMonth;
+        const year = startYear + Math.floor(monthsSinceStart / 12);
+        const age = startAge + Math.floor(monthsSinceStart / 12);
+
         total = total * (1 + rate) + monthly;
 
-        if ((i + startMonth + 1) % 12 === 0) {
+        if (currentMonth === 11) {
+          const yearIndex = Math.floor(monthsSinceStart / 12);
+          const monthsInvestedThisYear = (yearIndex === 0) ? 12 - startMonth : 12;
+          const investedAmount = startAmount + monthly * (monthsInvestedThisYear + (yearIndex - 1) * 12);
+
           data.push(total);
           invested.push(investedAmount);
-          labels.push(`第${Math.floor((i + startMonth + 1) / 12)}年`);
+          labels.push(`第${yearIndex + 1}年`);
           const dividend = Math.round(total * 0.06);
           dividendTotal += dividend;
 
@@ -192,7 +198,6 @@
         }
       }
 
-      // 顯示總結
       tableBody.innerHTML += `<tr style="font-weight:bold; background:#eee">
         <td colspan="2">總計</td>
         <td>$${invested[invested.length - 1].toLocaleString()}</td>
@@ -230,12 +235,8 @@
             },
           },
           scales: {
-            x: {
-              stacked: true
-            },
-            y: {
-              stacked: true
-            }
+            x: { stacked: true },
+            y: { stacked: true }
           }
         }
       });
