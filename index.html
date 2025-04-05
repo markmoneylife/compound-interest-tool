@@ -119,8 +119,8 @@
       <input type="number" id="monthly" value="10000" />
       <label>年報酬率 (%)</label>
       <input type="number" id="rate" value="6" />
-      <label>投入年數</label>
-      <input type="number" id="years" value="20" />
+      <label>預估退休年齡</label>
+      <input type="number" id="retireAge" value="45" />
       <button onclick="calculateGrowth()">計算</button>
     </div>
 
@@ -140,7 +140,6 @@
     </div>
   </div>
 
-  <canvas id="resultChart" height="120"></canvas>
   <canvas id="stackedChart" height="120"></canvas>
 
   <footer style="margin-top: 4rem; text-align: center; font-size: 0.9rem; color: #888;">
@@ -155,7 +154,8 @@
       const startAmount = parseFloat(document.getElementById("startAmount").value);
       const monthly = parseFloat(document.getElementById("monthly").value);
       const rate = parseFloat(document.getElementById("rate").value) / 100 / 12;
-      const years = parseInt(document.getElementById("years").value);
+      const retireAge = parseInt(document.getElementById("retireAge").value);
+      const years = retireAge - startAge;
 
       let total = startAmount;
       const data = [], labels = [], invested = [];
@@ -163,15 +163,15 @@
       tableBody.innerHTML = "";
 
       for (let i = 0; i <= years * 12; i++) {
-        const year = startYear + Math.floor(i / 12);
-        const age = startAge + Math.floor(i / 12);
+        const year = startYear + Math.floor((i + startMonth) / 12);
+        const age = startAge + Math.floor((i + startMonth) / 12);
         const investedAmount = startAmount + monthly * i;
         total = total * (1 + rate) + monthly;
 
-        if (i % 12 === 0) {
+        if ((i + startMonth) % 12 === 0) {
           data.push(total);
           invested.push(monthly * i + startAmount);
-          labels.push(`第${Math.floor(i / 12)}年`);
+          labels.push(`第${Math.floor((i + startMonth) / 12)}年`);
           const dividend = Math.round(total * 0.06);
 
           tableBody.innerHTML += `<tr>
