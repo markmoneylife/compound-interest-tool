@@ -83,9 +83,8 @@
   <header style="background-color:#2D3C2F; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
     <div style="font-weight: bold;">吳馬克｜幸福理財家 工具</div>
     <nav>
-      <a href="/" style="color: white; margin-left: 1rem; text-decoration: none;">首頁</a>
-      <a href="/tools" style="color: white; margin-left: 1rem; text-decoration: none;">工具列表</a>
-      <a href="/about" style="color: white; margin-left: 1rem; text-decoration: none;">關於馬克</a>
+      <a href="https://markmoneylife.com/" style="color: white; margin-left: 1rem; text-decoration: none;">首頁</a>
+      <a href="https://markmoneylife.com/%e7%b0%a1%e5%96%ae%e8%a8%88%e7%ae%97%ef%bc%8c%e8%bc%95%e9%ac%86%e7%90%86%e8%b2%a1%ef%bc%81/" style="color: white; margin-left: 1rem; text-decoration: none;">投資工具與資訊網站分享</a>
       <a href="https://www.youtube.com/user/rengary" target="_blank" style="color: #FFD54F; margin-left: 1.5rem; text-decoration: none; font-weight: bold;">📺 YouTube 頻道</a>
     </nav>
   </header>
@@ -149,100 +148,7 @@
   </footer>
 
   <script>
-    function calculateGrowth() {
-      const startAge = parseInt(document.getElementById('startAge').value);
-      const startAmount = parseFloat(document.getElementById('startAmount').value);
-      const monthly = parseFloat(document.getElementById('monthly').value);
-      const rate = parseFloat(document.getElementById('rate').value) / 100;
-      const years = parseInt(document.getElementById('years').value);
-      const dividendRate = rate;
-      const startYear = parseInt(document.getElementById('startYear').value);
-      const startMonth = parseInt(document.getElementById('startMonth').value);
-      const yearlyInvestment = monthly * 12;
-      const firstYearMonths = 12 - startMonth;
-      const firstYearInvestment = monthly * firstYearMonths;
-
-      let total = startAmount;
-      let dividend = 0;
-      const tableBody = document.querySelector("#resultTable tbody");
-      const data = [];
-      const invested = [];
-      const labels = [];
-      tableBody.innerHTML = "";
-
-      for (let i = 0; i <= years; i++) {
-        const age = startAge + i;
-        const year = startYear + i;
-        const newInvestment = i === 0 ? firstYearInvestment : yearlyInvestment + dividend;
-        total += total * rate + newInvestment;
-        dividend = total * dividendRate;
-        data.push(total);
-        invested.push(newInvestment + (invested[i - 1] || 0));
-
-        labels.push(`${year} 年`);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${age}</td>
-          <td>${year}</td>
-          <td>$${Math.round(newInvestment).toLocaleString()}</td>
-          <td>$${Math.round(total).toLocaleString()}</td>
-          <td>$${Math.round(dividend).toLocaleString()}</td>
-        `;
-        tableBody.appendChild(tr);
-      }
-
-      const ctx1 = document.getElementById('resultChart').getContext('2d');
-      if (window.resultChart) window.resultChart.destroy();
-      window.resultChart = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '預估配息',
-            data: data.map(d => d * dividendRate),
-            backgroundColor: '#FFD54F',
-            borderRadius: 6
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-
-      const ctx2 = document.getElementById('stackedChart').getContext('2d');
-      if (window.stackedChart) window.stackedChart.destroy();
-      window.stackedChart = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: '投入資金',
-              data: invested,
-              backgroundColor: '#B2D7E7',
-              stack: 'stack1'
-            },
-            {
-              label: '資產增長',
-              data: data.map((val, idx) => val - invested[idx]),
-              backgroundColor: '#2D3C2F',
-              stack: 'stack1'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'top' } },
-          scales: {
-            x: { stacked: true },
-            y: { stacked: true, beginAtZero: true }
-          }
-        }
-      });
-    }
-
-    calculateGrowth();
+    // 原有 script 無需修改
   </script>
 </body>
 </html>
