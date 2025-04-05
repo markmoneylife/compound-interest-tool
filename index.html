@@ -168,33 +168,28 @@
       tableBody.innerHTML = "";
 
       for (let i = 0; i <= years * 12; i++) {
-        const currentMonth = (startMonth + i) % 12;
-        const monthsSinceStart = i + startMonth;
-        const year = startYear + Math.floor(monthsSinceStart / 12);
-        const age = startAge + Math.floor(monthsSinceStart / 12);
-
+        const monthsElapsed = i + startMonth;
+        const year = startYear + Math.floor(monthsElapsed / 12);
+        const age = startAge + Math.floor(monthsElapsed / 12);
+        const currentInvest = startAmount + monthly * i;
         total = total * (1 + rate) + monthly;
 
-        if (currentMonth === 11) {
-          const yearIndex = Math.floor(monthsSinceStart / 12);
-          const monthsInvestedThisYear = (yearIndex === 0) ? 12 - startMonth : 12;
-          const investedAmount = startAmount + monthly * (monthsInvestedThisYear + (yearIndex - 1) * 12);
-
+        if ((monthsElapsed + 1) % 12 === 0) {
           data.push(total);
-          invested.push(investedAmount);
-          labels.push(`第${yearIndex + 1}年`);
+          invested.push(monthly * (monthsElapsed + 1));
+          labels.push(`第${Math.floor((monthsElapsed + 1) / 12)}年`);
           const dividend = Math.round(total * 0.06);
           dividendTotal += dividend;
 
           tableBody.innerHTML += `<tr>
             <td>${age}</td>
             <td>${year}</td>
-            <td>$${investedAmount.toLocaleString()}</td>
+            <td>$${(monthly * (monthsElapsed + 1)).toLocaleString()}</td>
             <td>$${Math.round(total).toLocaleString()}</td>
             <td>$${dividend.toLocaleString()}</td>
           </tr>`;
 
-          exportData.push({ 年齡: age, 年份: year, 投入金額: investedAmount, 累積金額: Math.round(total), 預估配息: dividend });
+          exportData.push({ 年齡: age, 年份: year, 投入金額: monthly * (monthsElapsed + 1), 累積金額: Math.round(total), 預估配息: dividend });
         }
       }
 
@@ -235,8 +230,12 @@
             },
           },
           scales: {
-            x: { stacked: true },
-            y: { stacked: true }
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
           }
         }
       });
