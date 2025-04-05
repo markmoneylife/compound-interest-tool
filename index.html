@@ -305,35 +305,45 @@
     }
   </script>
 </body>
- <!-- 支持我浮動按鈕 -->
+<!-- 支持我浮動按鈕 -->
 <div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
   <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;">
     💰 支持我
   </button>
 </div>
 
-<!-- CTA 彈窗（含動畫、夜間模式、自動配色） -->
+<!-- CTA 背景遮罩 -->
+<div id="supportOverlay" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 998;
+" onclick="toggleSupportBox()"></div>
+
+<!-- CTA 卡片 -->
 <div id="supportBox" style="
   display: none;
   position: fixed;
   bottom: 90px;
   right: 30px;
   width: 300px;
+  background-color: #2D3C2F;
+  color: #FFD54F;
   border-radius: 1rem;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   z-index: 9999;
   padding: 1.2rem;
-  background-color: #2D3C2F;
-  color: #F5F2E9;
-  transform: translateY(20px);
   opacity: 0;
-  transition: all 0.4s ease;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  font-weight: 500;
 ">
   <div style="text-align: center;">
     <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
          style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
     <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
-    <p style="font-size: 0.85rem; color: #DDD; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
+    <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
 
     <a href="https://open.firstory.me/join/investwithmark" target="_blank"
        style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
@@ -342,14 +352,14 @@
 
     <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
     <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
-      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F;">IG：@rengary0301</a><br/>
-      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F;">FB 粉專</a><br/>
-      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F;">Podcast 平台</a><br/>
-      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F;">個人網站</a><br/>
-      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F;">加入 LINE 社群</a>
+      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br/>
+      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br/>
+      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br/>
+      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br/>
+      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
     </div>
 
-    <p style="font-size: 0.75rem; color: #ccc; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
+    <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
   </div>
 </div>
 
@@ -357,30 +367,23 @@
 <script>
   function toggleSupportBox() {
     const box = document.getElementById('supportBox');
+    const overlay = document.getElementById('supportOverlay');
     const isVisible = box.style.display === 'block';
 
     if (!isVisible) {
+      overlay.style.display = 'block';
       box.style.display = 'block';
       setTimeout(() => {
         box.style.opacity = '1';
         box.style.transform = 'translateY(0)';
-      }, 50);
+      }, 30);
     } else {
       box.style.opacity = '0';
       box.style.transform = 'translateY(20px)';
       setTimeout(() => {
         box.style.display = 'none';
-      }, 300);
-    }
-  }
-
-  // 夜間模式自動反色（加 class）
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (prefersDark) {
-    const box = document.getElementById('supportBox');
-    if (box) {
-      box.style.backgroundColor = '#F5F2E9';
-      box.style.color = '#1A1A1A';
+        overlay.style.display = 'none';
+      }, 250);
     }
   }
 </script>
