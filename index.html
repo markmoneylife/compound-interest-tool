@@ -72,9 +72,6 @@
       background-color: #FFD54F;
       color: #1A1A1A;
     }
-    .highlight {
-      background-color: #B2D7E7;
-    }
     canvas {
       margin-top: 3rem;
     }
@@ -239,19 +236,35 @@
       const ctx = document.getElementById("stackedChart").getContext("2d");
       if (window.resultChart) window.resultChart.destroy();
       window.resultChart = new Chart(ctx, {
-        type: "bar",
         data: {
           labels: chartLabels,
           datasets: [
             {
+              type: "bar",
               label: "投入資金",
               data: investedList,
-              backgroundColor: "#B2D7E7"
+              backgroundColor: "#B2D7E7",
+              stack: "stack1"
             },
             {
+              type: "bar",
               label: "累積總價值增長",
               data: valueList.map((v, idx) => v - investedList[idx]),
-              backgroundColor: "#FFD54F"
+              backgroundColor: "#FFD54F",
+              stack: "stack1"
+            },
+            {
+              type: "line",
+              label: "年配息",
+              data: data.map(d => Math.round(d.dividend)),
+              backgroundColor: "#FF8C00",
+              borderColor: "#FF8C00",
+              yAxisID: "y2",
+              tension: 0.3,
+              fill: false,
+              pointStyle: "circle",
+              pointRadius: 4,
+              pointHoverRadius: 6
             }
           ]
         },
@@ -270,7 +283,17 @@
             y: {
               stacked: true,
               beginAtZero: true,
-              ticks: { callback: (v) => "$" + v.toLocaleString() }
+              ticks: {
+                callback: (v) => "$" + v.toLocaleString()
+              }
+            },
+            y2: {
+              position: "right",
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              ticks: {
+                callback: (v) => "$" + v.toLocaleString()
+              }
             }
           }
         }
@@ -286,6 +309,18 @@
         🔹 平均每月可運用金額：<span>$${monthlyCash.toLocaleString()}</span>（不含稅）<br/><br/>
         💡 這筆金額可以每月支應基本生活開銷，也可能成為提早退休的穩定現金流來源。你的投資已經幫你打造出一台會印鈔的機器了！
       `;
+    }
+
+    function downloadExcel() {
+      const wb = XLSX.utils.book_new();
+      const rows = [["年齡", "年份", "投入金額", "累積金額", "預估配息"]];
+      document.querySelectorAll("#resultTable tbody tr").forEach((tr) => {
+        const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent);
+        rows.push(cells);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      XLSX.utils.book_append_sheet(wb, ws, "複利試算");
+      XLSX.writeFile(wb, "compound_interest.xlsx");
     }
   </script>
 </body>
