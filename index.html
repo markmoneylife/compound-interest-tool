@@ -122,6 +122,7 @@
       <input type="number" id="rate" value="6" />
       <label>預估退休年齡</label>
       <input type="number" id="retireAge" value="45" />
+      <label><input type="checkbox" id="reinvestDividend" checked /> 配息再投入</label>
       <button onclick="calculateGrowth()">計算</button>
       <button onclick="downloadExcel()">匯出 Excel</button>
     </div>
@@ -159,6 +160,7 @@
       const monthly = parseFloat(document.getElementById("monthly").value);
       const rate = parseFloat(document.getElementById("rate").value) / 100 / 12;
       const retireAge = parseInt(document.getElementById("retireAge").value);
+      const reinvest = document.getElementById("reinvestDividend").checked;
       const years = retireAge - startAge;
 
       let total = startAmount, dividendTotal = 0;
@@ -168,28 +170,32 @@
       tableBody.innerHTML = "";
 
       for (let i = 0; i <= years * 12; i++) {
-        const monthsElapsed = i + startMonth;
-        const year = startYear + Math.floor(monthsElapsed / 12);
-        const age = startAge + Math.floor(monthsElapsed / 12);
-        const currentInvest = startAmount + monthly * i;
+        const yearIndex = Math.floor((i + startMonth) / 12);
+        const year = startYear + yearIndex;
+        const age = startAge + yearIndex;
+
+        let dividend = total * 0.06 / 12;
+        dividendTotal += dividend;
+        if (reinvest) total += dividend;
+
         total = total * (1 + rate) + monthly;
 
-        if ((monthsElapsed + 1) % 12 === 0) {
+        if ((i + startMonth + 1) % 12 === 0) {
+          const months = i + 1;
+          const investedAmount = startAmount + monthly * months;
           data.push(total);
-          invested.push(monthly * (monthsElapsed + 1));
-          labels.push(`第${Math.floor((monthsElapsed + 1) / 12)}年`);
-          const dividend = Math.round(total * 0.06);
-          dividendTotal += dividend;
+          invested.push(investedAmount);
+          labels.push(`第${yearIndex + 1}年`);
 
           tableBody.innerHTML += `<tr>
             <td>${age}</td>
             <td>${year}</td>
-            <td>$${(monthly * (monthsElapsed + 1)).toLocaleString()}</td>
+            <td>$${investedAmount.toLocaleString()}</td>
             <td>$${Math.round(total).toLocaleString()}</td>
-            <td>$${dividend.toLocaleString()}</td>
+            <td>$${Math.round(total * 0.06).toLocaleString()}</td>
           </tr>`;
 
-          exportData.push({ 年齡: age, 年份: year, 投入金額: monthly * (monthsElapsed + 1), 累積金額: Math.round(total), 預估配息: dividend });
+          exportData.push({ 年齡: age, 年份: year, 投入金額: investedAmount, 累積金額: Math.round(total), 預估配息: Math.round(total * 0.06) });
         }
       }
 
@@ -197,7 +203,7 @@
         <td colspan="2">總計</td>
         <td>$${invested[invested.length - 1].toLocaleString()}</td>
         <td></td>
-        <td>$${dividendTotal.toLocaleString()}</td>
+        <td>$${Math.round(dividendTotal).toLocaleString()}</td>
       </tr>`;
 
       new Chart(document.getElementById("stackedChart"), {
@@ -230,12 +236,8 @@
             },
           },
           scales: {
-            x: {
-              stacked: true
-            },
-            y: {
-              stacked: true
-            }
+            x: { stacked: true },
+            y: { stacked: true }
           }
         }
       });
