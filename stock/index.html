@@ -91,7 +91,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbY9L3BMOOC-BCHfUqeM5vZFFA_s9eTelzbBD9WZKqWfMn5-BD6cf7U7r3QvUG5Im--HQ/exec";
+    const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID_HERE/exec";
 
     async function fetchStockData() {
       const ticker = document.getElementById('ticker').value.trim();
@@ -101,6 +101,11 @@
       try {
         const response = await axios.get(API_URL);
         const data = response.data;
+
+        if (!data || Object.keys(data).length === 0) {
+          resultDiv.innerHTML = '<p>⚠️ 無法連線或查詢結果為空，請確認 API 是否可用，或稍後再試。</p>';
+          return;
+        }
 
         const refinedData = {};
         for (const key in data) {
@@ -133,8 +138,8 @@
           </div>
         `;
       } catch (error) {
-        console.error(error);
-        resultDiv.innerHTML = `<p>資料載入失敗，請稍後再試或檢查網路連線。</p>`;
+        console.error('Axios Error:', error);
+        resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，可能是 API 網址錯誤、網路連線異常，或受到跨域限制。請檢查 API_URL 是否正確。</p>`;
       }
     }
   </script>
