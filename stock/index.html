@@ -3,58 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克個股追蹤表 v1.1</title>
+  <title>馬克個股追蹤表 v1.2</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
       background-color: #F5F2E9;
       color: #1A1A1A;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
       padding: 2rem;
+      min-height: 100vh;
     }
     .container {
-      max-width: 600px;
-      margin: auto;
       background: white;
       padding: 2rem;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      width: 100%;
     }
-    label, input, button {
-      display: block;
-      margin: 1rem 0;
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
     button {
+      margin-top: 1rem;
       background-color: #2D3C2F;
       color: white;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.2rem;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
     }
     .result {
       margin-top: 2rem;
       background: #FFF;
-      padding: 1rem;
+      padding: 1.5rem;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 12px;
     }
-    .data-block {
-      margin-bottom: 1rem;
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .data-item {
+      background: #F5F2E9;
+      padding: 1rem;
+      border-radius: 8px;
     }
     .data-label {
       font-weight: bold;
+      display: block;
+      margin-bottom: 0.3rem;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📊 馬克個股追蹤表 v1.1</h1>
-    <label for="ticker">輸入台股股號：</label>
-    <input type="text" id="ticker" placeholder="例如：2330">
-    <button onclick="fetchStockData()">查詢</button>
-    <div class="result" id="result">
-      <p>請輸入股號後查詢，資料將顯示於此。</p>
+  <div class="wrapper">
+    <div class="container">
+      <h1>📊 馬克個股追蹤表 v1.2</h1>
+      <label for="ticker">輸入台股股號：</label>
+      <input type="text" id="ticker" placeholder="例如：2330" />
+      <button onclick="fetchStockData()">查詢</button>
+      <div class="result" id="result">
+        <p>請輸入股號後查詢，資料將顯示於此。</p>
+      </div>
     </div>
   </div>
 
@@ -62,7 +94,7 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbY9L3BMOOC-BCHfUqeM5vZFFA_s9eTelzbBD9WZKqWfMn5-BD6cf7U7r3QvUG5Im--HQ/exec";
 
     async function fetchStockData() {
-      const ticker = document.getElementById('ticker').value;
+      const ticker = document.getElementById('ticker').value.trim();
       const resultDiv = document.getElementById('result');
       resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
@@ -79,12 +111,14 @@
 
         resultDiv.innerHTML = `
           <h3>${stock['股票名稱']}（${ticker}）</h3>
-          <div class="data-block"><span class="data-label">股價：</span>${stock['今日股價']} 元</div>
-          <div class="data-block"><span class="data-label">EPS：</span>${stock['EPS'] || '載入中...'}</div>
-          <div class="data-block"><span class="data-label">配息：</span>${stock['2024']} 元</div>
-          <div class="data-block"><span class="data-label">殖利率：</span>${stock['殖利率'] || '載入中...'}%</div>
-          <div class="data-block"><span class="data-label">除息日：</span>${stock['除息日']} </div>
-          <div class="data-block"><span class="data-label">發放日：</span>${stock['發放日']} </div>
+          <div class="data-grid">
+            <div class="data-item"><span class="data-label">股價</span>${stock['今日股價']} 元</div>
+            <div class="data-item"><span class="data-label">EPS</span>${stock['EPS'] || '載入中...'}</div>
+            <div class="data-item"><span class="data-label">配息</span>${stock['2024']} 元</div>
+            <div class="data-item"><span class="data-label">殖利率</span>${stock['殖利率'] || '載入中...'}%</div>
+            <div class="data-item"><span class="data-label">除息日</span>${stock['除息日']}</div>
+            <div class="data-item"><span class="data-label">發放日</span>${stock['發放日']}</div>
+          </div>
         `;
       } catch (error) {
         console.error(error);
