@@ -24,8 +24,9 @@
       border: none;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #3f5640;
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
     }
     #result {
       margin-top: 2rem;
@@ -55,8 +56,8 @@
   <h1>📈 ETF 配息查詢工具</h1>
   <p>請輸入 ETF 代號（例如 <code>00919</code>），點選查詢。</p>
 
-  <input type="text" id="tickerInput" placeholder="輸入 ETF 代號" />
-  <button onclick="searchTicker()">查詢</button>
+  <input type="text" id="tickerInput" placeholder="輸入 ETF 代號" maxlength="6"/>
+  <button id="searchBtn" onclick="searchTicker()">查詢</button>
 
   <div id="result"></div>
 
@@ -64,14 +65,22 @@
     const apiUrl = 'https://script.google.com/macros/s/AKfycbyI9L3BMOOC-BCHfUgeM5vZFFAs_9eTeIbzBD9WZKqWrMn5-BD6cf7Ur7aQVuG5Im--HQ/exec';
 
     async function searchTicker() {
-      const ticker = document.getElementById('tickerInput').value.trim();
+      const tickerInput = document.getElementById('tickerInput');
+      const searchBtn = document.getElementById('searchBtn');
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '🔄 查詢中…';
+      const ticker = tickerInput.value.trim();
 
-      if (!ticker) {
-        resultDiv.innerHTML = '<p class="error">⚠️ 請輸入有效的股票代號！</p>';
+      // 重設結果
+      resultDiv.innerHTML = '';
+
+      // 基礎驗證
+      if (!/^\d{4,6}$/.test(ticker)) {
+        resultDiv.innerHTML = '<p class="error">⚠️ 請輸入正確的 ETF 代號（4~6 位數字）</p>';
         return;
       }
+
+      resultDiv.innerHTML = '🔍 查詢中…';
+      searchBtn.disabled = true;
 
       try {
         const response = await fetch(`${apiUrl}?ticker=${encodeURIComponent(ticker)}`);
@@ -79,20 +88,19 @@
 
         if (data.error) {
           resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
-          return;
+        } else {
+          let html = `<p>✅ 查詢結果如下：</p><table><thead><tr><th>欄位</th><th>資料</th></tr></thead><tbody>`;
+          for (const key in data) {
+            html += `<tr><td>${key}</td><td>${data[key]}</td></tr>`;
+          }
+          html += '</tbody></table>';
+          resultDiv.innerHTML = html;
         }
-
-        // 顯示結果表格
-        let html = `<p>✅ 查詢結果如下：</p><table><thead><tr><th>欄位</th><th>資料</th></tr></thead><tbody>`;
-        for (const key in data) {
-          html += `<tr><td>${key}</td><td>${data[key]}</td></tr>`;
-        }
-        html += '</tbody></table>';
-        resultDiv.innerHTML = html;
-
       } catch (err) {
-        resultDiv.innerHTML = `<p class="error">❌ 查詢失敗，請稍後再試！</p>`;
         console.error(err);
+        resultDiv.innerHTML = `<p class="error">❌ 查詢失敗，請檢查網路或稍後再試。</p>`;
+      } finally {
+        searchBtn.disabled = false;
       }
     }
   </script>
