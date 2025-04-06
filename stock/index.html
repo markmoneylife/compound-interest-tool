@@ -110,7 +110,7 @@
       resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
       try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL + '?stock=' + encodeURIComponent(ticker));
         const data = response.data;
 
         if (!data || Object.keys(data).length === 0) {
@@ -118,17 +118,12 @@
           return;
         }
 
-        const refinedData = {};
-        for (const key in data) {
-          refinedData[key.trim()] = data[key];
-        }
+        const stock = data[ticker];
 
-        if (!refinedData[ticker]) {
-          resultDiv.innerHTML = `<p>👀 咦？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
+        if (!stock) {
+          resultDiv.innerHTML = `<p>👀 噢？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
           return;
         }
-
-        const stock = refinedData[ticker];
 
         let html = `<h3>${stock['股票名稱'] || ticker}（${ticker}）</h3><div class="data-grid">`;
         for (const key in stock) {
