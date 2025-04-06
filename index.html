@@ -1,90 +1,391 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克個股追蹤表 v1.0</title>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title>吳馬克的複利試算工具｜馬克理財</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Helvetica Neue', sans-serif;
       background-color: #F5F2E9;
       color: #1A1A1A;
       padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      color: #2D3C2F;
+      text-align: center;
+    }
+    .tagline {
+      text-align: center;
+      font-size: 1rem;
+      color: #888;
+      margin-top: -1rem;
+      margin-bottom: 2rem;
     }
     .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
     }
-    label, input, button {
+    .form-section, .table-section {
+      flex: 1 1 400px;
+      background-color: #F5F2E9;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    label {
       display: block;
-      margin: 1rem 0;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
     }
     button {
+      margin-top: 1.5rem;
       background-color: #2D3C2F;
       color: white;
-      padding: 0.5rem 1rem;
       border: none;
-      border-radius: 8px;
+      padding: 0.7rem 1.2rem;
+      border-radius: 0.5rem;
       cursor: pointer;
     }
-    .result {
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      text-align: right;
+    }
+    th {
+      background-color: #FFD54F;
+      color: #1A1A1A;
+    }
+    canvas {
+      margin-top: 3rem;
+    }
+    .checkbox-tip {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+    .achievement-box {
       margin-top: 2rem;
-      background: #FFF;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      background-color: #fffbea;
+      border-left: 6px solid #FFD54F;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .achievement-box span {
+      font-weight: bold;
+      color: #2D3C2F;
     }
   </style>
 </head>
 <body>
+  <h1>複利試算工具</h1>
+  <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
   <div class="container">
-    <h1>📊 馬克個股追蹤表 v1.0</h1>
-    <label for="ticker">輸入台股股號：</label>
-    <input type="text" id="ticker" placeholder="例如：1210">
-    <button onclick="fetchStockData()">查詢</button>
-    <div class="result" id="result">
-      <p>請輸入股號後查詢，資料將顯示於此。</p>
+    <div class="form-section">
+      <label>目前年齡</label>
+      <input type="number" id="startAge" value="25" />
+      <label>開始年份</label>
+      <input type="number" id="startYear" value="2025" />
+      <label>開始月份</label>
+      <select id="startMonth">
+        <option value="0">1 月</option>
+        <option value="1">2 月</option>
+        <option value="2">3 月</option>
+        <option value="3">4 月</option>
+        <option value="4">5 月</option>
+        <option value="5">6 月</option>
+        <option value="6">7 月</option>
+        <option value="7">8 月</option>
+        <option value="8">9 月</option>
+        <option value="9">10 月</option>
+        <option value="10">11 月</option>
+        <option value="11">12 月</option>
+      </select>
+      <label>初始金額</label>
+      <input type="number" id="startAmount" value="0" />
+      <label>每月投入金額</label>
+      <input type="number" id="monthly" value="10000" />
+      <label>年報酬率 (%)</label>
+      <input type="number" id="rate" value="6" />
+      <label>預估退休年齡</label>
+      <input type="number" id="retireAge" value="45" />
+      <label><input type="checkbox" id="reinvestDividend" checked /> 是否配息再投入</label>
+      <div class="checkbox-tip">若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算不滾入本金</div>
+      <button onclick="calculateGrowth()">計算</button>
+    </div>
+    <div class="table-section">
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>年齡</th>
+            <th>年份</th>
+            <th>投入金額</th>
+            <th>累積金額</th>
+            <th>預估配息</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
-
+  <canvas id="stackedChart" height="120"></canvas>
+  <div id="achievementResult" class="achievement-box"></div>
   <script>
-    async function fetchStockData() {
-      const ticker = document.getElementById('ticker').value;
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
+    function calculateGrowth() {
+      const startAge = parseInt(document.getElementById("startAge").value);
+      const startYear = parseInt(document.getElementById("startYear").value);
+      const startMonth = parseInt(document.getElementById("startMonth").value);
+      const startAmount = parseFloat(document.getElementById("startAmount").value);
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const rate = parseFloat(document.getElementById("rate").value) / 100;
+      const retireAge = parseInt(document.getElementById("retireAge").value);
+      const reinvest = document.getElementById("reinvestDividend").checked;
 
-      try {
-        const res = await axios.get(`https://tw.stock.yahoo.com/_td-stock/api/resource/StockServices.stockList;symbols=${ticker}.TW`);
-        const stock = res.data?.[0];
+      const years = retireAge - startAge;
+      const monthsInFirstYear = 12 - startMonth;
 
-        if (!stock) {
-          resultDiv.innerHTML = `<p>找不到股號 ${ticker} 的資料。</p>`;
-          return;
+      let data = [];
+      let totalInvested = 0;
+      let totalValue = startAmount;
+      let totalDividend = 0;
+      let chartLabels = [];
+      let investedList = [];
+      let valueList = [];
+      let dividendList = [];
+      let growthList = [];
+      let netAssetGrowth = 0;
+
+      const tbody = document.querySelector("#resultTable tbody");
+      tbody.innerHTML = "";
+
+      for (let i = 0; i < years; i++) {
+        const age = startAge + i;
+        const year = startYear + i;
+        let months = 12;
+        if (i === 0) months = monthsInFirstYear;
+
+        let investThisYear = monthly * months;
+        totalInvested += investThisYear;
+
+        if (reinvest && i > 0) totalValue += data[i - 1].dividend;
+        totalValue += investThisYear;
+
+        const dividend = totalValue * rate;
+        totalDividend += dividend;
+
+        data.push({ age, year, invested: totalInvested, value: totalValue, dividend });
+
+        chartLabels.push(`第${i + 1}年`);
+        investedList.push(totalInvested);
+        valueList.push(totalValue);
+        dividendList.push(Math.round(dividend));
+
+        if (!reinvest) {
+          netAssetGrowth += investThisYear * rate;
+          growthList.push(netAssetGrowth);
+        } else {
+          growthList.push(totalValue - totalInvested);
         }
 
-        const name = stock.name;
-        const price = stock.price;
-        const change = stock.change;
-        const changePercent = stock.changePercent;
-
-        resultDiv.innerHTML = `
-          <h3>${name}（${ticker}）</h3>
-          <p>股價：${price} 元</p>
-          <p>漲跌：${change} (${changePercent}%)</p>
-          <p>（下一步可加入 EPS、殖利率、自動配息等資料）</p>
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${age}</td>
+          <td>${year}</td>
+          <td>$${investThisYear.toLocaleString()}</td>
+          <td>$${Math.round(totalValue).toLocaleString()}</td>
+          <td>$${Math.round(dividend).toLocaleString()}</td>
         `;
-      } catch (err) {
-        console.error(err);
-        resultDiv.innerHTML = `<p>查詢失敗，請確認網路或股號格式是否正確。</p>`;
+        tbody.appendChild(tr);
       }
+
+      const trTotal = document.createElement("tr");
+      trTotal.innerHTML = `
+        <td colspan="2"><strong>總計</strong></td>
+        <td><strong>$${totalInvested.toLocaleString()}</strong></td>
+        <td><strong>$${Math.round(totalValue).toLocaleString()}</strong></td>
+        <td><strong>$${Math.round(totalDividend).toLocaleString()}</strong></td>
+      `;
+      tbody.appendChild(trTotal);
+
+      const ctx = document.getElementById("stackedChart").getContext("2d");
+      if (window.resultChart) window.resultChart.destroy();
+      window.resultChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: chartLabels,
+          datasets: [
+            {
+              type: 'bar',
+              label: '投入資金',
+              data: investedList,
+              backgroundColor: '#B2D7E7',
+              stack: 'stack1'
+            },
+            {
+              type: 'bar',
+              label: '資本增值',
+              data: growthList,
+              backgroundColor: '#FFD54F',
+              stack: 'stack1'
+            },
+            ...(!reinvest ? [{
+              type: 'bar',
+              label: '累積已領配息',
+              data: dividendList,
+              backgroundColor: '#FFB74D',
+              stack: 'stack1'
+            }] : []),
+            {
+              type: 'line',
+              label: '年配息',
+              data: dividendList,
+              backgroundColor: '#FF8C00',
+              borderColor: '#FF8C00',
+              yAxisID: 'y2',
+              tension: 0.3,
+              fill: false,
+              pointStyle: 'circle',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { mode: 'index', intersect: false },
+            animation: { duration: 1000, easing: 'easeOutBounce' }
+          },
+          scales: {
+            x: { stacked: true },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: { callback: (v) => "$" + v.toLocaleString() }
+            },
+            y2: {
+              position: 'right',
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              ticks: { callback: (v) => "$" + v.toLocaleString() }
+            }
+          }
+        }
+      });
+
+      const monthlyCash = Math.round((totalValue * rate) / 12);
+      const resultBox = document.getElementById("achievementResult");
+      resultBox.innerHTML = `
+        🎉 <strong>恭喜達成！你在 ${startYear + years - 1} 年退休時解鎖以下成就：</strong><br/><br/>
+        🔹 累積資產：<span>$${Math.round(totalValue).toLocaleString()}</span><br/>
+        🔹 投入本金總額：<span>$${totalInvested.toLocaleString()}</span><br/>
+        🔹 年股息收益（依年報酬率 ${(rate * 100).toFixed(0)}% 推算）：<span>$${Math.round(totalValue * rate).toLocaleString()}</span><br/>
+        🔹 平均每月可運用金額：<span>$${monthlyCash.toLocaleString()}</span>（不含稅）<br/><br/>
+        💡 這筆金額可以每月支應基本生活開銷，也可能成為提早退休的穩定現金流來源。你的投資已經幫你打造出一台會印鈔的機器了！
+      `;
     }
   </script>
 </body>
+<!-- 支持我浮動按鈕 -->
+<div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
+  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;">
+    💰 支持我
+  </button>
+</div>
+
+<!-- CTA 背景遮罩 -->
+<div id="supportOverlay" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 998;
+" onclick="toggleSupportBox()"></div>
+
+<!-- CTA 卡片 -->
+<div id="supportBox" style="
+  display: none;
+  position: fixed;
+  bottom: 90px;
+  right: 30px;
+  width: 300px;
+  background-color: #2D3C2F;
+  color: #FFD54F;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  z-index: 9999;
+  padding: 1.2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  font-weight: 500;
+">
+  <div style="text-align: center;">
+    <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
+         style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
+    <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
+    <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
+
+    <a href="https://open.firstory.me/join/investwithmark" target="_blank"
+       style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
+      💰 單筆贊助我
+    </a>
+
+    <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
+    <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
+      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br/>
+      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br/>
+      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br/>
+      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br/>
+      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
+    </div>
+
+    <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
+  </div>
+</div>
+
+<!-- 控制 JS -->
+<script>
+  function toggleSupportBox() {
+    const box = document.getElementById('supportBox');
+    const overlay = document.getElementById('supportOverlay');
+    const isVisible = box.style.display === 'block';
+
+    if (!isVisible) {
+      overlay.style.display = 'block';
+      box.style.display = 'block';
+      setTimeout(() => {
+        box.style.opacity = '1';
+        box.style.transform = 'translateY(0)';
+      }, 30);
+    } else {
+      box.style.opacity = '0';
+      box.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        box.style.display = 'none';
+        overlay.style.display = 'none';
+      }, 250);
+    }
+  }
+</script>
+
 </html>
