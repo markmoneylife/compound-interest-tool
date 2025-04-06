@@ -102,12 +102,19 @@
         const response = await axios.get(API_URL);
         const data = response.data;
 
-        if (!data[ticker]) {
+        // 轉換 keys 去除前後空白與字串格式化
+        const refinedData = {};
+        for (const key in data) {
+          const formattedKey = key.replace(/\D/g, ''); // 僅保留數字部分做為 key
+          refinedData[formattedKey] = data[key];
+        }
+
+        if (!refinedData[ticker]) {
           resultDiv.innerHTML = `<p>👀 咦？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
           return;
         }
 
-        const stock = data[ticker];
+        const stock = refinedData[ticker];
 
         resultDiv.innerHTML = `
           <h3>${stock['股票名稱']}（${ticker}）</h3>
