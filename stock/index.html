@@ -9,9 +9,10 @@
       font-family: 'Segoe UI', sans-serif;
       padding: 2rem;
       background-color: #f9f9f9;
+      color: #1A1A1A;
     }
     h1 {
-      color: #2d3c2f;
+      color: #2D3C2F;
     }
     input, button {
       padding: 0.6rem;
@@ -19,10 +20,13 @@
       margin-right: 0.5rem;
     }
     button {
-      background-color: #2d3c2f;
+      background-color: #2D3C2F;
       color: #fff;
       border: none;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #3f5640;
     }
     button:disabled {
       background-color: #aaa;
@@ -49,6 +53,11 @@
       color: red;
       font-weight: bold;
     }
+    code {
+      background: #eee;
+      padding: 0 4px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -70,10 +79,7 @@
       const resultDiv = document.getElementById('result');
       const ticker = tickerInput.value.trim();
 
-      // 重設結果
       resultDiv.innerHTML = '';
-
-      // 基礎驗證
       if (!/^\d{4,6}$/.test(ticker)) {
         resultDiv.innerHTML = '<p class="error">⚠️ 請輸入正確的 ETF 代號（4~6 位數字）</p>';
         return;
