@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>馬克個股追蹤表 v1.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #F5F2E9;
+      color: #1A1A1A;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label, input, button {
+      display: block;
+      margin: 1rem 0;
+    }
+    button {
+      background-color: #2D3C2F;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 2rem;
+      background: #FFF;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 馬克個股追蹤表 v1.0</h1>
+    <label for="ticker">輸入台股股號：</label>
+    <input type="text" id="ticker" placeholder="例如：1210">
+    <button onclick="fetchStockData()">查詢</button>
+    <div class="result" id="result">
+      <p>請輸入股號後查詢，資料將顯示於此。</p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchStockData() {
+      const ticker = document.getElementById('ticker').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
+
+      try {
+        const res = await axios.get(`https://tw.stock.yahoo.com/_td-stock/api/resource/StockServices.stockList;symbols=${ticker}.TW`);
+        const stock = res.data?.[0];
+
+        if (!stock) {
+          resultDiv.innerHTML = `<p>找不到股號 ${ticker} 的資料。</p>`;
+          return;
+        }
+
+        const name = stock.name;
+        const price = stock.price;
+        const change = stock.change;
+        const changePercent = stock.changePercent;
+
+        resultDiv.innerHTML = `
+          <h3>${name}（${ticker}）</h3>
+          <p>股價：${price} 元</p>
+          <p>漲跌：${change} (${changePercent}%)</p>
+          <p>（下一步可加入 EPS、殖利率、自動配息等資料）</p>
+        `;
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = `<p>查詢失敗，請確認網路或股號格式是否正確。</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
