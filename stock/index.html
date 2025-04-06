@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -102,7 +102,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID_HERE/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyI9L3BMOOC-BCHfUgeM5vZFFAs_9eTeIbzBD9WZKqWrMn5-BD6cf7Ur7aQVuG5Im--HQ/exec";
 
     async function fetchStockData() {
       const ticker = document.getElementById('ticker').value.trim();
@@ -120,8 +120,7 @@
 
         const refinedData = {};
         for (const key in data) {
-          const formattedKey = key.trim();
-          refinedData[formattedKey] = data[key];
+          refinedData[key.trim()] = data[key];
         }
 
         if (!refinedData[ticker]) {
