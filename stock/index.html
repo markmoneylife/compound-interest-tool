@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ETF月報查詢｜馬克幸福理財家</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>馬克ETF月報查詢</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     :root {
@@ -15,66 +15,71 @@
       --text-light: #888888;
     }
     body {
-      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
-      margin: 0;
-      background: var(--light-bg);
+      font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+      background-color: var(--light-bg);
       color: var(--text-dark);
+      margin: 0;
+      padding: 0;
     }
     .wrapper {
-      max-width: 1100px;
-      margin: 2rem auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
       padding: 2rem;
-      background: #fff;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1100px;
+      width: 100%;
     }
     h1 {
-      color: var(--main-bg);
       font-size: 1.8rem;
-      display: flex;
-      align-items: center;
+      margin-bottom: 1.5rem;
+      color: var(--main-bg);
     }
-    h1::before {
-      content: "📊";
-      margin-right: 0.5rem;
-    }
-    label, input, button {
-      display: block;
-      width: 100%;
-      margin-top: 1rem;
+    label {
+      font-weight: bold;
     }
     input {
-      padding: 0.6rem;
-      border-radius: 8px;
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
       border: 1px solid #ccc;
+      border-radius: 8px;
     }
     button {
-      background: var(--main-bg);
+      margin-top: 1rem;
+      background-color: var(--main-bg);
       color: white;
-      padding: 0.6rem;
-      font-size: 1rem;
+      padding: 0.6rem 1.2rem;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 0.8rem;
+      font-size: 1rem;
     }
     .result {
       margin-top: 2rem;
+      background: #FFF;
       padding: 1.5rem;
       border: 1px solid #ccc;
-      border-radius: 0.8rem;
-      background-color: #fff;
+      border-radius: 12px;
     }
     .data-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
     }
     .data-item {
       background: var(--accent);
       padding: 1rem;
-      border-radius: 0.6rem;
-      border-left: 5px solid var(--highlight);
+      border-radius: 8px;
+      color: var(--text-dark);
+      border-left: 6px solid var(--highlight);
     }
     .data-label {
       font-weight: bold;
@@ -82,69 +87,68 @@
       margin-bottom: 0.3rem;
     }
     .cta {
-      margin-top: 3rem;
+      margin-top: 2rem;
+      padding: 1rem;
       background: var(--main-bg);
-      padding: 1.5rem;
-      border-radius: 1rem;
-      text-align: center;
       color: white;
+      text-align: center;
+      border-radius: 12px;
     }
     .cta a {
-      display: inline-block;
-      margin-top: 0.8rem;
-      padding: 0.6rem 1.2rem;
-      background: var(--highlight);
-      color: var(--text-dark);
+      color: var(--highlight);
       font-weight: bold;
-      border-radius: 6px;
       text-decoration: none;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <h1>馬克 ETF 月報查詢</h1>
-    <label for="ticker">輸入 ETF 代碼：</label>
-    <input type="text" id="ticker" placeholder="例如：00919, 00713, 006208" />
-    <button onclick="fetchETF()">查詢</button>
-
-    <div class="result" id="result">
-      <p>請輸入 ETF 代碼後點擊查詢，系統會顯示最新月報資訊。</p>
-    </div>
-
-    <div class="cta">
-      <h3>想收到每月ETF追蹤？加入馬克社群！</h3>
-      <a href="https://line.me/R/ti/p/你的LINE社群ID" target="_blank">📲 加入馬克LINE</a>
+    <div class="container">
+      <h1>📊 馬克個股＆ETF月報查詢</h1>
+      <label for="ticker">輸入台股代號（限ETF）：</label>
+      <input type="text" id="ticker" placeholder="例如：00929" />
+      <button onclick="fetchETFData()">查詢</button>
+      <div class="result" id="result">
+        <p>請輸入ETF代號後查詢，資料將顯示於此。</p>
+      </div>
+      <div class="cta">
+        想更完整掌握ETF月報？<br />
+        <a href="https://markmoneylife.com/etf-report">點我前往馬克ETF月報專頁</a>
+      </div>
     </div>
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/你的部署ID/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyI9L3BMOOC-BCHfUgeM5vZFFAs_9eTeIbzBD9WZKqWrMn5-BD6cf7Ur7aQVuG5Im--HQ/exec";
 
-    async function fetchETF() {
-      const ticker = document.getElementById("ticker").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "<p>查詢中，請稍候...</p>";
+    async function fetchETFData() {
+      const ticker = document.getElementById('ticker').value.trim();
+      const resultDiv = document.getElementById('result');
+      if (!ticker) {
+        resultDiv.innerHTML = '<p>⚠️ 請輸入ETF代號才能查詢喔！</p>';
+        return;
+      }
+
+      resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
       try {
-        const res = await axios.get(`${API_URL}?ticker=${ticker}`);
-        const data = res.data;
+        const response = await axios.get(`${API_URL}?ticker=${ticker}`);
+        const data = response.data;
 
-        if (!data || Object.keys(data).length === 0) {
-          resultDiv.innerHTML = `<p>😢 找不到 <strong>${ticker}</strong> 的資料，請確認ETF代碼是否正確。</p>`;
+        if (data.error) {
+          resultDiv.innerHTML = `<p>👀 嗚？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
           return;
         }
 
-        let html = `<h3>${data['名稱']}（${ticker}）</h3><div class="data-grid">`;
+        let html = `<h3>${data['名稱'] || ticker}（${ticker}）</h3><div class="data-grid">`;
         for (const key in data) {
-          html += `<div class="data-item"><span class="data-label">${key}</span>${data[key]}</div>`;
+          html += `<div class="data-item"><span class="data-label">${key}</span>${data[key] || '-'}</div>`;
         }
         html += '</div>';
         resultDiv.innerHTML = html;
-
-      } catch (err) {
-        console.error(err);
-        resultDiv.innerHTML = "<p>❌ 查詢失敗，請稍後再試或聯絡馬克。</p>";
+      } catch (error) {
+        console.error('查詢錯誤：', error);
+        resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，請稍後再試。</p>`;
       }
     }
   </script>
