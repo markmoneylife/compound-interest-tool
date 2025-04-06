@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克個股追蹤表 v1.2</title>
+  <title>馬克個股追蹤表 v1.3</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     body {
@@ -80,7 +80,7 @@
 <body>
   <div class="wrapper">
     <div class="container">
-      <h1>📊 馬克個股追蹤表 v1.2</h1>
+      <h1>📊 馬克個股追蹤表 v1.3</h1>
       <label for="ticker">輸入台股股號：</label>
       <input type="text" id="ticker" placeholder="例如：2330" />
       <button onclick="fetchStockData()">查詢</button>
@@ -99,13 +99,22 @@
       resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
       try {
+        // 1️⃣ 先送出 POST 請求，將股號寫入 Google Sheet A3
+        await axios.post(API_URL, null, {
+          params: { id: ticker }
+        });
+
+        // 2️⃣ 再延遲 1 秒抓最新資料（等 Sheet 更新完成）
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // 3️⃣ 抓資料
         const response = await axios.get(API_URL);
         const data = response.data;
 
-        // 轉換 keys 去除前後空白與字串格式化
+        // 整理 key（只取純數字）
         const refinedData = {};
         for (const key in data) {
-          const formattedKey = key.replace(/\D/g, ''); // 僅保留數字部分做為 key
+          const formattedKey = key.replace(/\D/g, '');
           refinedData[formattedKey] = data[key];
         }
 
