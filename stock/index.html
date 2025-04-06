@@ -1,15 +1,23 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克個股追蹤表 v1.3</title>
+  <title>馬克個股追蹤表 v1.5</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
+    :root {
+      --main-bg: #2D3C2F;
+      --light-bg: #F5F2E9;
+      --highlight: #FFD54F;
+      --accent: #B2D7E7;
+      --text-dark: #1A1A1A;
+      --text-light: #888888;
+    }
     body {
       font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
-      background-color: #F5F2E9;
-      color: #1A1A1A;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
       margin: 0;
       padding: 0;
     }
@@ -31,6 +39,7 @@
     h1 {
       font-size: 1.8rem;
       margin-bottom: 1.5rem;
+      color: var(--main-bg);
     }
     label {
       font-weight: bold;
@@ -45,7 +54,7 @@
     }
     button {
       margin-top: 1rem;
-      background-color: #2D3C2F;
+      background-color: var(--main-bg);
       color: white;
       padding: 0.6rem 1.2rem;
       border: none;
@@ -66,9 +75,11 @@
       gap: 1rem;
     }
     .data-item {
-      background: #F5F2E9;
+      background: var(--accent);
       padding: 1rem;
       border-radius: 8px;
+      color: var(--text-dark);
+      border-left: 6px solid var(--highlight);
     }
     .data-label {
       font-weight: bold;
@@ -80,7 +91,7 @@
 <body>
   <div class="wrapper">
     <div class="container">
-      <h1>📊 馬克個股追蹤表 v1.3</h1>
+      <h1>📊 馬克個股追蹤表 v1.5</h1>
       <label for="ticker">輸入台股股號：</label>
       <input type="text" id="ticker" placeholder="例如：2330" />
       <button onclick="fetchStockData()">查詢</button>
@@ -120,23 +131,12 @@
 
         const stock = refinedData[ticker];
 
-        resultDiv.innerHTML = `
-          <h3>${stock['股票名稱']}（${ticker}）</h3>
-          <div class="data-grid">
-            <div class="data-item"><span class="data-label">股價</span>${stock['2022股價'] || '-'} 元</div>
-            <div class="data-item"><span class="data-label">EPS</span>${stock['EPS'] || '-'}</div>
-            <div class="data-item"><span class="data-label">配息(2024)</span>${stock['2024'] || '-'} 元</div>
-            <div class="data-item"><span class="data-label">殖利率</span>${stock['殖利率'] || '-'}%</div>
-            <div class="data-item"><span class="data-label">除息日</span>${stock['除息日'] || '-'}</div>
-            <div class="data-item"><span class="data-label">發放日</span>${stock['發放日'] || '-'}</div>
-            <div class="data-item"><span class="data-label">投資成本</span>${stock['投資成本'] || '-'} 元</div>
-            <div class="data-item"><span class="data-label">市值</span>${stock['市值'] || '-'} 元</div>
-            <div class="data-item"><span class="data-label">損益</span>${stock['損益'] || '-'} 元</div>
-            <div class="data-item"><span class="data-label">公司市值</span>${stock['公司市值'] || '-'}</div>
-            <div class="data-item"><span class="data-label">除息前股價</span>${stock['除息前股價'] || '-'}</div>
-            <div class="data-item"><span class="data-label">本益比</span>${stock['本益比'] || '-'}</div>
-          </div>
-        `;
+        let html = `<h3>${stock['股票名稱'] || ticker}（${ticker}）</h3><div class="data-grid">`;
+        for (const key in stock) {
+          html += `<div class="data-item"><span class="data-label">${key}</span>${stock[key] || '-'}</div>`;
+        }
+        html += '</div>';
+        resultDiv.innerHTML = html;
       } catch (error) {
         console.error('Axios Error:', error);
         resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，可能是 API 網址錯誤、網路連線異常，或受到跨域限制。請檢查 API_URL 是否正確。</p>`;
