@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克ETF月報查詢</title>
+  <title>馬克ETF查詢</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     :root {
@@ -19,26 +19,19 @@
       background-color: var(--light-bg);
       color: var(--text-dark);
       margin: 0;
-      padding: 0;
+      padding: 2rem;
     }
     .wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 2rem;
-      min-height: 100vh;
-    }
-    .container {
-      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
       padding: 2rem;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 1100px;
-      width: 100%;
     }
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
       color: var(--main-bg);
     }
     label {
@@ -71,8 +64,9 @@
     }
     .data-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
+      margin-top: 1rem;
     }
     .data-item {
       background: var(--accent);
@@ -88,33 +82,27 @@
     }
     .cta {
       margin-top: 2rem;
-      padding: 1rem;
-      background: var(--main-bg);
-      color: white;
       text-align: center;
-      border-radius: 12px;
     }
     .cta a {
       color: var(--highlight);
-      font-weight: bold;
       text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <div class="container">
-      <h1>📊 馬克個股＆ETF月報查詢</h1>
-      <label for="ticker">輸入台股代號（限ETF）：</label>
-      <input type="text" id="ticker" placeholder="例如：00929" />
-      <button onclick="fetchETFData()">查詢</button>
-      <div class="result" id="result">
-        <p>請輸入ETF代號後查詢，資料將顯示於此。</p>
-      </div>
-      <div class="cta">
-        想更完整掌握ETF月報？<br />
-        <a href="https://markmoneylife.com/etf-report">點我前往馬克ETF月報專頁</a>
-      </div>
+    <h1>📊 馬克ETF查詢</h1>
+    <label for="ticker">輸入台股代號（限ETF）：</label>
+    <input type="text" id="ticker" placeholder="例如：00919" />
+    <button onclick="fetchETFData()">查詢</button>
+    <div class="result" id="result">
+      <p>請輸入ETF代號後查詢，資料將顯示於此。</p>
+    </div>
+    <div class="cta">
+      <p>想更完整掌握ETF月報？<br>
+      <a href="https://markmoneylife.com/etf%e9%85%8d%e6%81%af%e6%9c%88%e5%a0%b1/" target="_blank">點我前往完整版ETF月報專頁</a></p>
     </div>
   </div>
 
@@ -124,11 +112,6 @@
     async function fetchETFData() {
       const ticker = document.getElementById('ticker').value.trim();
       const resultDiv = document.getElementById('result');
-      if (!ticker) {
-        resultDiv.innerHTML = '<p>⚠️ 請輸入ETF代號才能查詢喔！</p>';
-        return;
-      }
-
       resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
       try {
@@ -136,19 +119,21 @@
         const data = response.data;
 
         if (data.error) {
-          resultDiv.innerHTML = `<p>👀 嗚？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
+          resultDiv.innerHTML = `<p>👀 咦？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
           return;
         }
 
-        let html = `<h3>${data['名稱'] || ticker}（${ticker}）</h3><div class="data-grid">`;
+        let html = `<h3>${data['名稱']}（${data['代碼']}）</h3><div class="data-grid">`;
         for (const key in data) {
-          html += `<div class="data-item"><span class="data-label">${key}</span>${data[key] || '-'}</div>`;
+          if (key !== '代碼' && key !== '名稱') {
+            html += `<div class="data-item"><span class="data-label">${key}</span>${data[key] || '-'}</div>`;
+          }
         }
         html += '</div>';
         resultDiv.innerHTML = html;
       } catch (error) {
-        console.error('查詢錯誤：', error);
-        resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，請稍後再試。</p>`;
+        console.error('Axios Error:', error);
+        resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，請確認代號與 API 是否正常。</p>`;
       }
     }
   </script>
