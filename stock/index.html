@@ -25,7 +25,7 @@
       padding: 2rem;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
     }
     h1 {
@@ -99,41 +99,28 @@
       resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
 
       try {
-        // 1️⃣ 先送出 POST 請求，將股號寫入 Google Sheet A3
-        await axios.post(API_URL, null, {
-          params: { id: ticker }
-        });
-
-        // 2️⃣ 再延遲 1 秒抓最新資料（等 Sheet 更新完成）
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // 3️⃣ 抓資料
         const response = await axios.get(API_URL);
         const data = response.data;
 
-        // 整理 key（只取純數字）
-        const refinedData = {};
-        for (const key in data) {
-          const formattedKey = key.replace(/\D/g, '');
-          refinedData[formattedKey] = data[key];
-        }
-
-        if (!refinedData[ticker]) {
+        if (!data[ticker]) {
           resultDiv.innerHTML = `<p>👀 咦？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
           return;
         }
 
-        const stock = refinedData[ticker];
+        const stock = data[ticker];
 
         resultDiv.innerHTML = `
           <h3>${stock['股票名稱']}（${ticker}）</h3>
           <div class="data-grid">
-            <div class="data-item"><span class="data-label">股價</span>${stock['今日股價']} 元</div>
-            <div class="data-item"><span class="data-label">EPS</span>${stock['EPS'] || '載入中...'}</div>
-            <div class="data-item"><span class="data-label">配息</span>${stock['2024']} 元</div>
-            <div class="data-item"><span class="data-label">殖利率</span>${stock['殖利率'] || '載入中...'}%</div>
-            <div class="data-item"><span class="data-label">除息日</span>${stock['除息日']}</div>
-            <div class="data-item"><span class="data-label">發放日</span>${stock['發放日']}</div>
+            <div class="data-item"><span class="data-label">股價</span>${stock['2022股價'] || '-'} 元</div>
+            <div class="data-item"><span class="data-label">EPS</span>${stock['EPS'] || '-'}</div>
+            <div class="data-item"><span class="data-label">配息（2024）</span>${stock['2024'] || '-'} 元</div>
+            <div class="data-item"><span class="data-label">殖利率</span>${stock['殖利率'] || '-'}%</div>
+            <div class="data-item"><span class="data-label">除息日</span>${stock['除息日'] || '-'}</div>
+            <div class="data-item"><span class="data-label">發放日</span>${stock['發放日'] || '-'}</div>
+            <div class="data-item"><span class="data-label">公司市值</span>${stock['公司市值'] || '-'}</div>
+            <div class="data-item"><span class="data-label">投資成本</span>${stock['投資成本'] || '-'} 元</div>
+            <div class="data-item"><span class="data-label">損益</span>${stock['損益'] || '-'} 元</div>
           </div>
         `;
       } catch (error) {
