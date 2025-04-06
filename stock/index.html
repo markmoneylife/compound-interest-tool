@@ -2,97 +2,100 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克ETF查詢</title>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ETF 配息查詢工具</title>
   <style>
-    :root {
-      --main-bg: #2D3C2F;
-      --light-bg: #F5F2E9;
-      --highlight: #FFD54F;
-      --accent: #B2D7E7;
-      --text-dark: #1A1A1A;
-    }
     body {
-      font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
-      background-color: var(--light-bg);
-      color: var(--text-dark);
-      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       padding: 2rem;
-    }
-    .wrapper {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
     }
     h1 {
-      font-size: 1.8rem;
-      color: var(--main-bg);
-      margin-bottom: 1rem;
+      color: #2d3c2f;
     }
-    label {
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
+    input, button {
+      padding: 0.6rem;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      margin-right: 0.5rem;
     }
     button {
-      margin-top: 1rem;
-      background-color: var(--main-bg);
-      color: white;
-      padding: 0.6rem 1.2rem;
+      background-color: #2d3c2f;
+      color: #fff;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      font-size: 1rem;
     }
-    .result {
+    button:hover {
+      background-color: #3f5640;
+    }
+    #result {
       margin-top: 2rem;
+      padding: 1rem;
       background: #fff;
-      padding: 1.5rem;
-      border: 1px solid #ccc;
-      border-radius: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
     }
-    .data-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 1rem;
     }
-    .data-item {
-      background: var(--accent);
-      padding: 1rem;
-      border-radius: 8px;
-      border-left: 6px solid var(--highlight);
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
     }
-    .data-label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .cta {
-      margin-top: 2rem;
-      text-align: center;
-      background-color: var(--main-bg);
-      padding: 1rem;
-      border-radius: 12px;
-      color: white;
-    }
-    .cta a {
-      color: var(--highlight);
-      text-decoration: none;
+    .error {
+      color: red;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <h1>📊
+
+  <h1>📈 ETF 配息查詢工具</h1>
+  <p>請輸入 ETF 代號（例如 <code>00919</code>），點選查詢。</p>
+
+  <input type="text" id="tickerInput" placeholder="輸入 ETF 代號" />
+  <button onclick="searchTicker()">查詢</button>
+
+  <div id="result"></div>
+
+  <script>
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbyI9L3BMOOC-BCHfUgeM5vZFFAs_9eTeIbzBD9WZKqWrMn5-BD6cf7Ur7aQVuG5Im--HQ/exec';
+
+    async function searchTicker() {
+      const ticker = document.getElementById('tickerInput').value.trim();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '🔄 查詢中…';
+
+      if (!ticker) {
+        resultDiv.innerHTML = '<p class="error">⚠️ 請輸入有效的股票代號！</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiUrl}?ticker=${encodeURIComponent(ticker)}`);
+        const data = await response.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
+          return;
+        }
+
+        // 顯示結果表格
+        let html = `<p>✅ 查詢結果如下：</p><table><thead><tr><th>欄位</th><th>資料</th></tr></thead><tbody>`;
+        for (const key in data) {
+          html += `<tr><td>${key}</td><td>${data[key]}</td></tr>`;
+        }
+        html += '</tbody></table>';
+        resultDiv.innerHTML = html;
+
+      } catch (err) {
+        resultDiv.innerHTML = `<p class="error">❌ 查詢失敗，請稍後再試！</p>`;
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
