@@ -12,7 +12,6 @@
       --highlight: #FFD54F;
       --accent: #B2D7E7;
       --text-dark: #1A1A1A;
-      --text-light: #888888;
     }
     body {
       font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
@@ -23,16 +22,16 @@
     }
     .wrapper {
       max-width: 800px;
-      margin: 0 auto;
+      margin: auto;
       background: #fff;
       padding: 2rem;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
+      font-size: 1.8rem;
       color: var(--main-bg);
+      margin-bottom: 1rem;
     }
     label {
       font-weight: bold;
@@ -57,7 +56,7 @@
     }
     .result {
       margin-top: 2rem;
-      background: #FFF;
+      background: #fff;
       padding: 1.5rem;
       border: 1px solid #ccc;
       border-radius: 12px;
@@ -72,7 +71,6 @@
       background: var(--accent);
       padding: 1rem;
       border-radius: 8px;
-      color: var(--text-dark);
       border-left: 6px solid var(--highlight);
     }
     .data-label {
@@ -86,6 +84,7 @@
       background-color: var(--main-bg);
       padding: 1rem;
       border-radius: 12px;
+      color: white;
     }
     .cta a {
       color: var(--highlight);
@@ -96,52 +95,4 @@
 </head>
 <body>
   <div class="wrapper">
-    <h1>📊 馬克ETF查詢</h1>
-    <label for="ticker">輸入台股代號（限ETF）：</label>
-    <input type="text" id="ticker" placeholder="例如：00919" />
-    <button onclick="fetchETFData()">查詢</button>
-    <div class="result" id="result">
-      <p>請輸入ETF代號後查詢，資料將顯示於此。</p>
-    </div>
-    <div class="cta">
-      <p>想更完整掌握ETF月報？<br>
-      <a href="https://wp.me/Pce3m3-ms" target="_blank">點我前往完整版ETF月報專頁</a></p>
-    </div>
-  </div>
-
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyI9L3BMOOC-BCHfUgeM5vZFFAs_9eTeIbzBD9WZKqWrMn5-BD6cf7Ur7aQVuG5Im--HQ/exec";
-
-    async function fetchETFData() {
-      const ticker = document.getElementById('ticker').value.trim();
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '<p>查詢中，請稍候...</p>';
-
-      try {
-        const response = await axios.get(`${API_URL}?ticker=${ticker}`);
-        const data = response.data;
-
-        if (data.error) {
-          resultDiv.innerHTML = `<p>👀 咦？找不到 <strong>${ticker}</strong> 的資料，馬濕克是不是打錯了？再檢查一下呦！</p>`;
-          return;
-        }
-
-        const name = data['名稱'] || '未命名';
-        const code = data['代碼'] || ticker;
-
-        let html = `<h3>${name}（${code}）</h3><div class="data-grid">`;
-        for (const key in data) {
-          if (key !== '代碼' && key !== '名稱') {
-            html += `<div class="data-item"><span class="data-label">${key}</span>${data[key] || '-'}</div>`;
-          }
-        }
-        html += '</div>';
-        resultDiv.innerHTML = html;
-      } catch (error) {
-        console.error('Axios Error:', error);
-        resultDiv.innerHTML = `<p>❌ 錯誤：無法載入資料，請確認代號與 API 是否正常。</p>`;
-      }
-    }
-  </script>
-</body>
-</html>
+    <h1>📊
