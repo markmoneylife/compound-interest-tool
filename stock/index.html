@@ -83,6 +83,9 @@
     .cta {
       margin-top: 2rem;
       text-align: center;
+      background-color: var(--main-bg);
+      padding: 1rem;
+      border-radius: 12px;
     }
     .cta a {
       color: var(--highlight);
@@ -123,7 +126,10 @@
           return;
         }
 
-        let html = `<h3>${data['名稱']}（${data['代碼']}）</h3><div class="data-grid">`;
+        const name = data['名稱'] || '未命名';
+        const code = data['代碼'] || ticker;
+
+        let html = `<h3>${name}（${code}）</h3><div class="data-grid">`;
         for (const key in data) {
           if (key !== '代碼' && key !== '名稱') {
             html += `<div class="data-item"><span class="data-label">${key}</span>${data[key] || '-'}</div>`;
