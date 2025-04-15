@@ -130,109 +130,107 @@
     <tbody></tbody>
   </table>
 
-  <script>
-  function runReverseCalc() {
-    const currentAge = parseInt(document.getElementById("currentAge").value);
-    const targetAge = parseInt(document.getElementById("targetAge").value);
-    const rate = parseFloat(document.getElementById("rate").value) / 100;
-    const target = parseFloat(document.getElementById("targetAsset").value);
-    const current = parseFloat(document.getElementById("currentAsset").value);
-    const reinvest = document.getElementById("reinvest").checked;
-    const years = targetAge - currentAge;
+<script>
+function runReverseCalc() {
+  const currentAge = parseInt(document.getElementById("currentAge").value);
+  const targetAge = parseInt(document.getElementById("targetAge").value);
+  const rate = parseFloat(document.getElementById("rate").value) / 100;
+  const target = parseFloat(document.getElementById("targetAsset").value);
+  const current = parseFloat(document.getElementById("currentAsset").value);
+  const reinvest = document.getElementById("reinvest").checked;
+  const years = targetAge - currentAge;
+  const nowYear = new Date().getFullYear();
 
-    let estimateMonthly = 0;
-    const maxTry = 1000000;
+  let monthly = 0;
+  let found = false;
 
-    for (let m = 0; m <= maxTry; m += 10) {
-      let value = current;
-      for (let i = 0; i < years; i++) {
-        value += m * 12;
-        if (reinvest) value += value * rate;
-      }
-      if (!reinvest && value + m * 12 * years * rate >= target) {
-        estimateMonthly = m;
-        break;
-      }
-      if (reinvest && value >= target) {
-        estimateMonthly = m;
-        break;
-      }
-    }
-
-    document.getElementById("result").innerHTML = `
-      🧮 <strong>試算結果</strong><br>
-      👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${estimateMonthly.toLocaleString()}</strong><br>
-      ⏳ 投資 ${years} 年後，才能達成：<strong>$${target.toLocaleString()}</strong> 的退休資產目標<br>
-      ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
-      <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
-    `;
-
-    let asset = current;
-    const labels = [];
-    const dataAsset = [];
-    const dataDividend = [];
-    const tbody = document.querySelector("#detailTable tbody");
-    tbody.innerHTML = "";
-
+  while (!found && monthly < 1000000) {
+    let value = current;
     for (let i = 0; i < years; i++) {
-      const age = currentAge + i;
-      const year = new Date().getFullYear() + i;
-      asset += estimateMonthly * 12;
-      if (reinvest) asset += asset * rate;
-      const dividend = asset * rate;
-      dataAsset.push(asset);
-      dataDividend.push(dividend);
-      labels.push(`${age}歲`);
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(estimateMonthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
-      tbody.appendChild(tr);
+      value += monthly * 12;
+      if (reinvest) value += value * rate;
     }
+    if ((reinvest && value >= target) || (!reinvest && value + (monthly * 12 * years * rate) >= target)) {
+      found = true;
+      break;
+    }
+    monthly += 10;
+  }
 
-    document.getElementById("detailTable").style.display = "table";
+  let tableBody = document.querySelector("#detailTable tbody");
+  tableBody.innerHTML = "";
+  let asset = current;
+  const labels = [], dataAsset = [], dataDividend = [];
 
-    const ctx = document.getElementById("assetChart").getContext("2d");
-    if (window.assetChart) window.assetChart.destroy();
-    window.assetChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: '累積資產',
-            data: dataAsset,
-            backgroundColor: '#B2D7E7'
-          },
-          {
-            type: 'line',
-            label: '年股息',
-            data: dataDividend,
-            backgroundColor: '#FF8C00',
-            borderColor: '#FF8C00',
-            yAxisID: 'y2',
-            tension: 0.3,
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: { stacked: false },
-          y: {
-            beginAtZero: true,
-            ticks: { callback: v => "$" + v.toLocaleString() }
-          },
-          y2: {
-            position: 'right',
-            beginAtZero: true,
-            grid: { drawOnChartArea: false },
-            ticks: { callback: v => "$" + v.toLocaleString() }
-          }
+  for (let i = 0; i < years; i++) {
+    const age = currentAge + i;
+    const year = nowYear + i;
+    asset += monthly * 12;
+    if (reinvest) asset += asset * rate;
+    const dividend = asset * rate;
+
+    labels.push(`${age}歲`);
+    dataAsset.push(asset);
+    dataDividend.push(dividend);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(monthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
+    tableBody.appendChild(tr);
+  }
+
+  document.getElementById("detailTable").style.display = "table";
+
+  document.getElementById("result").innerHTML = `
+    🧮 <strong>試算結果</strong><br>
+    👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${monthly.toLocaleString()}</strong><br>
+    ⏳ 投資 ${years} 年後，預估可累積資產：<strong>$${Math.round(asset).toLocaleString()}</strong><br>
+    🎯 目標退休資產為：<strong>$${target.toLocaleString()}</strong><br>
+    ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
+    <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
+  `;
+
+  const ctx = document.getElementById("assetChart").getContext("2d");
+  if (window.assetChart) window.assetChart.destroy();
+  window.assetChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '累積資產',
+          data: dataAsset,
+          backgroundColor: '#B2D7E7'
+        },
+        {
+          type: 'line',
+          label: '年股息',
+          data: dataDividend,
+          backgroundColor: '#FF8C00',
+          borderColor: '#FF8C00',
+          yAxisID: 'y2',
+          tension: 0.3,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { stacked: false },
+        y: {
+          beginAtZero: true,
+          ticks: { callback: v => "$" + v.toLocaleString() }
+        },
+        y2: {
+          position: 'right',
+          beginAtZero: true,
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => "$" + v.toLocaleString() }
         }
       }
-    });
-  }
-  </script>
+    }
+  });
+}
+</script>
 </body>
 </html>
