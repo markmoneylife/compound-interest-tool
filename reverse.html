@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>每月投入試算｜ETF投資 × 財務自由｜馬克理財</title>
-  <meta name="description" content="從退休資產目標倒推每月需要投入多少，一起打造ETF現金流！">
+  <title>退休目標倒推｜每月該投入多少？｜馬克理財</title>
+  <meta name="description" content="反推退休資產目標所需每月投入金額，打造ETF現金流與財務自由生活。">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -100,8 +100,8 @@
     <a href="reverse.html">🎯 每月投入試算</a>
   </nav>
 
-  <h1>每月投入試算</h1>
-  <p class="tagline">從退休資產目標倒推每月需投入多少，一起打造ETF現金流！</p>
+  <h1>退休目標倒推｜每月該投入多少？</h1>
+  <p class="tagline">反推月投金額，一步步靠近財務自由！</p>
 
   <label>目前年齡</label>
   <input type="number" id="currentAge" value="36">
@@ -113,7 +113,7 @@
   <input type="number" id="targetAsset" value="20000000">
   <label>目前已累積資產</label>
   <input type="number" id="currentAsset" value="1000000">
-  <label><input type="checkbox" id="reinvest" checked> 是否配息再投入</label>
+  <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
 
   <button onclick="runReverseCalc()">🐎 馬上試算</button>
 
@@ -160,6 +160,7 @@ function runReverseCalc() {
   let tableBody = document.querySelector("#detailTable tbody");
   tableBody.innerHTML = "";
   let asset = current;
+  let totalDividend = 0;
   const labels = [], dataAsset = [], dataDividend = [];
 
   for (let i = 0; i < years; i++) {
@@ -168,6 +169,7 @@ function runReverseCalc() {
     asset += monthly * 12;
     if (reinvest) asset += asset * rate;
     const dividend = asset * rate;
+    totalDividend += dividend;
 
     labels.push(`${age}歲`);
     dataAsset.push(asset);
@@ -185,8 +187,9 @@ function runReverseCalc() {
     👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${monthly.toLocaleString()}</strong><br>
     ⏳ 投資 ${years} 年後，預估可累積資產：<strong>$${Math.round(asset).toLocaleString()}</strong><br>
     🎯 目標退休資產為：<strong>$${target.toLocaleString()}</strong><br>
+    💵 預估退休年可領配息：約 <strong>$${Math.round(asset * rate).toLocaleString()}</strong>，每月約 <strong>$${Math.round(asset * rate / 12).toLocaleString()}</strong><br>
     ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
-    <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
+    <br><br><small>📘 本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
   `;
 
   const ctx = document.getElementById("assetChart").getContext("2d");
