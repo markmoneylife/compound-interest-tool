@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>目標倒推試算工具｜ETF被動收入計畫｜馬克理財</title>
+  <meta name="description" content="幫你從目標退休資產倒推，計算每月需要投入多少金額，快速規劃財務自由藍圖！">
+  <meta property="og:title" content="目標倒推試算工具｜馬克理財" />
+  <meta property="og:description" content="從退休目標金額反推每月定期定額需要多少，一起打造ETF現金流！" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/reverse.html" />
+  <meta property="og:image" content="https://images.plurk.com/6uQdtAK5Gfi5FkvSwOTAWB.png" />
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F5F2E9;
+      color: #1A1A1A;
+      padding: 2rem;
+      max-width: 720px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2D3C2F;
+    }
+    label {
+      display: block;
+      margin-top: 1.2rem;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .result-box {
+      margin-top: 2rem;
+      background-color: #FFFDE7;
+      border-left: 6px solid #FFD54F;
+      padding: 1.2rem;
+      border-radius: 0.5rem;
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .result-box span {
+      font-weight: bold;
+      color: #2D3C2F;
+    }
+  </style>
+</head>
+<body>
+  <h1>目標倒推試算工具</h1>
+  <p style="text-align:center;color:#666;">從目標金額倒推每月需要投入多少，一起打造ETF現金流！</p>
+
+  <label>目前年齡</label>
+  <input type="number" id="currentAge" value="30" />
+  <label>目標退休年齡</label>
+  <input type="number" id="retireAge" value="55" />
+  <label>年報酬率 (%)</label>
+  <input type="number" id="expectedReturn" value="6" />
+  <label>目標退休資產</label>
+  <input type="number" id="goalAmount" value="20000000" />
+  <label>目前已累積資產</label>
+  <input type="number" id="currentAsset" value="1000000" />
+  <label><input type="checkbox" id="reinvestChecked" checked /> 是否配息再投入</label>
+  <button onclick="reverseCalc()">📈 馬上試算</button>
+
+  <div id="output" class="result-box"></div>
+
+  <script>
+    function reverseCalc() {
+      const ageNow = parseInt(document.getElementById('currentAge').value);
+      const retireAge = parseInt(document.getElementById('retireAge').value);
+      const returnRate = parseFloat(document.getElementById('expectedReturn').value) / 100;
+      const years = retireAge - ageNow;
+      const goal = parseFloat(document.getElementById('goalAmount').value);
+      const current = parseFloat(document.getElementById('currentAsset').value);
+      const reinvest = document.getElementById('reinvestChecked').checked;
+
+      const months = years * 12;
+      const monthlyRate = returnRate / 12;
+      const futureFromCurrent = current * Math.pow(1 + monthlyRate, months);
+      const neededFuture = goal - futureFromCurrent;
+
+      let monthlyRequired;
+      if (monthlyRate > 0) {
+        monthlyRequired = neededFuture * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+      } else {
+        monthlyRequired = neededFuture / months;
+      }
+
+      document.getElementById('output').innerHTML = `
+        🧠 <strong>試算結果</strong><br/><br/>
+        👤 從現在 ${ageNow} 歲開始，每月需投入約：<span>$${Math.round(monthlyRequired).toLocaleString()}</span><br/>
+        ⏳ 投資 ${years} 年後，才能達成：<span>$${goal.toLocaleString()}</span> 的退休資產目標<br/>
+        💹 年報酬率假設為：<span>${(returnRate * 100).toFixed(1)}%</span><br/><br/>
+        📘 <em>小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</em>
+      `;
+    }
+  </script>
+</body>
+</html>
 
