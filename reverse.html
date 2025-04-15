@@ -3,29 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>目標倒推試算工具｜ETF被動收入計畫｜馬克理財</title>
-  <meta name="description" content="幫你從目標退休資產倒推，計算每月需要投入多少金額，快速規劃財務自由藍圖！">
-  <meta property="og:title" content="目標倒推試算工具｜馬克理財" />
-  <meta property="og:description" content="從退休目標金額反推每月定期定額需要多少，一起打造ETF現金流！" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/reverse.html" />
-  <meta property="og:image" content="https://images.plurk.com/6uQdtAK5Gfi5FkvSwOTAWB.png" />
+  <title>目標倒推試算工具｜ETF投資 × 財務自由｜馬克理財</title>
+  <meta name="description" content="從目標金額倒推每月需投入多少，一起打造ETF現金流！">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
       background-color: #F5F2E9;
       color: #1A1A1A;
       padding: 2rem;
-      max-width: 720px;
+      max-width: 1200px;
       margin: auto;
     }
     h1 {
-      text-align: center;
       color: #2D3C2F;
+      text-align: center;
+    }
+    p.tagline {
+      text-align: center;
+      color: #888;
+      margin-top: -1rem;
+      margin-bottom: 2rem;
     }
     label {
       display: block;
-      margin-top: 1.2rem;
+      margin-top: 1rem;
       font-weight: bold;
     }
     input {
@@ -39,78 +41,179 @@
       background-color: #FFD54F;
       color: #1A1A1A;
       border: none;
-      padding: 0.7rem 1.5rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 999px;
-      font-weight: bold;
-      font-size: 1rem;
       cursor: pointer;
+      font-weight: bold;
+      font-size: 1.05rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .result-box {
       margin-top: 2rem;
       background-color: #FFFDE7;
       border-left: 6px solid #FFD54F;
-      padding: 1.2rem;
+      padding: 1.5rem;
       border-radius: 0.5rem;
-      font-size: 1.05rem;
+      font-size: 1rem;
       line-height: 1.8;
     }
-    .result-box span {
-      font-weight: bold;
-      color: #2D3C2F;
+    .chart-container {
+      margin-top: 3rem;
+    }
+    table {
+      width: 100%;
+      margin-top: 2rem;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    thead {
+      background-color: #FFD54F;
     }
   </style>
 </head>
 <body>
   <h1>目標倒推試算工具</h1>
-  <p style="text-align:center;color:#666;">從目標金額倒推每月需要投入多少，一起打造ETF現金流！</p>
+  <p class="tagline">從目標金額倒推每月需投入多少，一起打造ETF現金流！</p>
 
   <label>目前年齡</label>
-  <input type="number" id="currentAge" value="30" />
+  <input type="number" id="currentAge" value="36">
   <label>目標退休年齡</label>
-  <input type="number" id="retireAge" value="55" />
+  <input type="number" id="targetAge" value="40">
   <label>年報酬率 (%)</label>
-  <input type="number" id="expectedReturn" value="6" />
+  <input type="number" id="rate" value="6">
   <label>目標退休資產</label>
-  <input type="number" id="goalAmount" value="20000000" />
+  <input type="number" id="targetAsset" value="20000000">
   <label>目前已累積資產</label>
-  <input type="number" id="currentAsset" value="1000000" />
-  <label><input type="checkbox" id="reinvestChecked" checked /> 是否配息再投入</label>
-  <button onclick="reverseCalc()">📈 馬上試算</button>
+  <input type="number" id="currentAsset" value="1000000">
+  <label><input type="checkbox" id="reinvest" checked> 是否配息再投入</label>
 
-  <div id="output" class="result-box"></div>
+  <button onclick="runReverseCalc()">🐎 馬上試算</button>
 
-  <script>
-    function reverseCalc() {
-      const ageNow = parseInt(document.getElementById('currentAge').value);
-      const retireAge = parseInt(document.getElementById('retireAge').value);
-      const returnRate = parseFloat(document.getElementById('expectedReturn').value) / 100;
-      const years = retireAge - ageNow;
-      const goal = parseFloat(document.getElementById('goalAmount').value);
-      const current = parseFloat(document.getElementById('currentAsset').value);
-      const reinvest = document.getElementById('reinvestChecked').checked;
+  <div id="result" class="result-box"></div>
 
-      const months = years * 12;
-      const monthlyRate = returnRate / 12;
-      const futureFromCurrent = current * Math.pow(1 + monthlyRate, months);
-      const neededFuture = goal - futureFromCurrent;
+  <div class="chart-container">
+    <canvas id="assetChart" height="120"></canvas>
+  </div>
 
-      let monthlyRequired;
-      if (monthlyRate > 0) {
-        monthlyRequired = neededFuture * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
-      } else {
-        monthlyRequired = neededFuture / months;
-      }
+  <table id="detailTable" style="display:none">
+    <thead>
+      <tr><th>年齡</th><th>年份</th><th>年投入</th><th>年末資產</th><th>年股息</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-      document.getElementById('output').innerHTML = `
-        🧠 <strong>試算結果</strong><br/><br/>
-        👤 從現在 ${ageNow} 歲開始，每月需投入約：<span>$${Math.round(monthlyRequired).toLocaleString()}</span><br/>
-        ⏳ 投資 ${years} 年後，才能達成：<span>$${goal.toLocaleString()}</span> 的退休資產目標<br/>
-        💹 年報酬率假設為：<span>${(returnRate * 100).toFixed(1)}%</span><br/><br/>
-        📘 <em>小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</em>
-      `;
+<script>
+function runReverseCalc() {
+  const currentAge = parseInt(document.getElementById("currentAge").value);
+  const targetAge = parseInt(document.getElementById("targetAge").value);
+  const rate = parseFloat(document.getElementById("rate").value) / 100;
+  const target = parseFloat(document.getElementById("targetAsset").value);
+  const current = parseFloat(document.getElementById("currentAsset").value);
+  const reinvest = document.getElementById("reinvest").checked;
+  const years = targetAge - currentAge;
+
+  let estimateMonthly = 0;
+  const maxTry = 1000000;
+
+  for (let m = 0; m <= maxTry; m += 10) {
+    let value = current;
+    for (let i = 0; i < years; i++) {
+      value += m * 12;
+      if (reinvest) value += value * rate;
     }
-  </script>
+    if (!reinvest && value + m * 12 * years * rate >= target) {
+      estimateMonthly = m;
+      break;
+    }
+    if (reinvest && value >= target) {
+      estimateMonthly = m;
+      break;
+    }
+  }
+
+  document.getElementById("result").innerHTML = `
+    🧮 <strong>試算結果</strong><br>
+    👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${estimateMonthly.toLocaleString()}</strong><br>
+    ⏳ 投資 ${years} 年後，才能達成：<strong>$${target.toLocaleString()}</strong> 的退休資產目標<br>
+    ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
+    <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
+  `;
+
+  // 詳細表格與圖表繪製
+  let asset = current;
+  const labels = [];
+  const dataAsset = [];
+  const dataDividend = [];
+  const tbody = document.querySelector("#detailTable tbody");
+  tbody.innerHTML = "";
+
+  for (let i = 0; i < years; i++) {
+    const age = currentAge + i;
+    const year = new Date().getFullYear() + i;
+    asset += estimateMonthly * 12;
+    if (reinvest) asset += asset * rate;
+    const dividend = asset * rate;
+    dataAsset.push(asset);
+    dataDividend.push(dividend);
+    labels.push(`${age}歲`);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(estimateMonthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById("detailTable").style.display = "table";
+
+  const ctx = document.getElementById("assetChart").getContext("2d");
+  if (window.assetChart) window.assetChart.destroy();
+  window.assetChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '累積資產',
+          data: dataAsset,
+          backgroundColor: '#B2D7E7'
+        },
+        {
+          type: 'line',
+          label: '年股息',
+          data: dataDividend,
+          backgroundColor: '#FF8C00',
+          borderColor: '#FF8C00',
+          yAxisID: 'y2',
+          tension: 0.3,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { stacked: false },
+        y: {
+          beginAtZero: true,
+          ticks: { callback: v => "$" + v.toLocaleString() }
+        },
+        y2: {
+          position: 'right',
+          beginAtZero: true,
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => "$" + v.toLocaleString() }
+        }
+      }
+    }
+  });
+}
+</script>
 </body>
 </html>
-
