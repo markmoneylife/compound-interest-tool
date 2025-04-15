@@ -129,7 +129,7 @@
       <input type="number" id="retireAge" value="45" />
       <label><input type="checkbox" id="reinvestDividend" checked /> 是否配息再投入</label>
       <div class="checkbox-tip">若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算不滾入本金</div>
-      <button onclick="calculateGrowth()">計算</button>
+      <button onclick="calculateGrowth()">📊 開始計算</button>
     </div>
     <div class="table-section">
       <table id="resultTable">
@@ -147,6 +147,9 @@
     </div>
   </div>
   <canvas id="stackedChart" height="120"></canvas>
+  <p style="text-align:center; font-size:0.9rem; margin-top:1rem; color:#888;">
+  📤 喜歡這個工具嗎？分享到 <strong>LINE／社群</strong> 讓朋友一起試算看看～
+</p>
   <div id="achievementResult" class="achievement-box"></div>
   <script>
     function calculateGrowth() {
@@ -445,7 +448,7 @@
 
 <!-- 支持我浮動按鈕 -->
 <div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
-  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;">
+  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 1.5s infinite;">
     💰 支持我
   </button>
 </div>
