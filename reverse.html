@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>每月投入倒推試算工具｜ETF投資 × 財務自由｜馬克理財</title>
-  <meta name="description" content="從目標金額倒推每月需投入多少，一起打造ETF現金流！">
+  <title>每月投入試算｜ETF投資 × 財務自由｜馬克理財</title>
+  <meta name="description" content="從退休資產目標倒推每月需要投入多少，一起打造ETF現金流！">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -14,6 +14,21 @@
       padding: 2rem;
       max-width: 1200px;
       margin: auto;
+    }
+    nav {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    nav a {
+      display: inline-block;
+      margin: 0 1rem;
+      padding: 0.5rem 1.2rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     h1 {
       color: #2D3C2F;
@@ -80,8 +95,13 @@
   </style>
 </head>
 <body>
-  <h1>每月投入倒推試算工具</h1>
-  <p class="tagline">從目標金額推算每月需投入多少，一起打造ETF現金流！</p>
+  <nav>
+    <a href="index.html">📈 複利試算工具</a>
+    <a href="reverse.html">🎯 每月投入試算</a>
+  </nav>
+
+  <h1>每月投入試算</h1>
+  <p class="tagline">從退休資產目標倒推每月需投入多少，一起打造ETF現金流！</p>
 
   <label>目前年齡</label>
   <input type="number" id="currentAge" value="36">
@@ -110,110 +130,109 @@
     <tbody></tbody>
   </table>
 
-<script>
-function runReverseCalc() {
-  const currentAge = parseInt(document.getElementById("currentAge").value);
-  const targetAge = parseInt(document.getElementById("targetAge").value);
-  const rate = parseFloat(document.getElementById("rate").value) / 100;
-  const target = parseFloat(document.getElementById("targetAsset").value);
-  const current = parseFloat(document.getElementById("currentAsset").value);
-  const reinvest = document.getElementById("reinvest").checked;
-  const years = targetAge - currentAge;
+  <script>
+  function runReverseCalc() {
+    const currentAge = parseInt(document.getElementById("currentAge").value);
+    const targetAge = parseInt(document.getElementById("targetAge").value);
+    const rate = parseFloat(document.getElementById("rate").value) / 100;
+    const target = parseFloat(document.getElementById("targetAsset").value);
+    const current = parseFloat(document.getElementById("currentAsset").value);
+    const reinvest = document.getElementById("reinvest").checked;
+    const years = targetAge - currentAge;
 
-  let estimateMonthly = 0;
-  const maxTry = 1000000;
+    let estimateMonthly = 0;
+    const maxTry = 1000000;
 
-  for (let m = 0; m <= maxTry; m += 10) {
-    let value = current;
-    for (let i = 0; i < years; i++) {
-      value += m * 12;
-      if (reinvest) value += value * rate;
-    }
-    if (!reinvest && value + m * 12 * years * rate >= target) {
-      estimateMonthly = m;
-      break;
-    }
-    if (reinvest && value >= target) {
-      estimateMonthly = m;
-      break;
-    }
-  }
-
-  document.getElementById("result").innerHTML = `
-    🧮 <strong>試算結果</strong><br>
-    👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${estimateMonthly.toLocaleString()}</strong><br>
-    ⏳ 投資 ${years} 年後，才能達成：<strong>$${target.toLocaleString()}</strong> 的退休資產目標<br>
-    ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
-    <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
-  `;
-
-  // 詳細表格與圖表繪製
-  let asset = current;
-  const labels = [];
-  const dataAsset = [];
-  const dataDividend = [];
-  const tbody = document.querySelector("#detailTable tbody");
-  tbody.innerHTML = "";
-
-  for (let i = 0; i < years; i++) {
-    const age = currentAge + i;
-    const year = new Date().getFullYear() + i;
-    asset += estimateMonthly * 12;
-    if (reinvest) asset += asset * rate;
-    const dividend = asset * rate;
-    dataAsset.push(asset);
-    dataDividend.push(dividend);
-    labels.push(`${age}歲`);
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(estimateMonthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
-    tbody.appendChild(tr);
-  }
-
-  document.getElementById("detailTable").style.display = "table";
-
-  const ctx = document.getElementById("assetChart").getContext("2d");
-  if (window.assetChart) window.assetChart.destroy();
-  window.assetChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '累積資產',
-          data: dataAsset,
-          backgroundColor: '#B2D7E7'
-        },
-        {
-          type: 'line',
-          label: '年股息',
-          data: dataDividend,
-          backgroundColor: '#FF8C00',
-          borderColor: '#FF8C00',
-          yAxisID: 'y2',
-          tension: 0.3,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: { stacked: false },
-        y: {
-          beginAtZero: true,
-          ticks: { callback: v => "$" + v.toLocaleString() }
-        },
-        y2: {
-          position: 'right',
-          beginAtZero: true,
-          grid: { drawOnChartArea: false },
-          ticks: { callback: v => "$" + v.toLocaleString() }
-        }
+    for (let m = 0; m <= maxTry; m += 10) {
+      let value = current;
+      for (let i = 0; i < years; i++) {
+        value += m * 12;
+        if (reinvest) value += value * rate;
+      }
+      if (!reinvest && value + m * 12 * years * rate >= target) {
+        estimateMonthly = m;
+        break;
+      }
+      if (reinvest && value >= target) {
+        estimateMonthly = m;
+        break;
       }
     }
-  });
-}
-</script>
+
+    document.getElementById("result").innerHTML = `
+      🧮 <strong>試算結果</strong><br>
+      👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${estimateMonthly.toLocaleString()}</strong><br>
+      ⏳ 投資 ${years} 年後，才能達成：<strong>$${target.toLocaleString()}</strong> 的退休資產目標<br>
+      ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
+      <br><br><small>📘 小提醒：本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
+    `;
+
+    let asset = current;
+    const labels = [];
+    const dataAsset = [];
+    const dataDividend = [];
+    const tbody = document.querySelector("#detailTable tbody");
+    tbody.innerHTML = "";
+
+    for (let i = 0; i < years; i++) {
+      const age = currentAge + i;
+      const year = new Date().getFullYear() + i;
+      asset += estimateMonthly * 12;
+      if (reinvest) asset += asset * rate;
+      const dividend = asset * rate;
+      dataAsset.push(asset);
+      dataDividend.push(dividend);
+      labels.push(`${age}歲`);
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(estimateMonthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
+      tbody.appendChild(tr);
+    }
+
+    document.getElementById("detailTable").style.display = "table";
+
+    const ctx = document.getElementById("assetChart").getContext("2d");
+    if (window.assetChart) window.assetChart.destroy();
+    window.assetChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '累積資產',
+            data: dataAsset,
+            backgroundColor: '#B2D7E7'
+          },
+          {
+            type: 'line',
+            label: '年股息',
+            data: dataDividend,
+            backgroundColor: '#FF8C00',
+            borderColor: '#FF8C00',
+            yAxisID: 'y2',
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { stacked: false },
+          y: {
+            beginAtZero: true,
+            ticks: { callback: v => "$" + v.toLocaleString() }
+          },
+          y2: {
+            position: 'right',
+            beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            ticks: { callback: v => "$" + v.toLocaleString() }
+          }
+        }
+      }
+    });
+  }
+  </script>
 </body>
 </html>
