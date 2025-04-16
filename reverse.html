@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>退休目標倒推｜每月該投入多少？｜馬克理財</title>
-  <meta name="description" content="反推退休資產目標所需每月投入金額，打造ETF現金流與財務自由生活。">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <meta name="description" content="退休財務目標倒推試算工具｜輸入目標年齡、報酬率與資產，立即算出你每月該投入多少。結合ETF現金流與定期定額策略，打造安心退休計畫。">
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -93,13 +92,6 @@
     thead {
       background-color: #FFD54F;
     }
-    canvas#assetChart {
-      width: 100% !important;
-      max-width: 100%;
-      height: 400px !important;
-      display: block;
-      margin-top: 2rem;
-    }
     @media (max-width: 768px) {
       .flex-container {
         flex-direction: column;
@@ -121,15 +113,15 @@
   <div class="flex-container">
     <div class="form-section" style="flex: 1 1 400px;">
       <label>目前年齡</label>
-      <input type="number" id="currentAge" value="0">
+      <input type="number" id="currentAge" value="30">
       <label>目標退休年齡</label>
-      <input type="number" id="targetAge" value="0">
+      <input type="number" id="targetAge" value="55">
       <label>年報酬率 (%)</label>
-      <input type="number" id="rate" value="0">
+      <input type="number" id="rate" value="5">
       <label>目標退休資產</label>
-      <input type="number" id="targetAsset" value="0">
+      <input type="number" id="targetAsset" value="15000000">
       <label>目前已累積資產</label>
-      <input type="number" id="currentAsset" value="0">
+      <input type="number" id="currentAsset" value="1000000">
       <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
       <button onclick="runReverseCalc()">🐎 馬上試算</button>
     </div>
@@ -146,138 +138,74 @@
     </div>
   </div>
 
-  <canvas id="assetChart"></canvas>
-
   <div class="result-section" style="margin-top: 2rem;">
     <div id="result" class="result-box" style="max-width: 720px; margin: auto;"></div>
   </div>
 
-<script>
-function runReverseCalc() {
-  const currentAge = parseInt(document.getElementById("currentAge").value);
-  const targetAge = parseInt(document.getElementById("targetAge").value);
-  const rate = parseFloat(document.getElementById("rate").value) / 100;
-  const target = parseFloat(document.getElementById("targetAsset").value);
-  const current = parseFloat(document.getElementById("currentAsset").value);
-  const reinvest = document.getElementById("reinvest").checked;
-  const years = targetAge - currentAge;
-  const nowYear = new Date().getFullYear();
+  <script>
+    function runReverseCalc() {
+      const currentAge = parseInt(document.getElementById("currentAge").value);
+      const targetAge = parseInt(document.getElementById("targetAge").value);
+      const rate = parseFloat(document.getElementById("rate").value) / 100;
+      const target = parseFloat(document.getElementById("targetAsset").value);
+      const current = parseFloat(document.getElementById("currentAsset").value);
+      const reinvest = document.getElementById("reinvest").checked;
+      const years = targetAge - currentAge;
+      const nowYear = new Date().getFullYear();
 
-  if (years <= 0 || target <= 0 || rate <= 0) {
-    alert("請輸入有效的數值（年齡、報酬率與資產目標需大於 0）");
-    return;
-  }
-
-  if (current >= target) {
-    alert("🎉 恭喜！你已經達標，現在可以開始思考下一個目標了！");
-    document.getElementById("result").innerHTML = `
-      🎉 <strong>試算結果</strong><br>
-      你目前已累積資產：<strong>$${current.toLocaleString()}</strong><br>
-      💡 已超過你設定的目標資產 <strong>$${target.toLocaleString()}</strong><br>
-      📈 依年報酬率 ${(rate * 100).toFixed(1)}%，預估每年可領配息 <strong>$${Math.round(current * rate).toLocaleString()}</strong><br>
-      💵 每月現金流約 <strong>$${Math.round(current * rate / 12).toLocaleString()}</strong><br>
-      ✅ 你可以開始設定「下一個人生財務目標」囉！
-    `;
-    document.getElementById("detailTable").style.display = "none";
-    if (window.assetChart) window.assetChart.destroy();
-    return;
-  }
-
-  let monthly = 0;
-  let found = false;
-
-  while (!found && monthly < 1000000) {
-    let value = current;
-    for (let i = 0; i < years; i++) {
-      value += monthly * 12;
-      if (reinvest) value += value * rate;
-    }
-    if ((reinvest && value >= target) || (!reinvest && value + (monthly * 12 * years * rate) >= target)) {
-      found = true;
-      break;
-    }
-    monthly += 10;
-  }
-
-  const tableBody = document.querySelector("#detailTable tbody");
-  tableBody.innerHTML = "";
-  let asset = current;
-  const labels = [], dataAsset = [], dataDividend = [];
-
-  for (let i = 0; i < years; i++) {
-    const age = currentAge + i;
-    const year = nowYear + i;
-    asset += monthly * 12;
-    if (reinvest) asset += asset * rate;
-    const dividend = asset * rate;
-
-    labels.push(`${age}\u6b72`);
-    dataAsset.push(asset);
-    dataDividend.push(dividend);
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(monthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
-    tableBody.appendChild(tr);
-  }
-
-  document.getElementById("detailTable").style.display = "table";
-  document.getElementById("result").innerHTML = `
-    🧮 <strong>試算結果</strong><br>
-    👤 從現在 ${currentAge} 歲開始，每月需投入約：<strong>$${monthly.toLocaleString()}</strong><br>
-    ⏳ 投資 ${years} 年後，預估可累積資產：<strong>$${Math.round(asset).toLocaleString()}</strong><br>
-    🎯 目標退休資產為：<strong>$${target.toLocaleString()}</strong><br>
-    💵 預估退休年可領配息：約 <strong>$${Math.round(asset * rate).toLocaleString()}</strong>，每月約 <strong>$${Math.round(asset * rate / 12).toLocaleString()}</strong><br>
-    ✅ 年報酬假設為：<strong>${(rate * 100).toFixed(1)}%</strong>
-    <br><br><small>📘 本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
-  `;
-
-  setTimeout(() => {
-    const canvas = document.getElementById("assetChart");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (window.assetChart) window.assetChart.destroy();
-    window.assetChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: '累積資產',
-            data: dataAsset,
-            backgroundColor: '#B2D7E7'
-          },
-          {
-            type: 'line',
-            label: '年股息',
-            data: dataDividend,
-            backgroundColor: '#FF8C00',
-            borderColor: '#FF8C00',
-            yAxisID: 'y2',
-            tension: 0.3,
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: { stacked: false },
-          y: {
-            beginAtZero: true,
-            ticks: { callback: v => "$" + v.toLocaleString() }
-          },
-          y2: {
-            position: 'right',
-            beginAtZero: true,
-            grid: { drawOnChartArea: false },
-            ticks: { callback: v => "$" + v.toLocaleString() }
-          }
-        }
+      if (years <= 0 || target <= 0 || rate <= 0) {
+        alert("請輸入有效的數值（年齡、報酬率與資產目標需大於 0）");
+        return;
       }
-    });
-  }, 100);
-}
-</script>
+
+      if (current >= target) {
+        document.getElementById("result").innerHTML = `🎉 你已達標，可開始設定下一個人生目標！`;
+        document.getElementById("detailTable").style.display = "none";
+        return;
+      }
+
+      let monthly = 0;
+      let found = false;
+      while (!found && monthly < 1000000) {
+        let value = current;
+        for (let i = 0; i < years; i++) {
+          value += monthly * 12;
+          if (reinvest) value += value * rate;
+        }
+        if ((reinvest && value >= target) || (!reinvest && value + (monthly * 12 * years * rate) >= target)) {
+          found = true;
+          break;
+        }
+        monthly += 10;
+      }
+
+      const tableBody = document.querySelector("#detailTable tbody");
+      tableBody.innerHTML = "";
+      let asset = current;
+
+      for (let i = 0; i < years; i++) {
+        const age = currentAge + i;
+        const year = nowYear + i;
+        asset += monthly * 12;
+        if (reinvest) asset += asset * rate;
+        const dividend = asset * rate;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(monthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
+        tableBody.appendChild(tr);
+      }
+
+      document.getElementById("detailTable").style.display = "table";
+      document.getElementById("result").innerHTML = `
+        🧮 <strong>試算結果</strong><br>
+        👤 每月需投入約：<strong>$${monthly.toLocaleString()}</strong><br>
+        ⏳ 投資 ${years} 年後預估資產：<strong>$${Math.round(asset).toLocaleString()}</strong><br>
+        🎯 目標退休資產為：<strong>$${target.toLocaleString()}</strong><br>
+        💵 預估退休年股息：約 <strong>$${Math.round(asset * rate).toLocaleString()}</strong>，每月約 <strong>$${Math.round(asset * rate / 12).toLocaleString()}</strong><br>
+        ✅ 年報酬假設：<strong>${(rate * 100).toFixed(1)}%</strong>
+      `;
+    }
+  </script>
 </body>
 </html>
 
