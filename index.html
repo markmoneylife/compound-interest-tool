@@ -1,175 +1,163 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<nav>
-  <a href="index.html" class="active">📈 複利試算工具</a>
-  <a href="reverse.html">🎯 每月投入試算</a>
-</nav>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>複利試算工具｜ETF投資 × 定期定額模擬｜馬克理財</title>
-  <!-- ✅ OG Meta 開始 -->
-  <meta property="og:title" content="複利試算工具｜馬克理財" />
-  <meta property="og:description" content="ETF 配息再投入、定期定額試算工具，一起打造被動收入現金流！" />
-  <meta property="og:image" content="https://images.plurk.com/6uQdtAK5Gfi5FkvSwOTAWB.png" />
-  <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/" />
-  <meta property="og:type" content="website" />
-  <!-- ✅ OG Meta 結束 -->
-
-  <!-- 🔍 SEO 相關 -->
   <meta name="description" content="馬克理財複利試算工具｜每月定期定額、股息再投入模擬，幫你估算退休資產與被動收入，打造財務自由藍圖。">
   <meta name="keywords" content="複利試算, ETF試算, 股息累積, 定期定額, ETF投資, 財務自由, 馬克理財">
   <meta name="author" content="吳馬克">
-
-  <!-- 其他原本內容繼續... -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F5F2E9;
+      color: #1A1A1A;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #2D3C2F;
+      text-align: center;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 1rem;
+      color: #888;
+      margin-top: -1rem;
+      margin-bottom: 2rem;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .form-section, .table-section {
+      flex: 1 1 400px;
+      background-color: #F5F2E9;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      background-color: #FFD54F;
+      color: #2D3C2F;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      text-align: right;
+    }
+
+    th {
+      background-color: #FFD54F;
+      color: #1A1A1A;
+    }
+
+    canvas {
+      margin-top: 3rem;
+    }
+
+    .checkbox-tip {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+
+    .achievement-box {
+      margin-top: 2rem;
+      background-color: #fffbea;
+      border-left: 6px solid #FFD54F;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .achievement-box span {
+      font-weight: bold;
+      color: #2D3C2F;
+    }
+
+    nav {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    nav a {
+      display: inline-block;
+      margin: 0 1rem;
+      padding: 0.5rem 1.2rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    nav a.active {
+      background-color: #FAF3DD;
+      border: 2px solid #2D3C2F;
+      color: #2D3C2F;
+    }
+  </style>
 </head>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-  body {
-    font-family: 'Helvetica Neue', sans-serif;
-    background-color: #F5F2E9;
-    color: #1A1A1A;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: auto;
-  }
-
-  h1 {
-    color: #2D3C2F;
-    text-align: center;
-  }
-
-  .tagline {
-    text-align: center;
-    font-size: 1rem;
-    color: #888;
-    margin-top: -1rem;
-    margin-bottom: 2rem;
-  }
-
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-
-  .form-section, .table-section {
-    flex: 1 1 400px;
-    background-color: #F5F2E9;
-    padding: 1rem;
-    border-radius: 0.5rem;
-  }
-
-  label {
-    display: block;
-    margin-top: 1rem;
-    font-weight: bold;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-  }
-
-  button {
-  margin-top: 1.5rem;
-  background-color: #FFD54F;
-  color: #2D3C2F; /* ✅ 改成墨綠色字 */
-  border: none;
-  padding: 0.7rem 1.2rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-
-  th, td {
-    padding: 0.5rem;
-    border-bottom: 1px solid #ccc;
-    text-align: right;
-  }
-
-  th {
-    background-color: #FFD54F;
-    color: #1A1A1A;
-  }
-
-  canvas {
-    margin-top: 3rem;
-  }
-
-  .checkbox-tip {
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 0.2rem;
-  }
-
-  .achievement-box {
-    margin-top: 2rem;
-    background-color: #fffbea;
-    border-left: 6px solid #FFD54F;
-    padding: 1rem 1.5rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.8;
-  }
-
-  .achievement-box span {
-    font-weight: bold;
-    color: #2D3C2F;
-  }
-
-  /* ✅ 導覽按鈕樣式 */
-  nav {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  nav a {
-    display: inline-block;
-    margin: 0 1rem;
-    padding: 0.5rem 1.2rem;
-    background-color: #FFD54F; /* ✅ 沒選到是亮黃色 */
-    color: #1A1A1A;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 999px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease;
-  }
-
-  nav a.active {
-    background-color: #FAF3DD; /* ✅ 被選到的是柔和米黃 */
-    border: 2px solid #2D3C2F;
-    color: #2D3C2F;
-  }
-</style>
-
-</head>
 <body>
+  <nav>
+    <a href="index.html" class="active">📈 複利試算工具</a>
+    <a href="reverse.html">🎯 每月投入試算</a>
+  </nav>
+
   <h1>複利試算工具</h1>
   <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
+
   <div class="container">
     <div class="form-section">
       <label>目前年齡</label>
-      <input type="number" id="startAge" value="25" />
+      <input type="number" id="startAge" placeholder="請輸入目前年齡" />
+
       <label>開始年份</label>
-      <input type="number" id="startYear" value="2025" />
+      <input type="number" id="startYear" placeholder="例如 2025" />
+
       <label>開始月份</label>
       <select id="startMonth">
+        <option value="" disabled selected>請選擇月份</option>
         <option value="0">1 月</option>
         <option value="1">2 月</option>
         <option value="2">3 月</option>
@@ -183,18 +171,25 @@
         <option value="10">11 月</option>
         <option value="11">12 月</option>
       </select>
+
       <label>初始金額</label>
-      <input type="number" id="startAmount" value="0" />
+      <input type="number" id="startAmount" placeholder="例如 0" />
+
       <label>每月投入金額</label>
-      <input type="number" id="monthly" value="10000" />
+      <input type="number" id="monthly" placeholder="例如 10000" />
+
       <label>年報酬率 (%)</label>
-      <input type="number" id="rate" value="6" />
+      <input type="number" id="rate" placeholder="例如 6" />
+
       <label>預估退休年齡</label>
-      <input type="number" id="retireAge" value="45" />
+      <input type="number" id="retireAge" placeholder="例如 45" />
+
       <label><input type="checkbox" id="reinvestDividend" checked /> 是否配息再投入</label>
       <div class="checkbox-tip">若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算不滾入本金</div>
+
       <button onclick="calculateGrowth()">📊 開始計算</button>
     </div>
+
     <div class="table-section">
       <table id="resultTable">
         <thead>
@@ -210,11 +205,10 @@
       </table>
     </div>
   </div>
+
   <canvas id="stackedChart" height="120"></canvas>
-  <p style="text-align:center; font-size:0.9rem; margin-top:1rem; color:#888;">
-  📤 喜歡這個工具嗎？分享到 <strong>LINE／社群</strong> 讓朋友一起試算看看～
-</p>
   <div id="achievementResult" class="achievement-box"></div>
+
   <script>
     function calculateGrowth() {
       const startAge = parseInt(document.getElementById("startAge").value);
@@ -225,6 +219,14 @@
       const rate = parseFloat(document.getElementById("rate").value) / 100;
       const retireAge = parseInt(document.getElementById("retireAge").value);
       const reinvest = document.getElementById("reinvestDividend").checked;
+
+      if (
+        isNaN(startAge) || isNaN(startYear) || isNaN(startMonth) ||
+        isNaN(startAmount) || isNaN(monthly) || isNaN(rate) || isNaN(retireAge)
+      ) {
+        alert("請完整填寫所有欄位後再進行計算！");
+        return;
+      }
 
       const years = retireAge - startAge;
       const monthsInFirstYear = 12 - startMonth;
@@ -246,8 +248,7 @@
       for (let i = 0; i < years; i++) {
         const age = startAge + i;
         const year = startYear + i;
-        let months = 12;
-        if (i === 0) months = monthsInFirstYear;
+        let months = (i === 0) ? monthsInFirstYear : 12;
 
         let investThisYear = monthly * months;
         totalInvested += investThisYear;
@@ -299,39 +300,13 @@
         data: {
           labels: chartLabels,
           datasets: [
+            { type: 'bar', label: '投入資金', data: investedList, backgroundColor: '#B2D7E7', stack: 'stack1' },
+            { type: 'bar', label: '資本增值', data: growthList, backgroundColor: '#FFD54F', stack: 'stack1' },
+            ...(!reinvest ? [{ type: 'bar', label: '累積已領配息', data: dividendList, backgroundColor: '#FFB74D', stack: 'stack1' }] : []),
             {
-              type: 'bar',
-              label: '投入資金',
-              data: investedList,
-              backgroundColor: '#B2D7E7',
-              stack: 'stack1'
-            },
-            {
-              type: 'bar',
-              label: '資本增值',
-              data: growthList,
-              backgroundColor: '#FFD54F',
-              stack: 'stack1'
-            },
-            ...(!reinvest ? [{
-              type: 'bar',
-              label: '累積已領配息',
-              data: dividendList,
-              backgroundColor: '#FFB74D',
-              stack: 'stack1'
-            }] : []),
-            {
-              type: 'line',
-              label: '年配息',
-              data: dividendList,
-              backgroundColor: '#FF8C00',
-              borderColor: '#FF8C00',
-              yAxisID: 'y2',
-              tension: 0.3,
-              fill: false,
-              pointStyle: 'circle',
-              pointRadius: 4,
-              pointHoverRadius: 6
+              type: 'line', label: '年配息', data: dividendList,
+              backgroundColor: '#FF8C00', borderColor: '#FF8C00', yAxisID: 'y2',
+              tension: 0.3, fill: false, pointStyle: 'circle', pointRadius: 4, pointHoverRadius: 6
             }
           ]
         },
@@ -345,13 +320,11 @@
           scales: {
             x: { stacked: true },
             y: {
-              stacked: true,
-              beginAtZero: true,
+              stacked: true, beginAtZero: true,
               ticks: { callback: (v) => "$" + v.toLocaleString() }
             },
             y2: {
-              position: 'right',
-              beginAtZero: true,
+              position: 'right', beginAtZero: true,
               grid: { drawOnChartArea: false },
               ticks: { callback: (v) => "$" + v.toLocaleString() }
             }
@@ -372,50 +345,7 @@
     }
   </script>
 </body>
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>吳馬克的複利試算工具｜馬克理財</title>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #F5F2E9;
-      color: #1A1A1A;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    h1 {
-      color: #2D3C2F;
-      text-align: center;
-    }
-    .tagline {
-      text-align: center;
-      font-size: 1rem;
-      color: #888;
-      margin-top: -1rem;
-      margin-bottom: 2rem;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>複利試算工具</h1>
-  <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
-
-  <!-- 👤 頭像與品牌介紹 -->
-  <div style="margin-top: 3rem; padding: 2rem; background-color: #FFFDE7; border-left: 6px solid #FFD54F; border-radius: 0.5rem; display: flex; align-items: center; gap: 1.5rem;">
-    <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克頭像" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover;" />
-    <div>
-      <h3 style="margin: 0; color: #2D3C2F;">我是吳馬克</h3>
-      <p style="margin: 0.5rem 0 0; font-size: 0.95rem; color: #444;">
-        ETF 投資 × 理財規劃 × 內容創作<br/>
-        用一點點時間，把財務搞定一大半！✨
-      </p>
-    </div>
-  </div>
+</html>
 
   <!-- 📺 YouTube CTA 按鈕 -->
   <div style="text-align:center; margin-top: 2rem;">
