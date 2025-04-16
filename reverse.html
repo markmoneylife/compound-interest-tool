@@ -36,35 +36,31 @@
       color: #2D3C2F;
       box-shadow: 0 0 0 2px #2D3C2F inset;
     }
-    h1 {
-      color: #2D3C2F;
-      text-align: center;
-    }
-    p.tagline {
-      text-align: center;
-      color: #888;
-      margin-top: -1rem;
-      margin-bottom: 2rem;
+    .result-box {
+      background-color: #FFFDE7;
+      border-left: 6px solid #FFD54F;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .flex-container {
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
       align-items: flex-start;
+      justify-content: center;
     }
-    .form-section {
-      flex: 1 1 400px;
-    }
-    .result-section {
-      flex: 1 1 500px;
+    input, label, button {
+      display: block;
+      width: 100%;
     }
     label {
-      display: block;
       margin-top: 1rem;
       font-weight: bold;
     }
     input {
-      width: 100%;
       padding: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 0.5rem;
@@ -81,22 +77,9 @@
       font-size: 1.05rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .result-box {
-      margin-top: 1rem;
-      background-color: #FFFDE7;
-      border-left: 6px solid #FFD54F;
-      padding: 1.2rem;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      line-height: 1.8;
-    }
-    .chart-container {
-      margin-top: 2rem;
-      width: 100%;
-    }
     table {
       width: 100%;
-      margin-top: 2rem;
+      margin-top: 1rem;
       border-collapse: collapse;
       background-color: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -111,6 +94,11 @@
     thead {
       background-color: #FFD54F;
     }
+    @media (max-width: 768px) {
+      .flex-container {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
@@ -119,11 +107,13 @@
     <a href="reverse.html" class="active">🎯 每月投入試算</a>
   </nav>
 
-  <h1>退休目標倒推｜每月該投入多少？</h1>
-  <p class="tagline">反推月投金額，一步步靠近財務自由！</p>
+  <h1 style="text-align:center; color:#2D3C2F;">退休目標倒推｜每月該投入多少？</h1>
+  <p class="tagline" style="text-align:center; color:#888; margin-top:-1rem; margin-bottom:2rem;">
+    反推月投金額，一步步靠近財務自由！
+  </p>
 
   <div class="flex-container">
-    <div class="form-section">
+    <div class="form-section" style="flex: 1 1 400px;">
       <label>目前年齡</label>
       <input type="number" id="currentAge" value="36">
       <label>目標退休年齡</label>
@@ -137,21 +127,26 @@
       <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
       <button onclick="runReverseCalc()">🐎 馬上試算</button>
     </div>
-    <div class="result-section">
-      <div id="result" class="result-box"></div>
+
+    <div class="table-wrapper" style="flex: 1 1 500px;">
+      <table id="detailTable" style="display:none">
+        <thead>
+          <tr>
+            <th>年齡</th><th>年份</th><th>年投入</th><th>年末資產</th><th>年股息</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
-  <div class="chart-container">
+  <div class="chart-container" style="margin-top: 2rem; max-width: 900px; margin-left: auto; margin-right: auto;">
     <canvas id="assetChart" height="120"></canvas>
   </div>
 
-  <table id="detailTable" style="display:none">
-    <thead>
-      <tr><th>年齡</th><th>年份</th><th>年投入</th><th>年末資產</th><th>年股息</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div class="result-section" style="margin-top: 2rem;">
+    <div id="result" class="result-box" style="max-width: 720px; margin: auto;"></div>
+  </div>
 
 <script>
 function runReverseCalc() {
@@ -194,7 +189,7 @@ function runReverseCalc() {
     const dividend = asset * rate;
     totalDividend += dividend;
 
-    labels.push(`${age}歲`);
+    labels.push(`${age}\u6b72`);
     dataAsset.push(asset);
     dataDividend.push(dividend);
 
