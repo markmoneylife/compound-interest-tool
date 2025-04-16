@@ -30,116 +30,134 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #F5F2E9;
-      color: #1A1A1A;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    h1 {
-      color: #2D3C2F;
-      text-align: center;
-    }
-    .tagline {
-      text-align: center;
-      font-size: 1rem;
-      color: #888;
-      margin-top: -1rem;
-      margin-bottom: 2rem;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-    .form-section, .table-section {
-      flex: 1 1 400px;
-      background-color: #F5F2E9;
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-    }
-    button {
-      margin-top: 1.5rem;
-      background-color: #2D3C2F;
-      color: white;
-      border: none;
-      padding: 0.7rem 1.2rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      padding: 0.5rem;
-      border-bottom: 1px solid #ccc;
-      text-align: right;
-    }
-    th {
-      background-color: #FFD54F;
-      color: #1A1A1A;
-    }
-    canvas {
-      margin-top: 3rem;
-    }
-    .checkbox-tip {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 0.2rem;
-    }
-    .achievement-box {
-      margin-top: 2rem;
-      background-color: #fffbea;
-      border-left: 6px solid #FFD54F;
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      line-height: 1.8;
-    }
-    .achievement-box span {
-      font-weight: bold;
-      color: #2D3C2F;
-    }
-nav {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-nav a {
-  display: inline-block;
-  margin: 0 1rem;
-  padding: 0.5rem 1.2rem;
-  background-color: #FFD54F;
-  color: #1A1A1A;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.3s ease;
-}
-nav a.active {
-  border: 2px solid #2D3C2F;
-  background-color: #FFD54F;
-  color: #2D3C2F;
-}
+<style>
+  body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #F5F2E9;
+    color: #1A1A1A;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+  }
 
-  </style>
+  h1 {
+    color: #2D3C2F;
+    text-align: center;
+  }
+
+  .tagline {
+    text-align: center;
+    font-size: 1rem;
+    color: #888;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .form-section, .table-section {
+    flex: 1 1 400px;
+    background-color: #F5F2E9;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+  }
+
+  button {
+    margin-top: 1.5rem;
+    background-color: #FFD54F; /* ✅ 開始計算按鈕亮黃 */
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  th, td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+    text-align: right;
+  }
+
+  th {
+    background-color: #FFD54F;
+    color: #1A1A1A;
+  }
+
+  canvas {
+    margin-top: 3rem;
+  }
+
+  .checkbox-tip {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.2rem;
+  }
+
+  .achievement-box {
+    margin-top: 2rem;
+    background-color: #fffbea;
+    border-left: 6px solid #FFD54F;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .achievement-box span {
+    font-weight: bold;
+    color: #2D3C2F;
+  }
+
+  /* ✅ 導覽按鈕樣式 */
+  nav {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  nav a {
+    display: inline-block;
+    margin: 0 1rem;
+    padding: 0.5rem 1.2rem;
+    background-color: #FFD54F; /* ✅ 沒選到是亮黃色 */
+    color: #1A1A1A;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+  }
+
+  nav a.active {
+    background-color: #FAF3DD; /* ✅ 被選到的是柔和米黃 */
+    border: 2px solid #2D3C2F;
+    color: #2D3C2F;
+  }
+</style>
+
 </head>
 <body>
   <h1>複利試算工具</h1>
