@@ -30,6 +30,12 @@
       border-radius: 999px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+    nav a.active {
+      border: 2px solid #2D3C2F;
+      background-color: #FFF8D1;
+      color: #2D3C2F;
+      box-shadow: 0 0 0 2px #2D3C2F inset;
+    }
     h1 {
       color: #2D3C2F;
       text-align: center;
@@ -39,6 +45,18 @@
       color: #888;
       margin-top: -1rem;
       margin-bottom: 2rem;
+    }
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .form-section {
+      flex: 1 1 400px;
+    }
+    .result-section {
+      flex: 1 1 500px;
     }
     label {
       display: block;
@@ -64,16 +82,17 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .result-box {
-      margin-top: 2rem;
+      margin-top: 1rem;
       background-color: #FFFDE7;
       border-left: 6px solid #FFD54F;
-      padding: 1.5rem;
+      padding: 1.2rem;
       border-radius: 0.5rem;
       font-size: 1rem;
       line-height: 1.8;
     }
     .chart-container {
-      margin-top: 3rem;
+      margin-top: 2rem;
+      width: 100%;
     }
     table {
       width: 100%;
@@ -97,27 +116,31 @@
 <body>
   <nav>
     <a href="index.html">📈 複利試算工具</a>
-    <a href="reverse.html">🎯 每月投入試算</a>
+    <a href="reverse.html" class="active">🎯 每月投入試算</a>
   </nav>
 
   <h1>退休目標倒推｜每月該投入多少？</h1>
   <p class="tagline">反推月投金額，一步步靠近財務自由！</p>
 
-  <label>目前年齡</label>
-  <input type="number" id="currentAge" value="36">
-  <label>目標退休年齡</label>
-  <input type="number" id="targetAge" value="40">
-  <label>年報酬率 (%)</label>
-  <input type="number" id="rate" value="6">
-  <label>目標退休資產</label>
-  <input type="number" id="targetAsset" value="20000000">
-  <label>目前已累積資產</label>
-  <input type="number" id="currentAsset" value="1000000">
-  <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
-
-  <button onclick="runReverseCalc()">🐎 馬上試算</button>
-
-  <div id="result" class="result-box"></div>
+  <div class="flex-container">
+    <div class="form-section">
+      <label>目前年齡</label>
+      <input type="number" id="currentAge" value="36">
+      <label>目標退休年齡</label>
+      <input type="number" id="targetAge" value="40">
+      <label>年報酬率 (%)</label>
+      <input type="number" id="rate" value="6">
+      <label>目標退休資產</label>
+      <input type="number" id="targetAsset" value="20000000">
+      <label>目前已累積資產</label>
+      <input type="number" id="currentAsset" value="1000000">
+      <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
+      <button onclick="runReverseCalc()">🐎 馬上試算</button>
+    </div>
+    <div class="result-section">
+      <div id="result" class="result-box"></div>
+    </div>
+  </div>
 
   <div class="chart-container">
     <canvas id="assetChart" height="120"></canvas>
@@ -237,6 +260,7 @@ function runReverseCalc() {
 </script>
 </body>
 </html>
+
   <!-- 👤 頭像與品牌介紹 -->
   <div style="margin-top: 3rem; padding: 2rem; background-color: #FFFDE7; border-left: 6px solid #FFD54F; border-radius: 0.5rem; display: flex; align-items: center; gap: 1.5rem;">
     <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克頭像" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover;" />
