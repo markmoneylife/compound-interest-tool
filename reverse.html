@@ -99,6 +99,12 @@
         flex-direction: column;
       }
     }
+canvas#assetChart {
+  width: 100% !important;
+  max-width: 100%;
+  height: 400px !important;
+  display: block;
+}
   </style>
 </head>
 <body>
@@ -189,12 +195,12 @@ function runReverseCalc() {
     const dividend = asset * rate;
     totalDividend += dividend;
 
-    labels.push(`${age}\u6b72`);
+    labels.push(`${age}歲`);
     dataAsset.push(asset);
     dataDividend.push(dividend);
 
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(monthly*12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
+    tr.innerHTML = `<td>${age}</td><td>${year}</td><td>$${(monthly * 12).toLocaleString()}</td><td>$${Math.round(asset).toLocaleString()}</td><td>$${Math.round(dividend).toLocaleString()}</td>`;
     tableBody.appendChild(tr);
   }
 
@@ -210,47 +216,57 @@ function runReverseCalc() {
     <br><br><small>📘 本試算工具僅供參考，實際回報依市場波動與個人操作為準。</small>
   `;
 
-  const ctx = document.getElementById("assetChart").getContext("2d");
-  if (window.assetChart) window.assetChart.destroy();
-  window.assetChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '累積資產',
-          data: dataAsset,
-          backgroundColor: '#B2D7E7'
-        },
-        {
-          type: 'line',
-          label: '年股息',
-          data: dataDividend,
-          backgroundColor: '#FF8C00',
-          borderColor: '#FF8C00',
-          yAxisID: 'y2',
-          tension: 0.3,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: { stacked: false },
-        y: {
-          beginAtZero: true,
-          ticks: { callback: v => "$" + v.toLocaleString() }
-        },
-        y2: {
-          position: 'right',
-          beginAtZero: true,
-          grid: { drawOnChartArea: false },
-          ticks: { callback: v => "$" + v.toLocaleString() }
+  // ✅ 加入 setTimeout 避免圖表渲染時 canvas 尚未載入完成
+  setTimeout(() => {
+    const canvas = document.getElementById("assetChart");
+    if (!canvas) {
+      console.error("⚠️ 找不到 canvas#assetChart！");
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (window.assetChart) window.assetChart.destroy(); // 🔄 若已有圖表，先銷毀
+
+    window.assetChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '累積資產',
+            data: dataAsset,
+            backgroundColor: '#B2D7E7'
+          },
+          {
+            type: 'line',
+            label: '年股息',
+            data: dataDividend,
+            backgroundColor: '#FF8C00',
+            borderColor: '#FF8C00',
+            yAxisID: 'y2',
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { stacked: false },
+          y: {
+            beginAtZero: true,
+            ticks: { callback: v => "$" + v.toLocaleString() }
+          },
+          y2: {
+            position: 'right',
+            beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            ticks: { callback: v => "$" + v.toLocaleString() }
+          }
         }
       }
-    }
-  });
+    });
+  }, 100);
 }
 </script>
 </body>
