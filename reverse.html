@@ -113,15 +113,15 @@
   <div class="flex-container">
     <div class="form-section" style="flex: 1 1 400px;">
       <label>目前年齡</label>
-      <input type="number" id="currentAge" value="30">
+      <input type="number" id="currentAge" required>
       <label>目標退休年齡</label>
-      <input type="number" id="targetAge" value="55">
+      <input type="number" id="targetAge" required>
       <label>年報酬率 (%)</label>
-      <input type="number" id="rate" value="5">
+     <input type="number" id="rate" required>
       <label>目標退休資產</label>
-      <input type="number" id="targetAsset" value="15000000">
+      <input type="number" id="targetAsset" required>
       <label>目前已累積資產</label>
-      <input type="number" id="currentAsset" value="1000000">
+      <input type="number" id="currentAsset" required>
       <label><input type="checkbox" id="reinvest" checked> 是否配息再投入（啟用後將配息滾入本金中）</label>
       <button onclick="runReverseCalc()">🐎 馬上試算</button>
     </div>
