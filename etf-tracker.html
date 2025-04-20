@@ -124,7 +124,7 @@
           <h2>${row["股號"]} ${row["股票名稱"]}
             <span class="tag">${row["類別"]}</span>
           </h2>
-          <p>🎯 投資成本：$${parseInt(row["投資成本"] || 0).toLocaleString()}</p>
+          <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
           <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
           <p>💰 預估配息：$${parseInt(row["本季預估配息"] || 0).toLocaleString()}</p>
           <p>🔁 操作方式：${row["操作方式"]}</p>
