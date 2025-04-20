@@ -52,7 +52,7 @@
   <div id="etfCards"></div>
 
   <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthRLJOCQGyA81M8LLoQZlhbqBzLLZ4Lt3kHSlG5GzY-QAYKCOAMh6x9BA8V3v7KNWvJtvYoWTPYKw/pub?output=csv";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
 
     fetch(SHEET_URL)
       .then(response => response.text())
