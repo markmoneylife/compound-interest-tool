@@ -77,6 +77,35 @@
       display: inline-block;
       margin-right: 0.6rem;
     }
+    .cta-box {
+      background: #FFF8E1;
+      border-left: 6px solid #FFD54F;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      text-align: center;
+      color: #5D4037;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .cta-box a {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .disclaimer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: #777;
+      background: #fdfdfd;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
@@ -88,70 +117,17 @@
   </div>
   <div id="etfCards"></div>
 
-  <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
-    let allRows = [];
+  <div class="cta-box">
+    📦 想看更多馬克的投資紀錄與操作思路？<br>
+    有些內容只限 🎧 <strong>頻道會員專屬</strong> 開放！<br>
+    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">🔓 加入 YouTube 頻道會員</a>
+  </div>
 
-    fetch(SHEET_URL)
-      .then(response => response.text())
-      .then(csv => Papa.parse(csv, { header: true }))
-      .then(data => {
-        allRows = data.data;
-        renderCards(allRows);
-      });
-
-    function filterCards(type) {
-      const filtered = type === '全部' ? allRows : allRows.filter(row => row["類別"] === type);
-      renderCards(filtered);
-    }
-
-    function parseActionIcons(text) {
-      let output = '';
-      if (text.includes('每月')) output += '<span>📆 定期定額</span>';
-      if (text.includes('單筆')) output += '<span>💥 單筆投入</span>';
-      if (text.includes('配息')) output += '<span>🔁 配息再投入</span>';
-      return output || text;
-    }
-
-    function renderCards(data) {
-      const cards = document.getElementById("etfCards");
-      cards.innerHTML = "";
-
-      data.forEach(row => {
-        if (!row["股號"] || !row["股票名稱"]) return;
-
-        const rewardClass = (row["報酬率"] || '').includes('-') ? 'loss' : 'gain';
-        let linksHTML = '';
-
-        if (row["影片1標題"] && row["影片1連結"]) {
-          linksHTML += `<a href="${row["影片1連結"]}" target="_blank">▶️ ${row["影片1標題"]}</a><br>`;
-        }
-        if (row["影片2標題"] && row["影片2連結"]) {
-          linksHTML += `<a href="${row["影片2連結"]}" target="_blank">🎬 ${row["影片2標題"]}</a>`;
-        }
-
-        const dividendPerShare = parseFloat(row["預估配息"] || 0);
-        const shares = parseInt(row["持有總股數"] || 0);
-        const totalDividend = Math.round(dividendPerShare * shares).toLocaleString();
-
-        const card = document.createElement("div");
-        card.className = "etf-card";
-        card.innerHTML = `
-          <h2>${row["股號"]} ${row["股票名稱"]}
-            <span class="tag">${row["類別"]}</span>
-          </h2>
-          <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
-          <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
-          <p>💰 預估配息：$${totalDividend}（每股 $${dividendPerShare.toFixed(2)} × ${shares.toLocaleString()} 股）</p>
-          <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
-          <p>📆 更新日期：${row["更新日期"]} ｜ 配息頻率：${row["配息頻率"]}</p>
-          <div class="links">
-            ${linksHTML}
-          </div>
-        `;
-        cards.appendChild(card);
-      });
-    }
-  </script>
+  <div class="disclaimer">
+    📢 <strong>投資風險提示：</strong><br/>
+    本頁面資訊僅供投資紀錄分享與理財教育用途，非為個別化投資建議。<br/>
+    ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
+    若需專業建議，請諮詢合格金融顧問。
+  </div>
 </body>
 </html>
