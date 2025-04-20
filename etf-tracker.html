@@ -18,6 +18,19 @@
       color: #2D3C2F;
       margin-bottom: 1rem;
     }
+    .filter-bar {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .filter-bar button {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #FFD54F;
+      border-radius: 999px;
+      font-weight: bold;
+      cursor: pointer;
+    }
     .etf-card {
       background-color: #ffffff;
       border-left: 6px solid #FFD54F;
@@ -45,35 +58,72 @@
       border-radius: 6px;
       margin-left: 0.5rem;
     }
+    .gain { color: red; font-weight: bold; }
+    .loss { color: green; font-weight: bold; }
+    .etf-links a {
+      display: inline-block;
+      margin-top: 0.3rem;
+      margin-right: 0.6rem;
+      font-size: 0.85rem;
+      text-decoration: none;
+      color: #1A1A1A;
+      background-color: #FFF59D;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
   <h1>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</h1>
+
+  <div class="filter-bar">
+    <button onclick="filterCards('全部')">全部</button>
+    <button onclick="filterCards('高股息')">高股息</button>
+    <button onclick="filterCards('指數型')">指數型</button>
+  </div>
+
   <div id="etfCards"></div>
 
   <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
 
+    let allData = [];
+
+    function filterCards(type) {
+      const cards = document.getElementById("etfCards");
+      cards.innerHTML = "";
+      allData.filter(row => type === "全部" || row["類別"] === type).forEach(row => {
+        const card = document.createElement("div");
+        card.className = "etf-card";
+
+        const perfClass = (parseFloat(row["報酬率"]) >= 0) ? "gain" : "loss";
+
+        card.innerHTML = `
+          <h2>${row["股號"]} ${row["股票名稱"]}
+            <span class="tag">${row["類別"]}</span>
+          </h2>
+          <p>🎯 投資成本：$${parseInt(row["投資成本"] || 0).toLocaleString()}</p>
+          <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ <span class="${perfClass}">報酬率：${row["報酬率"]}</span></p>
+          <p>💰 預估配息：$${parseInt(row["本季預估配息"] || 0).toLocaleString()}</p>
+          <p>🔁 操作方式：${row["操作方式"]}</p>
+          <p>📆 更新日期：${row["更新日期"]} ｜ 配息頻率：${row["配息頻率"]}</p>
+          <div class="etf-links">
+            ${row["股號"] === "00919" ? `
+              <a href="https://youtu.be/wXVKUz4-xZw" target="_blank">▶️ 00919 基本介紹</a>
+              <a href="https://www.youtube.com/watch?v=eb1zqgGrsJY" target="_blank">🎬 操作調整與教訓</a>
+            ` : ""}
+          </div>
+        `;
+        cards.appendChild(card);
+      });
+    }
+
     fetch(SHEET_URL)
       .then(response => response.text())
       .then(csv => Papa.parse(csv, { header: true }))
       .then(data => {
-        const cards = document.getElementById("etfCards");
-        data.data.forEach(row => {
-          const card = document.createElement("div");
-          card.className = "etf-card";
-          card.innerHTML = `
-            <h2>${row["股號"]} ${row["股票名稱"]}
-              <span class="tag">${row["類別"]}</span>
-            </h2>
-            <p>🎯 投資成本：$${parseInt(row["投資成本"] || 0).toLocaleString()}</p>
-            <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：${row["報酬率"]}</p>
-            <p>💰 預估配息：$${parseInt(row["本季預估配息"] || 0).toLocaleString()}</p>
-            <p>🔁 操作方式：${row["操作方式"]}</p>
-            <p>📆 更新日期：${row["更新日期"]} ｜ 配息頻率：${row["配息頻率"]}</p>
-          `;
-          cards.appendChild(card);
-        });
+        allData = data.data;
+        filterCards("全部");
       });
   </script>
 </body>
