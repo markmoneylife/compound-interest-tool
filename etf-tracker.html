@@ -129,5 +129,50 @@
     ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
     若需專業建議，請諮詢合格金融顧問。
   </div>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(csv => Papa.parse(csv, { header: true }))
+      .then(data => renderCards(data.data));
+
+    function filterCards(type) {
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(csv => Papa.parse(csv, { header: true }))
+        .then(data => {
+          const filtered = type === '全部' ? data.data : data.data.filter(row => row["類別"] === type);
+          renderCards(filtered);
+        });
+    }
+
+    function renderCards(data) {
+      const container = document.getElementById("etfCards");
+      container.innerHTML = "";
+      data.forEach(row => {
+        const rewardClass = (row["報酬率"] || '').includes("-") ? "loss" : "gain";
+        const card = document.createElement("div");
+        card.className = "etf-card";
+        card.innerHTML = `
+          <h2>${row["股號"]} ${row["股票名稱"]}<span class="tag">${row["類別"]}</span></h2>
+          <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
+          <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
+          <p>💰 預估配息：$${Math.round((parseFloat(row["預估配息"] || 0) * parseInt(row["持有總股數"] || 0))).toLocaleString()}（每股 $${parseFloat(row["預估配息"] || 0).toFixed(2)} × ${parseInt(row["持有總股數"] || 0).toLocaleString()} 股）</p>
+          <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
+          <p>📆 更新日期：${row["追蹤AE2"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function parseActionIcons(text) {
+      let output = '';
+      if (text.includes('每月')) output += '<span>📆 定期定額</span>';
+      if (text.includes('單筆')) output += '<span>💥 單筆投入</span>';
+      if (text.includes('配息')) output += '<span>🔁 配息再投入</span>';
+      return output || text;
+    }
+  </script>
 </body>
 </html>
