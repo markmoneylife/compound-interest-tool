@@ -160,7 +160,7 @@
           <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
           <p>💰 預估配息：$${Math.round((parseFloat(row["預估配息"] || 0) * parseInt(row["持有總股數"] || 0))).toLocaleString()}（每股 $${parseFloat(row["預估配息"] || 0).toFixed(2)} × ${parseInt(row["持有總股數"] || 0).toLocaleString()} 股）</p>
           <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
-          <p>📆 更新日期：${row["追蹤AE2"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
+          <p>📆 更新日期：${row["追蹤AE2_更新"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
         `;
         container.appendChild(card);
       });
