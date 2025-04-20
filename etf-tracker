@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F8F9FA;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2D3C2F;
+      margin-bottom: 1rem;
+    }
+    .etf-card {
+      background-color: #ffffff;
+      border-left: 6px solid #FFD54F;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .etf-card h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #444;
+    }
+    .etf-card p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .tag {
+      display: inline-block;
+      background-color: #FFE082;
+      color: #1A1A1A;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</h1>
+  <div id="etfCards"></div>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthRLJOCQGyA81M8LLoQZlhbqBzLLZ4Lt3kHSlG5GzY-QAYKCOAMh6x9BA8V3v7KNWvJtvYoWTPYKw/pub?output=csv";
+
+    fetch(SHEET_URL)
+      .then(response => response.text())
+      .then(csv => Papa.parse(csv, { header: true }))
+      .then(data => {
+        const cards = document.getElementById("etfCards");
+        data.data.forEach(row => {
+          const card = document.createElement("div");
+          card.className = "etf-card";
+          card.innerHTML = `
+            <h2>${row["股號"]} ${row["股票名稱"]}
+              <span class="tag">${row["類別"]}</span>
+            </h2>
+            <p>🎯 投資成本：$${parseInt(row["投資成本"] || 0).toLocaleString()}</p>
+            <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：${row["報酬率"]}</p>
+            <p>💰 預估配息：$${parseInt(row["本季預估配息"] || 0).toLocaleString()}</p>
+            <p>🔁 操作方式：${row["操作方式"]}</p>
+            <p>📆 更新日期：${row["更新日期"]} ｜ 配息頻率：${row["配息頻率"]}</p>
+          `;
+          cards.appendChild(card);
+        });
+      });
+  </script>
+</body>
+</html>
