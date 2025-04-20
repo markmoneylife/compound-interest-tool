@@ -118,6 +118,10 @@
           linksHTML += `<a href="${row["影片2連結"]}" target="_blank">🎬 ${row["影片2標題"]}</a>`;
         }
 
+        const dividendPerShare = parseFloat(row["預估配息"] || 0); // ✅ 修正這行為 G 欄
+        const shares = parseInt(row["持有總股數"] || 0);
+        const totalDividend = Math.round(dividendPerShare * shares).toLocaleString();
+
         const card = document.createElement("div");
         card.className = "etf-card";
         card.innerHTML = `
@@ -126,7 +130,7 @@
           </h2>
           <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
           <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
-          <p>💰 預估配息：$${parseInt(row["本季預估配息"] || 0).toLocaleString()}</p>
+          <p>💰 預估配息：$${totalDividend}（每股 $${dividendPerShare.toFixed(2)} × ${shares.toLocaleString()} 股）</p>
           <p>🔁 操作方式：${row["操作方式"]}</p>
           <p>📆 更新日期：${row["更新日期"]} ｜ 配息頻率：${row["配息頻率"]}</p>
           <div class="links">
