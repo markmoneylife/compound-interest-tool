@@ -72,9 +72,28 @@
       border-radius: 1rem;
       padding: 1rem;
       text-align: center;
-      width: 150px;
+      width: 160px;
       font-size: 0.95rem;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .badge.earned {
+      background-color: #FFECB3;
+      border-style: solid;
+      font-weight: bold;
+    }
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFD54F;
+      color: #1A1A1A;
+      padding: 0.8rem 1.2rem;
+      border-radius: 999px;
+      font-weight: bold;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
     }
   </style>
 </head>
@@ -84,23 +103,23 @@
 
   <div class="section">
     <h2>🗺️ 任務地圖</h2>
-    <table>
+    <table id="mission-table">
       <thead>
         <tr><th>任務編號</th><th>任務名稱</th><th>教學資源</th><th>進度</th></tr>
       </thead>
       <tbody>
-        <tr><td>01</td><td>什麼是 ETF？</td><td><a href="https://youtu.be/Xw_DgUU7w5w" target="_blank">📺 影片</a></td><td>✅ 已完成</td></tr>
-        <tr><td>02</td><td>建立定期定額帳戶</td><td><a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 工具</a></td><td>⬜ 尚未</td></tr>
-        <tr><td>03</td><td>建立 ETF 追蹤表</td><td><a href="#" target="_blank">📊 Google Sheet</a></td><td>⬜ 尚未</td></tr>
-        <tr><td>04</td><td>加入 LINE 社群</td><td><a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg?utm_source=invitation" target="_blank">👥 加入</a></td><td>⬜ 尚未</td></tr>
-        <tr><td>05</td><td>了解紅漲綠跌與配息</td><td><a href="#" target="_blank">📸 IG 圖卡</a></td><td>⬜ 尚未</td></tr>
+        <tr><td>01</td><td>什麼是 ETF？</td><td><a href="https://youtu.be/Xw_DgUU7w5w" target="_blank">📺 影片</a></td><td><input type="checkbox" data-badge="0"> 完成</td></tr>
+        <tr><td>02</td><td>建立定期定額帳戶</td><td><a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 工具</a></td><td><input type="checkbox" data-badge="1"> 完成</td></tr>
+        <tr><td>03</td><td>建立 ETF 追蹤表</td><td><a href="#" target="_blank">📊 Google Sheet</a></td><td><input type="checkbox" data-badge="2"> 完成</td></tr>
+        <tr><td>04</td><td>加入 LINE 社群</td><td><a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg?utm_source=invitation" target="_blank">👥 加入</a></td><td><input type="checkbox" data-badge="3"> 完成</td></tr>
+        <tr><td>05</td><td>了解紅漲綠跌與配息</td><td><a href="#" target="_blank">📸 IG 圖卡</a></td><td><input type="checkbox" data-badge="4"> 完成</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="section">
     <h2>🏅 任務勳章牆</h2>
-    <div class="badge-board">
+    <div class="badge-board" id="badge-board">
       <div class="badge">📘 ETF 入門徽章</div>
       <div class="badge">💸 定投啟動徽章</div>
       <div class="badge">📊 追蹤表設立徽章</div>
@@ -119,14 +138,43 @@
   </div>
 
   <div class="section">
-    <h2>📬 成為村民！</h2>
+    <h2>📬 成為馬濕克村民！</h2>
     <p style="text-align:center">加入 LINE 社群，一起打卡任務、分享進度、提問互助</p>
     <div class="cta">
       <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">🚪 加入 LINE 社群</a>
     </div>
   </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][data-badge]');
+    const badges = document.querySelectorAll('.badge');
+    const toast = document.getElementById('toast');
+
+    checkboxes.forEach(box => {
+      box.addEventListener('change', () => {
+        const index = parseInt(box.dataset.badge);
+        if (box.checked) {
+          badges[index].classList.add('earned');
+          showToast(`🎉 已獲得 ${badges[index].textContent}`);
+        } else {
+          badges[index].classList.remove('earned');
+        }
+      });
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2500);
+    }
+  </script>
 </body>
 </html>
+
 
  <!-- 📺 YouTube CTA 按鈕 -->
   <div style="text-align:center; margin-top: 2rem;">
