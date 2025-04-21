@@ -167,12 +167,17 @@
     }
 
     function parseActionIcons(text) {
-      let output = '';
-      if (text.includes('每月')) output += '<span>📆 定期定額</span>';
-      if (text.includes('單筆')) output += '<span>💥 單筆投入</span>';
-      if (text.includes('配息')) output += '<span>🔁 配息再投入</span>';
-      return output || text;
-    }
+  let output = '';
+  if (text.includes('每月')) output += '<span>📆 定期定額</span>';
+  if (text.includes('單筆')) output += '<span>💥 單筆投入</span>';
+  if (text.includes('配息')) output += '<span>🔁 配息再投入</span>';
+  if (text.includes('逢低')) output += '<span>📉 逢低加碼</span>';
+  if (text.includes('目標加碼')) output += '<span>🎯 目標加碼</span>';
+  if (text.includes('獲利了結')) output += '<span>💸 獲利了結</span>';
+  if (text.includes('不定期')) output += '<span>⏱️ 不定期投入</span>';
+  if (text.includes('持有')) output += '<span>🧘‍♂️ 長期持有</span>';
+  return output || text;
+}
   </script>
 </body>
 </html>
