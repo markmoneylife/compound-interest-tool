@@ -172,6 +172,68 @@
       }, 2500);
     }
   </script>
+<div class="badge">
+  <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="ETF 入門徽章" style="width: 60px; height: 60px; margin-bottom: 0.5rem;"><br>
+  📘 ETF 入門徽章
+</div>
+<div class="badge">
+  <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="定投啟動徽章" style="width: 60px; height: 60px; margin-bottom: 0.5rem;"><br>
+  💸 定投啟動徽章
+</div>
+<div class="badge">
+  <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="追蹤表設立徽章" style="width: 60px; height: 60px; margin-bottom: 0.5rem;"><br>
+  📊 追蹤表設立徽章
+</div>
+<div class="badge">
+  <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="社群參與徽章" style="width: 60px; height: 60px; margin-bottom: 0.5rem;"><br>
+  👥 社群參與徽章
+</div>
+<div class="badge">
+  <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="配息解讀徽章" style="width: 60px; height: 60px; margin-bottom: 0.5rem;"><br>
+  📈 配息解讀徽章
+</div>
+
+<script>
+  const allCheckboxes = document.querySelectorAll('input[type="checkbox"][data-badge]');
+  let completionShown = false;
+
+  function showFinalCongrats() {
+    const toast = document.createElement('div');
+    toast.textContent = '🎉 恭喜你！五大任務全數達成！正式榮升為「馬濕克村民」一員！請小心，接下來會不小心愛上定期定額，夢裡都在追蹤 ETF 淨值與配息日 😆📈';
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.background = '#FFD54F';
+    toast.style.color = '#1A1A1A';
+    toast.style.padding = '1rem 1.5rem';
+    toast.style.borderRadius = '999px';
+    toast.style.fontWeight = 'bold';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+    toast.style.zIndex = '1000';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  allCheckboxes.forEach(c => {
+    c.addEventListener('change', () => {
+      const completed = Array.from(allCheckboxes).filter(i => i.checked).length;
+      if (completed === allCheckboxes.length && !completionShown) {
+        showFinalCongrats();
+        completionShown = true;
+      }
+    });
+  });
+</script>
+<!-- 📦 任務勳章區塊 -->
+<div class="badge-board">
+  <!-- 每一個 .badge 圖片區塊 -->
+</div>
+
+<!-- ✅ JS 區塊要放在頁尾 -->
+<script>
+  // 你的 checkbox 判斷 + 勳章跳出語法
+</script>
 </body>
 </html>
 
