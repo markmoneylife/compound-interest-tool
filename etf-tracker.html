@@ -132,23 +132,58 @@
     ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
     若需專業建議，請諮詢合格金融顧問。
   </div>
+<!-- 📌 新增收藏功能的完整語法版本（整合到你的ETF追蹤牆） -->
+<!-- ⭐ 支援收藏/取消收藏、我的追蹤清單 -->
 
-  <script>
+<!-- 📌 追蹤清單按鈕 建議移到你的 filter-buttons 區塊中，並統一樣式 -->
+<div class="filter-buttons">
+  <button onclick="filterCards('全部')">全部</button>
+  <button onclick="filterCards('高股息')">高股息</button>
+  <button onclick="filterCards('指數型')">指數型</button>
+  <button onclick="filterCards('產業型')">產業型</button>
+  <button onclick="filterCards('REITs')">REITs</button>
+  <button onclick="filterCards('債券型')">債券型</button>
+  <button onclick="filterFavorites()">📌 我的追蹤清單</button>
+</div>
+
+<script>
   const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
+  window.latestData = [];
 
   fetch(SHEET_URL)
     .then(res => res.text())
     .then(csv => Papa.parse(csv, { header: true }))
-    .then(data => renderCards(data.data));
+    .then(data => {
+      window.latestData = data.data;
+      renderCards(data.data);
+    });
 
   function filterCards(type) {
-    fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(csv => Papa.parse(csv, { header: true }))
-      .then(data => {
-        const filtered = type === '全部' ? data.data : data.data.filter(row => row["類別"] === type);
-        renderCards(filtered);
-      });
+    const data = window.latestData;
+    const filtered = type === '全部' ? data : data.filter(row => row["類別"] === type);
+    renderCards(filtered);
+  }
+
+  function filterFavorites() {
+    const favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
+    const data = window.latestData.filter(row => favorites.includes(row["股號"]));
+    renderCards(data);
+  }
+
+  function toggleFavorite(stockId) {
+    let favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
+    if (favorites.includes(stockId)) {
+      favorites = favorites.filter(id => id !== stockId);
+    } else {
+      favorites.push(stockId);
+    }
+    localStorage.setItem("favoriteETFs", JSON.stringify(favorites));
+    renderCards(window.latestData);
+  }
+
+  function isFavorite(stockId) {
+    const favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
+    return favorites.includes(stockId);
   }
 
   function renderCards(data) {
@@ -156,19 +191,24 @@
     container.innerHTML = "";
     data.forEach(row => {
       const rewardClass = (row["報酬率"] || '').includes("-") ? "loss" : "gain";
+      const isFav = isFavorite(row["股號"]);
       const card = document.createElement("div");
       card.className = "etf-card";
       card.innerHTML = `
-        <h2>${row["股號"]} ${row["股票名稱"]}<span class="tag">${row["類別"]}</span></h2>
+        <h2>
+          ${row["股號"]} ${row["股票名稱"]}
+          <span class="tag">${row["類別"]}</span>
+          <button class="favorite-button" onclick="toggleFavorite('${row["股號"]}')" style="float:right;background:none;border:none;cursor:pointer;font-size:1.2rem;">
+            ${isFav ? '⭐' : '☆'}
+          </button>
+        </h2>
         <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
         <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
         <p>💰 預估配息：$${Math.round((parseFloat(row["預估配息"] || 0) * parseInt(row["持有總股數"] || 0))).toLocaleString()}（每股 $${parseFloat(row["預估配息"] || 0).toFixed(2)} × ${parseInt(row["持有總股數"] || 0).toLocaleString()} 股）</p>
         <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
         <p>📆 更新日期：${row["追蹤AE2_更新"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
-        ${row["影片1標題"] && row["影片1連結"] ? `
-          <p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>` : ''}
-        ${row["影片2標題"] && row["影片2連結"] ? `
-          <p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>` : ''}
+        ${row["影片1標題"] && row["影片1連結"] ? `<p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>` : ''}
+        ${row["影片2標題"] && row["影片2連結"] ? `<p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>` : ''}
       `;
       container.appendChild(card);
     });
@@ -186,7 +226,9 @@
     if (text.includes('持有')) output += '<span>🧘‍♂️ 長期持有</span>';
     return output || text;
   }
-  </script>
+</script>
+
+  
 </body>
 </html>
  <!-- 📺 YouTube CTA 按鈕 -->
