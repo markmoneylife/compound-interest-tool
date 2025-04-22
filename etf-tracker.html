@@ -109,14 +109,16 @@
   </style>
 </head>
 <body>
-  <h1>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</h1>
- <div class="filter-buttons">
+  <h1>吳馬克的 ETF 投資追蹤牆｜真實投資紀錄公開</h1>
+  <!-- 📌 追蹤清單按鈕 建議移到你的 filter-buttons 區塊中，並統一樣式 -->
+<div class="filter-buttons" style="position: sticky; top: 0; background: #f8f9fa; padding: 1rem; z-index: 99; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
   <button onclick="filterCards('全部')">全部</button>
   <button onclick="filterCards('高股息')">高股息</button>
   <button onclick="filterCards('指數型')">指數型</button>
   <button onclick="filterCards('產業型')">產業型</button>
   <button onclick="filterCards('REITs')">REITs</button>
   <button onclick="filterCards('債券型')">債券型</button>
+  <button onclick="filterFavorites()">📌 我的追蹤清單</button>
 </div>
   <div id="etfCards"></div>
 
@@ -131,20 +133,6 @@
     本頁面資訊僅供投資紀錄分享與理財教育用途，非為個別化投資建議。<br/>
     ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
     若需專業建議，請諮詢合格金融顧問。
-  </div>
-<!-- 📌 新增收藏功能的完整語法版本（整合到你的ETF追蹤牆） -->
-<!-- ⭐ 支援收藏/取消收藏、我的追蹤清單 -->
-
-<!-- 📌 追蹤清單按鈕 建議移到你的 filter-buttons 區塊中，並統一樣式 -->
-<div class="filter-buttons">
-  <button onclick="filterCards('全部')">全部</button>
-  <button onclick="filterCards('高股息')">高股息</button>
-  <button onclick="filterCards('指數型')">指數型</button>
-  <button onclick="filterCards('產業型')">產業型</button>
-  <button onclick="filterCards('REITs')">REITs</button>
-  <button onclick="filterCards('債券型')">債券型</button>
-  <button onclick="filterFavorites()">📌 我的追蹤清單</button>
-</div>
 
 <script>
   const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv";
@@ -167,7 +155,11 @@
   function filterFavorites() {
     const favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
     const data = window.latestData.filter(row => favorites.includes(row["股號"]));
-    renderCards(data);
+    if (data.length === 0) {
+      document.getElementById("etfCards").innerHTML = '<p style="text-align:center; color:#777; padding:2rem;">⭐ 你還沒有收藏任何 ETF，快去選幾檔吧！</p>';
+    } else {
+      renderCards(data);
+    }
   }
 
   function toggleFavorite(stockId) {
@@ -228,7 +220,6 @@
   }
 </script>
 
-  
 </body>
 </html>
  <!-- 📺 YouTube CTA 按鈕 -->
