@@ -1,3 +1,109 @@
+<style>
+  .header {
+    background-color: #1D4A35;
+    color: #F5F2E9;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative; /* 取消 sticky 浮動 */
+    z-index: 1000;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .logo-wrap img {
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #FFD54F;
+  }
+
+  .nav-toggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #FFD54F;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    padding: 0.45rem 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-links a:not(.highlight) {
+    color: #F5F2E9;
+  }
+
+  .nav-links a:hover {
+    background-color: rgba(255, 213, 79, 0.15);
+  }
+
+  /* 黃色底按鈕 - 加入 highlight 類別 */
+  .nav-links a.highlight {
+    background-color: #FFD54F;
+    color: #1A1A1A;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: block;
+    }
+
+    .nav-links {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      margin-top: 1rem;
+    }
+
+    .nav-links.show {
+      display: flex;
+    }
+  }
+</style>
+
+<header class="header">
+  <a href="https://markmoneylife.com/" class="logo-wrap">
+    <img src="https://images.plurk.com/5X98xyuXaOyeicA7k8rOAP.png" alt="馬克理財 Logo">
+    <span class="logo-text">吳馬克｜幸福理財家</span>
+  </a>
+
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+
+  <nav class="nav-links">
+    <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+    <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank" class="highlight">加入LINE社群</a>
+  </nav>
+</header>
+
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -139,11 +245,6 @@
 </head>
 
 <body>
-  <nav>
-    <a href="index.html" class="active">📈 複利試算工具</a>
-    <a href="reverse.html">🎯 每月投入試算</a>
-  </nav>
-
   <h1>複利試算工具</h1>
   <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
 
