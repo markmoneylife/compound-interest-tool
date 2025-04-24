@@ -1,3 +1,171 @@
+<style>
+  .nav-bar-wrapper {
+    background-color: #1D4A35;
+    padding: 1.2rem 0;
+  }
+
+  .nav-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .nav-bar a {
+    background-color: #FFD54F;
+    color: #1A1A1A;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .nav-bar a:hover {
+    background-color: #FFE082;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .nav-bar {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-bar a {
+      width: 90%;
+      text-align: center;
+    }
+  }
+</style>
+
+<div class="nav-bar-wrapper">
+  <div class="nav-bar">
+    <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+    <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">加入LINE社群</a>
+  </div>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F8F9FA;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2D3C2F;
+      margin-bottom: 1rem;
+    }
+    .filter-buttons {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .filter-buttons button {
+      background-color: #FFD54F;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 999px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .etf-card {
+      background-color: #ffffff;
+      border-left: 6px solid #FFD54F;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .etf-card h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #444;
+    }
+    .etf-card p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .tag {
+      display: inline-block;
+      background-color: #FFE082;
+      color: #1A1A1A;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+    }
+    .gain {
+      color: red;
+      font-weight: bold;
+    }
+    .loss {
+      color: green;
+      font-weight: bold;
+    }
+    .links a {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #2D3C2F;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .actions span {
+      display: inline-block;
+      margin-right: 0.6rem;
+    }
+    .cta-box {
+      background: #FFF8E1;
+      border-left: 6px solid #FFD54F;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      text-align: center;
+      color: #5D4037;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .cta-box a {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .disclaimer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: #777;
+      background: #fdfdfd;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -100,11 +268,6 @@
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">📈 複利試算工具</a>
-    <a href="reverse.html" class="active">🎯 每月投入試算</a>
-  </nav>
-
   <h1 style="text-align:center; color:#2D3C2F;">退休目標倒推｜每月該投入多少？</h1>
   <p class="tagline" style="text-align:center; color:#888; margin-top:-1rem; margin-bottom:2rem;">
     反推月投金額，一步步靠近財務自由！
