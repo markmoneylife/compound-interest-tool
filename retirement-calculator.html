@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>退休試算工具｜馬克理財</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F9FAFB;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #1D4A35;
+    }
+    .section {
+      background: #FFF;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background-color: #FFD54F;
+      border: none;
+      padding: 0.75rem;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #result {
+      font-size: 1.2rem;
+      color: #1D4A35;
+      text-align: center;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>退休試算工具</h1>
+  <p style="text-align:center;">馬克陪你一起規劃安心退休金！</p>
+
+  <div class="section">
+    <h2>Step 1｜基本資料</h2>
+    <label>目前年齡：</label>
+    <input type="number" id="currentAge" placeholder="例如：30">
+
+    <label>預計退休年齡：</label>
+    <input type="number" id="retireAge" placeholder="例如：60">
+
+    <label>預計退休每月生活費（台幣）：</label>
+    <input type="number" id="monthlyExpense" placeholder="例如：40000">
+  </div>
+
+  <div class="section">
+    <h2>Step 2｜其他設定</h2>
+    <label>已累積退休金（台幣）：</label>
+    <input type="number" id="savedFund" placeholder="例如：500000">
+
+    <label>預期年化報酬率：</label>
+    <select id="annualReturn">
+      <option value="0.03">3%</option>
+      <option value="0.04">4%</option>
+      <option value="0.05">5%</option>
+      <option value="0.06">6%</option>
+    </select>
+
+    <button onclick="calculateRetirement()">➔ 完成試算</button>
+  </div>
+
+  <div id="result" class="section" style="display:none;"></div>
+
+<script>
+function calculateRetirement() {
+  const currentAge = parseInt(document.getElementById('currentAge').value);
+  const retireAge = parseInt(document.getElementById('retireAge').value);
+  const monthlyExpense = parseInt(document.getElementById('monthlyExpense').value);
+  const savedFund = parseInt(document.getElementById('savedFund').value);
+  const annualReturn = parseFloat(document.getElementById('annualReturn').value);
+
+  if (isNaN(currentAge) || isNaN(retireAge) || isNaN(monthlyExpense) || isNaN(savedFund)) {
+    alert('請完整填寫所有欄位！');
+    return;
+  }
+
+  const retireYears = 85 - retireAge;
+  const totalNeeded = monthlyExpense * 12 * retireYears;
+  const gap = totalNeeded - savedFund;
+  const investYears = retireAge - currentAge;
+  const monthlySaving = gap * annualReturn / ((Math.pow(1 + annualReturn / 12, investYears * 12) - 1));
+
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').innerHTML = `
+    💬 你的預計退休總需求：約 <strong>${Math.round(totalNeeded).toLocaleString()}</strong> 元台幣<br><br>
+    🎯 你目前已累積：<strong>${Math.round(savedFund).toLocaleString()}</strong> 元<br><br>
+    🔥 尚需準備：約 <strong>${Math.round(gap).toLocaleString()}</strong> 元<br><br>
+    ✍🏻 建議從現在開始，每月投入約 <strong>${Math.round(monthlySaving).toLocaleString()}</strong> 元投資！<br>
+  `;
+}
+</script>
+
+</body>
+</html>
