@@ -4,109 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>退休試算工具｜馬克理財</title>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #FFFDF8;
-      color: #2D3C2F;
-      margin: 0;
-      padding: 2rem;
-      max-width: 960px;
-      margin: auto;
-      line-height: 1.8;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #1D4A35;
-      margin-bottom: 1rem;
-    }
-    .section {
-      background: #FFFFFF;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    label, select, input {
-      display: block;
-      width: 100%;
-      margin-top: 0.5rem;
-      margin-bottom: 1.5rem;
-      font-size: 1rem;
-    }
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    .option {
-      flex: 1 1 calc(45% - 1rem);
-      background: #FFF8E1;
-      padding: 1rem;
-      border-radius: 12px;
-      text-align: center;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: 0.3s;
-    }
-    .option img {
-      width: 100%;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-    .option:hover img {
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .option.selected img {
-      border: 3px solid #FFD54F;
-      border-radius: 12px;
-    }
-    button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    #result {
-      font-size: 1.2rem;
-      color: #1D4A35;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .cta-area {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .cta-area a {
-      display: inline-block;
-      margin: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      background-color: #4CAF50;
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-
-
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>退休試算工具｜馬克理財</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -186,18 +85,29 @@
       background-color: #4CAF50;
       color: #fff;
     }
-    #result {
-      font-size: 1.2rem;
-      color: #1D4A35;
-      text-align: center;
+    .result-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      align-items: flex-start;
       margin-top: 2rem;
     }
-    .cta-area {
-      text-align: center;
-      margin-top: 2rem;
+    #result {
+      flex: 1 1 45%;
+      font-size: 1rem;
+      color: #1D4A35;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
     }
     #chart-container {
-      margin-top: 2rem;
+      flex: 1 1 45%;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
     }
   </style>
 </head>
@@ -207,28 +117,25 @@
 <p style="text-align:center;">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
 
 <div class="section">
+  <!-- Step 1 -->
   <h2>Step 1｜基本資料</h2>
   <label>目前年齡：</label>
   <input type="number" id="currentAge" placeholder="例如：30">
-
   <label>預計退休年齡：</label>
   <input type="number" id="retireAge" placeholder="例如：60">
-
   <label>預計幾歲開始存退休金：</label>
   <input type="number" id="startSavingAge" placeholder="例如：30">
-
-  <label>預計壽命（預設85歲，可自行調整）：</label>
-  <input type="number" id="lifeExpectancy" placeholder="例如：85" value="85">
+  <label>預計壽命（預設85歲）：</label>
+  <input type="number" id="lifeExpectancy" value="85">
 </div>
 
 <div class="section">
+  <!-- Step 2 -->
   <h2>Step 2｜財務目標設定</h2>
   <label>預計退休每月生活費（台幣）：</label>
   <input type="number" id="monthlyExpense" placeholder="例如：40000">
-
   <label>已累積退休金（台幣）：</label>
   <input type="number" id="savedFund" placeholder="例如：500000">
-
   <label>預期年化報酬率：</label>
   <select id="annualReturn">
     <option value="0.03">3%（保守型）</option>
@@ -239,22 +146,23 @@
 </div>
 
 <div class="section">
+  <!-- Step 3 -->
   <h2>Step 3｜理想退休生活</h2>
   <label>你理想中的退休樣貌？（請選擇一個，點選圖片）</label>
   <div class="options">
-    <div class="option" onclick="selectLifestyle('獵豹型')">
+    <div class="option" onclick="selectLifestyle('獵豹型', event)">
       <img src="https://images.plurk.com/3cjwlXxhIVqYupHhQELwmw.png" alt="猛衝型">
       <div>猛衝型<br><small>追夢、環遊世界</small></div>
     </div>
-    <div class="option" onclick="selectLifestyle('大象型')">
+    <div class="option" onclick="selectLifestyle('大象型', event)">
       <img src="https://images.plurk.com/2LTuyzJ1zW1q3UCdDlztjR.png" alt="穩健型">
       <div>穩健型<br><small>慢活、養生</small></div>
     </div>
-    <div class="option" onclick="selectLifestyle('猴子型')">
+    <div class="option" onclick="selectLifestyle('猴子型', event)">
       <img src="https://images.plurk.com/3nbsUsqNbMro2C6xtfMLpb.png" alt="活力型">
       <div>活力型<br><small>創業、副業</small></div>
     </div>
-    <div class="option" onclick="selectLifestyle('小狗型')">
+    <div class="option" onclick="selectLifestyle('小狗型', event)">
       <img src="https://images.plurk.com/7ENPGAeY4Biet636M1leF4.png" alt="悠閒型">
       <div>悠閒型<br><small>養寵物、種花寫作</small></div>
     </div>
@@ -264,11 +172,18 @@
   <button onclick="calculateRetirement()">➔ 完成試算</button>
 </div>
 
-<div id="result" class="section" style="display:none;"></div>
-<div id="chart-container" style="display:none;"><canvas id="myChart"></canvas></div>
+<div id="outputArea" style="display:none;">
+  <div class="result-container" id="resultContainer">
+    <div id="result"></div>
+    <div id="chart-container"><canvas id="myChart"></canvas></div>
+  </div>
+  <div style="text-align:center; margin-top:1.5rem;">
+    <button onclick="downloadPDF()">⬇️ 下載結果PDF</button>
+  </div>
+</div>
 
 <script>
-function selectLifestyle(type) {
+function selectLifestyle(type, event) {
   document.getElementById('lifestyle').value = type;
   const options = document.querySelectorAll('.option');
   options.forEach(option => option.classList.remove('selected'));
@@ -307,19 +222,17 @@ function calculateRetirement() {
   else if (currentAge < 55) allocation = '股票型ETF 60%｜債券型ETF 40%';
   else allocation = '股票型ETF 40%｜債券型ETF 60%';
 
-  document.getElementById('result').style.display = 'block';
-  document.getElementById('chart-container').style.display = 'block';
+  document.getElementById('outputArea').style.display = 'block';
 
   document.getElementById('result').innerHTML = `
-    💬 你選擇的退休生活型態是：<strong>${lifestyle}</strong><br><br>
-    📅 距離退休還有：<strong>${yearsToRetire}</strong> 年<br><br>
-    🎯 退休總需求：約 <strong>${Math.round(totalNeeded).toLocaleString()}</strong> 元台幣<br><br>
-    ✅ 已累積金額：<strong>${Math.round(savedFund).toLocaleString()}</strong> 元<br><br>
-    🔥 尚需準備金額：約 <strong>${Math.round(gap).toLocaleString()}</strong> 元<br><br>
-    📈 使用年化報酬率：<strong>${(annualReturn * 100).toFixed(1)}%</strong><br><br>
-    🛠 建議資產配置：<strong>${allocation}</strong><br><br>
-    ✍🏻 建議從現在開始，每月投入約 <strong>${Math.round(monthlySaving).toLocaleString()}</strong> 元！<br>
-    <br>📌 本試算以壽命 ${lifeExpectancy} 歲為推算依據，結果僅供參考，實際退休規劃請搭配定期檢視與調整！
+    <strong>退休生活型態：</strong> ${lifestyle}<br><br>
+    <strong>距離退休：</strong> ${yearsToRetire} 年<br><br>
+    <strong>退休總需求：</strong> ${Math.round(totalNeeded).toLocaleString()} 元<br><br>
+    <strong>已累積資金：</strong> ${Math.round(savedFund).toLocaleString()} 元<br><br>
+    <strong>尚需準備：</strong> ${Math.round(gap).toLocaleString()} 元<br><br>
+    <strong>年化報酬率：</strong> ${(annualReturn * 100).toFixed(1)}%<br><br>
+    <strong>建議配置：</strong> ${allocation}<br><br>
+    <strong>每月需投入：</strong> ${Math.round(monthlySaving).toLocaleString()} 元
   `;
 
   new Chart(document.getElementById('myChart'), {
@@ -337,7 +250,17 @@ function calculateRetirement() {
     }
   });
 
-  document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadPDF() {
+  const element = document.getElementById('resultContainer');
+  html2pdf().from(element).set({
+    margin: 0.5,
+    filename: '退休試算結果.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  }).save();
 }
 </script>
 
