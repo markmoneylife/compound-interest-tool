@@ -1,27 +1,118 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>退休試算工具｜馬克理財</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  body { font-family: 'Helvetica Neue', sans-serif; background-color: #FFFDF8; color: #2D3C2F; margin: 0; padding: 2rem; max-width: 960px; margin: auto; line-height: 1.8; }
-  h1, h2 { text-align: center; color: #1D4A35; margin-bottom: 1rem; }
-  .section { background: #FFFFFF; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
-  label, input { display: block; width: 100%; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 1rem; }
-  .options { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1rem; }
-  .option { flex: 1 1 calc(45% - 1rem); background: #FFF8E1; padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-  .option img { width: 100%; border-radius: 8px; transition: 0.3s; }
-  .option:hover img { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-  .option.selected img { border: 3px solid #FFD54F; border-radius: 12px; }
-  button { background-color: #FFD54F; border: none; padding: 0.8rem; width: 100%; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 1rem; display: inline-block; text-align: center; text-decoration: none; color: #2D3C2F; }
-  .result-container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; align-items: flex-start; margin-top: 2rem; }
-  #result { flex: 1 1 45%; font-size: 1rem; color: #1D4A35; background: #FFFFFF; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
-  #chart-container { flex: 1 1 45%; background: #FFFFFF; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
-  #warmMessage { text-align: center; font-size: 1.1rem; color: #1D4A35; margin-top: 1.5rem; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>退休試算工具｜馬克理財</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #FFFDF8;
+      color: #2D3C2F;
+      margin: 0;
+      padding: 2rem;
+      max-width: 960px;
+      margin: auto;
+      line-height: 1.8;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #1D4A35;
+      margin-bottom: 1rem;
+    }
+    .section {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    label, input {
+      display: block;
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .option {
+      flex: 1 1 calc(45% - 1rem);
+      background: #FFF8E1;
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.3s;
+    }
+    .option img {
+      width: 100%;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .option:hover img {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .option.selected img {
+      border: 3px solid #FFD54F;
+      border-radius: 12px;
+    }
+    button {
+      background-color: #FFD54F;
+      border: none;
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      display: inline-block;
+      text-align: center;
+      text-decoration: none;
+      color: #2D3C2F;
+    }
+    .result-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      align-items: flex-start;
+      margin-top: 2rem;
+    }
+    #result {
+      flex: 1 1 45%;
+      font-size: 1rem;
+      color: #1D4A35;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    #chart-container {
+      flex: 1 1 45%;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    #warmMessage {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #1D4A35;
+      margin-top: 1.5rem;
+    }
+  </style>
 </head>
+
 <body>
 <h1>退休試算工具</h1>
 <p style="text-align:center;">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
@@ -75,6 +166,7 @@
 </div>
 
 <div id="outputArea" style="display:none;">
+  <h2 style="text-align:center; color:#1D4A35; margin-bottom:1.2rem;">🎯 你的退休路徑分析</h2>
   <div class="result-container" id="resultContainer">
     <div id="result"></div>
     <div id="chart-container"><canvas id="myChart"></canvas></div>
