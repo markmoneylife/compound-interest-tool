@@ -21,6 +21,26 @@
       color: #1D4A35;
       margin-bottom: 1rem;
     }
+    .flow-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      gap: 0.5rem;
+      font-size: 1rem;
+      color: #1D4A35;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .flow-steps span {
+      background: #FFD54F;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-weight: bold;
+    }
+    .flow-steps .arrow {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
     .section {
       background: #FFFFFF;
       border-radius: 16px;
@@ -34,6 +54,27 @@
       margin-top: 0.5rem;
       margin-bottom: 1.5rem;
       font-size: 1rem;
+    }
+    button {
+      background-color: #FFD54F;
+      border: none;
+      padding: 0.9rem;
+      width: 100%;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      display: inline-block;
+      text-align: center;
+      text-decoration: none;
+      color: #1A1A1A;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #FFE082;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
     .options {
       display: flex;
@@ -65,21 +106,6 @@
       border: 3px solid #FFD54F;
       border-radius: 12px;
     }
-    button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-      display: inline-block;
-      text-align: center;
-      text-decoration: none;
-      color: #2D3C2F;
-    }
     .result-container {
       display: flex;
       flex-wrap: wrap;
@@ -96,6 +122,7 @@
       border-radius: 12px;
       padding: 1rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      border-top: 3px solid #FFD54F;
     }
     #chart-container {
       flex: 1 1 45%;
@@ -103,19 +130,33 @@
       border-radius: 12px;
       padding: 1rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      border-top: 3px solid #4CAF50;
     }
     #warmMessage {
       text-align: center;
-      font-size: 1.1rem;
-      color: #1D4A35;
-      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      background-color: #FFF8E1;
+      color: #2D3C2F;
+      padding: 1rem 1.5rem;
+      margin-top: 2rem;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
   </style>
 </head>
-
 <body>
 <h1>退休試算工具</h1>
 <p style="text-align:center;">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
+<body>
+
+<div class="flow-steps">
+  <span>Step 1｜基本資料</span>
+  <span class="arrow">➔</span>
+  <span>Step 2｜財務目標設定</span>
+  <span class="arrow">➔</span>
+  <span>Step 3｜理想退休生活</span>
+</div>
 
 <div class="section">
   <h2>Step 1｜基本資料</h2>
@@ -164,7 +205,6 @@
   <input type="hidden" id="annualReturn">
   <button onclick="calculateRetirement()">➔ 完成試算</button>
 </div>
-
 <div id="outputArea" style="display:none;">
   <h2 style="text-align:center; color:#1D4A35; margin-bottom:1.2rem;">🎯 你的退休路徑分析</h2>
   <div class="result-container" id="resultContainer">
@@ -262,56 +302,6 @@ function calculateRetirement() {
 
 </body>
 </html>
-
-   <!-- 📺 YouTube CTA 按鈕 -->
-  <div style="text-align:center; margin-top: 2rem;">
-    <a href="https://www.youtube.com/user/rengary" target="_blank"
-       style="display:inline-block;padding:0.8rem 1.8rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:999px;font-weight:bold;font-size:1.1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      ▶️ 點我看最新影片
-    </a>
-  </div>
-
-   <!-- 📚 好書推薦書櫃 -->
-  <section style="background-color:#FDFBF5;padding:3rem 1rem;text-align:center;">
-    <h2 style="font-size:1.8rem;margin-bottom:0.5rem">📚 馬克推薦書櫃：<br>一個投機者的告白四部曲</h2>
-    <p style="font-size:1rem;color:#444;margin-bottom:2rem">
-      投資不只看財報，更要看心理與市場規律。這四本書陪你走過熊市牛市，修煉內心與眼光！
-    </p>
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26jqfakv" target="_blank">
-          <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="一個投機者的告白四部曲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投機者的告白四部曲</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/276jnh6h" target="_blank">
-          <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="一個投資者的告白" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投資者的告白</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/27ls9d98" target="_blank">
-          <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="金錢遊戲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">金錢遊戲（新修典藏版）</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26tntcxs" target="_blank">
-          <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="證券心理學" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">證券心理學</p>
-      </div>
-    </div>
-
-    <div style="margin-top:2.5rem;">
-      <a href="https://tinyurl.com/23sak7ha" target="_blank"
-         style="display:inline-block;padding:0.8rem 1.5rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:8px;font-weight:bold;font-size:1rem">
-        🔗 查看書籍總覽 / 購買
-      </a>
-    </div>
-  </section>
 
    <!-- 💼 GTA 個人連結入口 -->
   <section style="background-color:#FAFAFA;padding:3rem 1rem;text-align:center;border-top: 1px solid #ddd; margin-top: 3rem;">
