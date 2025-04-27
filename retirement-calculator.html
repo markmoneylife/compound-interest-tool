@@ -1,112 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>退休試算工具｜馬克理財</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #FFFDF8;
-      color: #2D3C2F;
-      margin: 0;
-      padding: 2rem;
-      max-width: 960px;
-      margin: auto;
-      line-height: 1.8;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #1D4A35;
-      margin-bottom: 1rem;
-    }
-    .section {
-      background: #FFFFFF;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    label, input {
-      display: block;
-      width: 100%;
-      margin-top: 0.5rem;
-      margin-bottom: 1.5rem;
-      font-size: 1rem;
-    }
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    .option {
-      flex: 1 1 calc(45% - 1rem);
-      background: #FFF8E1;
-      padding: 1rem;
-      border-radius: 12px;
-      text-align: center;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: 0.3s;
-    }
-    .option img {
-      width: 100%;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-    .option:hover img {
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .option.selected img {
-      border: 3px solid #FFD54F;
-      border-radius: 12px;
-    }
-    button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-      display: inline-block;
-      text-align: center;
-      text-decoration: none;
-      color: #2D3C2F;
-    }
-    .result-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 2rem;
-      align-items: flex-start;
-      margin-top: 2rem;
-    }
-    #result {
-      flex: 1 1 45%;
-      font-size: 1rem;
-      color: #1D4A35;
-      background: #FFFFFF;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    #chart-container {
-      flex: 1 1 45%;
-      background: #FFFFFF;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>退休試算工具｜馬克理財</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: 'Helvetica Neue', sans-serif; background-color: #FFFDF8; color: #2D3C2F; margin: 0; padding: 2rem; max-width: 960px; margin: auto; line-height: 1.8; }
+  h1, h2 { text-align: center; color: #1D4A35; margin-bottom: 1rem; }
+  .section { background: #FFFFFF; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+  label, input { display: block; width: 100%; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 1rem; }
+  .options { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1rem; }
+  .option { flex: 1 1 calc(45% - 1rem); background: #FFF8E1; padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+  .option img { width: 100%; border-radius: 8px; transition: 0.3s; }
+  .option:hover img { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .option.selected img { border: 3px solid #FFD54F; border-radius: 12px; }
+  button { background-color: #FFD54F; border: none; padding: 0.8rem; width: 100%; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 1rem; display: inline-block; text-align: center; text-decoration: none; color: #2D3C2F; }
+  .result-container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; align-items: flex-start; margin-top: 2rem; }
+  #result { flex: 1 1 45%; font-size: 1rem; color: #1D4A35; background: #FFFFFF; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+  #chart-container { flex: 1 1 45%; background: #FFFFFF; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+  #warmMessage { text-align: center; font-size: 1.1rem; color: #1D4A35; margin-top: 1.5rem; }
+</style>
 </head>
-
 <body>
 <h1>退休試算工具</h1>
 <p style="text-align:center;">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
@@ -129,6 +44,8 @@
   <input type="number" id="monthlyExpense" placeholder="例如：40000">
   <label>已累積退休金（台幣）：</label>
   <input type="number" id="savedFund" placeholder="例如：500000">
+  <label>目前每月可投入金額（台幣）：</label>
+  <input type="number" id="currentMonthlySaving" placeholder="例如：10000">
 </div>
 
 <div class="section">
@@ -162,6 +79,7 @@
     <div id="result"></div>
     <div id="chart-container"><canvas id="myChart"></canvas></div>
   </div>
+  <div id="warmMessage"></div>
 </div>
 
 <script>
@@ -180,25 +98,42 @@ function calculateRetirement() {
   const lifeExpectancy = parseInt(document.getElementById('lifeExpectancy').value);
   const monthlyExpense = parseInt(document.getElementById('monthlyExpense').value);
   const savedFund = parseInt(document.getElementById('savedFund').value);
+  const currentMonthlySaving = parseInt(document.getElementById('currentMonthlySaving').value);
   const annualReturn = parseFloat(document.getElementById('annualReturn').value);
   const lifestyle = document.getElementById('lifestyle').value;
 
-  if (!lifestyle || isNaN(currentAge) || isNaN(retireAge) || isNaN(startSavingAge) || isNaN(monthlyExpense) || isNaN(savedFund) || isNaN(lifeExpectancy)) {
+  if (!lifestyle || isNaN(currentAge) || isNaN(retireAge) || isNaN(startSavingAge) || isNaN(monthlyExpense) || isNaN(savedFund) || isNaN(lifeExpectancy) || isNaN(currentMonthlySaving)) {
     alert('請完整填寫所有欄位！');
     return;
   }
 
+  const yearsToRetire = retireAge - currentAge;
+  const investYears = retireAge - startSavingAge;
   const retireYears = lifeExpectancy - retireAge;
   const totalNeeded = monthlyExpense * 12 * retireYears;
-  const gap = totalNeeded - savedFund;
-  const investYears = retireAge - startSavingAge;
-  const monthlySaving = gap * annualReturn / ((Math.pow(1 + annualReturn / 12, investYears * 12) - 1));
-  const yearsToRetire = retireAge - currentAge;
+
+  const futureSavedFund = savedFund * Math.pow(1 + annualReturn, yearsToRetire);
+  const futureMonthlySavingFund = currentMonthlySaving * (Math.pow(1 + annualReturn/12, yearsToRetire * 12) - 1) / (annualReturn/12);
+  const totalFutureFund = futureSavedFund + futureMonthlySavingFund;
+
+  const gap = totalNeeded - totalFutureFund;
+  let additionalMonthlySaving = 0;
+
+  if (gap > 0) {
+    additionalMonthlySaving = gap * (annualReturn/12) / (Math.pow(1 + annualReturn/12, investYears * 12) - 1);
+  }
 
   let allocation = '';
   if (currentAge < 40) allocation = '股票型ETF 80%｜債券型ETF 20%';
   else if (currentAge < 55) allocation = '股票型ETF 60%｜債券型ETF 40%';
   else allocation = '股票型ETF 40%｜債券型ETF 60%';
+
+  const warmTexts = {
+    '獵豹型': '追夢的腳步永遠不嫌快，繼續全速前進吧！🌟',
+    '大象型': '穩健地走，每一步都離幸福更近。🐘',
+    '猴子型': '靈活又有活力的你，人生每一刻都是精彩冒險！🙉',
+    '小狗型': '用溫柔陪伴自己與家人，慢慢過也是一種幸福。🐶'
+  };
 
   document.getElementById('outputArea').style.display = 'block';
 
@@ -206,19 +141,20 @@ function calculateRetirement() {
     <strong>退休生活型態：</strong> ${lifestyle}<br><br>
     <strong>距離退休：</strong> ${yearsToRetire} 年<br><br>
     <strong>退休總需求：</strong> ${Math.round(totalNeeded).toLocaleString()} 元<br><br>
-    <strong>已累積資金：</strong> ${Math.round(savedFund).toLocaleString()} 元<br><br>
-    <strong>尚需準備：</strong> ${Math.round(gap).toLocaleString()} 元<br><br>
+    <strong>退休時預估累積資金：</strong> ${Math.round(totalFutureFund).toLocaleString()} 元<br><br>
     <strong>建議配置：</strong> ${allocation}<br><br>
-    <strong>每月需投入：</strong> ${Math.round(monthlySaving).toLocaleString()} 元<br><br>
+    ${gap <= 0 ? '<strong style="color:#4CAF50;">資金充足，安心退休！</strong>' : `<strong>尚需補充：</strong> ${Math.round(gap).toLocaleString()} 元<br><strong>建議額外每月投入：</strong> ${Math.round(additionalMonthlySaving).toLocaleString()} 元`}<br><br>
     <small style='color:#999;'>（本試算以適合您退休風格的預設報酬率推估，實際結果將依市場狀況有所變化。）</small>
   `;
+
+  document.getElementById('warmMessage').innerHTML = `💬 小提醒：${warmTexts[lifestyle]}`;
 
   new Chart(document.getElementById('myChart'), {
     type: 'pie',
     data: {
-      labels: ['已累積資金', '尚需準備資金'],
+      labels: ['累積資金', '差額或多餘資金'],
       datasets: [{
-        data: [savedFund, gap],
+        data: [totalFutureFund, gap > 0 ? gap : 0],
         backgroundColor: ['#4CAF50', '#FFD54F']
       }]
     },
