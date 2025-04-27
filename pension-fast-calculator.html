@@ -1,0 +1,108 @@
+<!-- Retirement Calculator B版｜保險退休金簡易版 -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>退休金快速試算｜馬克理財</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: 'Helvetica Neue', sans-serif; background: #FFFDF8; color: #2D3C2F; margin: 0; padding: 2rem; max-width: 800px; margin: auto; line-height: 1.8; }
+h1, h2 { text-align: center; color: #1D4A35; margin-bottom: 1rem; }
+.section { background: #FAF8F2; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+label, select, input { display: block; width: 100%; margin-top: 0.5rem; margin-bottom: 1rem; font-size: 1rem; }
+button { background-color: #FFD54F; border: none; padding: 1rem; width: 100%; border-radius: 999px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
+button:hover { background-color: #FFE082; transform: scale(1.05); }
+#outputArea { display: none; background: #FFFFFF; padding: 2rem; border-radius: 16px; box-shadow: 0 6px 12px rgba(0,0,0,0.08); margin-top: 2rem; animation: fadeIn 1s ease; }
+@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+.note { font-size: 0.9rem; color: #5D4037; margin-top: 1rem; background: #FFF8E1; padding: 1rem; border-radius: 12px; }
+</style>
+</head>
+<body>
+
+<h1>退休金快速試算</h1>
+<p style="text-align:center; font-size:1.1rem; color:#666;">快速了解你的勞保／公保退休金夠不夠！</p>
+
+<div class="section">
+  <label>目前年齡：</label>
+  <input type="number" id="currentAge" placeholder="例如：30">
+  <label>預計退休年齡：</label>
+  <input type="number" id="retireAge" placeholder="例如：60">
+  <label>每月退休生活費（台幣）：</label>
+  <input type="number" id="monthlyExpense" placeholder="例如：40000">
+  <label>身份類型：</label>
+  <select id="insuranceType">
+    <option value="labor">勞保</option>
+    <option value="public">公保</option>
+  </select>
+  <label>平均月投保薪資（台幣）：</label>
+  <input type="number" id="avgSalary" placeholder="例如：30000">
+  <label>保險年資（年）：</label>
+  <input type="number" id="insuranceYears" placeholder="例如：25">
+  <label>（選填）已累積退休金（台幣）：</label>
+  <input type="number" id="savedFund" placeholder="例如：500000">
+  <button onclick="calculateSimplePension()">➔ 完成試算</button>
+</div>
+
+<div id="outputArea">
+  <h2>試算結果</h2>
+  <div id="result" style="font-size:1rem; line-height:1.8;"></div>
+  <canvas id="myChart" style="margin-top:2rem;"></canvas>
+</div>
+
+<div class="note">
+📚【附註】<br>
+勞保最高投保45,800元；公保最高約72,000元。<br>
+所得替代率 = 月領退休金 ÷ 生活費，建議達70%以上較安心。
+</div>
+
+<script>
+function calculateSimplePension() {
+  const currentAge = parseInt(document.getElementById('currentAge').value);
+  const retireAge = parseInt(document.getElementById('retireAge').value);
+  const monthlyExpense = parseInt(document.getElementById('monthlyExpense').value);
+  const avgSalary = parseInt(document.getElementById('avgSalary').value);
+  const insuranceYears = parseInt(document.getElementById('insuranceYears').value);
+  const insuranceType = document.getElementById('insuranceType').value;
+  const savedFund = parseInt(document.getElementById('savedFund').value) || 0;
+
+  if ([currentAge, retireAge, monthlyExpense, avgSalary, insuranceYears].some(isNaN)) {
+    alert("請完整填寫所有必填欄位！");
+    return;
+  }
+
+  let monthlyPension = 0;
+  if (insuranceType === 'labor') {
+    const method1 = avgSalary * insuranceYears * 0.00775 + 3000;
+    const method2 = avgSalary * insuranceYears * 0.0155;
+    monthlyPension = Math.max(method1, method2);
+  } else if (insuranceType === 'public') {
+    monthlyPension = avgSalary * insuranceYears * 0.018;
+  }
+
+  const replacementRate = ((monthlyPension / monthlyExpense) * 100).toFixed(1);
+
+  document.getElementById('outputArea').style.display = 'block';
+  document.getElementById('result').innerHTML = `
+    <strong>距離退休：</strong> ${retireAge - currentAge} 年<br>
+    <strong>每月預估可領退休金：</strong> ${Math.round(monthlyPension).toLocaleString()} 元<br>
+    <strong>所得替代率：</strong> ${replacementRate}%<br>
+    <strong>累積退休金：</strong> ${savedFund.toLocaleString()} 元
+  `;
+
+  new Chart(document.getElementById('myChart'), {
+    type: 'pie',
+    data: {
+      labels: ['退休金來源', '仍需自備'],
+      datasets: [{
+        data: [monthlyPension, Math.max(monthlyExpense - monthlyPension, 0)],
+        backgroundColor: ['#4CAF50', '#FFD54F']
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+</script>
+
+</body>
+</html>
