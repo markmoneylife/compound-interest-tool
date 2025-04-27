@@ -48,6 +48,16 @@
       margin-bottom: 2rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
     }
+.step-title {
+  background: #FFF8E1;
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
+  color: #1D4A35;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
     label, input {
       display: block;
       width: 100%;
@@ -159,7 +169,7 @@
 </div>
 
 <div class="section">
-  <h2>Step 1｜基本資料</h2>
+ <h2 class="step-title">Step 1｜基本資料</h2>
   <label>目前年齡：</label>
   <input type="number" id="currentAge" placeholder="例如：30">
   <label>預計退休年齡：</label>
@@ -171,7 +181,7 @@
 </div>
 
 <div class="section">
-  <h2>Step 2｜財務目標設定</h2>
+ <h2 class="step-title">Step 2｜財務目標設定</h2>、
   <label>預計退休每月生活費（台幣）：</label>
   <input type="number" id="monthlyExpense" placeholder="例如：40000">
   <label>已累積退休金（台幣）：</label>
@@ -181,7 +191,7 @@
 </div>
 
 <div class="section">
-  <h2>Step 3｜你的理想退休生活是什麼？</h2>
+ <h2 class="step-title">Step 3｜你的理想退休生活是什麼？</h2>
   <p style="text-align:center;font-size:1rem;color:#555;">選一張最符合你想像的圖片，讓我們根據你的夢想，為你量身打造退休計畫！🌟<br>（每個選擇，都有屬於你的故事與步調。）</p>
   <div class="options">
     <div class="option" onclick="selectLifestyle('獵豹型', 0.06, event)">
