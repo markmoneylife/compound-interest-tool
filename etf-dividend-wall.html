@@ -22,9 +22,7 @@
   </div>
 
   <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
-    <select id="month-select" class="border border-gray-300 rounded px-3 py-1">
-      <option value="">請選擇月份</option>
-    </select>
+    <select id="month-select" class="border border-gray-300 rounded px-3 py-1"></select>
     <input
       id="search-input"
       type="text"
@@ -37,8 +35,9 @@
 
   <div class="max-w-4xl mx-auto mb-6">
     <h2 class="text-xl font-semibold mb-2">🏆 本月最強配息 ETF 前五名</h2>
-<p class="text-xs text-gray-500 mb-4 leading-relaxed">
-  </p>
+    <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+      ※ 本排行榜僅供參考，配息率為「預估配息 ÷ 收盤價」計算結果，並非實際報酬率。
+    </p>
     <div id="top5-list" class="flex justify-center gap-4 items-end h-64 mt-8"></div>
   </div>
 
@@ -52,40 +51,40 @@
     let allData = [];
 
     function renderTop5(data) {
-  const topList = document.getElementById('top5-list');
-  topList.innerHTML = '';
-  const sorted = data
-    .filter(row => row['預估配息'] && row['收盤價'] && !isNaN(parseFloat(row['收盤價'])))
-    .map(row => {
-      const dividend = parseFloat(row['預估配息']);
-      const close = parseFloat(row['收盤價']);
-      const rate = close > 0 ? (dividend / close * 100).toFixed(2) : 0;
-      return {
-        ...row,
-        rate: parseFloat(rate),
-        formattedRate: `${rate}%`
-      };
-    })
-    .sort((a, b) => b.rate - a.rate)
-    .slice(0, 5);
+      const topList = document.getElementById('top5-list');
+      topList.innerHTML = '';
+      const sorted = data
+        .filter(row => row['預估配息'] && row['收盤價'] && !isNaN(parseFloat(row['收盤價'])))
+        .map(row => {
+          const dividend = parseFloat(row['預估配息']);
+          const close = parseFloat(row['收盤價']);
+          const rate = close > 0 ? (dividend / close * 100).toFixed(2) : 0;
+          return {
+            ...row,
+            rate: parseFloat(rate),
+            formattedRate: `${rate}%`
+          };
+        })
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 5);
 
-  const maxRate = sorted[0]?.rate || 1;
-  const colors = ['bg-yellow-300', 'bg-yellow-400', 'bg-yellow-200', 'bg-yellow-100', 'bg-yellow-100'];
-  const ranks = ['🥇', '🥈', '🥉', '第4', '第5'];
+      const maxRate = sorted[0]?.rate || 1;
+      const colors = ['bg-yellow-300', 'bg-yellow-400', 'bg-yellow-200', 'bg-yellow-100', 'bg-yellow-100'];
+      const ranks = ['🥇', '🥈', '🥉', '第4', '第5'];
 
-  sorted.forEach((row, i) => {
-    const heightPercent = (row.rate / maxRate) * 100;
-    const div = document.createElement('div');
-    div.className = `${colors[i]} text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
-    div.style.height = `calc(${heightPercent * 1.2}px + 100px)`;
-    div.title = row['股票名稱'];
-    div.innerHTML = `
-      <div class="text-xl mb-1">${ranks[i]}</div>
-      <div class="text-base font-bold">${row['股號']}</div>
-      <div class="text-sm text-black font-semibold">${row.formattedRate}</div>
-    `;
-    topList.appendChild(div);
-  });
+      sorted.forEach((row, i) => {
+        const heightPercent = (row.rate / maxRate) * 100;
+        const div = document.createElement('div');
+        div.className = `${colors[i]} text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
+        div.style.height = `calc(${heightPercent * 1.2}px + 100px)`;
+        div.title = row['股票名稱'];
+        div.innerHTML = `
+          <div class="text-xl mb-1">${ranks[i]}</div>
+          <div class="text-base font-bold">${row['股號']}</div>
+          <div class="text-sm text-black font-semibold">${row.formattedRate}</div>
+        `;
+        topList.appendChild(div);
+      });
     }
 
     function renderCards(filtered) {
@@ -140,18 +139,14 @@
     function populateMonthOptions(data) {
       const monthSet = new Set(data.map(row => `${row['西元']}-${row['月份']}`));
       const select = document.getElementById('month-select');
-
-      Array.from(monthSet).sort().forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = m;
-        select.appendChild(opt);
-      });
-
-      const now = new Date();
-      const defaultValue = `${now.getFullYear()}-${String(now.getMonth() + 1).toString().padStart(2, '0')}`;
-      select.value = defaultValue;
-      filterByMonth(defaultValue);
+      const sortedMonths = Array.from(monthSet).sort();
+      const latest = sortedMonths[sortedMonths.length - 1];
+      const opt = document.createElement('option');
+      opt.value = latest;
+      opt.textContent = latest;
+      select.appendChild(opt);
+      select.value = latest;
+      filterByMonth(latest);
     }
 
     function filterByMonth(value, keyword = '') {
@@ -184,9 +179,9 @@
       }
     });
   </script>
-<footer class="mt-10 text-xs text-center text-gray-500 leading-relaxed">
-  ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表基金報酬率，亦不代表未來績效。
-  <br />基金淨值可能因市場波動而變動，投資人應審慎評估風險，並詳閱公開說明書。
-</footer>
+  <footer class="mt-10 text-xs text-center text-gray-500 leading-relaxed">
+    ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表基金報酬率，亦不代表未來績效。
+    <br />基金淨值可能因市場波動而變動，投資人應審慎評估風險，並詳閱公開說明書。
+  </footer>
 </body>
 </html>
