@@ -50,38 +50,40 @@
     let allData = [];
 
     function renderTop5(data) {
-      const topList = document.getElementById('top5-list');
-      topList.innerHTML = '';
-      const sorted = data
-        .filter(row => row['預估配息'] && row['收盤價'] && !isNaN(parseFloat(row['收盤價'])))
-        .map(row => {
-          const dividend = parseFloat(row['預估配息']);
-          const close = parseFloat(row['收盤價']);
-          const rate = close > 0 ? (dividend / close * 100).toFixed(2) : 0;
-          return {
-            ...row,
-            rate: parseFloat(rate),
-            formattedRate: `${rate}%`
-          };
-        })
-        .sort((a, b) => b.rate - a.rate)
-        .slice(0, 5);
+  const topList = document.getElementById('top5-list');
+  topList.innerHTML = '';
+  const sorted = data
+    .filter(row => row['預估配息'] && row['收盤價'] && !isNaN(parseFloat(row['收盤價'])))
+    .map(row => {
+      const dividend = parseFloat(row['預估配息']);
+      const close = parseFloat(row['收盤價']);
+      const rate = close > 0 ? (dividend / close * 100).toFixed(2) : 0;
+      return {
+        ...row,
+        rate: parseFloat(rate),
+        formattedRate: `${rate}%`
+      };
+    })
+    .sort((a, b) => b.rate - a.rate)
+    .slice(0, 5);
 
-      const heights = [160, 200, 180, 140, 130];
-      const colors = ['bg-yellow-400', 'bg-yellow-300', 'bg-yellow-200', 'bg-yellow-100', 'bg-yellow-100'];
-      const ranks = ['🥇', '🥈', '🥉', '第4', '第5'];
+  const maxRate = sorted[0]?.rate || 1;
+  const colors = ['bg-yellow-300', 'bg-yellow-400', 'bg-yellow-200', 'bg-yellow-100', 'bg-yellow-100'];
+  const ranks = ['🥇', '🥈', '🥉', '第4', '第5'];
 
-      sorted.forEach((row, i) => {
-        const div = document.createElement('div');
-        div.className = `${colors[i]} text-center px-4 py-2 rounded-t-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
-        div.style.height = heights[i] + 'px';
-        div.innerHTML = `
-          <div class="text-xl mb-1">${ranks[i]}</div>
-          <div class="text-base font-bold">${row['股號']}</div>
-          <div class="text-sm text-black font-semibold">${row.formattedRate}</div>
-        `;
-        topList.appendChild(div);
-      });
+  sorted.forEach((row, i) => {
+    const heightPercent = (row.rate / maxRate) * 100;
+    const div = document.createElement('div');
+    div.className = `${colors[i]} text-center px-4 pt-3 pb-2 rounded-t-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
+    div.style.height = `calc(${heightPercent}% + 60px)`;
+    div.title = row['股票名稱'];
+    div.innerHTML = `
+      <div class="text-xl mb-1">${ranks[i]}</div>
+      <div class="text-base font-bold">${row['股號']}</div>
+      <div class="text-sm text-black font-semibold">${row.formattedRate}</div>
+    `;
+    topList.appendChild(div);
+  });
     }
 
     function renderCards(filtered) {
