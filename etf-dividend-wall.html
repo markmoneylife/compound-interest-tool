@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETF配息圖卡瀑布牆｜吳馬克</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .grid-auto-fit {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body class="bg-[#FFFDF8] text-[#1D4A35] px-4 py-8">
+  <h1 class="text-3xl font-bold text-center mb-6">ETF配息圖卡瀑布牆</h1>
+  <div id="card-container" class="grid-auto-fit"></div>
+
+  <script>
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzD/pub?output=csv';
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return isNaN(date) ? '-' : `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    function getCurrentMonth() {
+      const now = new Date();
+      return `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      complete: function (results) {
+        const data = results.data;
+        const container = document.getElementById('card-container');
+        const currentMonth = getCurrentMonth();
+
+        const filtered = data.filter(row => {
+          return row['月份'] && row['月份'].startsWith(currentMonth);
+        });
+
+        filtered.forEach(row => {
+          const card = document.createElement('div');
+          card.className = 'bg-white p-4 rounded-2xl shadow-md border border-yellow-300';
+          card.innerHTML = `
+            <div class="text-sm text-gray-500 mb-1">${row['ETF代號']}｜${row['股票名稱']}</div>
+            <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息']} 元</div>
+            <div class="text-sm text-gray-700">殖利率：${row['單期殖利率'] || '-'}｜收盤價：${row['收盤價'] || '-'}</div>
+            <div class="text-xs text-gray-400 mt-2">發放日：${formatDate(row['發放日'])}</div>
+          `;
+          container.appendChild(card);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
