@@ -21,14 +21,9 @@
   <script>
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzD/pub?output=csv';
 
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return isNaN(date) ? '-' : `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-    }
-
-    function getCurrentMonth() {
+    function getCurrentYearMonth() {
       const now = new Date();
-      return `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+      return [now.getFullYear() + '年', String(now.getMonth() + 1).padStart(2, '0')];
     }
 
     Papa.parse(csvUrl, {
@@ -37,20 +32,20 @@
       complete: function (results) {
         const data = results.data;
         const container = document.getElementById('card-container');
-        const currentMonth = getCurrentMonth();
+        const [thisYear, thisMonth] = getCurrentYearMonth();
 
         const filtered = data.filter(row => {
-          return row['月份'] && row['月份'].startsWith(currentMonth);
+          return row['西元年'] === thisYear && row['月份'] === thisMonth;
         });
 
         filtered.forEach(row => {
           const card = document.createElement('div');
           card.className = 'bg-white p-4 rounded-2xl shadow-md border border-yellow-300';
           card.innerHTML = `
-            <div class="text-sm text-gray-500 mb-1">${row['ETF代號']}｜${row['股票名稱']}</div>
-            <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息']} 元</div>
+            <div class="text-sm text-gray-500 mb-1">${row['股號']}｜${row['股票名稱']}</div>
+            <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息'] || '-'} 元</div>
             <div class="text-sm text-gray-700">殖利率：${row['單期殖利率'] || '-'}｜收盤價：${row['收盤價'] || '-'}</div>
-            <div class="text-xs text-gray-400 mt-2">發放日：${formatDate(row['發放日'])}</div>
+            <div class="text-xs text-gray-400 mt-2">發放日：${row['發放日'] || '-'}</div>
           `;
           container.appendChild(card);
         });
