@@ -55,7 +55,7 @@
     }
 
     function populateMonthOptions(data) {
-      const monthSet = new Set(data.map(row => `${row['西元年']}-${row['月份']}`));
+      const monthSet = new Set(data.map(row => `${row['西元']}-${row['月份']}`));
       const select = document.getElementById('month-select');
 
       Array.from(monthSet).sort().forEach(m => {
@@ -66,7 +66,7 @@
       });
 
       const now = new Date();
-      const defaultValue = `${now.getFullYear()}年-${String(now.getMonth() + 1).toString().padStart(2, '0')}`;
+      const defaultValue = `${now.getFullYear()}-${String(now.getMonth() + 1).toString().padStart(2, '0')}`;
       select.value = defaultValue;
       filterByMonth(defaultValue);
     }
@@ -74,7 +74,7 @@
     function filterByMonth(value) {
       const [year, month] = value.split('-');
       const filtered = allData.filter(row => {
-        return (row['西元年'] || '').includes(year) && (row['月份'] || '').includes(month);
+        return (row['西元'] || '').includes(year) && (row['月份'] || '').includes(month);
       });
       renderCards(filtered);
     }
