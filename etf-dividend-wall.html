@@ -16,39 +16,79 @@
 </head>
 <body class="bg-[#FFFDF8] text-[#1D4A35] px-4 py-8">
   <h1 class="text-3xl font-bold text-center mb-6">ETF配息圖卡瀑布牆</h1>
+
+  <div class="flex justify-center mb-4">
+    <select id="month-select" class="border border-gray-300 rounded px-3 py-1">
+      <option value="">請選擇月份</option>
+    </select>
+  </div>
+
+  <div id="loading" class="text-center text-sm text-gray-500 mb-4">載入中...</div>
   <div id="card-container" class="grid-auto-fit"></div>
+  <div id="no-data" class="text-center text-sm text-red-500 hidden">找不到符合條件的資料</div>
 
   <script>
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzD/pub?output=csv';
 
-    function getCurrentYearMonth() {
-      const now = new Date();
-      return [now.getFullYear() + '年', String(now.getMonth() + 1).padStart(2, '0')];
+    let allData = [];
+
+    function renderCards(filtered) {
+      const container = document.getElementById('card-container');
+      const loading = document.getElementById('loading');
+      const noData = document.getElementById('no-data');
+
+      container.innerHTML = '';
+      loading.style.display = 'none';
+      noData.classList.toggle('hidden', filtered.length > 0);
+
+      filtered.forEach(row => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-2xl shadow-md border border-yellow-300';
+        card.innerHTML = `
+          <div class="text-sm text-gray-500 mb-1">${row['股號']}｜${row['股票名稱']}</div>
+          <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息'] || '-'} 元</div>
+          <div class="text-sm text-gray-700">殖利率：${row['單期殖利率'] || '-'}｜收盤價：${row['收盤價'] || '-'}</div>
+          <div class="text-xs text-gray-400 mt-2">發放日：${row['發放日'] || '-'}</div>
+        `;
+        container.appendChild(card);
+      });
     }
+
+    function populateMonthOptions(data) {
+      const monthSet = new Set(data.map(row => `${row['西元年']}-${row['月份']}`));
+      const select = document.getElementById('month-select');
+
+      Array.from(monthSet).sort().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        select.appendChild(opt);
+      });
+
+      const now = new Date();
+      const defaultValue = `${now.getFullYear()}年-${String(now.getMonth() + 1).toString().padStart(2, '0')}`;
+      select.value = defaultValue;
+      filterByMonth(defaultValue);
+    }
+
+    function filterByMonth(value) {
+      const [year, month] = value.split('-');
+      const filtered = allData.filter(row => {
+        return (row['西元年'] || '').includes(year) && (row['月份'] || '').includes(month);
+      });
+      renderCards(filtered);
+    }
+
+    document.getElementById('month-select').addEventListener('change', function () {
+      filterByMonth(this.value);
+    });
 
     Papa.parse(csvUrl, {
       download: true,
       header: true,
       complete: function (results) {
-        const data = results.data;
-        const container = document.getElementById('card-container');
-        const [thisYear, thisMonth] = getCurrentYearMonth();
-
-        const filtered = data.filter(row => {
-          return (row['西元年'] || '').trim() === thisYear && (row['月份'] || '').trim() === thisMonth;
-        });
-
-        filtered.forEach(row => {
-          const card = document.createElement('div');
-          card.className = 'bg-white p-4 rounded-2xl shadow-md border border-yellow-300';
-          card.innerHTML = `
-            <div class="text-sm text-gray-500 mb-1">${row['股號']}｜${row['股票名稱']}</div>
-            <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息'] || '-'} 元</div>
-            <div class="text-sm text-gray-700">殖利率：${row['單期殖利率'] || '-'}｜收盤價：${row['收盤價'] || '-'}</div>
-            <div class="text-xs text-gray-400 mt-2">發放日：${row['發放日'] || '-'}</div>
-          `;
-          container.appendChild(card);
-        });
+        allData = results.data;
+        populateMonthOptions(allData);
       }
     });
   </script>
