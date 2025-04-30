@@ -35,7 +35,7 @@
         const [thisYear, thisMonth] = getCurrentYearMonth();
 
         const filtered = data.filter(row => {
-          return row['西元年'] === thisYear && row['月份'] === thisMonth;
+          return (row['西元年'] || '').trim() === thisYear && (row['月份'] || '').trim() === thisMonth;
         });
 
         filtered.forEach(row => {
