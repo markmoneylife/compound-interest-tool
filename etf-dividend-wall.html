@@ -17,10 +17,27 @@
 <body class="bg-[#FFFDF8] text-[#1D4A35] px-4 py-8">
   <h1 class="text-3xl font-bold text-center mb-6">ETF配息圖卡瀑布牆</h1>
 
-  <div class="flex justify-center mb-4">
+  <div class="text-center text-sm text-gray-500 mb-2">
+    資料來源：<a href="https://www.twse.com.tw/zh/ETFortune/announcementList" class="underline text-blue-600" target="_blank">臺灣證券交易所</a>
+  </div>
+
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
     <select id="month-select" class="border border-gray-300 rounded px-3 py-1">
       <option value="">請選擇月份</option>
     </select>
+    <input
+      id="search-input"
+      type="text"
+      placeholder="搜尋 ETF 名稱或股號"
+      class="border border-gray-300 rounded px-3 py-1"
+    />
+  </div>
+
+  <div id="last-update" class="text-center text-xs text-gray-400 mb-4"></div>
+
+  <div class="max-w-4xl mx-auto mb-6">
+    <h2 class="text-xl font-semibold mb-2">📈 配息王冠榜 Top 5</h2>
+    <ul id="top5-list" class="text-sm text-gray-800 space-y-1"></ul>
   </div>
 
   <div id="loading" class="text-center text-sm text-gray-500 mb-4">載入中...</div>
@@ -32,27 +49,75 @@
 
     let allData = [];
 
-    function renderCards(filtered) {
-      const container = document.getElementById('card-container');
-      const loading = document.getElementById('loading');
-      const noData = document.getElementById('no-data');
+    function renderTop5(data) {
+      const topList = document.getElementById('top5-list');
+      topList.innerHTML = '';
+      const sorted = data
+        .filter(row => row['單期殖利率'])
+        .map(row => ({
+          ...row,
+          rate: parseFloat(row['單期殖利率'].replace('%', '')) || 0
+        }))
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 5);
 
-      container.innerHTML = '';
-      loading.style.display = 'none';
-      noData.classList.toggle('hidden', filtered.length > 0);
-
-      filtered.forEach(row => {
-        const card = document.createElement('div');
-        card.className = 'bg-white p-4 rounded-2xl shadow-md border border-yellow-300';
-        card.innerHTML = `
-          <div class="text-sm text-gray-500 mb-1">${row['股號']}｜${row['股票名稱']}</div>
-          <div class="text-2xl font-bold text-yellow-600 mb-2">${row['預估配息'] || '-'} 元</div>
-          <div class="text-sm text-gray-700">殖利率：${row['單期殖利率'] || '-'}｜收盤價：${row['收盤價'] || '-'}</div>
-          <div class="text-xs text-gray-400 mt-2">發放日：${row['發放日'] || '-'}</div>
+      sorted.forEach((row, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="font-bold">#${index + 1}</span> ${row['股號']}｜${row['股票名稱']} → <span class="text-yellow-700 font-semibold">${row['單期殖利率']}</span>
         `;
-        container.appendChild(card);
+        topList.appendChild(li);
       });
     }
+
+    function renderCards(filtered) {
+  const container = document.getElementById('card-container');
+  const loading = document.getElementById('loading');
+  const noData = document.getElementById('no-data');
+
+  container.innerHTML = '';
+  loading.style.display = 'none';
+  noData.classList.toggle('hidden', filtered.length > 0);
+
+  filtered.forEach(row => {
+    const card = document.createElement('div');
+    card.className = 'bg-[#17453B] text-[#FFF8D6] p-5 rounded-2xl shadow-lg flex flex-col gap-3';
+    card.innerHTML = `
+      <div class="flex justify-between items-center">
+        <div class="text-3xl font-bold text-yellow-400">${row['股號']}</div>
+        <div class="text-sm bg-orange-500 text-white px-2 py-1 rounded">${row['配息頻率']}</div>
+      </div>
+      <div class="text-xl font-bold mb-2">${row['股票名稱']}</div>
+      <div class="grid grid-cols-2 gap-2 text-center">
+        <div class="bg-yellow-300 text-black p-3 rounded-lg">
+          <div class="text-xs mb-1">預估配息</div>
+          <div class="text-2xl font-bold">${row['預估配息'] || '-'}</div>
+        </div>
+        <div class="bg-yellow-300 text-black p-3 rounded-lg">
+          <div class="text-xs mb-1">最後買進日</div>
+          <div class="text-2xl font-bold">${row['最後買進日'] || '-'}</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center text-sm">
+        <div>
+          <div class="text-xs text-gray-300">收盤價</div>
+          <div class="font-bold">${row['收盤價'] || '-'}</div>
+        </div>
+        <div>
+          <div class="text-xs text-gray-300">殖利率</div>
+          <div class="font-bold">${row['單期殖利率'] || '-'}</div>
+        </div>
+        <div>
+          <div class="text-xs text-gray-300">除息日</div>
+          <div class="font-bold">${row['除息日'] || '-'}</div>
+        </div>
+      </div>
+      <div class="text-xs text-right text-gray-400 mt-2">配發日：${row['發放日'] || '-'}</div>
+      <div class="text-[10px] text-gray-400 mt-1">資料來源：${row['資料來源'] || '-'}</div>
+    `;
+    container.appendChild(card);
+  });
+}
 
     function populateMonthOptions(data) {
       const monthSet = new Set(data.map(row => `${row['西元']}-${row['月份']}`));
@@ -71,16 +136,23 @@
       filterByMonth(defaultValue);
     }
 
-    function filterByMonth(value) {
+    function filterByMonth(value, keyword = '') {
       const [year, month] = value.split('-');
       const filtered = allData.filter(row => {
-        return (row['西元'] || '').includes(year) && (row['月份'] || '').includes(month);
+        const matchMonth = (row['西元'] || '').includes(year) && (row['月份'] || '').includes(month);
+        const matchKeyword = (row['股號'] + row['股票名稱']).toLowerCase().includes(keyword);
+        return matchMonth && matchKeyword;
       });
-      renderCards(filtered);
+      renderTop5(filtered);
+      renderCards(filtered.length ? filtered : allData);
     }
 
     document.getElementById('month-select').addEventListener('change', function () {
-      filterByMonth(this.value);
+      filterByMonth(this.value, document.getElementById('search-input').value.toLowerCase());
+    });
+
+    document.getElementById('search-input').addEventListener('input', function () {
+      filterByMonth(document.getElementById('month-select').value, this.value.toLowerCase());
     });
 
     Papa.parse(csvUrl, {
@@ -89,6 +161,8 @@
       complete: function (results) {
         allData = results.data;
         populateMonthOptions(allData);
+        const update = allData[0]['更新日期'] || '';
+        document.getElementById('last-update').textContent = update ? `更新時間：${update}` : '';
       }
     });
   </script>
