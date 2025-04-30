@@ -37,7 +37,7 @@
 
   <div class="max-w-4xl mx-auto mb-6">
     <h2 class="text-xl font-semibold mb-2">📈 配息王冠榜 Top 5</h2>
-    <ul id="top5-list" class="text-sm text-gray-800 space-y-1"></ul>
+    <div id="top5-list" class="flex justify-center gap-4 items-end h-48"></div>
   </div>
 
   <div id="loading" class="text-center text-sm text-gray-500 mb-4">載入中...</div>
@@ -53,71 +53,85 @@
       const topList = document.getElementById('top5-list');
       topList.innerHTML = '';
       const sorted = data
-        .filter(row => row['單期殖利率'])
-        .map(row => ({
-          ...row,
-          rate: parseFloat(row['單期殖利率'].replace('%', '')) || 0
-        }))
+        .filter(row => row['預估配息'] && row['收盤價'] && !isNaN(parseFloat(row['收盤價'])))
+        .map(row => {
+          const dividend = parseFloat(row['預估配息']);
+          const close = parseFloat(row['收盤價']);
+          const rate = close > 0 ? (dividend / close * 100).toFixed(2) : 0;
+          return {
+            ...row,
+            rate: parseFloat(rate),
+            formattedRate: `${rate}%`
+          };
+        })
         .sort((a, b) => b.rate - a.rate)
         .slice(0, 5);
 
-      sorted.forEach((row, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span class="font-bold">#${index + 1}</span> ${row['股號']}｜${row['股票名稱']} → <span class="text-yellow-700 font-semibold">${row['單期殖利率']}</span>
+      const heights = [160, 200, 180, 140, 130];
+      const colors = ['bg-yellow-400', 'bg-yellow-300', 'bg-yellow-200', 'bg-yellow-100', 'bg-yellow-100'];
+      const ranks = ['🥇', '🥈', '🥉', '第4', '第5'];
+
+      sorted.forEach((row, i) => {
+        const div = document.createElement('div');
+        div.className = `${colors[i]} text-center px-4 py-2 rounded-t-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
+        div.style.height = heights[i] + 'px';
+        div.innerHTML = `
+          <div class="text-xl mb-1">${ranks[i]}</div>
+          <div class="text-base font-bold">${row['股號']}</div>
+          <div class="text-sm text-black font-semibold">${row.formattedRate}</div>
         `;
-        topList.appendChild(li);
+        topList.appendChild(div);
       });
     }
 
     function renderCards(filtered) {
-  const container = document.getElementById('card-container');
-  const loading = document.getElementById('loading');
-  const noData = document.getElementById('no-data');
+      const container = document.getElementById('card-container');
+      const loading = document.getElementById('loading');
+      const noData = document.getElementById('no-data');
 
-  container.innerHTML = '';
-  loading.style.display = 'none';
-  noData.classList.toggle('hidden', filtered.length > 0);
+      container.innerHTML = '';
+      loading.style.display = 'none';
+      noData.classList.toggle('hidden', filtered.length > 0);
 
-  filtered.forEach(row => {
-    const card = document.createElement('div');
-    card.className = 'bg-[#17453B] text-[#FFF8D6] p-5 rounded-2xl shadow-lg flex flex-col gap-3';
-    card.innerHTML = `
-      <div class="flex justify-between items-center">
-        <div class="text-3xl font-bold text-yellow-400">${row['股號']}</div>
-        <div class="text-sm bg-orange-500 text-white px-2 py-1 rounded">${row['配息頻率']}</div>
-      </div>
-      <div class="text-xl font-bold mb-2">${row['股票名稱']}</div>
-      <div class="grid grid-cols-2 gap-2 text-center">
-        <div class="bg-yellow-300 text-black p-3 rounded-lg">
-          <div class="text-xs mb-1">預估配息</div>
-          <div class="text-2xl font-bold">${row['預估配息'] || '-'}</div>
-        </div>
-        <div class="bg-yellow-300 text-black p-3 rounded-lg">
-          <div class="text-xs mb-1">最後買進日</div>
-          <div class="text-2xl font-bold">${row['最後買進日'] || '-'}</div>
-        </div>
-      </div>
-      <div class="grid grid-cols-3 gap-2 text-center text-sm">
-        <div>
-          <div class="text-xs text-gray-300">收盤價</div>
-          <div class="font-bold">${row['收盤價'] || '-'}</div>
-        </div>
-        <div>
-          <div class="text-xs text-gray-300">殖利率</div>
-          <div class="font-bold">${row['單期殖利率'] || '-'}</div>
-        </div>
-        <div>
-          <div class="text-xs text-gray-300">除息日</div>
-          <div class="font-bold">${row['除息日'] || '-'}</div>
-        </div>
-      </div>
-      <div class="text-xs text-right text-gray-400 mt-2">配發日：${row['發放日'] || '-'}</div>
-      <div class="text-[10px] text-gray-400 mt-1">資料來源：${row['資料來源'] || '-'}</div>
-    `;
-    container.appendChild(card);
-  });
-}
+      filtered.forEach(row => {
+        const card = document.createElement('div');
+        card.className = 'bg-[#17453B] text-[#FFF8D6] p-5 rounded-2xl shadow-lg flex flex-col gap-3';
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <div class="text-3xl font-bold text-yellow-400">${row['股號']}</div>
+            <div class="text-sm bg-orange-500 text-white px-2 py-1 rounded">${row['配息頻率']}</div>
+          </div>
+          <div class="text-xl font-bold mb-2">${row['股票名稱']}</div>
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="bg-yellow-300 text-black p-3 rounded-lg">
+              <div class="text-xs mb-1">預估配息</div>
+              <div class="text-2xl font-bold">${row['預估配息'] || '-'}</div>
+            </div>
+            <div class="bg-yellow-300 text-black p-3 rounded-lg">
+              <div class="text-xs mb-1">最後買進日</div>
+              <div class="text-2xl font-bold">${row['最後買進日'] || '-'}</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center text-sm">
+            <div>
+              <div class="text-xs text-gray-300">收盤價</div>
+              <div class="font-bold">${row['收盤價'] || '-'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-300">殖利率</div>
+              <div class="font-bold">${row['單期殖利率'] || '-'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-300">除息日</div>
+              <div class="font-bold">${row['除息日'] || '-'}</div>
+            </div>
+          </div>
+          <div class="text-xs text-right text-gray-400 mt-2">配發日：${row['發放日'] || '-'}</div>
+          <div class="text-[10px] text-gray-400 mt-1">資料來源：${row['資料來源'] || '-'}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
     function populateMonthOptions(data) {
       const monthSet = new Set(data.map(row => `${row['西元']}-${row['月份']}`));
