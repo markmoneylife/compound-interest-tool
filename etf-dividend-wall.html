@@ -38,9 +38,7 @@
   <div class="max-w-4xl mx-auto mb-6">
     <h2 class="text-xl font-semibold mb-2">🏆 本月最強配息 ETF 前五名</h2>
 <p class="text-xs text-gray-500 mb-4 leading-relaxed">
-  ※ 本排行榜以「預估配息／收盤價」計算之單期殖利率為依據，僅供參考。
-  <br>基金投資涉及風險，詳見公開說明書。配息率不代表報酬率，亦不代表未來績效。
-</p>
+  </p>
     <div id="top5-list" class="flex justify-center gap-4 items-end h-48"></div>
   </div>
 
@@ -78,8 +76,8 @@
   sorted.forEach((row, i) => {
     const heightPercent = (row.rate / maxRate) * 100;
     const div = document.createElement('div');
-    div.className = `${colors[i]} text-center px-4 pt-3 pb-2 rounded-t-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
-    div.style.height = `calc(${heightPercent}% + 60px)`;
+    div.className = `${colors[i]} text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center transition-transform hover:scale-105`;
+    div.style.height = `calc(${heightPercent * 1.2}px + 100px)`;
     div.title = row['股票名稱'];
     div.innerHTML = `
       <div class="text-xl mb-1">${ranks[i]}</div>
@@ -186,5 +184,9 @@
       }
     });
   </script>
+<footer class="mt-10 text-xs text-center text-gray-500 leading-relaxed">
+  ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表基金報酬率，亦不代表未來績效。
+  <br />基金淨值可能因市場波動而變動，投資人應審慎評估風險，並詳閱公開說明書。
+</footer>
 </body>
 </html>
