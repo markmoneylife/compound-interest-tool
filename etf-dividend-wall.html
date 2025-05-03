@@ -1,3 +1,105 @@
+<!-- ✅ 漢堡選單樣式 -->
+<style>
+  .nav-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    background: #FFD54F;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .nav-bar-wrapper {
+    background-color: #1D4A35;
+    padding: 1rem 0;
+  }
+
+  .nav-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .nav-bar a {
+    background-color: #FFD54F;
+    color: #1A1A1A;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .nav-bar a:hover {
+    background-color: #FFE082;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .nav-bar-wrapper {
+      padding-top: 4rem;
+    }
+
+    .nav-toggle {
+      display: block;
+    }
+
+    .nav-bar {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-bar a {
+      width: 90%;
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-bar.active {
+      display: flex;
+    }
+  }
+</style>
+
+<!-- ✅ 按鈕 -->
+<button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
+
+<!-- ✅ 導覽列 -->
+<div class="nav-bar-wrapper">
+  <div class="nav-bar" id="navBar">
+    <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+    <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">加入LINE社群</a>
+  </div>
+</div>
+
+<!-- ✅ JS 控制收合 -->
+<script>
+  function toggleNav() {
+    const nav = document.getElementById('navBar');
+    nav.classList.toggle('active');
+  }
+</script>
+
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -19,18 +121,7 @@
       gap: 1rem;
     }
   </style>
-</head>
-<body class="bg-[#FFFDF8] text-[#1D4A35] px-4 py-8">
-  <div class="nav-bar-wrapper bg-[#1D4A35] py-2 mb-6">
-    <div class="nav-bar max-w-5xl mx-auto flex flex-wrap justify-center gap-3">
-      <a href="https://markmoneylife.com/etf配息月報/" class="bg-yellow-300 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400">ETF配息月報</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/" class="bg-yellow-300 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400">複利試算工具</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" class="bg-yellow-300 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400">退休倒推</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" class="bg-yellow-300 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400">新手投資村</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" class="bg-yellow-300 text-black font-semibold px-3 py-1 rounded hover:bg-yellow-400">ETF追蹤牆</a>
-      <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank" class="bg-green-500 text-white font-semibold px-3 py-1 rounded hover:bg-green-600">加入LINE社群</a>
-    </div>
-  </div>
+
   <h1 class="text-3xl font-bold text-center mb-6">ETF配息圖卡瀑布牆</h1>
 
   <div class="text-center text-sm text-gray-500 mb-2">
