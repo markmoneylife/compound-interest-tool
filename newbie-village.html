@@ -1,239 +1,23 @@
-<!-- ✅ 漢堡選單樣式 -->
-<style>
-  .nav-toggle {
-    display: none;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
-    background: #FFD54F;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
-
-  .nav-bar-wrapper {
-    background-color: #1D4A35;
-    padding: 1rem 0;
-  }
-
-  .nav-bar {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .nav-bar a {
-    background-color: #FFD54F;
-    color: #1A1A1A;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 0.65rem 1.2rem;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-  }
-
-  .nav-bar a:hover {
-    background-color: #FFE082;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  @media (max-width: 768px) {
-    .nav-bar-wrapper {
-      padding-top: 4rem;
-    }
-
-    .nav-toggle {
-      display: block;
-    }
-
-    .nav-bar {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .nav-bar a {
-      width: 90%;
-      text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .nav-bar.active {
-      display: flex;
-    }
-  }
-</style>
-
-<!-- ✅ 按鈕 -->
-<button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
-
-<!-- ✅ 導覽列 -->
-<div class="nav-bar-wrapper">
-  <div class="nav-bar" id="navBar">
-    <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
-    <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">加入LINE社群</a>
-  </div>
-</div>
-
-<!-- ✅ JS 控制收合 -->
-<script>
-  function toggleNav() {
-    const nav = document.getElementById('navBar');
-    nav.classList.toggle('active');
-  }
-</script>
-
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K3DFBC9S7V"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-K3DFBC9S7V');
-</script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #F8F9FA;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #2D3C2F;
-      margin-bottom: 1rem;
-    }
-    .filter-buttons {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .filter-buttons button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.5rem 1rem;
-      margin: 0 0.5rem;
-      border-radius: 999px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .etf-card {
-      background-color: #ffffff;
-      border-left: 6px solid #FFD54F;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .etf-card h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #444;
-    }
-    .etf-card p {
-      margin: 0.3rem 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-    .tag {
-      display: inline-block;
-      background-color: #FFE082;
-      color: #1A1A1A;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      margin-left: 0.5rem;
-    }
-    .gain {
-      color: red;
-      font-weight: bold;
-    }
-    .loss {
-      color: green;
-      font-weight: bold;
-    }
-    .links a {
-      display: inline-block;
-      margin-top: 0.5rem;
-      color: #2D3C2F;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .actions span {
-      display: inline-block;
-      margin-right: 0.6rem;
-    }
-    .cta-box {
-      background: #FFF8E1;
-      border-left: 6px solid #FFD54F;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      margin-top: 3rem;
-      text-align: center;
-      color: #5D4037;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-    .cta-box a {
-      display: inline-block;
-      margin-top: 1rem;
-      background-color: #FFD54F;
-      color: #1A1A1A;
-      padding: 0.6rem 1.2rem;
-      border-radius: 999px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .disclaimer {
-      margin-top: 3rem;
-      font-size: 0.85rem;
-      color: #777;
-      background: #fdfdfd;
-      padding: 1rem;
-      border-top: 1px solid #ccc;
-    }
-  </style>
-
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XF61M6KL30"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-XF61M6KL30');
-</script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🏡 新手投資村計畫｜馬克理財</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K3DFBC9S7V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K3DFBC9S7V');
+  </script>
+
+  <!-- 外部資源 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+  <!-- 內部樣式 -->
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -268,10 +52,6 @@
     }
     th {
       background: #FFD54F;
-    }
-    .cta {
-      text-align: center;
-      margin-top: 2rem;
     }
     .cta a {
       display: inline-block;
@@ -327,6 +107,7 @@
     }
   </style>
 </head>
+
 <body>
   <h1>🏡 新手投資村計畫</h1>
   <p style="text-align:center; color:#666">每週解一個任務，一步步打造你的 ETF 投資地圖</p>
@@ -377,10 +158,16 @@
 
   <div id="toast"></div>
 
+  <div id="viewCounter" style="margin-top:2rem; text-align:center; font-size:0.9rem; color:#888;">
+    👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
+  </div>
+
+  <!-- JS 功能：勳章判定 + 完成提示 -->
   <script>
     const checkboxes = document.querySelectorAll('input[type="checkbox"][data-badge]');
     const badges = document.querySelectorAll('.badge');
     const toast = document.getElementById('toast');
+    let completionShown = false;
 
     checkboxes.forEach(box => {
       box.addEventListener('change', () => {
@@ -390,6 +177,12 @@
           showToast(`🎉 已獲得 ${badges[index].textContent}`);
         } else {
           badges[index].classList.remove('earned');
+        }
+
+        const completed = Array.from(checkboxes).filter(i => i.checked).length;
+        if (completed === checkboxes.length && !completionShown) {
+          showFinalCongrats();
+          completionShown = true;
         }
       });
     });
@@ -401,226 +194,24 @@
         toast.style.display = 'none';
       }, 2500);
     }
-  </script>
-</div>
 
-<script>
-  const allCheckboxes = document.querySelectorAll('input[type="checkbox"][data-badge]');
-  let completionShown = false;
-
-  function showFinalCongrats() {
-    const toast = document.createElement('div');
-    toast.textContent = '🎉 恭喜你！五大任務全數達成！正式榮升為「馬濕克村民」一員！請小心，接下來會不小心愛上定期定額，夢裡都在追蹤 ETF 淨值與配息日 😆📈';
-    toast.style.position = 'fixed';
-    toast.style.bottom = '20px';
-    toast.style.left = '50%';
-    toast.style.transform = 'translateX(-50%)';
-    toast.style.background = '#FFD54F';
-    toast.style.color = '#1A1A1A';
-    toast.style.padding = '1rem 1.5rem';
-    toast.style.borderRadius = '999px';
-    toast.style.fontWeight = 'bold';
-    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-    toast.style.zIndex = '1000';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 5000);
-  }
-
-  allCheckboxes.forEach(c => {
-    c.addEventListener('change', () => {
-      const completed = Array.from(allCheckboxes).filter(i => i.checked).length;
-      if (completed === allCheckboxes.length && !completionShown) {
-        showFinalCongrats();
-        completionShown = true;
-      }
-    });
-  });
-</script>
-<!-- 📦 任務勳章區塊 -->
-<div class="badge-board">
-  <!-- 每一個 .badge 圖片區塊 -->
-</div>
-
-<!-- ✅ JS 區塊要放在頁尾 -->
-<script>
-  // 你的 checkbox 判斷 + 勳章跳出語法
-</script>
-</body>
-</html>
-
-
- <!-- 📺 YouTube CTA 按鈕 -->
-  <div style="text-align:center; margin-top: 2rem;">
-    <a href="https://www.youtube.com/user/rengary" target="_blank"
-       style="display:inline-block;padding:0.8rem 1.8rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:999px;font-weight:bold;font-size:1.1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      ▶️ 點我看最新影片
-    </a>
-  </div>
-
-  <!-- 💼 GTA 個人連結入口 -->
-  <section style="background-color:#FAFAFA;padding:3rem 1rem;text-align:center;border-top: 1px solid #ddd; margin-top: 3rem;">
-    <h2 style="font-size:1.6rem;margin-bottom:0.5rem;color:#2D3C2F;">📍 找到馬克的所有地方</h2>
-    <p style="font-size:1rem;color:#555;margin-bottom:2rem">社群、Podcast、網站一次整理，持續更新中 🚀</p>
-
-    <div style="max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;">
-      <a href="https://www.youtube.com/user/rengary" target="_blank" style="padding:0.9rem 1rem;background:#FFD54F;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        ▶️ YouTube 頻道
-      </a>
-      <a href="https://open.firstory.me/user/investwithmark/platforms" target="_blank" style="padding:0.9rem 1rem;background:#FDD835;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        🎧 Podcast 平台
-      </a>
-      <a href="https://www.instagram.com/rengary0301/" target="_blank" style="padding:0.9rem 1rem;background:#FFF176;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        📸 Instagram
-      </a>
-      <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="padding:0.9rem 1rem;background:#FFE082;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        👥 LINE 社群報名
-      </a>
-      <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="padding:0.9rem 1rem;background:#FFECB3;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        🌐 部落格／理財筆記
-      </a>
-    </div>
-    <p style="margin-top:2rem;font-size:0.85rem;color:#777;">更新中：歡迎加入，一起學投資、聊生活 🧃</p>
-  </section>
-
-  <!-- 📚 好書推薦書櫃 -->
-  <section style="background-color:#FDFBF5;padding:3rem 1rem;text-align:center;">
-    <h2 style="font-size:1.8rem;margin-bottom:0.5rem">📚 馬克推薦書櫃：<br>一個投機者的告白四部曲</h2>
-    <p style="font-size:1rem;color:#444;margin-bottom:2rem">
-      投資不只看財報，更要看心理與市場規律。這四本書陪你走過熊市牛市，修煉內心與眼光！
-    </p>
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26jqfakv" target="_blank">
-          <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="一個投機者的告白四部曲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投機者的告白四部曲</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/276jnh6h" target="_blank">
-          <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="一個投資者的告白" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投資者的告白</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/27ls9d98" target="_blank">
-          <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="金錢遊戲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">金錢遊戲（新修典藏版）</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26tntcxs" target="_blank">
-          <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="證券心理學" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">證券心理學</p>
-      </div>
-    </div>
-
-    <div style="margin-top:2.5rem;">
-      <a href="https://tinyurl.com/23sak7ha" target="_blank"
-         style="display:inline-block;padding:0.8rem 1.5rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:8px;font-weight:bold;font-size:1rem">
-        🔗 查看書籍總覽 / 購買
-      </a>
-    </div>
-  </section>
-
-  
-  </div>
-
-  <!-- 🛒 聯盟行銷說明 -->
-  <div style="margin-top: 2rem; padding: 1rem 1.5rem; background-color: #FFF8E1; border-left: 4px solid #FFD54F; border-radius: 0.5rem; font-size: 0.9rem; color: #5D4037;">
-    🔗 本站部分連結為聯盟行銷連結（Affiliate Link），若您透過這些連結購買商品，站主可能會獲得少量回饋。<br/>
-    感謝您用實際行動支持內容創作 ❤️
-  </div>
-
-</body>
-</html>
-
-
-<!-- 支持我浮動按鈕 -->
-<div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
-  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 1.5s infinite;">
-    💰 支持我
-  </button>
-</div>
-
-<!-- CTA 背景遮罩 -->
-<div id="supportOverlay" style="
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 998;
-" onclick="toggleSupportBox()"></div>
-
-<!-- CTA 卡片 -->
-<div id="supportBox" style="
-  display: none;
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  width: 300px;
-  background-color: #2D3C2F;
-  color: #FFD54F;
-  border-radius: 1rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  z-index: 9999;
-  padding: 1.2rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s ease;
-  font-weight: 500;
-">
-  <div style="text-align: center;">
-    <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
-         style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
-    <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
-    <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
-
-    <a href="https://open.firstory.me/join/investwithmark" target="_blank"
-       style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
-      💰 單筆贊助我
-    </a>
-
-    <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
-    <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
-      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br/>
-      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br/>
-      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br/>
-      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br/>
-      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
-    </div>
-
-    <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
-  </div>
-</div>
-
-<!-- 控制 JS -->
-<script>
-  function toggleSupportBox() {
-    const box = document.getElementById('supportBox');
-    const overlay = document.getElementById('supportOverlay');
-    const isVisible = box.style.display === 'block';
-
-    if (!isVisible) {
-      overlay.style.display = 'block';
-      box.style.display = 'block';
-      setTimeout(() => {
-        box.style.opacity = '1';
-        box.style.transform = 'translateY(0)';
-      }, 30);
-    } else {
-      box.style.opacity = '0';
-      box.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        box.style.display = 'none';
-        overlay.style.display = 'none';
-      }, 250);
+    function showFinalCongrats() {
+      const toast = document.createElement('div');
+      toast.textContent = '🎉 恭喜你！五大任務全數達成！正式榮升為「馬濕克村民」一員！請小心，接下來會不小心愛上定期定額，夢裡都在追蹤 ETF 淨值與配息日 😆📈';
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = '#FFD54F';
+      toast.style.color = '#1A1A1A';
+      toast.style.padding = '1rem 1.5rem';
+      toast.style.borderRadius = '999px';
+      toast.style.fontWeight = 'bold';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+      toast.style.zIndex = '1000';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
     }
-  }
-</script>
-
+  </script>
+</body>
 </html>
-<div id="viewCounter" style="margin-top:2rem; text-align:center; font-size:0.9rem; color:#888;">
-  👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
-</div>
