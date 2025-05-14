@@ -13,9 +13,9 @@
   <meta property="og:image" content="https://markmoneylife.com/assets/og/etf-wall.png">
   <meta name="author" content="吳馬克">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
+    /* 通用版型 */
     .grid-auto-fit { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
     .nav-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 9999; background: #FFD54F; border: none; padding: 0.6rem 1rem; border-radius: 0.5rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
     .nav-bar-wrapper { background-color: #1D4A35; padding: 1rem 0; }
@@ -31,7 +31,9 @@
     }
   </style>
 </head>
+
 <body class="bg-[#F5F2E9] text-gray-800">
+  <!-- 手機選單按鈕 -->
   <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
   <div class="nav-bar-wrapper">
     <div class="nav-bar" id="navBar">
@@ -43,204 +45,220 @@
     </div>
   </div>
 
+  <!-- ETF 瀑布牆區塊 -->
   <section id="wall" class="max-w-5xl mx-auto px-4 mt-10">
     <h1 class="text-3xl font-bold text-center mb-6">ETF配息圖卡瀑布牆</h1>
-    <p class="text-center text-sm text-gray-500 mb-4">資料來源：<a href="https://www.twse.com.tw/zh/ETFortune/announcementList" class="underline text-blue-600" target="_blank">臺灣證券交易所</a></p>
-    <div class="flex justify-center items-center gap-4 mb-6">
-      <select id="month-select" class="border border-gray-300 rounded px-3 py-1"></select>
-    </div>
+    <p class="text-center text-sm text-gray-500 mb-4">
+      資料來源：
+      <a href="https://www.twse.com.tw/zh/ETFortune/announcementList" class="underline text-blue-600" target="_blank">臺灣證券交易所</a>
+    </p>
     <div id="last-update" class="text-center text-xs text-gray-400 mb-4"></div>
 
     <div class="max-w-4xl mx-auto mb-6">
       <h2 class="text-xl font-semibold mb-2">🏆 本月最強配息 ETF 前五名</h2>
-      <p class="text-xs text-gray-500 mb-4 leading-relaxed">※ 本排行榜僅供參考，配息率為「預估配息 ÷ 收盤價」，並非實際報酬率。</p>
+      <p class="text-xs text-gray-500 mb-4">
+        ※ 本排行榜僅供參考，配息率為「預估配息 ÷ 收盤價」，並非實際報酬率。
+      </p>
       <div id="top5-list" class="flex justify-center gap-4 items-end h-64 mt-8"></div>
     </div>
 
     <div id="loading" class="text-center text-sm text-gray-500 mb-4">載入中...</div>
     <div id="card-container" class="grid-auto-fit"></div>
-    <div id="no-data" class="text-center text-sm text-red-500 hidden">找不到符合條件的資料</div>
   </section>
 
+  <!-- 配息時間表區塊 -->
   <section id="timeline" class="max-w-3xl mx-auto mt-20 px-4">
-    <h2 class="text-2xl font-bold text-center text-[#1D4A35] mb-4">📅 本月ETF配息入帳時間表</h2>
-    <p class="text-center text-sm text-gray-600 mb-6">以下為自動擷取的本月實際發放日資料，快速掌握錢什麼時候進來！</p>
+    <h2 id="timeline-header" class="text-2xl font-bold text-center text-[#1D4A35] mb-4"></h2>
+    <p class="text-center text-sm text-gray-600 mb-6">
+      以下為本月實際發放日資料，快速掌握錢什麼時候進來！
+    </p>
     <div id="dividendList"></div>
   </section>
 
+  <!-- footer -->
   <footer class="mt-16 text-xs text-center text-gray-500 leading-relaxed px-4">
-    資料來源：<a href="https://www.twse.com.tw/zh/ETFortune/announcementList" target="_blank" class="underline">臺灣證券交易所</a>｜製作：吳馬克<br/>
+    資料來源：
+    <a href="https://www.twse.com.tw/zh/ETFortune/announcementList" target="_blank" class="underline">
+      臺灣證券交易所
+    </a>｜製作：吳馬克<br/>
     ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表報酬率，亦不代表未來績效，投資請自行評估風險。
   </footer>
 
+  <!-- 切換手機 nav -->
   <script>
     function toggleNav() {
       document.getElementById('navBar').classList.toggle('active');
     }
+  </script>
 
+  <!-- 資料載入與渲染 -->
+  <script>
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=122705340&single=true&output=csv';
     let allData = [];
 
+    // 渲染前五名
     function renderTop5(data) {
-      const topList = document.getElementById('top5-list'); topList.innerHTML = '';
-      const sorted = data.filter(r => r['預估配息'] && r['收盤價'])
-        .map(r => { const rate = parseFloat(r['預估配息'])/parseFloat(r['收盤價'])*100; return {...r, rate: +rate.toFixed(2), formattedRate: `${rate.toFixed(2)}%`}})
-        .sort((a,b)=>b.rate-a.rate).slice(0,5);
-      const maxRate = sorted[0]?.rate||1;
-      const colors=['bg-yellow-300','bg-yellow-400','bg-yellow-200','bg-yellow-100','bg-yellow-100'];
-      const ranks=['🥇','🥈','🥉','第4','第5'];
-      sorted.forEach((r,i)=>{
-        const height = `calc(${(r.rate/maxRate)*120}px + 100px)`;
-        const div = document.createElement('div'); div.className=`${colors[i]} text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center hover:scale-105 transition-transform`;
-        div.style.height = height; div.title=r['股票名稱'];
-        div.innerHTML=`<div class="text-xl mb-1">${ranks[i]}</div><div class="text-base font-bold">${r['股號']}</div><div class="text-sm text-black font-semibold">${r.formattedRate}</div>`;
+      const topList = document.getElementById('top5-list');
+      topList.innerHTML = '';
+      const sorted = data
+        .filter(r => r['預估配息'] && r['收盤價'])
+        .map(r => {
+          const rate = parseFloat(r['預估配息']) / parseFloat(r['收盤價']) * 100;
+          return { ...r, rate: +rate.toFixed(2), formattedRate: `${rate.toFixed(2)}%` };
+        })
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 5);
+
+      const maxRate = sorted[0]?.rate || 1;
+      const colors = ['bg-yellow-300','bg-yellow-400','bg-yellow-200','bg-yellow-100','bg-yellow-100'];
+      const ranks = ['🥇','🥈','🥉','第4','第5'];
+      sorted.forEach((r, i) => {
+        const height = `calc(${(r.rate / maxRate) * 120}px + 100px)`;
+        const div = document.createElement('div');
+        div.className = `${colors[i]} text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center hover:scale-105 transition-transform`;
+        div.style.height = height;
+        div.innerHTML = `
+          <div class="text-xl mb-1">${ranks[i]}</div>
+          <div class="text-base font-bold">${r['股號']}</div>
+          <div class="text-sm text-black font-semibold">${r.formattedRate}</div>
+        `;
         topList.appendChild(div);
       });
     }
 
+    // 渲染卡片
     function renderCards(data) {
-      const container=document.getElementById('card-container'); container.innerHTML='';
-      document.getElementById('loading').style.display='none';
-      document.getElementById('no-data').classList.toggle('hidden', data.length>0);
-      data.forEach(r=>{
-        const card=document.createElement('div'); card.className='bg-[#17453B] text-[#FFF8D6] p-5 rounded-2xl shadow-lg flex flex-col gap-3';
-        card.innerHTML=`<div class="flex justify-between items-center"><div class="text-3xl font-bold text-yellow-400">${r['股號']}</div><div class="text-sm bg-orange-500 text-white px-2 py-1 rounded">${r['配息頻率']||''}</div></div><div class="text-xl font-bold mb-2">${r['股票名稱']}</div><div class="grid grid-cols-2 gap-2 text-center"><div class="bg-yellow-300 text-black p-3 rounded-lg"><div class="text-xs mb-1">預估配息</div><div class="text-2xl font-bold">${r['預估配息']||'-'}</div></div><div class="bg-yellow-300 text-black p-3 rounded-lg"><div class="text-xs mb-1">最後買進日</div><div class="text-2xl font-bold">${r['最後買進日']||'-'}</div></div></div><div class="grid grid-cols-3 gap-2 text-center text-sm"><div><div class="text-xs text-gray-300">收盤價</div><div class="font-bold">${r['收盤價']||'-'}</div></div><div><div class="text-xs text-gray-300">殖利率</div><div class="font-bold">${r['單期殖利率']||'-'}</div></div><div><div class="text-xs text-gray-300">除息日</div><div class="font-bold">${r['除息日']||'-'}</div></div></div><div class="text-xs text-right text-gray-400 mt-2">配發日：${r['發放日']||'-'}</div>`;
+      const container = document.getElementById('card-container');
+      container.innerHTML = '';
+      document.getElementById('loading').style.display = 'none';
+      data.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'bg-[#17453B] text-[#FFF8D6] p-5 rounded-2xl shadow-lg flex flex-col gap-3';
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <div class="text-3xl font-bold text-yellow-400">${r['股號']}</div>
+            <div class="text-sm bg-orange-500 text-white px-2 py-1 rounded">${r['配息頻率']||''}</div>
+          </div>
+          <div class="text-xl font-bold mb-2">${r['股票名稱']}</div>
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="bg-yellow-300 text-black p-3 rounded-lg">
+              <div class="text-xs mb-1">預估配息</div>
+              <div class="text-2xl font-bold">${r['預估配息']||'-'}</div>
+            </div>
+            <div class="bg-yellow-300 text-black p-3 rounded-lg">
+              <div class="text-xs mb-1">最後買進日</div>
+              <div class="text-2xl font-bold">${r['最後買進日']||'-'}</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center text-sm">
+            <div>
+              <div class="text-xs text-gray-300">收盤價</div>
+              <div class="font-bold">${r['收盤價']||'-'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-300">殖利率</div>
+              <div class="font-bold">${r['單期殖利率']||'-'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-gray-300">除息日</div>
+              <div class="font-bold">${r['除息日']||'-'}</div>
+            </div>
+          </div>
+          <div class="text-xs text-right text-gray-400 mt-2">配發日：${r['發放日']||'-'}</div>
+        `;
         container.appendChild(card);
       });
     }
 
-    function populateMonthOptions(data) {
-      const months=new Set(data.map(r=>`${r['西元']}-${r['月份']}`));
-      const arr=Array.from(months).sort();
-      const sel=document.getElementById('month-select');
-      sel.innerHTML=arr.map(m=>`<option value="${m}">${m}</option>`).join('');
-      sel.value=arr[arr.length-1]; filterByMonth(sel.value);
-    }
+    // 解析 CSV 並顯示
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      complete(results) {
+        allData = results.data;
 
-    function filterByMonth(val) {
-      const [y,m]=val.split('-'); renderTop5(allData.filter(r=>r['西元']===y&&r['月份']===m)); renderCards(allData.filter(r=>r['西元']===y&&r['月份']===m));
-    }
+        // 更新時間
+        const upd = allData[0]?.['更新日期'] || '';
+        if (upd) {
+          document.getElementById('last-update').textContent = `更新時間：${upd}`;
+        }
 
-    document.getElementById('month-select').addEventListener('change',e=>filterByMonth(e.target.value));
+        // 取得當前年月
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
 
-    Papa.parse(csvUrl, { download:true, header:true, complete(results) {
-      allData=results.data; populateMonthOptions(allData);
-      const upd=allData[0]['更新日期']||''; if(upd) document.getElementById('last-update').textContent=`更新時間：${upd}`;
+        // 設定配息時間表標題
+        document.getElementById('timeline-header').textContent =
+          `📅 ${year}年 ${String(month).padStart(2, '0')}月 ETF配息入帳時間表`;
 
-      const now=new Date(), currMonth=now.getMonth()+1, year=now.getFullYear();
-      const grouped={};
-      allData.forEach(r=>{
-        const d=r['發放日']?.trim(), m=parseInt((d||'').split('/')[0]);
-        if(m!==currMonth) return;
-        if(!grouped[d]) grouped[d]=[];
-        grouped[d].push({ id:r['股號'], name:r['股票名稱'], dividend:r['預估配息'], freq:r['配息頻率'] });
-      });
-      const container=document.getElementById('dividendList');
-      const dates=Object.keys(grouped).sort((a,b)=>new Date(`${year}/${a}`)-new Date(`${year}/${b}`));
-      if(!dates.length) { container.innerHTML='<p class="text-center text-gray-500">⚠️ 找不到本月的配息入帳資料</p>'; return; }
-      dates.forEach(date=>{
-        const card=document.createElement('div'); card.className='bg-[#FFF9E0] p-4 rounded-xl shadow-md mb-6';
-        card.innerHTML=`<div class="text-lg font-bold text-[#1D4A35] mb-3 flex items-center gap-2"><span class="bg-[#1D4A35] text-white text-xs px-2 py-1 rounded">發放日</span>${date}</div><div class="divide-y divide-yellow-200">${grouped[date].map(etf=>`<div class="grid grid-cols-[90px_1fr_120px] md:grid-cols-[110px_1fr_160px] items-start py-2 text-sm"><div class="font-bold text-[#1D4A35]">${etf.id}</div><div class="text-gray-800 break-words">${etf.name}</div><div class="text-right text-gray-700">${etf.dividend?`每股配息 ${etf.dividend} 元`:''} ${etf.freq?`（${etf.freq}）`:''}</div></div>`).join('')}</div>`;
-        container.appendChild(card);
-      });
-    }});
+        // 瀑布牆 & 前五名：依「西元」＋「月份」欄位篩出 2025-05
+        const waterfallData = allData.filter(r =>
+          parseInt(r['西元'], 10) === year &&
+          parseInt(r['月份'], 10) === month
+        );
+        renderTop5(waterfallData);
+        renderCards(waterfallData);
+
+        // 配息時間表：解析「發放日」
+        const timelineData = allData.filter(r => {
+          const d = (r['發放日'] || '').trim();
+          if (!d) return false;
+          const parts = d.split('/');
+          let m = NaN;
+          if (parts.length === 3) {
+            // YYYY/MM/DD
+            m = parseInt(parts[1], 10);
+          } else if (parts.length === 2) {
+            // M/DD
+            m = parseInt(parts[0], 10);
+          }
+          return parseInt(r['西元'], 10) === year && m === month;
+        });
+
+        const container = document.getElementById('dividendList');
+        container.innerHTML = '';
+
+        if (timelineData.length === 0) {
+          container.innerHTML = '<p class="text-center text-gray-500">⚠️ 本月無配息入帳資料</p>';
+          return;
+        }
+
+        // 分組並顯示
+        const grouped = {};
+        timelineData.forEach(r => {
+          const dateKey = r['發放日'].trim();
+          if (!grouped[dateKey]) grouped[dateKey] = [];
+          grouped[dateKey].push(r);
+        });
+
+        Object.keys(grouped)
+          .sort((a,b) => new Date(`${year}/${a}`) - new Date(`${year}/${b}`))
+          .forEach(date => {
+            const card = document.createElement('div');
+            card.className = 'bg-[#FFF9E0] p-4 rounded-xl shadow-md mb-6';
+            card.innerHTML = `
+              <div class="text-lg font-bold text-[#1D4A35] mb-3 flex items-center gap-2">
+                <span class="bg-[#1D4A35] text-white text-xs px-2 py-1 rounded">發放日</span>${date}
+              </div>
+              <div class="divide-y divide-yellow-200">
+                ${grouped[date].map(etf => `
+                  <div class="grid grid-cols-[90px_1fr_120px] md:grid-cols-[110px_1fr_160px] items-start py-2 text-sm">
+                    <div class="font-bold text-[#1D4A35]">${etf['股號']}</div>
+                    <div class="text-gray-800 break-words">${etf['股票名稱']}</div>
+                    <div class="text-right text-gray-700">
+                      每股配息 ${etf['預估配息']} 元${etf['配息頻率'] ? `（${etf['配息頻率']}）` : ''}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `;
+            container.appendChild(card);
+          });
+      }
+    });
+
   </script>
 </body>
-</html>
-
-  <!-- ⚠️ 投資風險提示 -->
-  <div style="margin-top: 4rem; padding: 1rem 1.5rem; font-size: 0.85rem; color: #666; background-color: #fefefe; border-top: 1px solid #ccc;">
-    📢 <strong>投資風險提示：</strong><br/>
-    本網站提供之試算與內容，僅供理財教育與參考，非為個別化投資建議。<br/>
-    投資一定有風險，ETF 等金融商品可能因市場波動而損失本金。<br/>
-    建議您投資前詳閱公開說明書，並依自身風險承受度評估。
-  </div>
-
-<!-- 支持我浮動按鈕 -->
-<div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
-  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 1.5s infinite;">
-    💰 支持我
-  </button>
-</div>
-
-<!-- CTA 背景遮罩 -->
-<div id="supportOverlay" style="
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 998;
-" onclick="toggleSupportBox()"></div>
-
-<!-- CTA 卡片 -->
-<div id="supportBox" style="
-  display: none;
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  width: 300px;
-  background-color: #2D3C2F;
-  color: #FFD54F;
-  border-radius: 1rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  z-index: 9999;
-  padding: 1.2rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s ease;
-  font-weight: 500;
-">
-  <div style="text-align: center;">
-    <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
-         style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
-    <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
-    <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
-
-    <a href="https://open.firstory.me/join/investwithmark" target="_blank"
-       style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
-      💰 單筆贊助我
-    </a>
-
-    <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
-    <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
-      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br/>
-      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br/>
-      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br/>
-      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br/>
-      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
-    </div>
-
-    <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
-  </div>
-</div>
-
-<!-- 控制 JS -->
-<script>
-  function toggleSupportBox() {
-    const box = document.getElementById('supportBox');
-    const overlay = document.getElementById('supportOverlay');
-    const isVisible = box.style.display === 'block';
-
-    if (!isVisible) {
-      overlay.style.display = 'block';
-      box.style.display = 'block';
-      setTimeout(() => {
-        box.style.opacity = '1';
-        box.style.transform = 'translateY(0)';
-      }, 30);
-    } else {
-      box.style.opacity = '0';
-      box.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        box.style.display = 'none';
-        overlay.style.display = 'none';
-      }, 250);
-    }
-  }
-</script>
 
 </html>
-</body>
-</html>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2971276431859770"
-     crossorigin="anonymous"></script>
