@@ -24,11 +24,9 @@
     h1 {
       font-size: 1.8rem;
     }
-    .btn {
-      margin-top: 1rem;
-    }
     #loading {
       display: none;
+      margin-top: 1rem;
       font-size: 0.95rem;
       color: #888;
     }
@@ -39,6 +37,7 @@
     <h1>🔐 登入會員專區</h1>
     <p>登入你的 Google 帳號，解鎖你的 ETF 任務牆與投資工具！</p>
 
+    <!-- Google Sign-In -->
     <div id="g_id_onload"
       data-client_id="176068279161-537pvbq4d21le56939rt9tsks3thnr8l.apps.googleusercontent.com"
       data-context="signin"
@@ -58,17 +57,18 @@
 
     <div id="loading">🔄 驗證中，請稍候...</div>
 
-   <p style="margin-top: 1.5rem; font-size: 0.9rem;">
-  尚未加入會員？<br>
-  👉 <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">
-    前往加入頻道會員
-  </a>
-</p>
-    
+    <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+      尚未加入會員？<br>
+      👉 <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">
+        前往加入頻道會員
+      </a>
+    </p>
+  </div>
+
   <script>
     async function handleCredentialResponse(response) {
       const decodedToken = parseJwt(response.credential);
-      const email = decodedToken.email;
+      const email = decodedToken.email?.toLowerCase()?.trim();
       const loadingEl = document.getElementById("loading");
       loadingEl.style.display = "block";
 
@@ -92,7 +92,7 @@
 
       } catch (err) {
         loadingEl.style.display = "none";
-        alert("驗證失敗，請稍後再試。");
+        alert("驗證失敗，請稍後再試或聯絡管理員。");
         console.error("驗證錯誤", err);
       }
     }
