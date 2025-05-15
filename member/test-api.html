@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>會員 API 測試工具｜吳馬克</title>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      background: #f7f7f7;
+    }
+    input, button {
+      font-size: 1rem;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.08);
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h2>🧪 會員 API 測試工具</h2>
+  <p>請輸入一個 Gmail 地址來測試是否為頻道會員：</p>
+
+  <input type="email" id="email" placeholder="example@gmail.com" style="width:100%">
+  <br>
+  <button onclick="testAPI()">開始測試</button>
+
+  <div class="result" id="resultBox" style="display:none;"></div>
+
+  <script>
+    async function testAPI() {
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "block";
+      resultBox.innerText = "🔄 測試中...";
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxdA7ufkhARp4eiCtDRAt-GFK66BFV1ZMDB15cGmnOLzt31cjgd00HbpV_CvyLvfujTqw/exec", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+        resultBox.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultBox.innerText = "❌ 發生錯誤：\n" + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
