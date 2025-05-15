@@ -33,11 +33,6 @@
     data-logo_alignment="left">
   </div>
 
-  <p style="margin-top: 1rem; font-size: 0.9rem;">
-    尚未加入會員？<br>
-    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">點我加入頻道會員</a>
-  </p>
-
   <script>
     function parseJwt(token) {
       const base64Url = token.split('.')[1];
@@ -48,15 +43,18 @@
       return JSON.parse(jsonPayload);
     }
 
-    async function handleCredentialResponse(response) {
+    function handleCredentialResponse(response) {
       const email = parseJwt(response.credential).email;
-      const result = await google.script.run.withSuccessHandler(function(level) {
-        if (level === 0) {
-          alert("查無會員紀錄，請確認帳號或尚未加入頻道會員。");
-        } else {
-          window.location.href = "membership-" + level + ".html";
-        }
-      }).verifyMember(email);
+
+      google.script.run
+        .withSuccessHandler(function(level) {
+          if (level === 0) {
+            alert("查無會員紀錄，請確認帳號或尚未加入頻道會員。");
+          } else {
+            window.location.href = "membership-" + level + ".html";
+          }
+        })
+        .verifyMember(email);
     }
   </script>
 </body>
