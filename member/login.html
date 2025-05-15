@@ -27,6 +27,11 @@
     .btn {
       margin-top: 1rem;
     }
+    #loading {
+      display: none;
+      font-size: 0.95rem;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -51,6 +56,8 @@
       data-logo_alignment="left">
     </div>
 
+    <div id="loading">🔄 驗證中，請稍候...</div>
+
     <p style="margin-top: 1.5rem; font-size: 0.9rem;">
       尚未加入會員？<br>
       👉 <a href="https://www.youtube.com/channel/你的頻道ID/join" target="_blank">前往加入頻道會員</a>
@@ -61,17 +68,31 @@
     async function handleCredentialResponse(response) {
       const decodedToken = parseJwt(response.credential);
       const email = decodedToken.email;
-      const whitelist = {
-        "abc@gmail.com": "30",
-        "test@example.com": "75",
-        "demo300@gmail.com": "300"
-      };
+      const loadingEl = document.getElementById("loading");
+      loadingEl.style.display = "block";
 
-      if (whitelist[email]) {
-        const level = whitelist[email];
-        window.location.href = `/compound-interest-tool/membership-${level}.html`;
-      } else {
-        alert("此帳號尚未授權，請先加入頻道會員並填寫表單！");
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxdA7ufkhARp4eiCtDRAt-GFK66BFV1ZMDB15cGmnOLzt31cjgd00HbpV_CvyLvfujTqw/exec", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+        loadingEl.style.display = "none";
+
+        if (data.isMember) {
+          localStorage.setItem("email", email);
+          localStorage.setItem("level", data.level);
+          window.location.href = `/compound-interest-tool/membership-${data.level}.html`;
+        } else {
+          alert("查無會員資料，請確認你登入的是頻道會員填寫的 Gmail。");
+        }
+
+      } catch (err) {
+        loadingEl.style.display = "none";
+        alert("驗證失敗，請稍後再試。");
+        console.error("驗證錯誤", err);
       }
     }
 
@@ -86,4 +107,3 @@
   </script>
 </body>
 </html>
-
