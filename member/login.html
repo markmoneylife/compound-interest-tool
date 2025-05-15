@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>會員登入 | MarkMoney 理財星球</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
+      color: #1D4A35;
+    }
+    .box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 480px;
+      margin: auto;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+    .btn {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🔐 登入會員專區</h1>
+    <p>登入你的 Google 帳號，解鎖你的 ETF 任務牆與投資工具！</p>
+
+    <div id="g_id_onload"
+      data-client_id="176068279161-537pvbq4d21le56939rt9tsks3thnr8l.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-shape="rectangular"
+      data-logo_alignment="left">
+    </div>
+
+    <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+      尚未加入會員？<br>
+      👉 <a href="https://www.youtube.com/channel/你的頻道ID/join" target="_blank">前往加入頻道會員</a>
+    </p>
+  </div>
+
+  <script>
+    async function handleCredentialResponse(response) {
+      const decodedToken = parseJwt(response.credential);
+      const email = decodedToken.email;
+      const whitelist = {
+        "abc@gmail.com": "30",
+        "test@example.com": "75",
+        "demo300@gmail.com": "300"
+      };
+
+      if (whitelist[email]) {
+        const level = whitelist[email];
+        window.location.href = `/compound-interest-tool/membership-${level}.html`;
+      } else {
+        alert("此帳號尚未授權，請先加入頻道會員並填寫表單！");
+      }
+    }
+
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+      return JSON.parse(jsonPayload);
+    }
+  </script>
+</body>
+</html>
 
