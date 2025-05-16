@@ -9,6 +9,10 @@
       font-family: 'Noto Sans TC', sans-serif;
       text-align: center;
       padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #1D4A35;
     }
   </style>
 </head>
@@ -16,6 +20,7 @@
   <h2>🔐 登入會員專區</h2>
   <p>請使用你註冊會員的 Google 帳號登入：</p>
 
+  <!-- Google Sign-In 按鈕 -->
   <div id="g_id_onload"
     data-client_id="176068279161-537pvbq4d21le56939rt9tsks3thnr8l.apps.googleusercontent.com"
     data-context="signin"
@@ -33,8 +38,13 @@
     data-logo_alignment="left">
   </div>
 
+  <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+    尚未加入會員？<br>
+    👉 <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">前往加入頻道會員</a>
+  </p>
+
   <script>
-    // 解碼 Google ID Token 用來取得 email
+    // 解析 ID token 拿出 email
     function parseJwt(token) {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -44,11 +54,26 @@
       return JSON.parse(jsonPayload);
     }
 
-    // 測試一：登入後跳 alert
     function handleCredentialResponse(response) {
       const email = parseJwt(response.credential).email;
+
       alert("✅ 成功登入！你登入的 Gmail 是：" + email);
-      console.log("登入成功，email：", email);
+
+      google.script.run
+        .withSuccessHandler(function(level) {
+          alert("🎯 後端回傳會員等級為：" + level);
+
+          if (level === 0) {
+            alert("⚠️ 查無會員資料，請確認你填寫的是已加入會員且填過表單的 Gmail。");
+          } else {
+            // 導向對應會員專屬頁
+            window.location.href = "membership-" + level + ".html";
+          }
+        })
+        .withFailureHandler(function(err) {
+          alert("❌ 伺服器錯誤：" + err.message);
+        })
+        .verifyMember(email);
     }
   </script>
 </body>
