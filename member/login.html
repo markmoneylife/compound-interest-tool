@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>會員登入 | 吳馬克</title>
+  <title>會員登入｜MarkMoney</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
@@ -34,6 +34,7 @@
   </div>
 
   <script>
+    // 解碼 Google ID Token 用來取得 email
     function parseJwt(token) {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -43,18 +44,11 @@
       return JSON.parse(jsonPayload);
     }
 
+    // 測試一：登入後跳 alert
     function handleCredentialResponse(response) {
       const email = parseJwt(response.credential).email;
-
-      google.script.run
-        .withSuccessHandler(function(level) {
-          if (level === 0) {
-            alert("查無會員紀錄，請確認帳號或尚未加入頻道會員。");
-          } else {
-            window.location.href = "membership-" + level + ".html";
-          }
-        })
-        .verifyMember(email);
+      alert("✅ 成功登入！你登入的 Gmail 是：" + email);
+      console.log("登入成功，email：", email);
     }
   </script>
 </body>
