@@ -6,13 +6,13 @@
   <title>會員專屬登入</title>
   <style>
     :root {
-      --brand-dark: #004d40;   /* 墨綠 */
-      --brand-light: #ffeb3b;  /* 亮黃 */
-      --bg: #f0f2f5;
+      --dark: #004d40;
+      --light: #ffeb3b;
+      --bg: #f7f8fa;
       --text: #333;
       --error: #e03e2d;
     }
-    *, *::before, *::after { box-sizing: border-box; }
+    *,*::before,*::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "微軟正黑體", sans-serif;
@@ -25,122 +25,137 @@
     }
     .box {
       background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      max-width: 320px;
       width: 100%;
-      max-width: 360px;
       text-align: center;
-      border-top: 6px solid var(--brand-light);
+      border-top: 5px solid var(--light);
     }
-    .box:hover { transform: translateY(-2px); transition: transform .2s; }
+    .box .avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      margin: 0 auto .5rem;
+      object-fit: cover;
+      border: 2px solid var(--dark);
+    }
     h1 {
-      margin: 0 0 1rem;
-      font-size: 1.5rem;
-      color: var(--brand-dark);
+      margin: .5rem 0 1rem;
+      font-size: 1.3rem;
+      color: var(--dark);
     }
     input {
       width: 100%;
-      padding: .75rem;
-      margin-top: .75rem;
+      padding: .7rem;
+      margin-bottom: .75rem;
       font-size: 1rem;
       border: 2px solid #ccc;
       border-radius: 6px;
       transition: border-color .2s;
     }
     input:focus {
-      border-color: var(--brand-dark);
+      border-color: var(--dark);
       outline: none;
     }
     button {
       width: 100%;
-      padding: .75rem;
-      margin-top: 1rem;
+      padding: .7rem;
       font-size: 1rem;
-      font-weight: bold;
+      background: var(--dark);
       color: #fff;
-      background: var(--brand-dark);
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter .2s;
     }
-    button:hover:not(:disabled) { background: #00332a; }
+    button:hover:not(:disabled) { filter: brightness(1.1); }
     button:disabled { background: #798b84; cursor: default; }
     .spinner {
-      width: 1.2em; height: 1.2em;
-      border: 3px solid rgba(255,235,59,0.4);
-      border-top-color: var(--brand-light);
+      width: 1rem; height: 1rem;
+      border: 2px solid rgba(255,235,59,0.4);
+      border-top-color: var(--light);
       border-radius: 50%;
       animation: spin .8s linear infinite;
-      position: absolute;
-      top: 50%; left: 1rem;
-      transform: translateY(-50%);
+      margin-left: .5rem;
       display: none;
     }
-    button.loading .spinner { display: block; }
-    button.loading span { visibility: hidden; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    button.loading .spinner { display: inline-block; }
     .msg {
-      height: 1.2rem;
-      margin-top: .8rem;
       color: var(--error);
+      font-size: .9rem;
+      min-height: 1.2rem;
+      margin-top: .6rem;
       opacity: 0;
       transition: opacity .3s;
     }
     .msg.show { opacity: 1; }
 
-    /* 未加入會員時的提示卡片 */
     .card {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      border: 2px dashed var(--brand-dark);
-      border-radius: 8px;
-      text-align: left;
+      margin-top: 1rem;
+      padding: .8rem;
+      border: 1px dashed var(--dark);
+      border-radius: 6px;
       background: #fffbe6;
+      text-align: left;
+      font-size: .9rem;
+      display: none;
     }
     .card h2 {
-      margin: 0 0 .5rem;
-      font-size: 1.1rem;
-      color: var(--brand-dark);
+      margin: 0 0 .4rem;
+      font-size: 1rem;
+      color: var(--dark);
     }
-    .card p {
-      margin: .5rem 0;
-      color: var(--text);
-      font-size: .95rem;
+    .card ul {
+      margin: .4rem 0;
+      padding-left: 1.2rem;
     }
     .card a {
       display: inline-block;
-      margin-top: .75rem;
-      padding: .5rem 1rem;
-      background: var(--brand-light);
-      color: var(--brand-dark);
-      font-weight: bold;
+      margin-top: .5rem;
+      font-size: .9rem;
+      color: var(--dark);
+      background: var(--light);
+      padding: .4rem .8rem;
       border-radius: 4px;
       text-decoration: none;
       transition: background .2s;
     }
     .card a:hover { background: #f7e600; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media(max-width:360px) {
+      .box { padding: 1rem; }
+      h1 { font-size: 1.2rem; }
+      input, button { font-size: .95rem; }
+    }
   </style>
 </head>
 <body>
   <div class="box" id="box">
+    <img src="../assets/mark-avatar.png" alt="吳馬克" class="avatar">
     <h1>會員專屬登入</h1>
-    <input id="email" type="email" placeholder="請輸入你的 Email" autocomplete="username"/>
+    <input id="email" type="email" placeholder="請輸入你的 Email" autocomplete="username" />
     <button id="btn">
-      <div class="spinner"></div>
       <span>登入</span>
+      <div class="spinner"></div>
     </button>
     <div class="msg" id="msg"></div>
-    <!-- 非會員提示卡片，預設隱藏 -->
-    <div class="card" id="noMemberCard" style="display:none">
+
+    <div class="card" id="noMemberCard">
       <h2>尚未加入會員？</h2>
-      <p>立即試用我們的免費工具：</p>
-      <p>• 複利試算工具<br>• 目標倒推工具<br>• ETF 追蹤牆</p>
+      <p>立即使用頻道免費工具：</p>
+      <ul>
+        <li>複利試算</li>
+        <li>目標倒推</li>
+        <li>ETF追蹤牆</li>
+      </ul>
       <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
-        立刻前往免費使用 →
+        前往免費工具 →
       </a>
     </div>
   </div>
@@ -150,7 +165,7 @@
     const btn = document.getElementById('btn');
     const emailInput = document.getElementById('email');
     const msg = document.getElementById('msg');
-    const noMemberCard = document.getElementById('noMemberCard');
+    const card = document.getElementById('noMemberCard');
 
     emailInput.addEventListener('keyup', e => {
       if (e.key === 'Enter') btn.click();
@@ -159,7 +174,7 @@
     btn.addEventListener('click', async () => {
       const email = emailInput.value.trim();
       msg.classList.remove('show');
-      noMemberCard.style.display = 'none';
+      card.style.display = 'none';
 
       if (!email) {
         msg.textContent = '請先輸入 Email';
@@ -171,17 +186,13 @@
 
       try {
         const res = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`);
-        const ct = res.headers.get('Content-Type') || '';
-        if (!ct.includes('application/json')) throw new Error('非 JSON 回應');
         const data = await res.json();
         const lvl = parseInt(data.level, 10) || 0;
 
         if (lvl > 0) {
-          // 驗證成功，跳轉
-          window.location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
+          location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
         } else {
-          // 非會員，顯示提示卡片
-          noMemberCard.style.display = 'block';
+          card.style.display = 'block';
         }
       } catch (err) {
         console.error(err);
