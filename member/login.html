@@ -1,29 +1,66 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>會員專屬登入</title>
   <style>
-    body {font-family:"微軟正黑體",sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f5f5f5;}
-    .box {background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);width:320px;text-align:center;}
-    input,button {width:100%;padding:.6rem;margin-top:.5rem;font-size:1rem;box-sizing:border-box;}
-    input {border:1px solid #ccc;border-radius:4px;}
-    button {border:none;background:#0078d4;color:#fff;border-radius:4px;cursor:pointer;}
-    button:disabled {opacity:.6;cursor:default;}
-    .msg {height:1.2rem;margin-top:.5rem;color:#e03e2d;}
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: .6rem;
+      margin-top: .5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      border: none;
+      background: #0078d4;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: .6;
+      cursor: default;
+    }
+    .msg {
+      height: 1.2rem;
+      margin-top: .5rem;
+      color: #e03e2d;
+    }
   </style>
 </head>
 <body>
   <div class="box">
     <h1>會員專屬登入</h1>
-    <input id="email" type="email" placeholder="請輸入你的 Email">
+    <input id="email" type="email" placeholder="請輸入你的 Email" />
     <button id="btn">登入</button>
     <div class="msg" id="msg"></div>
   </div>
 
   <script>
-    // ←—— 一定要改成你最新部署的完整 Exec URL ——→
+    // ←—— 把這行改成你部署後拿到的完整 Exec URL ——→
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
     const btn = document.getElementById('btn');
@@ -41,15 +78,16 @@
 
       fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
         .then(res => {
-          // 确保后端有正确回 JSON
-          if (res.headers.get('Content-Type')?.includes('application/json')) {
-            return res.json();
+          const ct = res.headers.get('Content-Type') || '';
+          if (!ct.includes('application/json')) {
+            throw new Error('非 JSON 回應');
           }
-          throw new Error('非 JSON 回應');
+          return res.json();
         })
         .then(data => {
           const lvl = parseInt(data.level, 10) || 0;
           if (lvl > 0) {
+            // 根據等級跳轉到對應頁面
             window.location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
           } else {
             msg.textContent = '抱歉，你尚未在會員名單中。';
