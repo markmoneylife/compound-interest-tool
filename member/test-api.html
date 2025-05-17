@@ -2,75 +2,60 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>會員驗證測試頁｜馬克</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📮 會員驗證測試工具</title>
   <style>
     body {
-      font-family: "Noto Sans TC", sans-serif;
-      background-color: #f8f9fa;
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F8F9FA;
       padding: 2rem;
       text-align: center;
-      color: #333;
     }
     input, button {
       padding: 0.6rem 1rem;
       font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
       margin: 0.5rem;
     }
-    button {
-      background-color: #1D4A35;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .result {
-      margin-top: 1.5rem;
+    #result {
+      margin-top: 1rem;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>📬 會員驗證測試工具</h2>
+  <h2>📮 會員驗證測試工具</h2>
   <p>輸入任意 Gmail，測試是否在會員名單中：</p>
+  <input type="email" id="emailInput" placeholder="your@email.com" />
+  <button onclick="checkMember()">開始測試</button>
 
-  <input type="email" id="emailInput" placeholder="輸入 email，例如 abc@gmail.com">
-  <button onclick="checkMembership()">開始測試</button>
-
-  <div class="result" id="resultText"></div>
+  <div id="result"></div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec"; // 請替換為你的正式網址
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
-    async function checkMembership() {
-      const email = document.getElementById("emailInput").value.trim();
-      const resultText = document.getElementById("resultText");
+    function checkMember() {
+      const email = document.getElementById('emailInput').value.trim();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerText = '🔍 查詢中...';
 
-      if (!email) {
-        resultText.textContent = "⚠️ 請輸入 Email。";
-        return;
-      }
-
-      resultText.textContent = "驗證中...";
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await res.json();
-        if (data.isMember) {
-          resultText.innerHTML = `✅ 是會員（等級 ${data.level}）`;
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.isMember) {
+          resultDiv.innerHTML = `✅ 已驗證會員，等級為 <strong>${data.level}</strong>`;
         } else {
-          resultText.innerHTML = `❌ 查無會員資料`;
+          resultDiv.innerHTML = '❌ 查無會員資料';
         }
-      } catch (err) {
-        console.error(err);
-        resultText.textContent = "⚠️ 錯誤：無法連線到 API。";
-      }
+      })
+      .catch(err => {
+        resultDiv.innerHTML = `⚠️ 錯誤：無法連線到 API<br>${err}`;
+      });
     }
   </script>
 </body>
