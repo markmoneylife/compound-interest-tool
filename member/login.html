@@ -81,6 +81,39 @@
         alert("❌ 驗證失敗，請稍後再試或聯絡管理員。");
       }
     }
+<script>
+  function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    );
+    return JSON.parse(jsonPayload);
+  }
+
+  async function handleCredentialResponse(response) {
+    const decodedToken = parseJwt(response.credential);
+    const email = decodedToken.email;
+
+    // 呼叫 Apps Script API 做會員驗證
+    const res = await fetch("https://script.google.com/macros/s/你的部署網址/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (data.isMember) {
+      const level = data.level;
+      // ✅ 根據會員等級導向頁面
+      window.location.href = `/compound-interest-tool/member/membership-${level}.html`;
+    } else {
+      alert("❌ 驗證失敗，請稍後再試或聯絡管理員。");
+    }
+  }
+</script>
+
   </script>
 </body>
 </html>
