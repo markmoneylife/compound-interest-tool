@@ -78,18 +78,25 @@
         body: JSON.stringify({ email: userEmail }),
         headers: { "Content-Type": "application/json" }
       })
-      .then(res => res.json())
-      .then(data => {
-        status.textContent = "";
+      .then(async res => {
+        const text = await res.text();
+        console.log("📦 Raw response:", text);
+        try {
+          const data = JSON.parse(text);
+          status.textContent = "";
 
-        if (data.isMember && data.level !== undefined && data.level !== null) {
-          alert(`✅ 驗證成功，會員等級為 ${data.level}！`);
-          if (data.level === 30) window.location.href = "./membership-30.html";
-          else if (data.level === 75) window.location.href = "./membership-75.html";
-          else if (data.level === 300) window.location.href = "./membership-300.html";
-          else alert("⚠️ 找不到對應頁面");
-        } else {
-          alert(`❌ 驗證失敗：${data.error || "查無此會員，請確認你的 Google 帳號是否正確"}`);
+          if (data.isMember && data.level !== undefined && data.level !== null) {
+            alert(`✅ 驗證成功，會員等級為 ${data.level}！`);
+            if (data.level === 30) window.location.href = "./membership-30.html";
+            else if (data.level === 75) window.location.href = "./membership-75.html";
+            else if (data.level === 300) window.location.href = "./membership-300.html";
+            else alert("⚠️ 找不到對應頁面");
+          } else {
+            alert(`❌ 驗證失敗：${data.error || "查無此會員，請確認你的 Google 帳號是否正確"}`);
+          }
+        } catch (err) {
+          console.error("❌ 回傳格式錯誤：", err);
+          alert("⚠️ 回傳資料格式有誤，請聯絡管理員。\n原始資料：" + text);
         }
       })
       .catch(err => {
