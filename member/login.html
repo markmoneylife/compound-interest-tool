@@ -3,204 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>會員專屬登入</title>
+  <title>馬克粉絲專屬小天地</title>
   <style>
     :root {
       --dark: #004d40;
       --light: #ffeb3b;
       --bg: #f7f8fa;
       --text: #333;
-      --error: #e03e2d;
     }
-    *,*::before,*::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "微軟正黑體", sans-serif;
       background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* —— 切換帳號區 —— */
+    .login-switch {
       display: flex;
-      align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 1rem;
+      margin-bottom: 1.5rem;
     }
-    .box {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      max-width: 320px;
-      width: 100%;
-      text-align: center;
-      border-top: 5px solid var(--light);
-    }
-    .box .avatar {
-      width: 60px; height: 60px;
-      border-radius: 50%;
-      margin: 0 auto .5rem;
-      object-fit: cover;
-      border: 2px solid var(--dark);
-    }
-    h1 {
-      margin: .5rem 0 1rem;
-      font-size: 1.3rem;
-      color: var(--dark);
-    }
-    input {
-      width: 100%;
-      padding: .7rem;
-      margin-bottom: .75rem;
-      font-size: 1rem;
+    .login-switch input {
+      width: 250px;
+      padding: .5rem;
+      font-size: .9rem;
       border: 2px solid #ccc;
-      border-radius: 6px;
+      border-radius: 4px 0 0 4px;
+      outline: none;
       transition: border-color .2s;
     }
-    input:focus {
+    .login-switch input:focus {
       border-color: var(--dark);
-      outline: none;
     }
-    button {
-      width: 100%;
-      padding: .7rem;
-      font-size: 1rem;
+    .login-switch button {
+      padding: .5rem 1rem;
+      font-size: .9rem;
       background: var(--dark);
       color: #fff;
       border: none;
-      border-radius: 6px;
+      border-radius: 0 4px 4px 0;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: filter .2s;
     }
-    button:hover:not(:disabled) { filter: brightness(1.1); }
-    button:disabled { background: #798b84; cursor: default; }
-    .spinner {
-      width: 1rem; height: 1rem;
-      border: 2px solid rgba(255,235,59,0.4);
-      border-top-color: var(--light);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin-left: .5rem;
-      display: none;
+    .login-switch button:hover {
+      filter: brightness(1.1);
     }
-    button.loading .spinner { display: inline-block; }
-    .msg {
-      color: var(--error);
-      font-size: .9rem;
-      min-height: 1.2rem;
-      margin-top: .6rem;
-      opacity: 0;
-      transition: opacity .3s;
-    }
-    .msg.show { opacity: 1; }
 
-    .card {
-      margin-top: 1rem;
-      padding: .8rem;
-      border: 1px dashed var(--dark);
-      border-radius: 6px;
-      background: #fffbe6;
-      text-align: left;
-      font-size: .9rem;
-      display: none;
+    header {
+      text-align: center;
+      margin-bottom: 1rem;
     }
-    .card h2 {
-      margin: 0 0 .4rem;
+    header img {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--light);
+    }
+    header h1 {
+      margin: .5rem 0;
+      font-size: 1.8rem;
+      color: var(--dark);
+    }
+    header p {
+      margin: 0;
       font-size: 1rem;
-      color: var(--dark);
     }
-    .card ul {
-      margin: .4rem 0;
-      padding-left: 1.2rem;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
     }
-    .card a {
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card-header {
+      background: var(--dark);
+      color: #fff;
+      padding: .75rem;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .card-body p {
+      margin: 0 0 .75rem;
+      font-size: .95rem;
+    }
+    .card-body a {
       display: inline-block;
-      margin-top: .5rem;
-      font-size: .9rem;
-      color: var(--dark);
+      padding: .5rem 1rem;
       background: var(--light);
-      padding: .4rem .8rem;
+      color: var(--dark);
       border-radius: 4px;
       text-decoration: none;
+      font-size: .9rem;
       transition: background .2s;
     }
-    .card a:hover { background: #f7e600; }
+    .card-body a:hover { background: #f7e600; }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    footer {
+      text-align: center;
+      margin: 2rem 0 1rem;
+      font-size: .85rem;
+      color: #777;
+    }
 
-    @media(max-width:360px) {
-      .box { padding: 1rem; }
-      h1 { font-size: 1.2rem; }
-      input, button { font-size: .95rem; }
+    @media(max-width:480px) {
+      .login-switch { flex-direction: column; gap: .5rem; }
+      .login-switch input,
+      .login-switch button { width: 100%; border-radius: 4px; }
     }
   </style>
 </head>
 <body>
-  <div class="box" id="box">
-    <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg " alt="吳馬克" class="avatar">
-    <h1>會員專屬登入</h1>
-    <input id="email" type="email" placeholder="請輸入你的 Email" autocomplete="username" />
-    <button id="btn">
-      <span>登入</span>
-      <div class="spinner"></div>
-    </button>
-    <div class="msg" id="msg"></div>
+  <div class="container">
 
-    <div class="card" id="noMemberCard">
-      <h2>尚未加入會員？</h2>
-      <p>立即使用頻道免費工具：</p>
-      <ul>
-        <li>複利試算</li>
-        <li>目標倒推</li>
-        <li>ETF追蹤牆</li>
-      </ul>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
-        前往免費工具 →
-      </a>
+    <!-- 切換會員帳號 -->
+    <div class="login-switch">
+      <input id="switchEmail" type="email" placeholder="輸入 Email 切換帳號" />
+      <button id="switchBtn">登入</button>
     </div>
+
+    <header>
+      <img src="../assets/mark-avatar.png" alt="吳馬克" />
+      <h1>馬克粉絲專屬小天地</h1>
+      <p>歡迎，<strong id="userEmail"></strong>！</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-header">🎥 獨家影片</div>
+        <div class="card-body">
+          <p>只給會員的深度解析影片，每週更新。</p>
+          <a href="https://youtu.be/你的獨家影片連結" target="_blank">前往觀看</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">🛠️ 快速工具</div>
+        <div class="card-body">
+          <p>複利試算｜目標倒推｜ETF追蹤牆</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
+            開始使用
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">💬 專屬社群</div>
+        <div class="card-body">
+          <p>加入 LINE 社群，一起聊理財與生活。</p>
+          <a href="https://line.me/你的社群連結" target="_blank">立即加入</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 吳馬克 • Financial Management creates your lifetime happiness.
+    </footer>
   </div>
 
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
-    const btn = document.getElementById('btn');
-    const emailInput = document.getElementById('email');
-    const msg = document.getElementById('msg');
-    const card = document.getElementById('noMemberCard');
 
-    emailInput.addEventListener('keyup', e => {
-      if (e.key === 'Enter') btn.click();
-    });
+    // 讀取當前登入 Email，顯示歡迎
+    const params = new URLSearchParams(location.search);
+    const email = params.get('email') || '';
+    document.getElementById('userEmail').textContent = email;
 
-    btn.addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      msg.classList.remove('show');
-      card.style.display = 'none';
-
-      if (!email) {
-        msg.textContent = '請先輸入 Email';
-        return msg.classList.add('show');
-      }
-
-      btn.disabled = true;
-      btn.classList.add('loading');
-
+    // 切換帳號
+    document.getElementById('switchBtn').addEventListener('click', async () => {
+      const e = document.getElementById('switchEmail').value.trim();
+      if (!e) return alert('請輸入 Email');
       try {
-        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
         const data = await res.json();
         const lvl = parseInt(data.level, 10) || 0;
-
         if (lvl > 0) {
-          location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
+          // 切換到對應會員頁
+          location.href = `membership-${lvl}.html?email=${encodeURIComponent(e)}`;
         } else {
-          card.style.display = 'block';
+          alert('此 Email 尚未加入會員');
         }
       } catch (err) {
         console.error(err);
-        msg.textContent = '伺服器錯誤，請稍後再試。';
-        msg.classList.add('show');
-      } finally {
-        btn.disabled = false;
-        btn.classList.remove('loading');
+        alert('驗證失敗，請稍後再試');
       }
     });
   </script>
