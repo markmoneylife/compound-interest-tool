@@ -5,50 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>會員專屬登入</title>
   <style>
-    body {
-      font-family: "微軟正黑體", sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    .box {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      width: 320px;
-      text-align: center;
-    }
-    input, button {
-      width: 100%;
-      padding: .6rem;
-      margin-top: .5rem;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    input {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      border: none;
-      background: #0078d4;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:disabled {
-      opacity: .6;
-      cursor: default;
-    }
-    .msg {
-      height: 1.2rem;
-      margin-top: .5rem;
-      color: #e03e2d;
-    }
+    body {font-family:"微軟正黑體",sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f5f5f5;}
+    .box {background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);width:320px;text-align:center;}
+    input,button {width:100%;padding:.6rem;margin-top:.5rem;font-size:1rem;box-sizing:border-box;}
+    input {border:1px solid #ccc;border-radius:4px;}
+    button {border:none;background:#0078d4;color:#fff;border-radius:4px;cursor:pointer;}
+    button:disabled {opacity:.6;cursor:default;}
+    .msg {height:1.2rem;margin-top:.5rem;color:#e03e2d;}
   </style>
 </head>
 <body>
@@ -60,8 +23,8 @@
   </div>
 
   <script>
-    // ←←← 把這裡換成你新版部署後的 Exec URL
-    const scriptURL = 'SCRIPT_EXEC_URL';
+    // ←—— 一定要改成你最新部署的完整 Exec URL ——→
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
     const btn = document.getElementById('btn');
     const msg = document.getElementById('msg');
@@ -77,11 +40,16 @@
       btn.disabled = true;
 
       fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
-        .then(res => res.json())
+        .then(res => {
+          // 确保后端有正确回 JSON
+          if (res.headers.get('Content-Type')?.includes('application/json')) {
+            return res.json();
+          }
+          throw new Error('非 JSON 回應');
+        })
         .then(data => {
           const lvl = parseInt(data.level, 10) || 0;
           if (lvl > 0) {
-            // 跳轉到對應會員頁，檔名對應 level
             window.location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
           } else {
             msg.textContent = '抱歉，你尚未在會員名單中。';
