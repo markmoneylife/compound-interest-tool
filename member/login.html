@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>🔐 登入會員專區</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
@@ -29,13 +28,14 @@
   <h2>🔐 登入會員專區</h2>
   <p>請使用你註冊會員的 Google 帳號登入：</p>
 
- <div id="g_id_onload"
-     data-client_id="176068279161-g2i8ivrn139aais83dnvuqpg0tm4vpr0.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     data-callback="handleCredentialResponse"
-     data-auto_prompt="false">
-</div>
+  <!-- ✅ 用你正確的 OAuth Client ID -->
+  <div id="g_id_onload"
+       data-client_id="176068279161-g2i8ivrn139aais83dnvuqpg0tm4vpr0.apps.googleusercontent.com"
+       data-context="signin"
+       data-ux_mode="popup"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
 
   <div class="g_id_signin"
        data-type="standard"
@@ -56,10 +56,10 @@
   <script>
     function parseJwt(token) {
       const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
-        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-      ).join(''));
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
       return JSON.parse(jsonPayload);
     }
 
@@ -81,7 +81,6 @@
       })
       .then(async res => {
         const text = await res.text();
-        console.log("📦 Raw response:", text);
         try {
           const data = JSON.parse(text);
           status.textContent = "";
