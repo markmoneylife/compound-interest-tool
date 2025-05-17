@@ -82,7 +82,7 @@
       .then(data => {
         status.textContent = "";
 
-        if (data.isMember && data.level) {
+        if (data.isMember && data.level !== undefined && data.level !== null) {
           alert(`✅ 驗證成功，會員等級為 ${data.level}！`);
           if (data.level === 30) window.location.href = "./membership-30.html";
           else if (data.level === 75) window.location.href = "./membership-75.html";
