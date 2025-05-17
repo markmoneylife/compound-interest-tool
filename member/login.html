@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>🔐 登入會員專區</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
       font-family: 'Noto Sans TC', sans-serif;
@@ -14,10 +14,18 @@
     h2 {
       color: #1D4A35;
     }
+    .g_id_signin {
+      margin-top: 1.5rem;
+    }
     .loading {
       margin-top: 1rem;
       font-size: 0.95rem;
       color: #888;
+    }
+    a {
+      color: #6A1B9A;
+      font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -26,7 +34,7 @@
   <p>請使用你註冊會員的 Google 帳號登入：</p>
 
   <div id="g_id_onload"
-       data-client_id="你的 Google OAuth Client ID"
+       data-client_id="176068279161-g2i8ivrn139aais83dnvuqpg0tm4vpr0.apps.googleusercontent.com"
        data-context="signin"
        data-ux_mode="popup"
        data-callback="handleCredentialResponse"
@@ -42,12 +50,11 @@
        data-logo_alignment="left">
   </div>
 
- <div id="g_id_onload"
-     data-client_id="176068279161-g2i8ivrn139aais83dnvuqpg0tm4vpr0.apps.googleusercontent.com"
+  <div id="status" class="loading"></div>
 
   <p style="margin-top: 1.5rem; font-size: 0.9rem;">
     尚未加入會員？<br>
-    👉 <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">前往加入頻道會員</a>
+    👉 <a href="https://www.youtube.com/channel/UC6K_j4AGwBtmxrIGSpFthw/join" target="_blank">前往加入頻道會員</a>
   </p>
 
   <script>
@@ -62,37 +69,44 @@
 
     function handleCredentialResponse(response) {
       const data = parseJwt(response.credential);
-      const email = data.email || "";
-      const status = document.getElementById("status");
-
-      if (!email) {
-        alert("❌ 無法取得 Email，請重新登入");
+      const userEmail = data.email || "";
+      if (!userEmail) {
+        alert("❌ 無法取得登入 Email，請重新嘗試");
         return;
       }
 
-      status.textContent = "🔄 驗證中...";
+      const status = document.getElementById("status");
+      status.textContent = "🔄 驗證中，請稍候...";
 
       fetch("https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: userEmail })
       })
-      .then(res => res.json())
-      .then(data => {
-        status.textContent = "";
-        if (data.isMember && data.level) {
-          alert(`✅ 驗證成功！等級：${data.level}`);
-          if (data.level === 30) location.href = "./membership-30.html";
-          else if (data.level === 75) location.href = "./membership-75.html";
-          else if (data.level === 300) location.href = "./membership-300.html";
-        } else {
-          alert(`❌ 驗證失敗：${data.error || "查無會員資料"}`);
+      .then(async res => {
+        const text = await res.text();
+        try {
+          const data = JSON.parse(text);
+          status.textContent = "";
+
+          if (data.isMember && data.level !== undefined && data.level !== null) {
+            alert(`✅ 驗證成功，會員等級為 ${data.level}！`);
+            if (data.level === 30) window.location.href = "./membership-30.html";
+            else if (data.level === 75) window.location.href = "./membership-75.html";
+            else if (data.level === 300) window.location.href = "./membership-300.html";
+            else alert("⚠️ 找不到對應頁面");
+          } else {
+            alert(`❌ 驗證失敗：${data.error || "查無此會員，請確認你的 Google 帳號是否正確"}`);
+          }
+        } catch (err) {
+          console.error("❌ 回傳格式錯誤：", err, text);
+          alert("⚠️ 回傳資料格式有誤，請聯絡管理員。\n原始資料：" + text);
         }
       })
       .catch(err => {
+        console.error("❌ API 錯誤：", err);
         status.textContent = "";
-        console.error("錯誤", err);
-        alert("⚠️ 系統錯誤，請稍後再試");
+        alert("⚠️ 系統發生錯誤，請稍後再試");
       });
     }
   </script>
