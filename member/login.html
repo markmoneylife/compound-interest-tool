@@ -5,51 +5,95 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>會員專屬登入</title>
   <style>
-    body {font-family:"微軟正黑體",sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f5f5f5;}
-    .box{background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);width:320px;text-align:center;}
-    input,button{width:100%;padding:.6rem;margin-top:.5rem;font-size:1rem;}
-    input{border:1px solid #ccc;border-radius:4px;}
-    button{border:none;background:#0078d4;color:#fff;border-radius:4px;cursor:pointer;}
-    button:disabled{opacity:.6;}
-    .msg{height:1.2rem;color:#e03e2d;margin-top:.5rem;}
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    .box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: .6rem;
+      margin-top: .5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      border: none;
+      background: #0078d4;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: .6;
+      cursor: default;
+    }
+    .msg {
+      height: 1.2rem;
+      margin-top: .5rem;
+      color: #e03e2d;
+    }
   </style>
 </head>
 <body>
   <div class="box">
-    <h1>會員登入</h1>
-    <input id="email" type="email" placeholder="your@email.com">
+    <h1>會員專屬登入</h1>
+    <input id="email" type="email" placeholder="請輸入你的 Email">
     <button id="btn">登入</button>
     <div class="msg" id="msg"></div>
   </div>
 
   <script>
-    // ←←← 改成你最新部署的 Exec URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
+    // ←←← 把這裡換成你新版部署後的 Exec URL
+    const scriptURL = 'SCRIPT_EXEC_URL';
 
     const btn = document.getElementById('btn');
     const msg = document.getElementById('msg');
+    const inp = document.getElementById('email');
 
     btn.addEventListener('click', () => {
       msg.textContent = '';
-      const email = document.getElementById('email').value.trim();
-      if (!email) { msg.textContent = '請輸入 Email'; return; }
+      const email = inp.value.trim();
+      if (!email) {
+        msg.textContent = '請先輸入 Email';
+        return;
+      }
       btn.disabled = true;
-      
+
       fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
-        .then(r => r.json())
+        .then(res => res.json())
         .then(data => {
-          const lvl = parseInt(data.level,10) || 0;
+          const lvl = parseInt(data.level, 10) || 0;
           if (lvl > 0) {
-            // 假設會員檔名就是 membership-30.html / -75 / -300
+            // 跳轉到對應會員頁，檔名對應 level
             window.location.href = `membership-${lvl}.html?email=${encodeURIComponent(email)}`;
           } else {
-            msg.textContent = '抱歉，你不在名單中。';
+            msg.textContent = '抱歉，你尚未在會員名單中。';
           }
         })
-        .catch(_=> {
+        .catch(err => {
+          console.error(err);
           msg.textContent = '伺服器錯誤，請稍後再試。';
         })
-        .finally(()=> btn.disabled = false);
+        .finally(() => {
+          btn.disabled = false;
+        });
     });
   </script>
 </body>
