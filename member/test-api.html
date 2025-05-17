@@ -2,58 +2,74 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>會員 API 測試工具｜吳馬克</title>
+  <title>會員驗證測試頁｜馬克</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: 'Noto Sans TC', sans-serif;
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #f8f9fa;
       padding: 2rem;
-      max-width: 600px;
-      margin: auto;
-      background: #f7f7f7;
+      text-align: center;
+      color: #333;
     }
     input, button {
+      padding: 0.6rem 1rem;
       font-size: 1rem;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: 0.5rem;
+    }
+    button {
+      background-color: #1D4A35;
+      color: white;
+      border: none;
+      cursor: pointer;
     }
     .result {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.08);
-      font-family: monospace;
+      margin-top: 1.5rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>🧪 會員 API 測試工具</h2>
-  <p>請輸入一個 Gmail 地址來測試是否為頻道會員：</p>
+  <h2>📬 會員驗證測試工具</h2>
+  <p>輸入任意 Gmail，測試是否在會員名單中：</p>
 
-  <input type="email" id="email" placeholder="example@gmail.com" style="width:100%">
-  <br>
-  <button onclick="testAPI()">開始測試</button>
+  <input type="email" id="emailInput" placeholder="輸入 email，例如 abc@gmail.com">
+  <button onclick="checkMembership()">開始測試</button>
 
-  <div class="result" id="resultBox" style="display:none;"></div>
+  <div class="result" id="resultText"></div>
 
   <script>
-    async function testAPI() {
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      const resultBox = document.getElementById("resultBox");
-      resultBox.style.display = "block";
-      resultBox.innerText = "🔄 測試中...";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec"; // 請替換為你的正式網址
+
+    async function checkMembership() {
+      const email = document.getElementById("emailInput").value.trim();
+      const resultText = document.getElementById("resultText");
+
+      if (!email) {
+        resultText.textContent = "⚠️ 請輸入 Email。";
+        return;
+      }
+
+      resultText.textContent = "驗證中...";
 
       try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbxdA7ufkhARp4eiCtDRAt-GFK66BFV1ZMDB15cGmnOLzt31cjgd00HbpV_CvyLvfujTqw/exec", {
+        const res = await fetch(API_URL, {
           method: "POST",
-          body: JSON.stringify({ email }),
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
         });
 
         const data = await res.json();
-        resultBox.innerText = JSON.stringify(data, null, 2);
+        if (data.isMember) {
+          resultText.innerHTML = `✅ 是會員（等級 ${data.level}）`;
+        } else {
+          resultText.innerHTML = `❌ 查無會員資料`;
+        }
       } catch (err) {
-        resultBox.innerText = "❌ 發生錯誤：\n" + err.message;
+        console.error(err);
+        resultText.textContent = "⚠️ 錯誤：無法連線到 API。";
       }
     }
   </script>
