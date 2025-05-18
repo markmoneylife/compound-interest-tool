@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -12,120 +11,30 @@
       --bg: #f7f8fa;
       --text: #333;
     }
-    *,*::before,*::after { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "微軟正黑體", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      text-align: center;
-    }
-    header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid var(--light);
-    }
-    header h1 {
-      margin: .5rem 0;
-      color: var(--dark);
-      font-size: 1.8rem;
-    }
-    header p {
-      margin: 0;
-      font-size: 1rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-    .card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-      transition: transform .2s;
-    }
-    .card:hover { transform: translateY(-4px); }
-    .card-header {
-      background: var(--dark);
-      color: #fff;
-      padding: .75rem;
-      font-weight: bold;
-    }
-    .card-body {
-      padding: 1rem;
-      text-align: left;
-    }
-    .card-body p { margin: 0 0 .75rem; }
-    .card-body a {
-      display: inline-block;
-      padding: .5rem 1rem;
-      background: var(--light);
-      color: var(--dark);
-      border-radius: 4px;
-      text-decoration: none;
-      transition: background .2s;
-    }
-    .card-body a:hover { background: #f7e600; }
-    footer {
-      margin: 2rem 0 1rem;
-      font-size: .85rem;
-      color: #777;
-    }
+    *,*::before,*::after{box-sizing:border-box;}
+    body{margin:0;font-family:"微軟正黑體",sans-serif;background:var(--bg);color:var(--text);}
+    .container{max-width:800px;margin:2rem auto;padding:0 1rem;text-align:center;}
+    header img{width:80px;height:80px;border-radius:50%;border:3px solid var(--light);}
+    header h1{margin:.5rem 0;color:var(--dark);font-size:1.8rem;}
+    header p{margin:0;font-size:1rem;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.5rem;}
+    .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;transition:transform .2s;}
+    .card:hover{transform:translateY(-4px);}
+    .card-header{background:var(--dark);color:#fff;padding:.75rem;font-weight:bold;}
+    .card-body{padding:1rem;text-align:left;}
+    .card-body p{margin:0 0 .75rem;}
+    .card-body a{display:inline-block;padding:.5rem 1rem;background:var(--light);color:var(--dark);border-radius:4px;text-decoration:none;transition:background .2s;}
+    .card-body a:hover{background:#f7e600;}
+    footer{margin:2rem 0 1rem;font-size:.85rem;color:#777;}
     /* Gate */
-    #gate {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255,255,255,0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    #gate .box {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      max-width: 320px;
-      width: 90%;
-      text-align: center;
-    }
-    #gate input, #gate button {
-      width: 100%;
-      padding: .6rem;
-      font-size: 1rem;
-      margin-top: .6rem;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-    }
-    #gate input:focus { border-color: var(--dark); outline: none; }
-    #gate button {
-      background: var(--dark);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      transition: filter .2s;
-    }
-    #gate button:hover { filter: brightness(1.1); }
-    #gate .msg {
-      color: #e03e2d;
-      font-size: .9rem;
-      height: 1.2rem;
-      margin-top: .5rem;
-    }
-    #content { visibility: hidden; }
+    #gate{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;}
+    #gate .box{background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);max-width:320px;width:90%;text-align:center;}
+    #gate input, #gate button{width:100%;padding:.6rem;font-size:1rem;margin-top:.6rem;border:2px solid #ccc;border-radius:4px;}
+    #gate input:focus{border-color:var(--dark);outline:none;}
+    #gate button{background:var(--dark);color:#fff;border:none;cursor:pointer;transition:filter .2s;}
+    #gate button:hover{filter:brightness(1.1);}
+    #gate .msg{color:#e03e2d;font-size:.9rem;height:1.2rem;margin-top:.5rem;}
+    #content{visibility:hidden;}
   </style>
 </head>
 <body>
@@ -192,14 +101,15 @@
       }
       gateBtn.disabled = true;
       try {
-        const res = await fetch(`${execURL}?email=${encodeURIComponent(email)}`);
+        const res = await fetch(${execURL}?email=${encodeURIComponent(email)});
         const { level, agreed } = await res.json();
         if (!agreed) {
-          return location.replace(`member/agree.html?email=${encodeURIComponent(email)}`);
+          return location.replace(agree.html?email=${encodeURIComponent(email)});
         }
         if (level < 30) {
           return location.replace('login.html');
         }
+        // 通過，顯示內容
         gate.style.display = 'none';
         content.style.visibility = 'visible';
         userEmail.textContent = email;
@@ -211,47 +121,75 @@
       }
     });
   </script>
-
 </body>
 </html>
 
-<!-- member/agree.html -->
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>會員條款同意</title>
-  <style>
-    body { font-family: "微軟正黑體", sans-serif; padding: 2rem; background: #f7f8fa; }
-    .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    textarea { width: 100%; height: 200px; margin-bottom: 1rem; padding: .5rem; resize: none; }
-    button { display: block; width: 100%; padding: .75rem; background: #004d40; color: #fff; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>同意會員條款</h1>
-    <textarea readonly>
-1. 本服務需同意隱私權條款
-2. 同意資料將用於會員驗證與保護
-3. 同意後方可進入會員專區
-    </textarea>
-    <button id="agreeBtn">我已閱讀並同意</button>
+
+    <!-- 切換會員帳號 -->
+    <header>
+      <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg " alt="吳馬克" />
+      <h1>幸福星球 × 馬濕克</h1>
+      <p>歡迎，<strong id="userEmail"></strong>！</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-header">🎥 獨家影片</div>
+        <div class="card-body">
+          <p>只給會員的深度解析影片，每週更新。</p>
+          <a href="https://www.youtube.com/user/rengary" target="_blank">前往觀看</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">🛠️ 快速工具</div>
+        <div class="card-body">
+          <p>複利試算｜目標倒推｜ETF追蹤牆</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
+            開始使用
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">💬 專屬社群</div>
+        <div class="card-body">
+          <p>加入 LINE 社群，一起聊理財與生活。</p>
+          <a href="https://forms.gle/CxGYDeK3kRTNJG1Q7" target="_blank">立即加入</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 吳馬克 • Financial Management creates your lifetime happiness.
+    </footer>
   </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/你的ID/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
+
+    // 讀取當前登入 Email，顯示歡迎
     const params = new URLSearchParams(location.search);
-    const email = params.get('email');
-    document.getElementById('agreeBtn').addEventListener('click', async () => {
-      if (!email) { alert('缺少 Email'); return; }
+    const email = params.get('email') || '';
+    document.getElementById('userEmail').textContent = email;
+
+    // 切換帳號
+    document.getElementById('switchBtn').addEventListener('click', async () => {
+      const e = document.getElementById('switchEmail').value.trim();
+      if (!e) return alert('請輸入 Email');
       try {
-        await fetch(`${scriptURL}?action=agree&email=${encodeURIComponent(email)}`);
-        location.href = `login.html?email=${encodeURIComponent(email)}`;
+        const res = await fetch(${scriptURL}?email=${encodeURIComponent(e)});
+        const data = await res.json();
+        const lvl = parseInt(data.level, 10) || 0;
+        if (lvl > 0) {
+          // 切換到對應會員頁
+          location.href = membership-${lvl}.html?email=${encodeURIComponent(e)};
+        } else {
+          alert('此 Email 尚未加入會員');
+        }
       } catch (err) {
         console.error(err);
-        alert('紀錄失敗，請稍後再試');
+        alert('驗證失敗，請稍後再試');
       }
     });
   </script>
