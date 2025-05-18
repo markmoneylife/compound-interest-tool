@@ -169,35 +169,31 @@
     </footer>
   </div>
 
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
+ <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
-    // 讀取 URL 上的 ?email= 值並顯示
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get('email') || '';
-    document.getElementById('userEmail').textContent = email;
+  document.getElementById('switchBtn').addEventListener('click', async () => {
+    const e = document.getElementById('switchEmail').value.trim();
+    if (!e) {
+      alert('請輸入 Email');
+      return;
+    }
+    try {
+      const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
+      const data = await res.json();
+      const lvl = parseInt(data.level, 10) || 0;
+      if (lvl > 0) {
+        // 直接跳到正確的會員頁，不帶任何 query string
+        location.href = `membership-${lvl}.html`;
+      } else {
+        alert('此 Email 尚未加入會員');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('驗證失敗，請稍後再試');
+    }
+  });
+</script>
 
-    document.getElementById('switchBtn').addEventListener('click', async () => {
-      const e = document.getElementById('switchEmail').value.trim();
-      if (!e) {
-        alert('請輸入 Email');
-        return;
-      }
-      try {
-        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
-        const data = await res.json();
-        const lvl = parseInt(data.level, 10) || 0;
-        if (lvl > 0) {
-          // 直接跳到同層的 membership-*.html
-          location.href = `membership-${lvl}.html?email=${encodeURIComponent(e)}`;
-        } else {
-          alert('此 Email 尚未加入會員');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('驗證失敗，請稍後再試');
-      }
-    });
-  </script>
 </body>
 </html>
