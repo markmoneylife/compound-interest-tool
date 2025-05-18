@@ -172,7 +172,7 @@
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
-    // 顯示當前 URL 中 ?email= 的值
+    // 讀取 URL 上的 ?email= 值並顯示
     const params = new URLSearchParams(window.location.search);
     const email = params.get('email') || '';
     document.getElementById('userEmail').textContent = email;
@@ -184,13 +184,12 @@
         return;
       }
       try {
-        // 用 template literal 正確帶入參數
         const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
         const data = await res.json();
         const lvl = parseInt(data.level, 10) || 0;
         if (lvl > 0) {
-          // 從 /member/login.html 跳到父層的 membership-*.html
-          location.href = `../membership-${lvl}.html?email=${encodeURIComponent(e)}`;
+          // 直接跳到同層的 membership-*.html
+          location.href = `membership-${lvl}.html?email=${encodeURIComponent(e)}`;
         } else {
           alert('此 Email 尚未加入會員');
         }
