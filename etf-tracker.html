@@ -305,9 +305,11 @@
           <button class="favorite-button" onclick="toggleFavorite('${row["股號"]}')" style="float:right;background:none;border:none;cursor:pointer;font-size:1.2rem;">
             ${isFav ? '⭐' : '☆'}
           </button>
+
         </h2>
         <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
         <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
+        <p>💵 收盤價格：$${parseFloat(row["收盤價"]||0).toLocaleString()}</p>
         <p>💰 預估配息：$${Math.round((parseFloat(row["預估配息"] || 0) * parseInt(row["持有總股數"] || 0))).toLocaleString()}（每股 $${parseFloat(row["預估配息"] || 0).toFixed(2)} × ${parseInt(row["持有總股數"] || 0).toLocaleString()} 股）</p>
         <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
         <p>📆 更新日期：${row["更新日期"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
