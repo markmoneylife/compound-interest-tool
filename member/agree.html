@@ -10,45 +10,22 @@
       font-family:"微軟正黑體",sans-serif; 
       background:#f7f7f7; 
       color:#333; 
-      display:flex; 
-      align-items:center; 
-      justify-content:center; 
-      min-height:100vh; 
-      padding:1rem;
+      display:flex; align-items:center; justify-content:center; 
+      min-height:100vh; padding:1rem;
     }
     .box {
-      background:#fff; 
-      padding:2rem; 
-      border-radius:8px; 
-      box-shadow:0 2px 12px rgba(0,0,0,0.1); 
-      max-width:600px; 
-      width:100%;
-      line-height:1.6;
+      background:#fff; padding:2rem; border-radius:8px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.1);
+      max-width:600px; width:100%; line-height:1.6;
     }
-    h1 {
-      margin-top:0;
-      color:#004d40;
-    }
-    ol {
-      margin:1rem 0;
-      padding-left:1.2rem;
-    }
-    li {
-      margin-bottom:.8rem;
-    }
+    h1 { margin-top:0; color:#004d40; }
+    ol { margin:1rem 0; padding-left:1.2rem; }
+    li { margin-bottom:.8rem; }
     strong { color:#004d40; }
     .btn {
-      display:block;
-      width:100%;
-      padding:.8rem;
-      margin-top:1rem;
-      background:#004d40;
-      color:#fff;
-      border:none;
-      border-radius:4px;
-      font-size:1rem;
-      cursor:pointer;
-      text-align:center;
+      display:block; width:100%; padding:.8rem; margin-top:1rem;
+      background:#004d40; color:#fff; border:none; border-radius:4px;
+      font-size:1rem; cursor:pointer; text-align:center;
       transition:filter .2s;
     }
     .btn:hover { filter:brightness(1.1); }
@@ -60,37 +37,38 @@
     <p>為遵守台灣現行投資法令與金管會公告，使用本平台前請務必閱讀並同意以下重點條文：</p>
     <ol>
       <li>
-        <strong>非投資顧問業者</strong><br>
-        依據《證券投資信託及顧問法》第47條規定，本平台未取得投資顧問業執照，所提供之所有資訊僅屬學習示範，<u>不構成任何投資建議或買賣推薦</u>。
+        <strong>非投資顧問業者：</strong>
+        依《證券投資信託及顧問法》第47條，本平台未取得投資顧問業執照，
+        <u>所提供資訊僅供學習示範，不構成投資建議或買賣推薦</u>。
       </li>
       <li>
-        <strong>風險自負</strong><br>
-        依據《證券交易法》第157條之1規定，證券及期貨市場具有價格波動風險，<u>投資有賺有賠，過去績效不代表未來表現</u>，所有結果均由您自行承擔。
+        <strong>風險自負：</strong>
+        依《證券交易法》第157條之1，市場具有價格波動風險，
+        <u>投資有賺有賠，過去績效不代表未來表現</u>，均由您自行承擔。
       </li>
       <li>
-        <strong>資訊示範性質</strong><br>
-        本平台提供之試算工具、模型及範本，僅供參考與學習，使用者應自行判斷並承擔操作風險，<u>本平台不對任何因使用資訊或工具所產生之損失負責</u>。
+        <strong>資訊示範性質：</strong>
+        平台提供工具及範本僅供參考，使用者應自行判斷並承擔風險，
+        <u>平台不對任何因使用資訊或工具所生之損失負責</u>。
       </li>
       <li>
-        <strong>電子交易風險揭露</strong><br>
-        根據金管會「電子交易業務風險揭露及免責聲明」公告，請謹慎評估網路交易環境及資安風險，<u>勿使用於實際交易前之最後決策</u>。
+        <strong>電子交易風險揭露：</strong>
+        根據金管會「電子交易業務風險揭露及免責聲明」公告，
+        <u>勿使用本平台資訊做為實際交易前之最終決策</u>。
       </li>
     </ol>
-    <p><strong>聲明：</strong>使用本平台即表示您已閱讀並充分理解上述內容，並同意自負所有風險。本聲明若有未盡事宜，將依相關法令及金管會最新公告為準。</p>
+    <p><strong>聲明：</strong>使用本平台即表示您已閱讀並充分理解上述內容，並同意自負所有風險。</p>
     <button class="btn" id="btnAgree">我已閱讀並同意</button>
   </div>
 
   <script>
-    // 同意後回到會員頁
-    document.getElementById('btnAgree').addEventListener('click', () => {
-      const email = new URLSearchParams(location.search).get('email');
+    const scriptURL = 'https://script.google.com/macros/s/你的ID/exec';
+    const email = new URLSearchParams(location.search).get('email');
+    document.getElementById('btnAgree').addEventListener('click', async () => {
       if (!email) return alert('參數遺失，請重新登入');
-      // 呼叫後端標記合規同意 (可用 GET 或 POST)
-      fetch(`${location.origin}/exec?action=agree&email=${encodeURIComponent(email)}`)
-        .finally(() => {
-          // 假設此頁對應 membership-75.html，改成動態帶頁面或參數
-          location.replace(`membership-30.html?email=${encodeURIComponent(email)}`);
-        });
+      await fetch(`${scriptURL}?action=agree&email=${encodeURIComponent(email)}`);
+      // 同意後回到該等級頁（請改成對應的 membership-XX.html）
+      location.replace(`membership-30.html?email=${encodeURIComponent(email)}`);
     });
   </script>
 </body>
