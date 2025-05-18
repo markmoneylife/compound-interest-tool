@@ -1,123 +1,157 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>幸福入門包 · Level 30</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>會員專屬登入</title>
   <style>
     :root {
       --dark: #004d40;
       --light: #ffeb3b;
       --bg: #f7f8fa;
       --text: #333;
+      --error: #e03e2d;
     }
-    *,*::before,*::after{box-sizing:border-box;}
-    body{margin:0;font-family:"微軟正黑體",sans-serif;background:var(--bg);color:var(--text);}
-    .container{max-width:800px;margin:2rem auto;padding:0 1rem;text-align:center;}
-    header img{width:80px;height:80px;border-radius:50%;border:3px solid var(--light);}
-    header h1{margin:.5rem 0;color:var(--dark);font-size:1.8rem;}
-    header p{margin:0;font-size:1rem;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.5rem;}
-    .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;transition:transform .2s;}
-    .card:hover{transform:translateY(-4px);}
-    .card-header{background:var(--dark);color:#fff;padding:.75rem;font-weight:bold;}
-    .card-body{padding:1rem;text-align:left;}
-    .card-body p{margin:0 0 .75rem;}
-    .card-body a{display:inline-block;padding:.5rem 1rem;background:var(--light);color:var(--dark);border-radius:4px;text-decoration:none;transition:background .2s;}
-    .card-body a:hover{background:#f7e600;}
-    footer{margin:2rem 0 1rem;font-size:.85rem;color:#777;}
-    /* Gate */
-    #gate{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;}
-    #gate .box{background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);max-width:320px;width:90%;text-align:center;}
-    #gate input, #gate button{width:100%;padding:.6rem;font-size:1rem;margin-top:.6rem;border:2px solid #ccc;border-radius:4px;}
-    #gate input:focus{border-color:var(--dark);outline:none;}
-    #gate button{background:var(--dark);color:#fff;border:none;cursor:pointer;transition:filter .2s;}
-    #gate button:hover{filter:brightness(1.1);}
-    #gate .msg{color:#e03e2d;font-size:.9rem;height:1.2rem;margin-top:.5rem;}
-    #content{visibility:hidden;}
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "微軟正黑體", sans-serif;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+    .box {
+      background: #fff;
+      border-top: 6px solid var(--light);
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 360px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform .2s;
+    }
+    .box:hover {
+      transform: translateY(-4px);
+    }
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 1.4rem;
+      color: var(--dark);
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: .75rem;
+      margin-bottom: .75rem;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: border-color .2s;
+    }
+    input[type="email"]:focus {
+      border-color: var(--dark);
+      outline: none;
+    }
+    .disclaimer {
+      text-align: left;
+      font-size: .85rem;
+      margin: 1rem 0 .5rem;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .disclaimer input {
+      vertical-align: middle;
+    }
+    .disclaimer label {
+      margin-left: .4rem;
+      cursor: pointer;
+    }
+    .disclaimer a {
+      color: var(--dark);
+      text-decoration: underline;
+    }
+    button {
+      width: 100%;
+      padding: .75rem;
+      font-size: 1rem;
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: filter .2s;
+    }
+    button:disabled {
+      background: #798b84;
+      cursor: default;
+    }
+    button:not(:disabled):hover {
+      filter: brightness(1.1);
+    }
+    .msg {
+      margin-top: .8rem;
+      color: var(--error);
+      font-size: .9rem;
+      min-height: 1.2rem;
+    }
+    @media (max-width: 360px) {
+      .box { padding: 1rem; }
+      h1 { font-size: 1.2rem; }
+      input, button { font-size: .95rem; }
+    }
   </style>
 </head>
 <body>
-  <!-- Gate -->
-  <div id="gate">
-    <div class="box">
-      <h2>會員驗證</h2>
-      <input id="gateEmail" type="email" placeholder="請輸入你的 Email" />
-      <button id="gateBtn">確認</button>
-      <div class="msg" id="gateMsg"></div>
+  <div class="box">
+    <h1>會員專屬登入</h1>
+    <input id="email" type="email" placeholder="請輸入你的 Email" autocomplete="username" />
+
+    <div class="disclaimer">
+      <input id="agree" type="checkbox" />
+      <label for="agree">
+        我已閱讀並同意
+        <a href="agree.html" target="_blank">免責聲明與法令簡介</a>
+      </label>
     </div>
-  </div>
 
-  <!-- 內容 -->
-  <div id="content" class="container">
-    <header>
-      <img src="../assets/mark-avatar.png" alt="吳馬克"/>
-      <h1>幸福入門包 · Level 30</h1>
-      <p>歡迎，<strong id="userEmail"></strong>！</p>
-    </header>
-
-    <section class="grid">
-      <div class="card">
-        <div class="card-header">📄 幸福理財簡報 (PDF)</div>
-        <div class="card-body">
-          <p>投資心法與理財心態養成，純教育示範。</p>
-          <a href="../assets/intro.pdf" download>下載閱讀</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">🛠️ 基礎工具</div>
-        <div class="card-body">
-          <p>複利計算器／目標倒推試算</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">開始使用</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">💬 入門社群</div>
-        <div class="card-body">
-          <p>加入 LINE 社群，分享學習筆記與心法。</p>
-          <a href="https://forms.gle/CxGYDeK3kRTNJG1Q7" target="_blank">立即加入</a>
-        </div>
-      </div>
-    </section>
-
-    <footer>© 2025 吳馬克 • Financial Management creates your lifetime happiness.</footer>
+    <button id="btn" disabled>登入</button>
+    <div class="msg" id="msg"></div>
   </div>
 
   <script>
-    const execURL = 'https://script.google.com/macros/s/你的ID/exec';
-    const gate      = document.getElementById('gate');
-    const gateEmail = document.getElementById('gateEmail');
-    const gateBtn   = document.getElementById('gateBtn');
-    const gateMsg   = document.getElementById('gateMsg');
-    const content   = document.getElementById('content');
-    const userEmail = document.getElementById('userEmail');
+    const scriptURL = 'https://script.google.com/macros/s/你的ID/exec';
+    const emailInput = document.getElementById('email');
+    const agreeChk   = document.getElementById('agree');
+    const btn        = document.getElementById('btn');
+    const msg        = document.getElementById('msg');
 
-    gateBtn.addEventListener('click', async () => {
-      gateMsg.textContent = '';
-      const email = gateEmail.value.trim();
-      if (!email) {
-        gateMsg.textContent = '請輸入 Email';
-        return;
-      }
-      gateBtn.disabled = true;
+    function updateButtonState() {
+      btn.disabled = !(emailInput.value.trim() && agreeChk.checked);
+    }
+    emailInput.addEventListener('input', updateButtonState);
+    agreeChk.addEventListener('change', updateButtonState);
+
+    btn.addEventListener('click', async () => {
+      msg.textContent = '';
+      const email = emailInput.value.trim();
+      btn.disabled = true;
       try {
-        const res = await fetch(${execURL}?email=${encodeURIComponent(email)});
-        const { level, agreed } = await res.json();
-        if (!agreed) {
-          return location.replace(agree.html?email=${encodeURIComponent(email)});
+        const res = await fetch(${scriptURL}?email=${encodeURIComponent(email)});
+        const data = await res.json();
+        const lvl  = parseInt(data.level, 10) || 0;
+        if (lvl > 0) {
+          window.location.href = membership-${lvl}.html?email=${encodeURIComponent(email)};
+        } else {
+          msg.textContent = '抱歉，你尚未在會員名單中。';
         }
-        if (level < 30) {
-          return location.replace('login.html');
-        }
-        // 通過，顯示內容
-        gate.style.display = 'none';
-        content.style.visibility = 'visible';
-        userEmail.textContent = email;
       } catch (err) {
         console.error(err);
-        gateMsg.textContent = '驗證失敗，請稍後再試';
+        msg.textContent = '伺服器錯誤，請稍後再試。';
       } finally {
-        gateBtn.disabled = false;
+        updateButtonState();
       }
     });
   </script>
@@ -126,6 +160,11 @@
 
 
     <!-- 切換會員帳號 -->
+    <div class="login-switch">
+      <input id="switchEmail" type="email" placeholder="輸入 Email 切換帳號" />
+      <button id="switchBtn">登入</button>
+    </div>
+
     <header>
       <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg " alt="吳馬克" />
       <h1>幸福星球 × 馬濕克</h1>
