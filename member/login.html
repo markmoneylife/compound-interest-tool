@@ -24,8 +24,6 @@
       margin: 2rem auto;
       padding: 0 1rem;
     }
-
-    /* —— 切換帳號區 —— */
     .login-switch {
       display: flex;
       justify-content: center;
@@ -56,7 +54,6 @@
     .login-switch button:hover {
       filter: brightness(1.1);
     }
-
     header {
       text-align: center;
       margin-bottom: 1rem;
@@ -75,7 +72,6 @@
       margin: 0;
       font-size: 1rem;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -114,14 +110,12 @@
       transition: background .2s;
     }
     .card-body a:hover { background: #f7e600; }
-
     footer {
       text-align: center;
       margin: 2rem 0 1rem;
       font-size: .85rem;
       color: #777;
     }
-
     @media(max-width:480px) {
       .login-switch { flex-direction: column; gap: .5rem; }
       .login-switch input,
@@ -139,9 +133,9 @@
     </div>
 
     <header>
-      <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg " alt="吳馬克" />
+      <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克" />
       <h1>幸福星球 × 馬濕克</h1>
-      <p>航向股息星系，啟動你的幸福引擎！<strong id="userEmail"></strong>！</p>
+      <p>航向股息星系，啟動你的幸福引擎！<strong id="userEmail"></strong></p>
     </header>
 
     <section class="grid">
@@ -157,9 +151,7 @@
         <div class="card-header">🛠️ 快速工具</div>
         <div class="card-body">
           <p>複利試算｜目標倒推｜ETF追蹤牆</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
-            開始使用
-          </a>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">開始使用</a>
         </div>
       </div>
 
@@ -180,22 +172,25 @@
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
-    // 讀取當前登入 Email，顯示歡迎
-    const params = new URLSearchParams(location.search);
+    // 顯示當前 URL 中 ?email= 的值
+    const params = new URLSearchParams(window.location.search);
     const email = params.get('email') || '';
     document.getElementById('userEmail').textContent = email;
 
-    // 切換帳號
     document.getElementById('switchBtn').addEventListener('click', async () => {
       const e = document.getElementById('switchEmail').value.trim();
-      if (!e) return alert('請輸入 Email');
+      if (!e) {
+        alert('請輸入 Email');
+        return;
+      }
       try {
-        const res = await fetch(${scriptURL}?email=${encodeURIComponent(e)});
+        // 用 template literal 正確帶入參數
+        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
         const data = await res.json();
         const lvl = parseInt(data.level, 10) || 0;
         if (lvl > 0) {
-          // 切換到對應會員頁
-          location.href = membership-${lvl}.html?email=${encodeURIComponent(e)};
+          // 從 /member/login.html 跳到父層的 membership-*.html
+          location.href = `../membership-${lvl}.html?email=${encodeURIComponent(e)}`;
         } else {
           alert('此 Email 尚未加入會員');
         }
