@@ -1,82 +1,150 @@
-<!-- ✅ 漢堡選單樣式 -->
-<style>
-  .nav-toggle {
-    display: none;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
-    background: #FFD54F;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XF61M6KL30"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XF61M6KL30');
+  </script>
 
-  .nav-bar-wrapper {
-    background-color: #1D4A35;
-    padding: 1rem 0;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
-  .nav-bar {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .nav-bar a {
-    background-color: #FFD54F;
-    color: #1A1A1A;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 0.65rem 1.2rem;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-  }
-
-  .nav-bar a:hover {
-    background-color: #FFE082;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  @media (max-width: 768px) {
-    .nav-bar-wrapper {
-      padding-top: 4rem;
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #F8F9FA;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
     }
-
-    .nav-toggle {
-      display: block;
-    }
-
-    .nav-bar {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .nav-bar a {
-      width: 90%;
+    h1 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
+      color: #2D3C2F;
+      margin-bottom: 1rem;
     }
 
-    .nav-bar.active {
+    /* 漢堡選單 */
+    .nav-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 9999;
+      background: #FFD54F; border: none; padding: 0.6rem 1rem; border-radius: 0.5rem;
+      font-size: 1.2rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .nav-bar-wrapper { background-color: #1D4A35; padding: 1rem 0; }
+    .nav-bar { max-width:1200px; margin:0 auto; display:flex; justify-content:center;
+      flex-wrap:wrap; gap:1rem;
+    }
+    .nav-bar a {
+      background-color:#FFD54F; color:#1A1A1A; font-weight:bold; text-decoration:none;
+      padding:0.65rem 1.2rem; border-radius:0.75rem; font-size:1rem;
+      box-shadow:0 3px 6px rgba(0,0,0,0.1); transition:all .2s ease;
+    }
+    .nav-bar a:hover {
+      background-color:#FFE082; transform:translateY(-2px);
+      box-shadow:0 6px 12px rgba(0,0,0,0.15);
+    }
+    @media (max-width:768px) {
+      .nav-toggle { display:block; }
+      .nav-bar { display:none; flex-direction:column; align-items:center; }
+      .nav-bar.active { display:flex; }
+      .nav-bar a { width:90%; text-align:center; font-size:1.1rem; margin-bottom:0.5rem; }
+    }
+
+    .filter-buttons {
+      position: sticky; top: 0; background: #F8F9FA; padding: 1rem; z-index: 99;
+      text-align:center; margin-bottom:2rem;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    }
+    .filter-buttons button {
+      background-color: #FFD54F; border:none; padding:0.5rem 1rem; margin:0 0.5rem;
+      border-radius:999px; font-weight:bold; cursor:pointer;
+    }
+
+    .etf-card-price {
+  font-size: 1.1rem;               /* 放大字級 */
+  font-weight: 700;                /* 加粗 */
+  color: #1D4A35;                  /* 深綠文字 */
+  background-color: #E0F2F1;       /* 淡綠底色 */
+  padding: 0.25rem 0.75rem;        /* 內距 */
+  border-radius: 0.5rem;           /* 圓角 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+    /* 新增：名稱＋收盤價 同行 */
+    .etf-card-header {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
     }
-  }
-</style>
+    .etf-card-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #444;
+    }
+    .etf-card-price {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+    }
 
-<!-- ✅ 按鈕 -->
+    .tag {
+      display: inline-block;
+      background-color: #FFE082;
+      color: #1A1A1A;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+    }
+    .gain { color: red; font-weight: bold; }
+    .loss { color: green; font-weight: bold; }
+    .links a { display: inline-block; margin-top: 0.5rem; color: #2D3C2F; font-weight: bold; text-decoration: none; }
+    .actions span { display: inline-block; margin-right: 0.6rem; }
+
+    .cta-box {
+      background: #FFF8E1;
+      border-left: 6px solid #FFD54F;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      text-align: center;
+      color: #5D4037;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .cta-box a {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: #FFD54F;
+      color: #1A1A1A;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .disclaimer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: #777;
+      background: #fdfdfd;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 漢堡選單 -->
+  <!-- ✅ 按鈕 -->
 <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
 
 <!-- ✅ 導覽列 -->
@@ -91,153 +159,26 @@
   </div>
 </div>
 
-<!-- ✅ JS 控制收合 -->
-<script>
-  function toggleNav() {
-    const nav = document.getElementById('navBar');
-    nav.classList.toggle('active');
-  }
-</script>
-
-
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XF61M6KL30"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-XF61M6KL30');
-</script>
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>馬克的 ETF 投資追蹤牆｜真實定期定額紀錄公開</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #F8F9FA;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #2D3C2F;
-      margin-bottom: 1rem;
-    }
-    .filter-buttons {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .filter-buttons button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.5rem 1rem;
-      margin: 0 0.5rem;
-      border-radius: 999px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .etf-card {
-      background-color: #ffffff;
-      border-left: 6px solid #FFD54F;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .etf-card h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #444;
-    }
-    .etf-card p {
-      margin: 0.3rem 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-    .tag {
-      display: inline-block;
-      background-color: #FFE082;
-      color: #1A1A1A;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      margin-left: 0.5rem;
-    }
-    .gain {
-      color: red;
-      font-weight: bold;
-    }
-    .loss {
-      color: green;
-      font-weight: bold;
-    }
-    .links a {
-      display: inline-block;
-      margin-top: 0.5rem;
-      color: #2D3C2F;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .actions span {
-      display: inline-block;
-      margin-right: 0.6rem;
-    }
-    .cta-box {
-      background: #FFF8E1;
-      border-left: 6px solid #FFD54F;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      margin-top: 3rem;
-      text-align: center;
-      color: #5D4037;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-    .cta-box a {
-      display: inline-block;
-      margin-top: 1rem;
-      background-color: #FFD54F;
-      color: #1A1A1A;
-      padding: 0.6rem 1.2rem;
-      border-radius: 999px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .disclaimer {
-      margin-top: 3rem;
-      font-size: 0.85rem;
-      color: #777;
-      background: #fdfdfd;
-      padding: 1rem;
-      border-top: 1px solid #ccc;
-    }
-  </style>
-</head>
-<body>
   <h1>吳馬克的 ETF 投資追蹤牆｜真實投資紀錄公開</h1>
-  <!-- 📌 追蹤清單按鈕 建議移到你的 filter-buttons 區塊中，並統一樣式 -->
-<div class="filter-buttons" style="position: sticky; top: 0; background: #f8f9fa; padding: 1rem; z-index: 99; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-  <button onclick="filterCards('全部')">全部</button>
-  <button onclick="filterCards('高股息')">高股息</button>
-  <button onclick="filterCards('指數型')">指數型</button>
-  <button onclick="filterCards('產業型')">產業型</button>
-  <button onclick="filterCards('REITs')">REITs</button>
-  <button onclick="filterCards('債券型')">債券型</button>
-  <button onclick="filterFavorites()">📌 我的追蹤清單</button>
-</div>
+
+  <div class="filter-buttons">
+    <button onclick="filterCards('全部')">全部</button>
+    <button onclick="filterCards('高股息')">高股息</button>
+    <button onclick="filterCards('指數型')">指數型</button>
+    <button onclick="filterCards('產業型')">產業型</button>
+    <button onclick="filterCards('REITs')">REITs</button>
+    <button onclick="filterCards('債券型')">債券型</button>
+    <button onclick="filterFavorites()">📌 我的追蹤清單</button>
+  </div>
+
   <div id="etfCards"></div>
 
   <div class="cta-box">
     📦 想看更多馬克的投資紀錄與操作思路？<br>
     有些內容只限 🎧 <strong>頻道會員專屬</strong> 開放！<br>
-    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">🔓 加入 YouTube 頻道會員</a>
+    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">
+      🔓 加入 YouTube 頻道會員
+    </a>
   </div>
 
   <div class="disclaimer">
@@ -245,296 +186,104 @@
     本頁面資訊僅供投資紀錄分享與理財教育用途，非為個別化投資建議。<br/>
     ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
     若需專業建議，請諮詢合格金融顧問。
+  </div>
 
-<script>
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2137337223&single=true&output=csv";
-  window.latestData = [];
 
-  fetch(SHEET_URL)
-    .then(res => res.text())
-    .then(csv => Papa.parse(csv, { header: true }))
-    .then(data => {
-      window.latestData = data.data;
-      renderCards(data.data);
-    });
-
-  function filterCards(type) {
-    const data = window.latestData;
-    const filtered = type === '全部' ? data : data.filter(row => row["類別"] === type);
-    renderCards(filtered);
-  }
-
-  function filterFavorites() {
-    const favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
-    const data = window.latestData.filter(row => favorites.includes(row["股號"]));
-    if (data.length === 0) {
-      document.getElementById("etfCards").innerHTML = '<p style="text-align:center; color:#777; padding:2rem;">⭐ 你還沒有收藏任何 ETF，快去選幾檔吧！</p>';
-    } else {
-      renderCards(data);
+  <script>
+    function toggleNav() {
+      document.getElementById('navBar').classList.toggle('active');
     }
-  }
 
-  function toggleFavorite(stockId) {
-    let favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
-    if (favorites.includes(stockId)) {
-      favorites = favorites.filter(id => id !== stockId);
-    } else {
-      favorites.push(stockId);
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2137337223&single=true&output=csv";
+    window.latestData = [];
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(csv => Papa.parse(csv, { header: true }))
+      .then(data => {
+        window.latestData = data.data;
+        renderCards(data.data);
+      });
+
+    function filterCards(type) {
+      const data = window.latestData;
+      const filtered = type === '全部'
+        ? data
+        : data.filter(row => row["類別"] === type);
+      renderCards(filtered);
     }
-    localStorage.setItem("favoriteETFs", JSON.stringify(favorites));
-    renderCards(window.latestData);
-  }
 
-  function isFavorite(stockId) {
-    const favorites = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
-    return favorites.includes(stockId);
-  }
+    function filterFavorites() {
+      const favs = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
+      const data = window.latestData.filter(r => favs.includes(r["股號"]));
+      if (!data.length) {
+        document.getElementById("etfCards").innerHTML =
+          '<p style="text-align:center;color:#777;padding:2rem;">⭐ 你還沒有收藏任何 ETF，快去選幾檔吧！</p>';
+      } else {
+        renderCards(data);
+      }
+    }
 
-  function renderCards(data) {
-    const container = document.getElementById("etfCards");
-    container.innerHTML = "";
-    data.forEach(row => {
-      const rewardClass = (row["報酬率"] || '').includes("-") ? "loss" : "gain";
-      const isFav = isFavorite(row["股號"]);
-      const card = document.createElement("div");
-      card.className = "etf-card";
-      card.innerHTML = `
-        <h2>
-          ${row["股號"]} ${row["股票名稱"]}
-          <span class="tag">${row["類別"]}</span>
-          <button class="favorite-button" onclick="toggleFavorite('${row["股號"]}')" style="float:right;background:none;border:none;cursor:pointer;font-size:1.2rem;">
-            ${isFav ? '⭐' : '☆'}
-          </button>
+    function toggleFavorite(id) {
+      let favs = JSON.parse(localStorage.getItem("favoriteETFs") || "[]");
+      favs = favs.includes(id) ? favs.filter(x=>x!==id) : [...favs,id];
+      localStorage.setItem("favoriteETFs", JSON.stringify(favs));
+      renderCards(window.latestData);
+    }
 
-        </h2>
-        <p>🎯 總投資成本：$${parseInt(row["總投資成本"] || 0).toLocaleString()}</p>
-        <p>📈 市值：$${parseInt(row["目前市值"] || 0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
-        <p>💵 收盤價格：$${parseFloat(row["收盤價"]||0).toLocaleString()}</p>
-        <p>💰 預估配息：$${Math.round((parseFloat(row["預估配息"] || 0) * parseInt(row["持有總股數"] || 0))).toLocaleString()}（每股 $${parseFloat(row["預估配息"] || 0).toFixed(2)} × ${parseInt(row["持有總股數"] || 0).toLocaleString()} 股）</p>
-        <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"] || '')}</p>
-        <p>📆 更新日期：${row["更新日期"] || '－'} ｜ 配息頻率：${row["配息頻率"]}</p>
-        ${row["影片1標題"] && row["影片1連結"] ? `<p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>` : ''}
-        ${row["影片2標題"] && row["影片2連結"] ? `<p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>` : ''}
-      `;
-      container.appendChild(card);
-    });
-  }
+    function isFavorite(id) {
+      return JSON.parse(localStorage.getItem("favoriteETFs") || "[]")
+        .includes(id);
+    }
 
-  function parseActionIcons(text) {
-    let output = '';
-    if (text.includes('每月')) output += '<span>📆 定期定額</span>';
-    if (text.includes('單筆')) output += '<span>💥 單筆投入</span>';
-    if (text.includes('配息')) output += '<span>🔁 配息再投入</span>';
-    if (text.includes('逢低')) output += '<span>📉 逢低加碼</span>';
-    if (text.includes('目標加碼')) output += '<span>🎯 目標加碼</span>';
-    if (text.includes('獲利了結')) output += '<span>💸 獲利了結</span>';
-    if (text.includes('不定期')) output += '<span>⏱️ 不定期投入</span>';
-    if (text.includes('持有')) output += '<span>🧘‍♂️ 長期持有</span>';
-    return output || text;
-  }
-</script>
+    function renderCards(data) {
+      const container = document.getElementById("etfCards");
+      container.innerHTML = "";
+      data.forEach(row => {
+        const rewardClass = (row["報酬率"]||"").includes("-") ? "loss" : "gain";
+        const fav = isFavorite(row["股號"]);
+        const card = document.createElement("div");
+        card.className = "etf-card";
+        card.innerHTML = `
+          <div class="etf-card-header">
+            <h2>
+              ${row["股號"]} ${row["股票名稱"]}
+              <span class="tag">${row["類別"]}</span>
+            </h2>
+            <div class="flex items-center">
+              <div class="etf-card-price">💵收盤價 $${parseFloat(row["收盤價"]||0).toLocaleString()}</div>
+              <button onclick="toggleFavorite('${row["股號"]}')" 
+                      style="background:none;border:none;cursor:pointer;font-size:1.2rem;margin-left:0.5rem;">
+                ${fav ? '⭐' : '☆'}
+              </button>
+            </div>
+          </div>
+          <p>🎯 總投資成本：$${parseInt(row["總投資成本"]||0).toLocaleString()}</p>
+          <p>📈 市值：$${parseInt(row["目前市值"]||0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
+          <p>💰 預估配息：$${Math.round(parseFloat(row["預估配息"]||0)*parseInt(row["持有總股數"]||0)).toLocaleString()}
+             （每股 $${parseFloat(row["預估配息"]||0).toFixed(2)} × ${parseInt(row["持有總股數"]||0).toLocaleString()} 股）</p>
+          <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"]||"")}</p>
+          <p>📆 更新日期：${row["更新日期"]||'－'} ｜ 配息頻率：${row["配息頻率"]}</p>
+          ${row["影片1連結"]?`<p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>`:""}
+          ${row["影片2連結"]?`<p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>`:""}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function parseActionIcons(text) {
+      let out = "";
+      if (text.includes('每月')) out += '📆 定期定額 ';
+      if (text.includes('單筆')) out += '💥 單筆投入 ';
+      if (text.includes('配息')) out += '🔁 配息再投入 ';
+      if (text.includes('逢低')) out += '📉 逢低加碼 ';
+      if (text.includes('目標加碼')) out += '🎯 目標加碼 ';
+      if (text.includes('獲利了結')) out += '💸 獲利了結 ';
+      if (text.includes('不定期')) out += '⏱️ 不定期投入 ';
+      if (text.includes('持有')) out += '🧘‍♂️ 長期持有 ';
+      return out || text;
+    }
+  </script>
 
 </body>
 </html>
-<hr>
-<section style="text-align:center;max-width:700px;margin:2rem auto;">
-  <h3 style="color:#1D4A35;">☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
-  <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
-  <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
-
-  <p style="margin-top:1rem;">
-    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       🪐 加入會員星球
-    </a>
-
-    <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       🛍️ 選購週邊
-    </a>
-
-    <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       📱 貼圖支持
-    </a>
-  </p>
-
-  <p style="font-size:0.9rem;color:#555;margin-top:0.5rem;">感謝你願意支持，讓這些工具陪你一起走得更長遠 💛</p>
-</section>
-
-
- <!-- 📺 YouTube CTA 按鈕 -->
-  <div style="text-align:center; margin-top: 2rem;">
-    <a href="https://www.youtube.com/user/rengary" target="_blank"
-       style="display:inline-block;padding:0.8rem 1.8rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:999px;font-weight:bold;font-size:1.1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      ▶️ 點我看最新影片
-    </a>
-  </div>
-
-  <!-- 💼 GTA 個人連結入口 -->
-  <section style="background-color:#FAFAFA;padding:3rem 1rem;text-align:center;border-top: 1px solid #ddd; margin-top: 3rem;">
-    <h2 style="font-size:1.6rem;margin-bottom:0.5rem;color:#2D3C2F;">📍 找到馬克的所有地方</h2>
-    <p style="font-size:1rem;color:#555;margin-bottom:2rem">社群、Podcast、網站一次整理，持續更新中 🚀</p>
-
-    <div style="max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;">
-      <a href="https://www.youtube.com/user/rengary" target="_blank" style="padding:0.9rem 1rem;background:#FFD54F;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        ▶️ YouTube 頻道
-      </a>
-      <a href="https://open.firstory.me/user/investwithmark/platforms" target="_blank" style="padding:0.9rem 1rem;background:#FDD835;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        🎧 Podcast 平台
-      </a>
-      <a href="https://www.instagram.com/rengary0301/" target="_blank" style="padding:0.9rem 1rem;background:#FFF176;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        📸 Instagram
-      </a>
-      <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="padding:0.9rem 1rem;background:#FFE082;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        👥 LINE 社群報名
-      </a>
-      <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="padding:0.9rem 1rem;background:#FFECB3;color:#1A1A1A;font-weight:bold;border-radius:8px;text-decoration:none;">
-        🌐 部落格／理財筆記
-      </a>
-    </div>
-    <p style="margin-top:2rem;font-size:0.85rem;color:#777;">更新中：歡迎加入，一起學投資、聊生活 🧃</p>
-  </section>
-
-  <!-- 📚 好書推薦書櫃 -->
-  <section style="background-color:#FDFBF5;padding:3rem 1rem;text-align:center;">
-    <h2 style="font-size:1.8rem;margin-bottom:0.5rem">📚 馬克推薦書櫃：<br>一個投機者的告白四部曲</h2>
-    <p style="font-size:1rem;color:#444;margin-bottom:2rem">
-      投資不只看財報，更要看心理與市場規律。這四本書陪你走過熊市牛市，修煉內心與眼光！
-    </p>
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26jqfakv" target="_blank">
-          <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="一個投機者的告白四部曲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投機者的告白四部曲</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/276jnh6h" target="_blank">
-          <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="一個投資者的告白" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">一個投資者的告白</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/27ls9d98" target="_blank">
-          <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="金錢遊戲" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">金錢遊戲（新修典藏版）</p>
-      </div>
-      <div style="max-width:160px;">
-        <a href="https://tinyurl.com/26tntcxs" target="_blank">
-          <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="證券心理學" style="width:100%;border-radius:8px;" />
-        </a>
-        <p style="margin-top:0.8rem;font-weight:bold;">證券心理學</p>
-      </div>
-    </div>
-
-    <div style="margin-top:2.5rem;">
-      <a href="https://tinyurl.com/23sak7ha" target="_blank"
-         style="display:inline-block;padding:0.8rem 1.5rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:8px;font-weight:bold;font-size:1rem">
-        🔗 查看書籍總覽 / 購買
-      </a>
-    </div>
-  </section>
-  
-  <!-- 🛒 聯盟行銷說明 -->
-  <div style="margin-top: 2rem; padding: 1rem 1.5rem; background-color: #FFF8E1; border-left: 4px solid #FFD54F; border-radius: 0.5rem; font-size: 0.9rem; color: #5D4037;">
-    🔗 本站部分連結為聯盟行銷連結（Affiliate Link），若您透過這些連結購買商品，站主可能會獲得少量回饋。<br/>
-    感謝您用實際行動支持內容創作 ❤️
-  </div>
-
-</body>
-</html>
-
-
-<!-- 支持我浮動按鈕 -->
-<div id="supportButton" style="position: fixed; bottom: 30px; right: 30px; z-index: 999;">
-  <button onclick="toggleSupportBox()" style="background-color: #FFD54F; color: #1A1A1A; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 1.5s infinite;">
-    💰 支持我
-  </button>
-</div>
-
-<!-- CTA 背景遮罩 -->
-<div id="supportOverlay" style="
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 998;
-" onclick="toggleSupportBox()"></div>
-
-<!-- CTA 卡片 -->
-<div id="supportBox" style="
-  display: none;
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  width: 300px;
-  background-color: #2D3C2F;
-  color: #FFD54F;
-  border-radius: 1rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  z-index: 9999;
-  padding: 1.2rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s ease;
-  font-weight: 500;
-">
-  <div style="text-align: center;">
-    <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
-         style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
-    <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
-    <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
-
-    <a href="https://open.firstory.me/join/investwithmark" target="_blank"
-       style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
-      💰 單筆贊助我
-    </a>
-
-    <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
-    <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
-      📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br/>
-      👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br/>
-      🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br/>
-      🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br/>
-      👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
-    </div>
-
-    <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">📩 聯絡信箱：<br/><a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a></p>
-  </div>
-</div>
-
-<!-- 控制 JS -->
-<script>
-  function toggleSupportBox() {
-    const box = document.getElementById('supportBox');
-    const overlay = document.getElementById('supportOverlay');
-    const isVisible = box.style.display === 'block';
-
-    if (!isVisible) {
-      overlay.style.display = 'block';
-      box.style.display = 'block';
-      setTimeout(() => {
-        box.style.opacity = '1';
-        box.style.transform = 'translateY(0)';
-      }, 30);
-    } else {
-      box.style.opacity = '0';
-      box.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        box.style.display = 'none';
-        overlay.style.display = 'none';
-      }, 250);
-    }
-  }
-</script>
-
-</html>
-<div id="viewCounter" style="margin-top:2rem; text-align:center; font-size:0.9rem; color:#888;">
-  👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
-</div>
