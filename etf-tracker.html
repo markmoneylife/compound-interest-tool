@@ -5,7 +5,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XF61M6KL30"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){dataLayer.push(arguments);}    
     gtag('js', new Date());
     gtag('config', 'G-XF61M6KL30');
   </script>
@@ -16,6 +16,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
   <style>
+    /* 全局設定 */
     body {
       font-family: 'Helvetica Neue', sans-serif;
       background-color: #F8F9FA;
@@ -29,7 +30,74 @@
       margin-bottom: 1rem;
     }
 
-    /* 漢堡選單 */
+    /* 卡片樣式 */
+    .etf-card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform .2s;
+    }
+    .etf-card:hover {
+      transform: translateY(-4px);
+    }
+    .etf-card p {
+      margin: 0.6rem 0;
+      line-height: 1.5;
+    }
+
+    /* 卡片標頭 */
+    .etf-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .etf-card-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #1D3C2F;
+    }
+    .tag {
+      display: inline-block;
+      background-color: #FFE082;
+      color: #1A1A1A;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+    }
+
+    .etf-card-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1D4A35;
+      background-color: #E0F2F1;
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.5rem;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* 報酬率顏色 */
+    .gain { color: #C62828; font-weight: bold; }
+    .loss { color: #2E7D32; font-weight: bold; }
+
+    /* 操作圖示區 */
+    .actions span { display: inline-block; margin-right: 0.8rem; }
+
+    /* 影片連結 */
+    .links a {
+      display: inline-block;
+      margin: 0.4rem 0;
+      color: #2D3C2F;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .links a:hover { text-decoration: underline; }
+
+    /* 漢堡選單 & 導覽列 */
     .nav-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 9999;
       background: #FFD54F; border: none; padding: 0.6rem 1rem; border-radius: 0.5rem;
       font-size: 1.2rem; font-weight: bold; cursor: pointer;
@@ -55,6 +123,7 @@
       .nav-bar a { width:90%; text-align:center; font-size:1.1rem; margin-bottom:0.5rem; }
     }
 
+    /* 篩選按鈕 */
     .filter-buttons {
       position: sticky; top: 0; background: #F8F9FA; padding: 1rem; z-index: 99;
       text-align:center; margin-bottom:2rem;
@@ -65,50 +134,7 @@
       border-radius:999px; font-weight:bold; cursor:pointer;
     }
 
-    .etf-card-price {
-  font-size: 1.1rem;               /* 放大字級 */
-  font-weight: 700;                /* 加粗 */
-  color: #1D4A35;                  /* 深綠文字 */
-  background-color: #E0F2F1;       /* 淡綠底色 */
-  padding: 0.25rem 0.75rem;        /* 內距 */
-  border-radius: 0.5rem;           /* 圓角 */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  white-space: nowrap;
-}
-
-    /* 新增：名稱＋收盤價 同行 */
-    .etf-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .etf-card-header h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #444;
-    }
-    .etf-card-price {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #555;
-      white-space: nowrap;
-    }
-
-    .tag {
-      display: inline-block;
-      background-color: #FFE082;
-      color: #1A1A1A;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      margin-left: 0.5rem;
-    }
-    .gain { color: red; font-weight: bold; }
-    .loss { color: green; font-weight: bold; }
-    .links a { display: inline-block; margin-top: 0.5rem; color: #2D3C2F; font-weight: bold; text-decoration: none; }
-    .actions span { display: inline-block; margin-right: 0.6rem; }
-
+    /* CTA 區塊 */
     .cta-box {
       background: #FFF8E1;
       border-left: 6px solid #FFD54F;
@@ -131,6 +157,7 @@
       text-decoration: none;
     }
 
+    /* 免責聲明 */
     .disclaimer {
       margin-top: 3rem;
       font-size: 0.85rem;
@@ -144,20 +171,17 @@
 <body>
 
   <!-- 漢堡選單 -->
-  <!-- ✅ 按鈕 -->
-<button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
-
-<!-- ✅ 導覽列 -->
-<div class="nav-bar-wrapper">
-  <div class="nav-bar" id="navBar">
-    <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
-    <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">加入LINE社群</a>
+  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
+  <div class="nav-bar-wrapper">
+    <div class="nav-bar" id="navBar">
+      <a href="https://markmoneylife.com/etf配息月報/">ETF配息月報</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/">複利試算工具</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+      <a href="https://line.me/ti/g2/PibkZdl6-4j7vwJNd0HYAzx5EJG4FkYz4F_eHg" target="_blank">加入LINE社群</a>
+    </div>
   </div>
-</div>
 
   <h1>吳馬克的 ETF 投資追蹤牆｜真實投資紀錄公開</h1>
 
@@ -187,7 +211,6 @@
     ETF 等金融商品有漲有跌，過去績效不代表未來表現，投資前請審慎評估自身風險承受度。<br/>
     若需專業建議，請諮詢合格金融顧問。
   </div>
-
 
   <script>
     function toggleNav() {
@@ -251,21 +274,20 @@
               <span class="tag">${row["類別"]}</span>
             </h2>
             <div class="flex items-center">
-              <div class="etf-card-price">💵收盤價 $${parseFloat(row["收盤價"]||0).toLocaleString()}</div>
+              <div class="etf-card-price">💵 $${parseFloat(row["收盤價"]||0).toLocaleString()}</div>
               <button onclick="toggleFavorite('${row["股號"]}')" 
-                      style="background:none;border:none;cursor:pointer;font-size:1.2rem;margin-left:0.5rem;">
+                      style="background:none;border:none;cursor:pointer;font-size:1.4rem;margin-left:0.5rem;">
                 ${fav ? '⭐' : '☆'}
               </button>
             </div>
           </div>
           <p>🎯 總投資成本：$${parseInt(row["總投資成本"]||0).toLocaleString()}</p>
-          <p>📈 市值：$${parseInt(row["目前市值"]||0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
-          <p>💰 預估配息：$${Math.round(parseFloat(row["預估配息"]||0)*parseInt(row["持有總股數"]||0)).toLocaleString()}
-             （每股 $${parseFloat(row["預估配息"]||0).toFixed(2)} × ${parseInt(row["持有總股數"]||0).toLocaleString()} 股）</p>
+          <p>📈 市值：$${parseInt(row["目前市場價值"]||0).toLocaleString()} ｜ 報酬率：<span class="${rewardClass}">${row["報酬率"]}</span></p>
+          <p>💰 預估配息：$${Math.round(parseFloat(row["預估配息"]||0)*parseInt(row["持有總股數"]||0)).toLocaleString()}（每股 $${parseFloat(row["預估配息"]||0).toFixed(2)} × ${parseInt(row["持有總股數"]||0).toLocaleString()} 股）</p>
           <p class="actions">📌 操作方式：${parseActionIcons(row["操作方式"]||"")}</p>
           <p>📆 更新日期：${row["更新日期"]||'－'} ｜ 配息頻率：${row["配息頻率"]}</p>
-          ${row["影片1連結"]?`<p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>`:""}
-          ${row["影片2連結"]?`<p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>`:""}
+          ${row["影片1連結"]?`<p class="links">▶️ <a href="${row["影片1連結"]}" target="_blank">${row["影片1標題"]}</a></p>` : ''}
+          ${row["影片2連結"]?`<p class="links">▶️ <a href="${row["影片2連結"]}" target="_blank">${row["影片2標題"]}</a></p>` : ''}
         `;
         container.appendChild(card);
       });
@@ -278,12 +300,11 @@
       if (text.includes('配息')) out += '🔁 配息再投入 ';
       if (text.includes('逢低')) out += '📉 逢低加碼 ';
       if (text.includes('目標加碼')) out += '🎯 目標加碼 ';
-      if (text.includes('獲利了結')) out += '💸 獲利了結 ';
+      if (text.includes('獲利')) out += '💸 獲利了結 ';
       if (text.includes('不定期')) out += '⏱️ 不定期投入 ';
       if (text.includes('持有')) out += '🧘‍♂️ 長期持有 ';
       return out || text;
     }
   </script>
-
 </body>
 </html>
