@@ -274,7 +274,7 @@
               <span class="tag">${row["類別"]}</span>
             </h2>
             <div class="flex items-center">
-              <div class="etf-card-price">💵 $${parseFloat(row["收盤價"]||0).toLocaleString()}</div>
+              <div class="etf-card-price">💵收盤價 $${parseFloat(row["收盤價"]||0).toLocaleString()}</div>
               <button onclick="toggleFavorite('${row["股號"]}')" 
                       style="background:none;border:none;cursor:pointer;font-size:1.4rem;margin-left:0.5rem;">
                 ${fav ? '⭐' : '☆'}
