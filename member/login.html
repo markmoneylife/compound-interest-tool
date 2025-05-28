@@ -169,7 +169,7 @@
     </footer>
   </div>
 
- <script>
+<script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
   document.getElementById('switchBtn').addEventListener('click', async () => {
@@ -182,9 +182,14 @@
       const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
       const data = await res.json();
       const lvl = parseInt(data.level, 10) || 0;
-      if (lvl > 0) {
-        // 直接跳到正確的會員頁，不帶任何 query string
-        location.href = `membership-${lvl}.html`;
+      // 新的「防猜」頁面對應表
+      const pageMap = {
+        30: 'https://markmoneylife.github.io/compound-interest-tool/member/capsule-beta35.html',
+        75: 'mk-nova-echo75.html',
+        300: 'mk-quantum-zeta300.html'
+      };
+      if (pageMap[lvl]) {
+        location.href = pageMap[lvl];
       } else {
         alert('此 Email 尚未加入會員');
       }
@@ -195,5 +200,4 @@
   });
 </script>
 
-</body>
 </html>
