@@ -25,13 +25,7 @@
       .nav-bar{ display:none; flex-direction:column; align-items:center; }
       .nav-bar.active{ display:flex; }
       .nav-bar a{ width:90%; text-align:center; margin-bottom:.5rem; }
-    /* 收益組成模式：數據欄位用綠底＋米色字 */
-#mode-distribution .highlight {
-  background: #17453B !important;   /* 深綠底 */
-  color:      #FFF8D6 !important;   /* 米色字 */
-  border:     none    !important;   /* 如要細框可改成 border:1px solid #1D4A35; */
-}
-    }
+  
   </style>
 </head>
 <body class="bg-[#F5F2E9] text-gray-800">
@@ -189,51 +183,74 @@
       const card = document.createElement('div');
       card.className='bg-[#FFD54F] text-[#17453B] rounded-2xl p-6 shadow-lg';
       card.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-2xl font-bold text-[#1D4A35]">${r['股號']}</h3>
-          <span class="text-sm font-medium text-[#4A2D1D]">${r['股票名稱']}</span>
+       function renderComposition(data) {
+  const comp = document.getElementById('composition-container');
+  comp.innerHTML = '';
+  data.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'card-common';
+
+    card.innerHTML = `
+      <h3>${r['股號']}</h3>
+      <div class="etf-name">${r['股票名稱']}</div>
+
+      <!-- 新增一層背景 -->
+      <div class="bg-white/80 p-4 rounded-lg shadow-inner">
+        <div class="grid grid-cols-3 gap-4 text-center text-[#17453B]">
+          
+          <div class="highlight">
+            <div class="text-xs">年初至今報酬</div>
+            <div class="text-lg">${r['年初至今報酬']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">實際配息</div>
+            <div class="text-lg">${r['實際配息']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">股利所得</div>
+            <div class="text-lg">${r['股利所得']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">54C</div>
+            <div class="text-lg">${r['54C']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">利息所得</div>
+            <div class="text-lg">${r['利息所得']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">收益平準金</div>
+            <div class="text-lg">${r['收益平準金']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">資本利得</div>
+            <div class="text-lg">${r['資本利得']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">其他所得</div>
+            <div class="text-lg">${r['其他所得']||'-'}</div>
+          </div>
+          
+          <div class="highlight">
+            <div class="text-xs">健保應課張數</div>
+            <div class="text-lg">${r['健保應課張數']||'-'}</div>
+          </div>
+        
         </div>
-        <div class="grid grid-cols-3 gap-4 text-center text-gray-700">
-          <div>
-            <div class="text-xs text-gray-500">年初至今報酬</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['年初至今報酬']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">實際配息</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['實際配息']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">股利所得</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['股利所得']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">54C</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['54C']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">利息所得</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['利息所得']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">收益平準金</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['收益平準金']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">資本利得</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['資本利得']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">其他所得</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['其他所得']||'-'}</div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-500">健保應課張數</div>
-            <div class="mt-1 text-xl font-bold text-[#1D4A35]">${r['健保應課張數']||'-'}</div>
-          </div>
-        </div>`;
-      comp.appendChild(card);
-    });
-  }
+      </div>
+    `;
+
+    comp.appendChild(card);
+  });
+}
+
 
   // 配息時間表
   function renderTimeline(data) {
