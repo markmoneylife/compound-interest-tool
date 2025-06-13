@@ -57,36 +57,31 @@
       .nav-bar a { width: 90%; text-align: center; margin-bottom: .5rem; }
     }
 
-    /* —— 以下為「收益組成」卡片優化 —— */
-
-    /* 收益組成卡片通用樣式 */
+    /* 收益組成卡片優化 */
     .card-common {
-      /* 漸層背景：從淺綠到奶油白 */
       background: linear-gradient(135deg, #EAF4F1 0%, #FFFAF0 100%);
-      border: 1px solid rgba(23, 68, 59, 0.2);  /* 深墨綠色邊框 20% 透明度 */
+      border: 1px solid rgba(23, 68, 59, 0.2);
       border-radius: 1rem;
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
       padding: 1.5rem;
-      color: #17453B;  /* 深墨綠文字 */
+      color: #17453B;
       transition: transform .2s, box-shadow .2s;
+      position: relative;
     }
     .card-common:hover {
       transform: translateY(-4px);
       box-shadow: 0 15px 20px rgba(0, 0, 0, 0.12);
     }
-    /* 卡片標題 */
     .card-common h3 {
       font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 0.25rem;
     }
-    /* ETF 名稱 */
     .card-common .etf-name {
       font-size: 0.875rem;
       color: #445A52;
       margin-bottom: 1rem;
     }
-    /* 各格 highlight 盒子 */
     .card-common .highlight {
       background: rgba(255, 255, 255, 0.9);
       padding: 0.75rem;
@@ -97,11 +92,12 @@
 </head>
 <body class="bg-[#F5F2E9] text-gray-800">
 
-  <!-- 手機選單按鈕 -->
+  <!-- 手機選單 -->
   <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
   <div class="nav-bar-wrapper">
     <div id="navBar" class="nav-bar">
-      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html">ETF配息圖卡瀑布牆</a>
+      <a href="#wall">ETF配息圖卡瀑布牆</a>
+      <a href="#timeline">ETF配息入帳時間表</a>
       <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
       <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
       <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
@@ -110,7 +106,7 @@
     </div>
   </div>
 
-  <!-- ETF 瀑布牆 -->
+  <!-- ETF瀑布牆 -->
   <section id="wall" class="max-w-5xl mx-auto px-4 mt-10">
     <h1 class="text-3xl font-bold text-center mb-2">ETF配息圖卡瀑布牆</h1>
     <p class="text-center text-sm text-gray-500 mb-4">
@@ -121,7 +117,7 @@
     </p>
     <div id="last-update" class="text-center text-xs text-gray-400 mb-4"></div>
 
-    <!-- 模式切換按鈕 -->
+    <!-- 模式切換 -->
     <div id="mode-switch" class="text-center my-8">
       <button data-mode="forecast" class="px-4 py-2 mx-2 rounded bg-[#1D4A35] text-[#FFD54F]">
         預估配息模式
@@ -147,28 +143,27 @@
       <h2 class="text-3xl font-bold text-[#17453B] mb-4">📊 本月配息收益組成</h2>
       <p class="text-sm text-gray-600 mb-6">
         一次看懂股利、利息、平準金、資本利得、其他所得，以及健保應課張數。
-<!-- 二代健保補充保費簡易版 -->
-<section class="bg-gray-50 p-4 rounded-md shadow-sm">
-  <h2 class="text-lg font-bold mb-2">二代健保補充保費簡介</h2>
-  <ul class="list-disc pl-5 space-y-1 text-sm">
-    <li>費率固定 2.11％</li>
-    <li>針對「單位薪資差額」或「單次所得」加徵</li>
-    <li>單次給付 ≥ 20,000 元（年終獎金、利息、股利等）需扣</li>
-    <li>若所得未達基本工資或屬六類弱勢，可申請免扣</li>
-  </ul>
-</section>
       </p>
-</div>
-      <div id="composition-container"
-           class="grid gap-6 auto-cols-fr md:grid-cols-2 lg:grid-cols-3">
-      </div>
+
+      <!-- 二代健保補充保費簡易版 -->
+      <section class="bg-gray-50 p-4 rounded-md shadow-sm mb-6">
+        <h3 class="text-lg font-bold mb-2">二代健保補充保費簡介</h3>
+        <ul class="list-disc pl-5 space-y-1 text-sm">
+          <li>費率固定 2.11％</li>
+          <li>針對「單位薪資差額」或「單次所得」加徵</li>
+          <li>單次給付 ≥ 20,000 元（年終獎金、利息、股利等）需扣</li>
+          <li>若所得未達基本工資或屬六類弱勢，可申請免扣</li>
+        </ul>
+      </section>
+
+      <!-- 收益組成卡片容器 -->
+      <div id="composition-container" class="grid gap-6 auto-cols-fr md:grid-cols-2 lg:grid-cols-3"></div>
     </div>
   </section>
 
   <!-- 配息時間表 -->
   <section id="timeline" class="max-w-3xl mx-auto mt-20 px-4">
-    <h2 id="timeline-header"
-        class="text-2xl font-bold text-center text-[#1D4A35] mb-4"></h2>
+    <h2 id="timeline-header" class="text-2xl font-bold text-center text-[#1D4A35] mb-4"></h2>
     <p class="text-center text-sm text-gray-600 mb-6">
       以下為本月實際發放日資料，快速掌握錢什麼時候進來！
     </p>
@@ -178,8 +173,9 @@
   <!-- Footer -->
   <footer class="mt-16 text-xs text-center text-gray-500 px-4 leading-relaxed">
     資料來源：
-    <a href="https://www.twse.com.tw/zh/ETFortune/announcementList"
-       class="underline" target="_blank">臺灣證券交易所</a>｜製作：吳馬克<br>
+    <a href="https://www.twse.com.tw/zh/ETFortune/announcementList" class="underline" target="_blank">
+      臺灣證券交易所
+    </a>｜製作：吳馬克<br>
     ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表報酬率，亦不代表未來績效，投資請自行評估風險。
   </footer>
 
@@ -259,48 +255,20 @@
       data.forEach(r => {
         const card = document.createElement('div');
         card.className = 'card-common';
-
         card.innerHTML = `
           <h3>${r['股號']}</h3>
           <div class="etf-name">${r['股票名稱']}</div>
           <div class="bg-white/80 p-4 rounded-lg shadow-inner">
             <div class="grid grid-cols-3 gap-4 text-center text-[#17453B]">
-              <div class="highlight">
-                <div class="text-xs">年初至今報酬</div>
-                <div class="text-lg">${r['年初至今報酬']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">實際配息</div>
-                <div class="text-lg">${r['實際配息']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">股利所得</div>
-                <div class="text-lg">${r['股利所得']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">54C</div>
-                <div class="text-lg">${r['54C']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">利息所得</div>
-                <div class="text-lg">${r['利息所得']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">收益平準金</div>
-                <div class="text-lg">${r['收益平準金']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">資本利得</div>
-                <div class="text-lg">${r['資本利得']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">其他所得</div>
-                <div class="text-lg">${r['其他所得']||'-'}</div>
-              </div>
-              <div class="highlight">
-                <div class="text-xs">健保應課張數</div>
-                <div class="text-lg">${r['健保應課張數']||'-'}</div>
-              </div>
+              <div class="highlight"><div class="text-xs">年初至今報酬</div><div class="text-lg">${r['年初至今報酬']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">實際配息</div><div class="text-lg">${r['實際配息']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">股利所得</div><div class="text-lg">${r['股利所得']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">54C</div><div class="text-lg">${r['54C']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">利息所得</div><div class="text-lg">${r['利息所得']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">收益平準金</div><div class="text-lg">${r['收益平準金']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">資本利得</div><div class="text-lg">${r['資本利得']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">其他所得</div><div class="text-lg">${r['其他所得']||'-'}</div></div>
+              <div class="highlight"><div class="text-xs">健保應課張數</div><div class="text-lg">${r['健保應課張數']||'-'}</div></div>
             </div>
           </div>`;
         comp.appendChild(card);
@@ -355,7 +323,6 @@
         const upd = allData[0]?.['更新日期'] || '';
         if (upd) document.getElementById('last-update').textContent = `更新時間：${upd}`;
 
-        // 本月資料
         const monthData = allData.filter(r =>
           parseInt(r['西元'], 10) === Y &&
           parseInt(r['月份'], 10) === M
@@ -364,7 +331,6 @@
         renderCards(monthData);
         renderComposition(monthData);
 
-        // timeline 資料
         const timelineData = allData.filter(r => {
           const d = (r['發放日']||'').trim().split('/');
           const mon = d.length===3 ? +d[1] : +d[0];
@@ -383,7 +349,7 @@
         document.getElementById('mode-forecast').style.display =
           mode === 'forecast' ? 'block' : 'none';
         document.getElementById('mode-distribution').style.display =
-          mode === 'distribution' ? 'grid' : 'none';
+          mode === 'distribution' ? 'block' : 'none';
         document.querySelectorAll('#mode-switch button').forEach(b => {
           if (b === btn) {
             b.classList.remove('bg-gray-200','text-gray-700');
