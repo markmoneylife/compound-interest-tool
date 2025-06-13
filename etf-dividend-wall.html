@@ -177,14 +177,13 @@
 
   // 收益組成卡片
   function renderComposition(data) {
-    const comp = document.getElementById('composition-container');
-    comp.innerHTML = '';
-    data.forEach(r=>{
-      const card = document.createElement('div');
-      card.className='bg-[#FFD54F] text-[#17453B] rounded-2xl p-6 shadow-lg';
-      card.innerHTML = `
-       function renderComposition(data) {
-  
+  const comp = document.getElementById('composition-container');
+  comp.innerHTML = '';
+  data.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'card-common';
+
+    card.innerHTML = `
       <h3>${r['股號']}</h3>
       <div class="etf-name">${r['股票名稱']}</div>
 
