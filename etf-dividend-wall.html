@@ -148,15 +148,17 @@
       </button>
     </div>
 
-    <!-- 預估配息模式 -->
+          <!-- 預估配息模式 -->
     <div id="mode-forecast">
-      <div class="max-w-4xl mx-auto mb-6 text-center">
-        <h2 class="text-xl font-semibold mb-1">🏆 本月最強配息 ETF 前五名</h2>
-        <p class="text-xs text-gray-500">※ 預估配息 ÷ 收盤價，不代表實際報酬率。</p>
-        <div id="top5-list" class="flex justify-center gap-4 items-end h-64 mt-4"></div>
+     <!-- 前五名排行卡片 -->
+      <div class="max-w-4xl mx-auto mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-center">🥇 前五名單期殖利率</h2>
+        <div id="top5-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"></div>
       </div>
+
       <div id="loading" class="text-center text-sm text-gray-500 mb-4">載入中...</div>
       <div id="card-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
     </div>
 
     <!-- 收益組成模式 -->
@@ -200,41 +202,36 @@
     ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表報酬率，亦不代表未來績效，投資請自行評估風險。
   </footer>
 
-  <script>
-    // 手機 nav
-    function toggleNav() {
-      document.getElementById('navBar').classList.toggle('active');
-    }
-
-    // 資料 URL
+ <script>
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=122705340&single=true&output=csv';
-    let allData = [];
 
-    // 前五名
+    // 前五名排行
     function renderTop5(data) {
-      const list = document.getElementById('top5-list');
-      list.innerHTML = '';
-      const sorted = data.filter(r=>r['預估配息']&&r['收盤價'])
-        .map(r=>{
-          const rate = parseFloat(r['預估配息'])/parseFloat(r['收盤價'])*100;
-          return { ...r, rate:+rate.toFixed(2), formatted:`${rate.toFixed(2)}%` };
-        })
-        .sort((a,b)=>b.rate-a.rate).slice(0,5);
-      const max = sorted[0]?.rate||1;
-      ['🥇','🥈','🥉','第4','第5'].forEach((medal,i)=>{
-        const r = sorted[i];
-        const bar = document.createElement('div');
-        bar.className = 'text-center px-4 pt-8 pb-4 rounded-xl shadow-md flex flex-col justify-end items-center';
-        bar.style.background = ['#FDE68A','#FCD34D','#FEEBC8','#FEF3C7','#FEF3C7'][i];
-        bar.style.height = `calc(${(r.rate/max)*120}px + 100px)`;
-        bar.innerHTML = `
-          <div class="text-xl mb-1">${medal}</div>
-          <div class="text-base font-bold">${r['股號']}</div>
-          <div class="text-sm font-semibold text-black">${r.formatted}</div>`;
-        list.appendChild(bar);
+      const c = document.getElementById('top5-cards');
+      c.innerHTML = '';
+      const list = data
+        .filter(r => r['預估配息'] != null && r['收盤價'] != null)
+        .map(r => ({
+          code: r['股號'] || r['股票代號'],
+          name: r['股票名稱'],
+          rate: (r['預估配息'] / r['收盤價']) * 100
+        }))
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 5);
+      const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+      list.forEach((r, i) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white p-4 rounded-xl shadow hover:shadow-lg transition';
+        card.innerHTML = `
+          <div class="text-3xl text-center mb-2">${medals[i]}</div>
+          <div class="text-center font-bold text-lg mb-1">${r.code}</div>
+          <div class="text-center text-sm text-gray-600 mb-2">${r.name}</div>
+          <div class="text-center text-2xl font-semibold text-[#1D4A35]">${r.rate.toFixed(2)}%</div>
+        `;
+        c.appendChild(card);
       });
     }
-
+   
     // 瀑布牆卡片
     function renderCards(data) {
       const c = document.getElementById('card-container');
