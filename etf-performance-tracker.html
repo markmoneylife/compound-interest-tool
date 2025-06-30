@@ -3,106 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="馬克理財｜ETF績效追蹤牆，每月更新台股熱門ETF報酬率，幫你掌握投資節奏。">
+  <meta name="description" content="馬克理財｜ETF績效追蹤牆，每月更新台股前十大ETF關鍵績效指標，協助投資人快速掌握市場脈動。">
   <title>ETF績效追蹤牆｜馬克理財</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fdfdf9;
-      margin: 0;
-      padding: 0;
-      color: #1e1e1e;
-    }
-    header {
-      background-color: #1a3c34;
-      color: #fff;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    .subtitle {
-      font-size: 1.1rem;
-      margin-top: 0.5rem;
-      color: #f0f0a5;
-    }
-    .content {
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    .note {
-      background: #f4f9f8;
-      border-left: 4px solid #1a3c34;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      font-size: 0.95rem;
-    }
-    .cta {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #fff7cc;
-      border: 1px solid #e0d28c;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .cta a {
-      display: inline-block;
-      background: #1a3c34;
-      color: #fff;
-      padding: 0.7rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      margin-top: 1rem;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #fdfdf9; margin:0; padding:0; color:#1e1e1e; }
+    header { background:#1a3c34; color:#fff; padding:1.5rem; text-align:center; }
+    h1 { margin:0; font-size:2rem; }
+    .subtitle { font-size:1.1rem; margin-top:0.5rem; color:#f0f0a5; }
+    .content { padding:2rem; max-width:1200px; margin:auto; }
+    .note { background:#f4f9f8; border-left:4px solid #1a3c34; padding:1rem; margin-bottom:1.5rem; font-size:0.95rem; line-height:1.6; }
+    table { width:100%; font-size:0.95rem; }
+    .cta { margin-top:2rem; padding:1rem; background:#fff7cc; border:1px solid #e0d28c; border-radius:8px; text-align:center; }
+    .cta a { display:inline-block; background:#1a3c34; color:#fff; padding:0.7rem 1.5rem; border-radius:6px; text-decoration:none; margin-top:1rem; }
   </style>
 </head>
 <body>
   <header>
-    <h1>📊 ETF績效追蹤牆</h1>
-    <div class="subtitle">每月更新｜幫你快速掌握台股熱門ETF績效表現</div>
+    <h1>📊 前十大ETF績效追蹤牆</h1>
+    <div class="subtitle">每月月底更新｜前十大ETF核心績效一覽</div>
   </header>
   <div class="content">
     <div class="note">
-      本頁數據由馬克手動整理，更新頻率為 <strong>每月月底</strong>。部分ETF如 <strong>0050</strong> 於 2024 年進行 1:4 拆股，已特別調整股價與報酬率基準，供投資人參考。請以券商實際資訊為準。
+      數據來源：馬克理財手動整理<br>
+      更新頻率：每月月底<br>
+      拆股調整：已對0050進行1:4還原處理，資料僅供參考，請以實際交易資訊為準。
     </div>
-
     <table id="etf-table" class="display"></table>
-
     <div class="cta">
       ❤️ 喜歡這份追蹤牆？<br />
-      支持馬克持續更新 ➜
-      <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">贊助我一杯拿鐵</a>
+      支持馬克持續更新 ➜ <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">贊助我一杯拿鐵</a>
     </div>
   </div>
-
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script>
-    // 請將 GID_OF_ETF_TRACKER_SHEET 替換為「ETF績效追蹤」分頁的 GID
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=GID_OF_ETF_TRACKER_SHEET&output=csv";
-
+    const cols = [
+      { title: 'ETF代碼', field: 'ETF代碼', width: '10%' },
+      { title: '名稱', field: 'ETF名稱', width: '20%' },
+      { title: '最新股價', field: '最新股價', width: '12%' },
+      { title: '年初至今報酬', field: '年初至今報酬', width: '12%' },
+      { title: '1M報酬率', field: '1M報酬率', width: '12%' },
+      { title: '3M報酬率', field: '3M報酬率', width: '12%' },
+      { title: '1Y報酬率', field: '1Y報酬率', width: '12%' }
+    ];
     Papa.parse(csvUrl, {
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data;
-        const columns = Object.keys(data[0]).map(key => ({ title: key, data: key }));
+        const data = results.data.map(row => ({
+          'ETF代碼': row['ETF代碼'],
+          'ETF名稱': row['ETF名稱'],
+          '最新股價': row['最新股價'],
+          '年初至今報酬': row['年初至今報酬'],
+          '1M報酬率': row['1M報酬率'],
+          '3M報酬率': row['3M報酬率'],
+          '1Y報酬率': row['1Y報酬率']
+        }));
         $('#etf-table').DataTable({
           data: data,
-          columns: columns,
-          language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json"
-          },
+          columns: cols.map(c => ({ title: c.title, data: c.field })),
+          language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json' },
           paging: false,
           scrollX: true
         });
