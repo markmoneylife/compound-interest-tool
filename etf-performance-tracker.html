@@ -1,74 +1,100 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="馬克理財｜ETF績效追蹤牆，每月更新台股前十大ETF關鍵績效指標，協助投資人快速掌握市場脈動。">
-  <title>ETF績效追蹤牆｜馬克理財</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="馬克理財｜前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
+  <title>ETF績效卡片牆｜馬克理財</title>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #fdfdf9; margin:0; padding:0; color:#1e1e1e; }
-    header { background:#1a3c34; color:#fff; padding:1.5rem; text-align:center; }
-    h1 { margin:0; font-size:2rem; }
-    .subtitle { font-size:1.1rem; margin-top:0.5rem; color:#f0f0a5; }
-    .content { padding:2rem; max-width:1200px; margin:auto; }
-    .note { background:#f4f9f8; border-left:4px solid #1a3c34; padding:1rem; margin-bottom:1.5rem; font-size:0.95rem; line-height:1.6; }
-    table { width:100%; font-size:0.95rem; }
-    .cta { margin-top:2rem; padding:1rem; background:#fff7cc; border:1px solid #e0d28c; border-radius:8px; text-align:center; }
-    .cta a { display:inline-block; background:#1a3c34; color:#fff; padding:0.7rem 1.5rem; border-radius:6px; text-decoration:none; margin-top:1rem; }
+    body { background:#f5f5f5; font-family:'Segoe UI',sans-serif; color:#333; margin:0; padding:2rem; }
+    h1 { text-align:center; color:#1a3c34; margin-bottom:1rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
+    .card { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:column; }
+    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; }
+    .card-body { padding:0.75rem; flex:1; display:flex; flex-direction:column; }
+    .price { font-size:1.4rem; color:#1a3c34; margin:0.5rem 0; }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.75rem; }
+    .metric { background:#f0f0f0; border-radius:4px; padding:0.5rem; text-align:center; }
+    .metric .label { font-size:0.8rem; color:#666; }
+    .metric .value { font-size:1rem; font-weight:bold; margin-top:0.2rem; }
+    .positive { color:#28a745; }
+    .negative { color:#dc3545; }
+    .chart-container { position:relative; height:120px; margin-top:auto; }
+    .card-footer { background:#fafafa; padding:0.5rem; font-size:0.75rem; text-align:right; color:#999; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>📊 前十大ETF績效追蹤牆</h1>
-    <div class="subtitle">每月月底更新｜前十大ETF核心績效一覽</div>
-  </header>
-  <div class="content">
-    <div class="note">
-      數據來源：馬克理財手動整理<br>
-      更新頻率：每月月底<br>
-      拆股調整：已對0050進行1:4還原處理，資料僅供參考，請以實際交易資訊為準。
-    </div>
-    <table id="etf-table" class="display"></table>
-    <div class="cta">
-      ❤️ 喜歡這份追蹤牆？<br />
-      支持馬克持續更新 ➜ <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">贊助我一杯拿鐵</a>
-    </div>
-  </div>
+  <h1>💎 前十大ETF績效卡片牆</h1>
+  <div id="loading" style="text-align:center;color:#666;">載入中，請稍候…</div>
+  <div id="card-grid" class="grid" style="display:none"></div>
+
+  <!-- 引入必要腳本：jQuery、PapaParse、Chart.js -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=GID_OF_ETF_TRACKER_SHEET&output=csv";
-    const cols = [
-      { title: 'ETF代碼', field: 'ETF代碼', width: '10%' },
-      { title: '名稱', field: 'ETF名稱', width: '20%' },
-      { title: '最新股價', field: '最新股價', width: '12%' },
-      { title: '年初至今報酬', field: '年初至今報酬', width: '12%' },
-      { title: '1M報酬率', field: '1M報酬率', width: '12%' },
-      { title: '3M報酬率', field: '3M報酬率', width: '12%' },
-      { title: '1Y報酬率', field: '1Y報酬率', width: '12%' }
-    ];
+    // PASTE_YOUR_PUBLISHED_CSV_URL_HERE 同時含 gid & single=true & output=csv
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2044574772&single=true&output=csv";
     Papa.parse(csvUrl, {
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data.map(row => ({
-          'ETF代碼': row['ETF代碼'],
-          'ETF名稱': row['ETF名稱'],
-          '最新股價': row['最新股價'],
-          '年初至今報酬': row['年初至今報酬'],
-          '1M報酬率': row['1M報酬率'],
-          '3M報酬率': row['3M報酬率'],
-          '1Y報酬率': row['1Y報酬率']
-        }));
-        $('#etf-table').DataTable({
-          data: data,
-          columns: cols.map(c => ({ title: c.title, data: c.field })),
-          language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json' },
-          paging: false,
-          scrollX: true
+        const data = results.data.filter(row => row['ETF代碼']).slice(0,10);
+        $('#loading').hide();
+        const grid = $('#card-grid').show();
+
+        data.forEach((row, idx) => {
+          // 準備走勢數據
+          const labels = [row['10Y前日期'], row['5Y前日期'], row['3Y前日期'], row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'];
+          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v => parseFloat(v)||0);
+          // 卡片 HTML
+          const card = $(
+            `<div class="card">
+              <div class="card-header">${row['ETF代碼']} ${row['ETF名稱']}</div>
+              <div class="card-body">
+                <div class="price">${row['最新股價']}</div>
+                <div class="metrics">
+                  <div class="metric"><div class="label">1M報酬</div><div class="value ${row['1M報酬率'].includes('-')?'negative':'positive'}">${row['1M報酬率']}</div></div>
+                  <div class="metric"><div class="label">3M報酬</div><div class="value ${row['3M報酬率'].includes('-')?'negative':'positive'}">${row['3M報酬率']}</div></div>
+                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['1Y報酬率'].includes('-')?'negative':'positive'}">${row['1Y報酬率']}</div></div>
+                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['3Y報酬率'].includes('-')?'negative':'positive'}">${row['3Y報酬率']}</div></div>
+                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['5Y報酬率'].includes('-')?'negative':'positive'}">${row['5Y報酬率']}</div></div>
+                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['10Y報酬率'].includes('-')?'negative':'positive'}">${row['10Y報酬率']}</div></div>
+                </div>
+                <div class="chart-container"><canvas id="chart-${idx}"></canvas></div>
+              </div>
+              <div class="card-footer">更新：${row['更新日期']}</div>
+            </div>`
+          );
+          grid.append(card);
+          // 繪製趨勢圖
+          const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                data: prices,
+                borderColor: '#1a3c34',
+                backgroundColor: 'rgba(26,60,52,0.1)',
+                tension: 0.3,
+                pointRadius: 2
+              }]
+            },
+            options: {
+              scales: { x: { display: false }, y: { display: false } },
+              plugins: { legend: { display: false }, tooltip: { enabled: true } },
+              elements: { line: { borderWidth: 2 } },
+              maintainAspectRatio: false
+            }
+          });
         });
+      },
+      error: function(err) {
+        $('#loading').text('讀取資料失敗，請確認CSV已公開');
+        console.error(err);
       }
     });
   </script>
