@@ -12,15 +12,17 @@
     h1 { text-align:center; color:#1a3c34; margin-bottom:1rem; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
     .card { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:column; }
-    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; }
-    .card-body { padding:0.75rem; flex:1; display:flex; flex-direction:column; }
-    .price { font-size:1.4rem; color:#1a3c34; margin:0.5rem 0; }
+    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; position:relative; }
+    .split-note { font-size:0.75rem; color:#f0a500; margin-top:0.25rem; position:absolute; top:100%; left:0; transform: translateY(4px); }
+    .card-body { padding:1.5rem 0.75rem 0.75rem; flex:1; display:flex; flex-direction:column; }
+    .price { font-size:1.6rem; color:#1a3c34; margin:0.5rem 0; }
     .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.75rem; }
     .metric { background:#f0f0f0; border-radius:4px; padding:0.5rem; text-align:center; }
     .metric .label { font-size:0.8rem; color:#666; }
     .metric .value { font-size:1rem; font-weight:bold; margin-top:0.2rem; }
-    .positive { color:#28a745; }
-    .negative { color:#dc3545; }
+    /* 上漲紅色、下跌綠色 */
+    .positive { color:#dc3545; }
+    .negative { color:#28a745; }
     .chart-container { position:relative; height:120px; margin-top:auto; }
     .card-footer { background:#fafafa; padding:0.5rem; font-size:0.75rem; text-align:right; color:#999; }
   </style>
@@ -35,24 +37,28 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // PASTE_YOUR_PUBLISHED_CSV_URL_HERE 同時含 gid & single=true & output=csv
+    // CSV 連結：請使用「發佈到網路上」後含 gid & single=true & output=csv 的 URL
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2044574772&single=true&output=csv";
     Papa.parse(csvUrl, {
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data.filter(row => row['ETF代碼']).slice(0,10);
+        const data = results.data.filter(r=>r['ETF代碼']).slice(0,10);
         $('#loading').hide();
-        const grid = $('#card-grid').show();
+        $('#card-grid').show();
 
         data.forEach((row, idx) => {
           // 準備走勢數據
           const labels = [row['10Y前日期'], row['5Y前日期'], row['3Y前日期'], row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'];
-          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v => parseFloat(v)||0);
+          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v=>parseFloat(v)||0);
           // 卡片 HTML
-          const card = $(
-            `<div class="card">
-              <div class="card-header">${row['ETF代碼']} ${row['ETF名稱']}</div>
+          const isSplit = row['ETF代碼']==='0050';
+          const card = $(`
+            <div class="card">
+              <div class="card-header">
+                ${row['ETF代碼']} ${row['ETF名稱']}
+                ${isSplit?'<div class="split-note">※0050已於2025/06/18完成1:4拆股，投資門檻由20萬降至4.7萬</div>':''}
+              </div>
               <div class="card-body">
                 <div class="price">${row['最新股價']}</div>
                 <div class="metrics">
@@ -66,36 +72,17 @@
                 <div class="chart-container"><canvas id="chart-${idx}"></canvas></div>
               </div>
               <div class="card-footer">更新：${row['更新日期']}</div>
-            </div>`
-          );
-          grid.append(card);
+            </div>`);
+          $('#card-grid').append(card);
           // 繪製趨勢圖
           const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
           new Chart(ctx, {
             type: 'line',
-            data: {
-              labels: labels,
-              datasets: [{
-                data: prices,
-                borderColor: '#1a3c34',
-                backgroundColor: 'rgba(26,60,52,0.1)',
-                tension: 0.3,
-                pointRadius: 2
-              }]
-            },
-            options: {
-              scales: { x: { display: false }, y: { display: false } },
-              plugins: { legend: { display: false }, tooltip: { enabled: true } },
-              elements: { line: { borderWidth: 2 } },
-              maintainAspectRatio: false
-            }
+            data: { labels, datasets:[{ data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2 }]},
+            options: { scales:{x:{display:false},y:{display:false}}, plugins:{legend:{display:false},tooltip:{enabled:true}}, elements:{line:{borderWidth:2}}, maintainAspectRatio:false }
           });
         });
-      },
-      error: function(err) {
-        $('#loading').text('讀取資料失敗，請確認CSV已公開');
-        console.error(err);
-      }
+      }, error:function(){ $('#loading').text('讀取資料失敗，請確認CSV已公開'); }
     });
   </script>
 </body>
