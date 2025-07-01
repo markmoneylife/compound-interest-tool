@@ -9,18 +9,19 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <style>
     body { background:#f5f5f5; font-family:'Segoe UI',sans-serif; color:#333; margin:0; padding:2rem; }
-    h1 { text-align:center; color:#1a3c34; margin-bottom:1rem; }
+    h1 { text-align:center; color:#1a3c34; margin-bottom:0.5rem; }
+    .dialog { background:#fff7e6; border:1px solid #ffd27f; border-left:4px solid #f0a500; padding:0.75rem 1rem; margin:0 auto 1rem; max-width:1200px; font-size:0.9rem; color:#333; line-height:1.4; }
+    .dialog p { margin:0.25rem 0; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
     .card { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:column; }
-    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; position:relative; }
-    .split-note { font-size:0.75rem; color:#f0a500; margin-top:0.25rem; position:absolute; top:100%; left:0; transform: translateY(4px); }
+    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; }
     .card-body { padding:1.5rem 0.75rem 0.75rem; flex:1; display:flex; flex-direction:column; }
     .price { font-size:1.6rem; color:#1a3c34; margin:0.5rem 0; }
     .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.75rem; }
     .metric { background:#f0f0f0; border-radius:4px; padding:0.5rem; text-align:center; }
     .metric .label { font-size:0.8rem; color:#666; }
     .metric .value { font-size:1rem; font-weight:bold; margin-top:0.2rem; }
-    /* 上漲紅色、下跌綠色 */
+    /* 台灣慣例：上漲用紅色，下跌用綠色 */
     .positive { color:#dc3545; }
     .negative { color:#28a745; }
     .chart-container { position:relative; height:120px; margin-top:auto; }
@@ -29,6 +30,10 @@
 </head>
 <body>
   <h1>💎 前十大ETF績效卡片牆</h1>
+  <div class="dialog">
+    <p>• 0050已於 <strong>2025/06/18</strong> 完成 <strong>1拆4</strong> 拆股，投資門檻由約20萬元降至約4.7萬元。</p>
+    <p>• 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，目前正持續優化技術呈現，敬請見諒。</p>
+  </div>
   <div id="loading" style="text-align:center;color:#666;">載入中，請稍候…</div>
   <div id="card-grid" class="grid" style="display:none"></div>
 
@@ -43,22 +48,16 @@
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data.filter(r=>r['ETF代碼']).slice(0,10);
+        const data = results.data.filter(r => r['ETF代碼']).slice(0,10);
         $('#loading').hide();
         $('#card-grid').show();
 
         data.forEach((row, idx) => {
-          // 準備走勢數據
           const labels = [row['10Y前日期'], row['5Y前日期'], row['3Y前日期'], row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'];
-          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v=>parseFloat(v)||0);
-          // 卡片 HTML
-          const isSplit = row['ETF代碼']==='0050';
-          const card = $(`
-            <div class="card">
-              <div class="card-header">
-                ${row['ETF代碼']} ${row['ETF名稱']}
-                ${isSplit?'<div class="split-note">※0050已於2025/06/18完成1:4拆股，投資門檻由20萬降至4.7萬</div>':''}
-              </div>
+          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v => parseFloat(v) || 0);
+          const card = $(
+            `<div class="card">
+              <div class="card-header">${row['ETF代碼']} ${row['ETF名稱']}</div>
               <div class="card-body">
                 <div class="price">${row['最新股價']}</div>
                 <div class="metrics">
@@ -72,17 +71,17 @@
                 <div class="chart-container"><canvas id="chart-${idx}"></canvas></div>
               </div>
               <div class="card-footer">更新：${row['更新日期']}</div>
-            </div>`);
+            </div>`
+          );
           $('#card-grid').append(card);
-          // 繪製趨勢圖
           const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
           new Chart(ctx, {
             type: 'line',
-            data: { labels, datasets:[{ data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2 }]},
-            options: { scales:{x:{display:false},y:{display:false}}, plugins:{legend:{display:false},tooltip:{enabled:true}}, elements:{line:{borderWidth:2}}, maintainAspectRatio:false }
+            data: {labels, datasets:[{data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2}]},
+            options:{scales:{x:{display:false},y:{display:false}},plugins:{legend:{display:false},tooltip:{enabled:true}},elements:{line:{borderWidth:2}},maintainAspectRatio:false}
           });
         });
-      }, error:function(){ $('#loading').text('讀取資料失敗，請確認CSV已公開'); }
+      }, error: function() { $('#loading').text('讀取資料失敗，請確認CSV已公開'); }
     });
   </script>
 </body>
