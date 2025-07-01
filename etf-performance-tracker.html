@@ -1,10 +1,106 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+<style>
+    /* 手機選單 */
+    .nav-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+      background: #FFD54F;
+      border: none;
+      padding: .6rem 1rem;
+      border-radius: .5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .nav-bar-wrapper {
+      background: #1D4A35;
+      padding: 1rem 0;
+    }
+    .nav-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .nav-bar a {
+      background: #FFD54F;
+      color: #1A1A1A;
+      font-weight: bold;
+      text-decoration: none;
+      padding: .65rem 1.2rem;
+      border-radius: .75rem;
+      transition: all .2s;
+    }
+    .nav-bar a:hover {
+      background: #FFE082;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 768px) {
+      .nav-toggle { display: block; }
+      .nav-bar { display: none; flex-direction: column; align-items: center; }
+      .nav-bar.active { display: flex; }
+      .nav-bar a { width: 90%; text-align: center; margin-bottom: .5rem; }
+    }
+
+    /* 收益組成卡片優化 */
+    .card-common {
+      background: linear-gradient(135deg, #EAF4F1 0%, #FFFAF0 100%);
+      border: 1px solid rgba(23, 68, 59, 0.2);
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      color: #17453B;
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+    .card-common:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 20px rgba(0, 0, 0, 0.12);
+    }
+    .card-common h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .card-common .etf-name {
+      font-size: 0.875rem;
+      color: #445A52;
+      margin-bottom: 1rem;
+    }
+    .card-common .highlight {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+  </style>
+</head>
+<body class="bg-[#F5F2E9] text-gray-800">
+
+  <!-- 手機選單 -->
+  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
+  <div class="nav-bar-wrapper">
+    <div id="navBar" class="nav-bar">
+      <a href="#wall">ETF配息圖卡瀑布牆</a>
+      <a href="#timeline">ETF配息入帳時間表</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+      <a href="https://forms.gle/DKRoQizqLVBCe7Dj6" target="_blank">加入LINE社群</a>
+    </div>
+  </div>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="馬克理財｜前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
-  <title>ETF績效卡片牆｜馬克理財</title>
+  <meta name="description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
+  <title>台股ETF績效卡片牆｜吳馬克理財</title>
 
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -30,7 +126,7 @@
   </style>
 </head>
 <body>
-  <h1>💎 前十大ETF績效卡片牆</h1>
+  <h1>💎 台股前十大ETF績效卡片牆</h1>
   <div class="dialog">
     <p>• 0050已於 <strong>2025/06/18</strong> 完成 <strong>1拆4</strong> 拆股，投資門檻由約20萬元降至約4.7萬元。</p>
     <p>• 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，目前正持續優化技術呈現，敬請見諒。</p>
