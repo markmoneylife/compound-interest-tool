@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
+  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克">
+  <link rel="canonical" href="https://markmoneylife.com/etf-performance-wall/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://markmoneylife.com/etf-performance-wall/">
+  <meta property="og:title" content="台股ETF績效卡片牆｜吳馬克理財">
+  <meta property="og:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
+  <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@markmoneylife">
+  <meta name="twitter:title" content="台股ETF績效卡片牆｜吳馬克理財">
+  <meta name="twitter:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
+  <meta name="twitter:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "台股ETF績效卡片牆",
+    "description": "馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。",
+    "url": "https://markmoneylife.com/etf-performance-wall/"
+  }
+  </script>
+  <title>台股ETF績效卡片牆｜吳馬克理財</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <style>
+    /* 全局樣式 */
+    body { background: #F5F2E9; font-family: 'Segoe UI', sans-serif; color: #333; margin: 0; padding: 2rem; }
+
     /* 手機選單 */
-    .nav-toggle {
-      display: none;
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 9999;
-      background: #FFD54F;
-      border: none;
-      padding: .6rem 1rem;
-      border-radius: .5rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .nav-bar-wrapper {
-      background: #1D4A35;
-      padding: 1rem 0;
-    }
-    .nav-bar {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .nav-bar a {
-      background: #FFD54F;
-      color: #1A1A1A;
-      font-weight: bold;
-      text-decoration: none;
-      padding: .65rem 1.2rem;
-      border-radius: .75rem;
-      transition: all .2s;
-    }
-    .nav-bar a:hover {
-      background: #FFE082;
-      transform: translateY(-2px);
-    }
+    .nav-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 9999; background: #FFD54F; border: none; padding: .6rem 1rem; border-radius: .5rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
+    .nav-bar-wrapper { background: #1D4A35; padding: 1rem 0; }
+    nav[aria-label] .nav-bar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+    .nav-bar a { background: #FFD54F; color: #1A1A1A; font-weight: bold; padding: .65rem 1.2rem; border-radius: .75rem; transition: all .2s; }
+    .nav-bar a:hover { background: #FFE082; transform: translateY(-2px); }
     @media (max-width: 768px) {
       .nav-toggle { display: block; }
       .nav-bar { display: none; flex-direction: column; align-items: center; }
@@ -48,102 +47,95 @@
       .nav-bar a { width: 90%; text-align: center; margin-bottom: .5rem; }
     }
 
-    /* 收益組成卡片優化 */
-    .card-common {
-      background: linear-gradient(135deg, #EAF4F1 0%, #FFFAF0 100%);
-      border: 1px solid rgba(23, 68, 59, 0.2);
-      border-radius: 1rem;
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
-      padding: 1.5rem;
-      color: #17453B;
-      transition: transform .2s, box-shadow .2s;
-      position: relative;
-    }
-    .card-common:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 15px 20px rgba(0, 0, 0, 0.12);
-    }
-    .card-common h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-    .card-common .etf-name {
-      font-size: 0.875rem;
-      color: #445A52;
-      margin-bottom: 1rem;
-    }
-    .card-common .highlight {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 0.75rem;
-      border-radius: 0.75rem;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
-    }
-  </style>
-</head>
-<body class="bg-[#F5F2E9] text-gray-800">
+    /* 卡片牆 */
+    h1 { text-align: center; color: #1a3c34; margin-bottom: 0.5rem; }
+    .dialog { background: #fff7e6; border: 1px solid #ffd27f; border-left: 4px solid #f0a500; padding: 0.75rem 1rem; margin: 0 auto 1rem; max-width: 1200px; font-size: 0.9rem; line-height: 1.4; }
+    .dialog p { margin: 0.25rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; }
+    .card-header { background: #1a3c34; color: #fff; padding: 0.75rem; font-weight: bold; font-size: 1rem; }
+    .card-body { padding: 1.5rem 0.75rem 0.75rem; display: flex; flex-direction: column; flex: 1; }
+    .price { font-size: 1.6rem; color: #1a3c34; margin: 0.5rem 0; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
+    .metric { background: #f0f0f0; border-radius: 4px; padding: 0.5rem; text-align: center; }
+    .metric .label { font-size: 0.8rem; color: #666; }
+    .metric .value { font-size: 1rem; font-weight: bold; margin-top: 0.2rem; }
+    .positive { color: #dc3545; }
+    .negative { color: #28a945; }
+    .chart-container { position: relative; height: 120px; margin-top: auto; }
+    .card-footer { background: #fafafa; padding: 0.5rem; font-size: 0.75rem; text-align: right; color: #999; }
 
-  <!-- 手機選單 -->
-  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
-  <div class="nav-bar-wrapper">
-    <div id="navBar" class="nav-bar">
-      <a href="#wall">ETF配息圖卡瀑布牆</a>
-      <a href="#timeline">ETF配息入帳時間表</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
-      <a href="https://forms.gle/DKRoQizqLVBCe7Dj6" target="_blank">加入LINE社群</a>
-    </div>
-  </div>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
-  <title>台股ETF績效卡片牆｜吳馬克理財</title>
-
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <style>
-    body { background:#f5f5f5; font-family:'Segoe UI',sans-serif; color:#333; margin:0; padding:2rem; }
-    h1 { text-align:center; color:#1a3c34; margin-bottom:0.5rem; }
-    .dialog { background:#fff7e6; border:1px solid #ffd27f; border-left:4px solid #f0a500; padding:0.75rem 1rem; margin:0 auto 1rem; max-width:1200px; font-size:0.9rem; color:#333; line-height:1.4; }
-    .dialog p { margin:0.25rem 0; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
-    .card { background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:column; }
-    .card-header { background:#1a3c34; color:#fff; padding:0.75rem; font-weight:bold; font-size:1rem; }
-    .card-body { padding:1.5rem 0.75rem 0.75rem; flex:1; display:flex; flex-direction:column; }
-    .price { font-size:1.6rem; color:#1a3c34; margin:0.5rem 0; }
-    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.75rem; }
-    .metric { background:#f0f0f0; border-radius:4px; padding:0.5rem; text-align:center; }
-    .metric .label { font-size:0.8rem; color:#666; }
-    .metric .value { font-size:1rem; font-weight:bold; margin-top:0.2rem; }
-    /* 台灣慣例：上漲用紅色，下跌用綠色 */
-    .positive { color:#dc3545; }
-    .negative { color:#28a745; }
-    .chart-container { position:relative; height:120px; margin-top:auto; }
-    .card-footer { background:#fafafa; padding:0.5rem; font-size:0.75rem; text-align:right; color:#999; }
+    /* 支持方式區塊 */
+    .section-support { background: #eef6f4; padding: 2rem 1rem; margin: 2rem 0; border-radius: 1rem; }
+    .section-support h2 { text-align: center; font-size: 1.75rem; color: #1a3c34; margin-bottom: 1rem; }
+    .support-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .method-card { background: #fff; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; }
+    .method-card h3 { margin-bottom: 0.5rem; font-size: 1.25rem; }
+    .method-card p { margin-bottom: 1rem; color: #555; }
+    .method-card .btn { background: #1d4a35; color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: background .2s; }
+    .method-card .btn:hover { background: #163a2a; }
   </style>
 </head>
 <body>
+  <!-- 手機選單 -->
+  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
+  <div class="nav-bar-wrapper">
+    <nav aria-label="主導覽">
+      <div id="navBar" class="nav-bar">
+        <a href="#wall">ETF配息圖卡瀑布牆</a>
+        <a href="#timeline">ETF配息入帳時間表</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+        <a href="https://forms.gle/DKRoQizqLVBCe7Dj6" target="_blank">加入LINE社群</a>
+      </div>
+    </nav>
+  </div>
+
   <h1>💎 台股前十大ETF績效卡片牆</h1>
   <div class="dialog">
     <p>• 0050已於 <strong>2025/06/18</strong> 完成 <strong>1拆4</strong> 拆股，投資門檻由約20萬元降至約4.7萬元。</p>
     <p>• 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，目前正持續優化技術呈現，敬請見諒。</p>
-  <strong>注意事項：</strong><br>
-    1. 本資料僅供參考，實際績效仍以ETF發行單位或證券商公告為準。<br>
-    2. 資料更新頻率為每月月底，請留意時間」。<br>
-    3. 投資有風險，入市需謹慎評估，自行承擔盈虧。
+    <p><strong>注意事項：</strong><br>
+       1. 本資料僅供參考，實際績優仍以ETF發行單位或證券商公告為準。<br>
+       2. 資料更新頻率為每月月底，請留意更新時間。<br>
+       3. 投資有風險，入市需謹慎評估，自行承擔盈虧。
+    </p>
   </div>
+
   <div id="loading" style="text-align:center;color:#666;">載入中，請稍候…</div>
   <div id="card-grid" class="grid" style="display:none"></div>
+
+  <!-- 支持方式區塊（放在最底部） -->
+  <section id="support-methods" class="section-support">
+    <h2>支持馬克</h2>
+    <p style="text-align:center; margin-bottom:1.5rem;">感謝你的支持！你可以透過以下方式加入，讓我持續創作更優質內容：</p>
+    <div class="support-methods">
+      <div class="method-card">
+        <h3>LINE貼圖</h3>
+        <p>下載專屬「馬克」LINE貼圖，聊天更有趣。</p>
+        <a href="#" class="btn">前往購買</a>
+      </div>
+      <div class="method-card">
+        <h3>周邊商品</h3>
+        <p>購買限量衣服與周邊，穿上理財風格。</p>
+        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" class="btn">逛逛商城</a>
+      </div>
+      <div class="method-card">
+        <h3>頻道會員</h3>
+        <p>成為YouTube頻道會員，獨享專屬福利與互動。</p>
+        <a href="https://www.youtube.com/user/rengary/join" class="btn" target="_blank">加入會員</a>
+      </div>
+    </div>
+  </section>
 
   <!-- 引入必要腳本：jQuery、PapaParse、Chart.js -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // CSV 連結：請使用「發佈到網路上」後含 gid & single=true & output=csv 的 URL
+    function toggleNav() { document.getElementById('navBar').classList.toggle('active'); }
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2044574772&single=true&output=csv";
     Papa.parse(csvUrl, {
       download: true,
@@ -152,35 +144,30 @@
         const data = results.data.filter(r => r['ETF代碼']).slice(0,10);
         $('#loading').hide();
         $('#card-grid').show();
-
         data.forEach((row, idx) => {
           const labels = [row['10Y前日期'], row['5Y前日期'], row['3Y前日期'], row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'];
           const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v => parseFloat(v) || 0);
-          const card = $(
-            `<div class="card">
+          const card = $(`
+            <div class="card">
               <div class="card-header">${row['ETF代碼']} ${row['ETF名稱']}</div>
-              <div class="card-body">
-                <div class="price">${row['最新股價']}</div>
-                <div class="metrics">
-                  <div class="metric"><div class="label">1M報酬</div><div class="value ${row['1M報酬率'].includes('-')?'negative':'positive'}">${row['1M報酬率']}</div></div>
-                  <div class="metric"><div class="label">3M報酬</div><div class="value ${row['3M報酬率'].includes('-')?'negative':'positive'}">${row['3M報酬率']}</div></div>
-                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['1Y報酬率'].includes('-')?'negative':'positive'}">${row['1Y報酬率']}</div></div>
-                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['3Y報酬率'].includes('-')?'negative':'positive'}">${row['3Y報酬率']}</div></div>
-                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['5Y報酬率'].includes('-')?'negative':'positive'}">${row['5Y報酬率']}</div></div>
-                  <div class="metric"><div class="label">1Y報酬</div><div class="value ${row['10Y報酬率'].includes('-')?'negative':'positive'}">${row['10Y報酬率']}</div></div>
-                </div>
+              <div class="card-body">` +
+              `<div class="price">${row['最新股價']}</div>
+                <div class="metrics">` +
+                `<div class="metric"><div class="label">1M報酬</div><div class="value ${row['1M報酬率'].includes('-')?'negative':'positive'}">${row['1M報酬率']}</div></div>` +
+                `<div class="metric"><div class="label">3M報酬</div><div class="value ${row['3M報酬率'].includes('-')?'negative':'positive'}">${row['3M報酬率']}</div></div>` +
+                `<div class="metric"><div class="label">1Y報酬</div><div class="value ${row['1Y報酬率'].includes('-')?'negative':'positive'}">${row['1Y報酬率']}</div></div>` +
+                `<div class="metric"><div class="label">3Y報酬</div><div class="value ${row['3Y報酬率'].includes('-')?'negative':'positive'}">${row['3Y報酬率']}</div></div>` +
+                `<div class="metric"><div class="label">5Y報酬</div><div class="value ${row['5Y報酬率'].includes('-')?'negative':'positive'}">${row['5Y報酬率']}</div></div>` +
+                `<div class="metric"><div class="label">10Y報酬</div><div class="value ${row['10Y報酬率'].includes('-')?'negative':'positive'}">${row['10Y報酬率']}</div></div>` +
+                `</div>
                 <div class="chart-container"><canvas id="chart-${idx}"></canvas></div>
               </div>
               <div class="card-footer">更新：${row['更新日期']}</div>
-            </div>`
-          );
+            </div>
+          `);
           $('#card-grid').append(card);
           const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
-          new Chart(ctx, {
-            type: 'line',
-            data: {labels, datasets:[{data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2}]},
-            options:{scales:{x:{display:false},y:{display:false}},plugins:{legend:{display:false},tooltip:{enabled:true}},elements:{line:{borderWidth:2}},maintainAspectRatio:false}
-          });
+          new Chart(ctx, { type: 'line', data: { labels, datasets:[{ data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2 }] }, options:{ scales:{ x:{ display:false }, y:{ display:false } }, plugins:{ legend:{display:false}, tooltip:{enabled:true} }, elements:{ line:{borderWidth:2} }, maintainAspectRatio:false } });
         });
       }, error: function() { $('#loading').text('讀取資料失敗，請確認CSV已公開'); }
     });
