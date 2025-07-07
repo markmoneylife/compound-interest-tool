@@ -194,13 +194,45 @@
   </section>
 
   <!-- Footer -->
-  <footer class="mt-16 text-xs text-center text-gray-500 px-4 leading-relaxed">
-    資料來源：
-    <a href="https://www.twse.com.tw/zh/ETFortune/announcementList" class="underline" target="_blank">
-      臺灣證券交易所
-    </a>｜製作：吳馬克<br>
-    ※ 本網站資訊僅供參考，不構成任何投資建議。基金配息率不代表報酬率，亦不代表未來績效，投資請自行評估風險。
-  </footer>
+<footer class="mt-16 bg-gray-50 border-t border-gray-200 py-8 text-gray-600 text-xs">
+  <div class="max-w-4xl mx-auto px-4 grid gap-6 md:grid-cols-2">
+    
+    <!-- 資料來源 & 作者 -->
+    <div class="flex flex-col items-center md:items-start space-y-2">
+      <p class="flex items-center space-x-1">
+        <span>📊 資料來源：</span>
+        <a href="https://www.twse.com.tw/zh/ETFortune/announcementList"
+           target="_blank"
+           class="underline hover:text-gray-800">
+          臺灣證券交易所
+        </a>
+      </p>
+      <p>🎬 製作：吳馬克</p>
+    </div>
+
+    <!-- 投資風險提示 -->
+    <div class="space-y-2">
+      <p class="font-semibold">📢 投資風險提示：</p>
+      <ul class="list-disc list-inside space-y-1 leading-relaxed">
+        <li>基金配息率≠報酬率，過去配息不代表未來績效。</li>
+        <li>本頁資料僅供投資紀錄分享與理財教育，非個別化投資建議。</li>
+        <li>ETF 等金融商品有漲有跌，請審慎評估自身風險承受度。</li>
+        <li>如需專業建議，請諮詢合格金融顧問。</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- 回到頂部 -->
+  <p class="mt-6 text-center">
+    <a href="#"
+       class="inline-block hover:underline">
+      ↑ 回到頂部
+    </a>
+  </p>
+</footer>
+  
+  </div>
 
  <script>
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=122705340&single=true&output=csv';
