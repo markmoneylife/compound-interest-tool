@@ -277,12 +277,27 @@
     window.latestData = [];
 
     fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(csv => Papa.parse(csv, { header: true }))
-      .then(data => {
-        window.latestData = data.data;
-        renderCards(data.data);
-      });
+  .then(res => res.text())
+  .then(csv => Papa.parse(csv, { header: true }))
+  .then(results => {
+    // 只保留「股號」有值的筆數
+    const valid = results.data.filter(row =>
+      row["股號"] && row["股號"].trim() !== ""
+    );
+    window.latestData = valid;
+
+    if (valid.length === 0) {
+      document.getElementById("etfCards").innerHTML =
+        '<p style="text-align:center;color:#777;padding:2rem;">目前尚無可顯示的 ETF 資料，請稍後再試。</p>';
+    } else {
+      renderCards(valid);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("etfCards").innerHTML =
+      '<p style="text-align:center;color:#C62828;padding:2rem;">資料載入失敗，請稍後再試。</p>';
+  });
 
     function filterCards(type) {
       const data = window.latestData;
