@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>體能檢測紀錄｜前後訓練對比儀表板</title>
+  <meta name="description" content="體能檢測紀錄表，支援表單輸入、CSV 匯入匯出、前後對比圖表與雷達圖。" />
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#111827; --muted:#94a3b8; --text:#e5e7eb; --accent:#22c55e; --accent2:#60a5fa; --warn:#f59e0b; --danger:#ef4444; --border:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif;line-height:1.6}
+    header{padding:20px 16px;border-bottom:1px solid var(--border);background:#0b1220;position:sticky;top:0;z-index:20}
+    header h1{margin:0;font-size:20px}
+    .wrap{max-width:1200px;margin:0 auto;padding:20px 16px 80px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:960px){.grid-2{grid-template-columns:1.2fr 1fr}}
+    section{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+    h2{margin:0 0 12px 0;font-size:18px}
+    .row{display:flex;flex-wrap:wrap;gap:8px}
+    label{font-size:12px;color:var(--muted)}
+    input, select, textarea, button{
+      background:#0b1220;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px
+    }
+    input[type="number"]{width:120px}
+    input[type="date"]{width:160px}
+    .btn{cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#16a34a,#15803d);border-color:#14532d}
+    .btn.secondary{background:#0b1220}
+    .btn.warn{background:#0b1220;border-color:#9a3412;color:#fbbf24}
+    .btn.danger{background:#0b1220;border-color:#7f1d1d;color:#fca5a5}
+    table{width:100%;border-collapse:separate;border-spacing:0 6px}
+    thead th{font-size:12px;color:var(--muted);text-align:left;padding:8px 10px}
+    tbody tr{background:#0b1220}
+    tbody td{padding:10px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    tbody tr:hover{outline:1px solid #1f2937}
+    .tools{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted)}
+    .muted{color:var(--muted)}
+    .footer{margin-top:16px;font-size:12px;color:var(--muted)}
+    .code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:#0b1220;border:1px dashed var(--border);padding:8px;border-radius:8px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>體能檢測紀錄｜前後訓練對比儀表板</h1>
+    <div class="muted">表單輸入、CSV 匯入匯出、雙筆對比圖與雷達圖，一頁搞定。</div>
+  </div>
+</header>
+
+<div class="wrap grid grid-2">
+  <!-- 左：輸入與列表 -->
+  <section>
+    <h2>新增或編輯紀錄</h2>
+    <div id="form" class="row"></div>
+    <div class="tools" style="margin-top:10px">
+      <button class="btn primary" id="saveBtn">新增紀錄</button>
+      <button class="btn secondary" id="clearForm">清空表單</button>
+      <span class="pill"><span>共</span><strong id="count">0</strong><span>筆</span></span>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0" />
+
+    <h2>資料列表</h2>
+    <div class="tools" style="margin-bottom:8px">
+      <button class="btn secondary" id="exportCsv">匯出 CSV</button>
+      <button class="btn secondary" id="importCsvToggle">匯入 CSV</button>
+      <button class="btn warn" id="seedBtn">載入示範資料</button>
+      <button class="btn danger" id="wipeBtn">清空所有資料</button>
+    </div>
+    <div id="importArea" style="display:none;margin-bottom:10px">
+      <label>貼上 CSV 文字：</label>
+      <textarea id="csvText" rows="6" style="width:100%"></textarea>
+      <div class="tools" style="margin-top:8px">
+        <button class="btn primary" id="importCsv">匯入</button>
+        <button class="btn secondary" id="cancelImport">取消</button>
+      </div>
+      <div class="footer">CSV 欄位需與下方表頭一致，第一列為標題。</div>
+    </div>
+
+    <div style="overflow:auto">
+      <table id="table">
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="footer">小提醒：資料會存於瀏覽器的 localStorage。</div>
+  </section>
+
+  <!-- 右：圖表 -->
+  <section>
+    <h2>前後對比與雷達圖</h2>
+    <div class="row" style="gap:12px;margin-bottom:8px">
+      <div>
+        <label>選擇紀錄 A</label><br />
+        <select id="recA"></select>
+      </div>
+      <div>
+        <label>選擇紀錄 B</label><br />
+        <select id="recB"></select>
+      </div>
+      <div style="align-self:end">
+        <button class="btn primary" id="drawBtn">更新圖表</button>
+      </div>
+    </div>
+    <canvas id="barChart" height="200"></canvas>
+    <div class="footer">長條圖顯示 A 與 B 的數值。若單位為秒，數值較小代表較佳。</div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0" />
+    <canvas id="radarChart" height="220"></canvas>
+    <div class="footer">
+      雷達圖為標準化分數。秒數型指標會自動反向處理，使「越快分數越高」。
+      你可以在 <span class="code">SECONDS_KEYS</span> 與 <span class="code">INVERT_KEYS</span> 中調整邏輯。
+    </div>
+  </section>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  // 1) 欄位定義：按你的截圖列出。想改順序或名稱，直接調這裡。
+  const COLUMNS = [
+    { key:'測驗日期', type:'date' },
+    { key:'垂直跳(cm)', type:'number' },
+    { key:'立定跳遠(公尺)', type:'number' },
+    { key:'側向跳(次數)', type:'number' },
+    { key:'臥姿實心球拋(m)', type:'number' },
+    { key:'站姿實心球拋(m)', type:'number' },
+    { key:'水平拋(右)(m)', type:'number' },
+    { key:'水平拋(左)(m)', type:'number' },
+    { key:'5-10-5敏捷(秒)', type:'number' },
+    { key:'單腳平衡(秒)', type:'number' },
+    { key:'發球球速(km/h)', type:'number' },
+    { key:'20公尺短跑(秒)', type:'number' },
+    { key:'平板支撐(秒)', type:'number' },
+    { key:'俯臥撐(下)', type:'number' }
+  ];
+
+  // 2) 哪些是秒數型或「越小越好」的指標
+  const SECONDS_KEYS = ['5-10-5敏捷(秒)','20公尺短跑(秒)'];
+  const INVERT_KEYS  = ['5-10-5敏捷(秒)','20公尺短跑(秒)']; // 越小越好
+
+  // 3) 簡單狀態管理
+  const LS_KEY = 'fitness_records_v1';
+  let records = loadLS();
+
+  // 4) 動態產生表單與表頭
+  const form = document.getElementById('form');
+  const thead = document.getElementById('thead');
+  const tbody = document.getElementById('tbody');
+  const count = document.getElementById('count');
+  const recA = document.getElementById('recA');
+  const recB = document.getElementById('recB');
+
+  COLUMNS.forEach(col=>{
+    const wrap = document.createElement('div');
+    wrap.style.display='flex';
+    wrap.style.flexDirection='column';
+    wrap.style.gap='6px';
+    const lab = document.createElement('label'); lab.textContent = col.key;
+    let input = document.createElement('input');
+    input.name = col.key;
+    input.type = col.type==='date'?'date':'number';
+    if(col.type==='number'){input.step='any'}
+    wrap.appendChild(lab); wrap.appendChild(input);
+    form.appendChild(wrap);
+
+    const th = document.createElement('th'); th.textContent = col.key;
+    thead.appendChild(th);
+  });
+  // 操作欄
+  const thOp = document.createElement('th'); thOp.textContent='操作';
+  thead.appendChild(thOp);
+
+  // 5) 事件
+  document.getElementById('saveBtn').onclick = saveRecord;
+  document.getElementById('clearForm').onclick = ()=>form.querySelectorAll('input').forEach(i=>i.value='');
+  document.getElementById('wipeBtn').onclick = ()=>{ if(confirm('確定要清空全部資料？')){ records=[]; saveLS(); render(); } };
+  document.getElementById('seedBtn').onclick = seed;
+  document.getElementById('exportCsv').onclick = exportCsv;
+  document.getElementById('importCsvToggle').onclick = ()=>toggle('importArea', true);
+  document.getElementById('cancelImport').onclick = ()=>toggle('importArea', false);
+  document.getElementById('importCsv').onclick = importCsv;
+  document.getElementById('drawBtn').onclick = drawCharts;
+
+  function toggle(id, on){ document.getElementById(id).style.display = on?'block':'none' }
+
+  // 6) 渲染
+  function render(){
+    count.textContent = records.length;
+    tbody.innerHTML = '';
+    records.forEach((r, idx)=>{
+      const tr = document.createElement('tr');
+      COLUMNS.forEach(c=>{
+        const td = document.createElement('td');
+        let v = r[c.key] ?? '';
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      const tdOp = document.createElement('td');
+      const del = document.createElement('button'); del.className='btn danger'; del.textContent='刪除';
+      del.onclick = ()=>{ records.splice(idx,1); saveLS(); render(); };
+      tdOp.appendChild(del);
+      tr.appendChild(tdOp);
+      tbody.appendChild(tr);
+    });
+    refreshSelectors();
+  }
+
+  // 7) 儲存一筆
+  function saveRecord(){
+    const obj = {};
+    let ok = true;
+    COLUMNS.forEach(c=>{
+      const el = form.querySelector(`input[name="${cssEscape(c.key)}"]`);
+      let val = el.value.trim();
+      if(!val){ /* 可允許空白 */ }
+      if(c.type==='number' && val!==''){ val = Number(val); if(Number.isNaN(val)) ok=false; }
+      obj[c.key] = val;
+    });
+    if(!ok){ alert('有數值輸入錯誤'); return }
+    records.push(obj);
+    saveLS(); render();
+    // 清空
+    form.querySelectorAll('input').forEach(i=>i.value='');
+  }
+
+  // 8) 匯出 CSV
+  function exportCsv(){
+    const cols = COLUMNS.map(c=>c.key);
+    const lines = [cols.join(',')];
+    records.forEach(r=>{
+      const row = cols.map(k=>String(r[k]??'').replaceAll('"','""'));
+      lines.push(row.join(','));
+    });
+    const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download='fitness-records.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // 9) 匯入 CSV
+  function importCsv(){
+    const txt = document.getElementById('csvText').value.trim();
+    if(!txt){ alert('請貼上 CSV 內容'); return }
+    const [head, ...rows] = txt.split(/\r?\n/);
+    const headers = head.split(',');
+    const expected = COLUMNS.map(c=>c.key);
+    if(headers.join(',')!==expected.join(',')){
+      alert('CSV 欄位不符，請確認表頭與系統一致。'); return;
+    }
+    const arr = rows.filter(Boolean).map(line=>{
+      const pieces = line.split(',');
+      const obj = {};
+      pieces.forEach((v,i)=>{
+        const key = headers[i];
+        if(COLUMNS[i].type==='number' && v!==''){ obj[key]=Number(v) }
+        else { obj[key]=v }
+      });
+      return obj;
+    });
+    records = records.concat(arr);
+    saveLS(); render(); toggle('importArea', false);
+  }
+
+  // 10) 範例資料
+  function seed(){
+    if(!confirm('載入示範資料？會加入到現有資料後面。')) return;
+    const demo = [
+      {"測驗日期":"2025-09-01","垂直跳(cm)":43,"立定跳遠(公尺)":2.12,"側向跳(次數)":34,"臥姿實心球拋(m)":5.6,"站姿實心球拋(m)":7.2,"水平拋(右)(m)":6.8,"水平拋(左)(m)":6.5,"5-10-5敏捷(秒)":5.22,"單腳平衡(秒)":41,"發球球速(km/h)":92,"20公尺短跑(秒)":3.18,"平板支撐(秒)":95,"俯臥撐(下)":36},
+      {"測驗日期":"2025-10-01","垂直跳(cm)":47,"立定跳遠(公尺)":2.26,"側向跳(次數)":38,"臥姿實心球拋(m)":6.2,"站姿實心球拋(m)":7.7,"水平拋(右)(m)":7.1,"水平拋(左)(m)":6.9,"5-10-5敏捷(秒)":5.05,"單腳平衡(秒)":53,"發球球速(km/h)":99,"20公尺短跑(秒)":3.06,"平板支撐(秒)":122,"俯臥撐(下)":42}
+    ];
+    records = records.concat(demo);
+    saveLS(); render();
+  }
+
+  // 11) 圖表選單
+  function refreshSelectors(){
+    const options = records.map((r,i)=>({label:`#${i+1}｜${r['測驗日期']||'未填日期'}`, idx:i}));
+    [recA, recB].forEach(sel=>{
+      sel.innerHTML = '';
+      options.forEach(o=>{
+        const opt = document.createElement('option');
+        opt.value = o.idx; opt.textContent = o.label;
+        sel.appendChild(opt);
+      });
+    });
+    // 預設選擇最後兩筆
+    if(records.length>=2){ recA.value = records.length-2; recB.value = records.length-1; }
+  }
+
+  // 12) 圖表
+  let barChart, radarChart;
+
+  function drawCharts(){
+    if(records.length<1){ alert('沒有資料'); return }
+    const a = records[Number(recA.value) || 0];
+    const b = records[Number(recB.value) || 0];
+    // 只取數值型欄位畫圖
+    const keys = COLUMNS.filter(c=>c.type==='number').map(c=>c.key);
+    const dataA = keys.map(k=>num(a[k]));
+    const dataB = keys.map(k=>num(b[k]));
+
+    // 長條圖
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    if(barChart) barChart.destroy();
+    barChart = new Chart(barCtx,{
+      type:'bar',
+      data:{
+        labels: keys,
+        datasets:[
+          {label:`A｜${a['測驗日期']||'未填'}`, data:dataA},
+          {label:`B｜${b['測驗日期']||'未填'}`, data:dataB}
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{position:'top'},tooltip:{mode:'index',intersect:false}},
+        scales:{x:{ticks:{color:'#cbd5e1', maxRotation:60, minRotation:60}},y:{ticks:{color:'#cbd5e1'}}}
+      }
+    });
+
+    // 雷達圖標準化：把不同尺度壓到 0~100，且把 INVERT_KEYS 反向
+    const allVals = [...dataA, ...dataB];
+    const minMax = {};
+    keys.forEach((k,i)=>{
+      const vals = [dataA[i], dataB[i]].filter(v=>Number.isFinite(v));
+      let min = Math.min(...vals, ...allVals);
+      let max = Math.max(...vals, ...allVals);
+      if(!Number.isFinite(min) || !Number.isFinite(max) || min===max){ min = 0; max = min+1; }
+      minMax[k] = {min,max};
+    });
+    const norm = (v, k)=>{
+      const {min,max} = minMax[k];
+      const raw = (v-min)/(max-min);
+      const p = INVERT_KEYS.includes(k) ? 1-raw : raw; // 秒數越低越好
+      return Math.round(p*100);
+    };
+    const radarA = keys.map((k,i)=>norm(dataA[i],k));
+    const radarB = keys.map((k,i)=>norm(dataB[i],k));
+
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    if(radarChart) radarChart.destroy();
+    radarChart = new Chart(radarCtx,{
+      type:'radar',
+      data:{
+        labels: keys,
+        datasets:[
+          {label:`A｜${a['測驗日期']||'未填'}`, data:radarA},
+          {label:`B｜${b['測驗日期']||'未填'}`, data:radarB}
+        ]
+      },
+      options:{
+        responsive:true,
+        scales:{ r:{ angleLines:{color:'#1f2937'}, grid:{color:'#1f2937'}, pointLabels:{color:'#cbd5e1'}, ticks:{display:false} } },
+        plugins:{legend:{position:'top'}}
+      }
+    });
+  }
+
+  function num(v){ const n = Number(v); return Number.isFinite(n)?n:NaN }
+  function cssEscape(s){ return s.replace(/"/g,'\\"') }
+
+  // 13) localStorage
+  function saveLS(){ localStorage.setItem(LS_KEY, JSON.stringify(records)); }
+  function loadLS(){ try{ return JSON.parse(localStorage.getItem(LS_KEY) || '[]') }catch(e){ return [] } }
+
+  // 初始渲染
+  render();
+  if(records.length>=2) drawCharts();
+</script>
+</body>
+</html>
