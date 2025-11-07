@@ -4,29 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🏡 新手投資村計畫｜馬克理財</title>
-<div class="nav-bar">
-    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html">ETF配息圖卡瀑布牆</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
-    <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank">加入LINE社群</a>
-  </div>
-<!-- ✅ OG for 複利試算工具 -->
-<meta property="og:title" content="複利試算工具｜ETF投資 × 定期定額模擬｜馬克理財" />
-<meta property="og:description" content="快速模擬定期定額投入與股息再投入，幫你建立財務自由藍圖。" />
-<meta property="og:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
-<meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/" />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="馬克理財工具箱" />
 
-<!-- Twitter（選填） -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="複利試算工具｜ETF投資 × 定期定額模擬｜馬克理財">
-<meta name="twitter:description" content="快速模擬定期定額投入與股息再投入，幫你建立財務自由藍圖。">
-<meta name="twitter:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png">
+  <!-- ✅ OG for 新手投資村 -->
+  <meta property="og:title" content="🏡 新手投資村計畫｜從零開始學 ETF｜馬克理財" />
+  <meta property="og:description" content="每週一個小任務，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。" />
+  <meta property="og:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
+  <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="馬克理財工具箱" />
 
- <link rel="icon" href="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" type="image/png">
+  <!-- Twitter（選填） -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="🏡 新手投資村計畫｜從零開始學 ETF｜馬克理財">
+  <meta name="twitter:description" content="每週一個小任務，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。">
+  <meta name="twitter:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png">
+
+  <link rel="icon" href="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" type="image/png">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-K3DFBC9S7V"></script>
   <script>
@@ -45,7 +39,7 @@
       font-family: 'Helvetica Neue', sans-serif;
       background-color: #FFFDF8;
       color: #1A1A1A;
-      padding: 2rem;
+      padding: 1.5rem;
       max-width: 960px;
       margin: auto;
       line-height: 1.8;
@@ -54,12 +48,39 @@
       text-align: center;
       color: #2D3C2F;
     }
+    .nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: #FFF8E1;
+      border-radius: 999px;
+      border: 1px solid #FFE082;
+      font-size: 0.9rem;
+    }
+    .nav-bar a {
+      text-decoration: none;
+      color: #1A1A1A;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #FFECB3;
+      white-space: nowrap;
+    }
+    .nav-bar a:hover {
+      background: #FFECB3;
+    }
     .section {
       background: #FFF8E1;
       border-left: 6px solid #FFD54F;
       border-radius: 0.75rem;
       padding: 1.5rem;
       margin: 2rem 0;
+    }
+    .section p {
+      margin: 0.3rem 0;
     }
     table {
       width: 100%;
@@ -71,6 +92,7 @@
       padding: 0.75rem;
       border-bottom: 1px solid #eee;
       text-align: center;
+      font-size: 0.95rem;
     }
     th {
       background: #FFD54F;
@@ -85,11 +107,21 @@
       text-decoration: none;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+    .cta a:hover {
+      background: #FFCA28;
+    }
     .video-list a {
       display: block;
       margin: 0.5rem 0;
       color: #1A1A1A;
       text-decoration: none;
+    }
+    .video-list small {
+      color: #777;
+      font-size: 0.8rem;
+    }
+    .video-list a:hover {
+      text-decoration: underline;
     }
     .badge-board {
       display: flex;
@@ -127,31 +159,239 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 1000;
     }
+    .progress-box {
+      margin-top: 1rem;
+      background: #FFFDE7;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      color: #555;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #E0E0E0;
+      overflow: hidden;
+    }
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: #1D4A35;
+      transition: width 0.3s ease;
+    }
+    .reset-btn {
+      border: none;
+      background: none;
+      color: #888;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+    @media (max-width: 600px) {
+      .nav-bar {
+        border-radius: 1rem;
+      }
+      th, td {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <h1>🏡 新手投資村計畫</h1>
-  <p style="text-align:center; color:#666">每週解一個任務，一步步打造你的 ETF 投資地圖</p>
 
-  <div class="section">
-    <h2>🗺️ 任務地圖</h2>
-    <table id="mission-table">
-      <thead>
-        <tr><th>任務編號</th><th>任務名稱</th><th>教學資源</th><th>進度</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>01</td><td>什麼是 ETF？</td><td><a href="https://youtu.be/lXZMPNxH-T4" target="_blank">📺 影片</a></td><td><input type="checkbox" data-badge="0"> 完成</td></tr>
-        <tr><td>02</td><td>建立定期定額帳戶</td><td><a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 工具</a></td><td><input type="checkbox" data-badge="1"> 完成</td></tr>
-        <tr><td>03</td><td>建立 ETF 追蹤表</td><td><a href="https://docs.google.com/spreadsheets/d/1wGTL7QmNVxmf-SJsUVmjD-uMx5lTLBRia9A9mQaOb-4/edit?usp=sharing" target="_blank">📊 Google Sheet</a></td><td><input type="checkbox" data-badge="2"> 完成</td></tr>
-        <tr><td>04</td><td>填寫表格加入 LINE 社群</td><td><a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">👥 加入</a></td><td><input type="checkbox" data-badge="3"> 完成</td></tr>
-        <tr><td>05</td><td>了解紅漲綠跌與配息</td><td><a href="#" target="_blank">📸 IG 圖卡</a></td><td><input type="checkbox" data-badge="4"> 完成</td></tr>
-      </tbody>
-    </table>
+  <div class="nav-bar">
+    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html">ETF配息圖卡瀑布牆</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
+    <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
+    <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank">加入LINE社群</a>
   </div>
 
+  <h1>🏡 新手投資村計畫</h1>
+  <p style="text-align:center; color:#666; margin-bottom:0.2rem;">
+    每週解一個任務，一步步打造你的 ETF 投資地圖
+  </p>
+  <p style="text-align:center; color:#888; font-size:0.9rem;">
+    建議節奏：<strong>每週 1 個任務</strong>，完成 5 個任務 = 具備 ETF 基礎入門，之後再慢慢進階就好 ✅
+  </p>
+
+  <!-- 任務地圖 -->
+  <div class="section">
+    <h2>🗺️ 任務地圖：從 0 開始的 ETF 路線</h2>
+    <p><strong>怎麼用？</strong></p>
+    <p>1️⃣ 從 01 任務開始，一路往下做，不用跳關。</p>
+    <p>2️⃣ 每完成一個任務就打勾，會自動幫你點亮對應的「任務勳章」。</p>
+    <p>3️⃣ 這個頁面會記住你在這台裝置上的勾選紀錄，下次回來可以接著破關。</p>
+
+    <table id="mission-table">
+      <thead>
+        <tr>
+          <th>任務編號</th>
+          <th>任務名稱</th>
+          <th>教學資源</th>
+          <th>進度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td>什麼是 ETF？跟股票有什麼不同？</td>
+          <td>
+            <a href="https://youtu.be/lXZMPNxH-T4" target="_blank">📺 新手投資村 第 1 集</a>
+          </td>
+          <td>
+            <label>
+              <input type="checkbox" data-badge="0"> 完成
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td>準備資料開證券戶＆設定第一個定期定額</td>
+          <td>
+            <a href="https://youtu.be/S3SaVYtBXJY" target="_blank">📺 新手投資村 第 2 集</a><br>
+            <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 複利試算工具</a><br>
+            <small style="color:#777;">步驟：選券商 → 線上開戶 → 綁定銀行 → 設定第一個定期定額</small>
+          </td>
+          <td>
+            <label>
+              <input type="checkbox" data-badge="1"> 完成
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td>建立自己的 ETF 追蹤表（不是看盤，是看人生）</td>
+          <td>
+            <a href="https://docs.google.com/spreadsheets/d/1wGTL7QmNVxmf-SJsUVmjD-uMx5lTLBRia9A9mQaOb-4/edit?usp=sharing" target="_blank">📊 Google Sheet 範本</a><br>
+            <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">📌 ETF 追蹤牆</a>
+          </td>
+          <td>
+            <label>
+              <input type="checkbox" data-badge="2"> 完成
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td>加入 LINE 社群，找到一起走路的人</td>
+          <td>
+            <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">👥 填表加入「馬濕克村民」</a>
+          </td>
+          <td>
+            <label>
+              <input type="checkbox" data-badge="3"> 完成
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td>弄懂紅漲綠跌、殖利率 &「配息 ≠ 獲利」</td>
+          <td>
+            <a href="#" target="_blank">📸 IG 圖卡教學（更新中）</a><br>
+            <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">💧 ETF 配息瀑布牆</a>
+          </td>
+          <td>
+            <label>
+              <input type="checkbox" data-badge="4"> 完成
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 開戶快速指南 -->
+    <div style="margin-top:1.2rem; padding:0.9rem 1rem; background:#FFFDE7; border-radius:0.75rem; font-size:0.9rem;">
+      <strong>🔑 還沒有證券戶？先照這樣做：</strong>
+      <ol style="margin:0.4rem 0 0.2rem 1.2rem; padding-left:0;">
+        <li>準備雙證件、印章（有些券商已不一定需要）、存摺或銀行帳號。</li>
+        <li>選一間你習慣的券商（可以是你常用銀行的子公司，之後出入金比較直覺）。</li>
+        <li>到券商官網或 App → 找「線上開戶」，依照步驟上傳資料、拍照、填寫基本資料。</li>
+        <li>等審核通過後，綁定你的銀行帳戶，測試匯一小筆錢進券商。</li>
+        <li>帳戶可以正常出入金後，就可以依照第 2 任務，在券商裡設定「定期定額」買 ETF。</li>
+      </ol>
+      <p style="margin:0.2rem 0 0; color:#777;">
+        先不用急著選「最完美」、「手續費最低」的券商，<strong>有穩定出入金、你願意打開來看的那一間，就是適合你起步的券商。</strong>
+      </p>
+    </div>
+
+    <!-- 進度條 -->
+    <div class="progress-box">
+      <div class="progress-text">
+        <span id="progress-label">目前完成 0 / 5 個任務</span>
+        <button class="reset-btn" id="resetProgressBtn">重設進度</button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-inner" id="progressInner"></div>
+      </div>
+    </div>
+
+    <p style="margin-top:0.6rem; font-size:0.85rem; color:#777;">
+      小提醒：如果你現在資金不多也沒關係，<strong>先把任務做完，觀念建立好，比急著進場更重要。</strong>
+    </p>
+  </div>
+
+  <!-- 開戶推薦區：永豐 & 國泰 -->
+  <div class="section" style="background:#FFFDE7; border-left:6px solid #8BC34A;">
+    <h2>🔓 開戶推薦：用你習慣的銀行就能開始</h2>
+    <p>以下兩家是馬克本人實際使用中、介面友善、適合新手 ETF 定期定額起步的券商：</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:1rem;">
+
+      <!-- 永豐大戶投 -->
+      <div style="background:white;border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:1rem;max-width:280px;text-align:center;">
+        <img src="https://markmoneylife.github.io/compound-interest-tool/broker-yf.png" alt="永豐大戶投 QR" style="width:140px;height:140px;object-fit:contain;margin:0.5rem auto;display:block;">
+        <h3 style="margin:0.2rem 0;color:#1A1A1A;">永豐大戶投</h3>
+        <p style="font-size:0.9rem;color:#555;margin:0.5rem 0;">線上開戶快速、介面乾淨，適合第一次投資 ETF 的新手</p>
+        <p style="font-size:0.85rem;color:#444;">開戶邀請碼：<strong style="font-size:1rem;color:#1D4A35;">CE4Q6</strong></p>
+        <p>
+          <a href="https://apps.apple.com/tw/app/%E5%A4%A7%E6%88%B6%E6%8A%95/id1526228803" target="_blank"
+             style="background:#1D4A35;color:white;padding:8px 16px;border-radius:999px;text-decoration:none;font-weight:bold;">
+            📱 立即開戶
+          </a>
+        </p>
+      </div>
+
+      <!-- 國泰 CUBE -->
+      <div style="background:white;border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:1rem;max-width:280px;text-align:center;">
+        <img src="https://markmoneylife.github.io/compound-interest-tool/broker-cathay.png" alt="國泰 CUBE QR" style="width:140px;height:140px;object-fit:contain;margin:0.5rem auto;display:block;">
+        <h3 style="margin:0.2rem 0;color:#1A1A1A;">國泰 CUBE App</h3>
+        <p style="font-size:0.9rem;color:#555;margin:0.5rem 0;">國泰世華與國泰證券整合 App，一鍵開戶＋定期定額設定簡單</p>
+        <p style="font-size:0.85rem;color:#444;">邀請碼：<strong style="font-size:1rem;color:#1D4A35;">7X5LN</strong></p>
+        <p>
+          <a href="https://apps.apple.com/tw/app/cube-%E5%9C%8B%E6%B3%B0%E4%B8%96%E8%8F%AF%E9%8A%80%E8%A1%8C/id1521197484" target="_blank"
+             style="background:#1D4A35;color:white;padding:8px 16px;border-radius:999px;text-decoration:none;font-weight:bold;">
+            📱 下載 CUBE App
+          </a>
+        </p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;color:#777;margin-top:1rem;font-size:0.85rem;">
+      （邀請碼可幫助你享有開戶優惠，也讓馬克知道有多少新村民從這裡起步 ✨）
+    </p>
+  </div>
+
+  <!-- 任務勳章牆 -->
   <div class="section">
     <h2>🏅 任務勳章牆</h2>
+    <p style="text-align:center; font-size:0.9rem; color:#555;">
+      每完成一個任務，就會點亮一個勳章。<br>
+      全部亮起來時，你就不再是「新手」，而是<strong>會思考的 ETF 投資人</strong>。
+    </p>
     <div class="badge-board" id="badge-board">
       <div class="badge">📘 ETF 入門徽章</div>
       <div class="badge">💸 定投啟動徽章</div>
@@ -161,20 +401,45 @@
     </div>
   </div>
 
+  <!-- 影片學習路線 -->
   <div class="section">
-    <h2>📺 精選影片推薦</h2>
+    <h2>📺 影片學習路線</h2>
+    <p><strong>主線任務：</strong>建議按照順序觀看，搭配上面的任務一起做。</p>
+    <div class="video-list" style="margin-bottom:1rem;">
+      <a href="https://youtu.be/lXZMPNxH-T4" target="_blank">
+        🔰 新手投資村 第 1 集：什麼是 ETF？適合誰？
+      </a>
+      <a href="https://youtu.be/S3SaVYtBXJY" target="_blank">
+        🧭 新手投資村 第 2 集：目標、風險邊界與定期定額帳戶
+      </a>
+      <small>（影片標題之後你可以自行微調成實際上架名稱）</small>
+    </div>
+
+    <p><strong>進階延伸（等你 5 個任務都亮了再來）：</strong></p>
     <div class="video-list">
-      <a href="https://youtu.be/Xw_DgUU7w5w" target="_blank">🔰 ETF 新手起步：這方法你也能學！</a>
-      <a href="https://www.youtube.com/watch?v=eb1zqgGrsJY" target="_blank">📉 我不是買貴，是壓錯時機！00919與00713調整經驗</a>
-      <a href="https://www.youtube.com/watch?v=1Amo-nkHMeA" target="_blank">📈 高股息 ETF 00713 深入解析</a>
+      <a href="https://youtu.be/Xw_DgUU7w5w" target="_blank">
+        🚀 ETF 新手起步：這方法你也能學！
+      </a>
+      <a href="https://www.youtube.com/watch?v=eb1zqgGrsJY" target="_blank">
+        📉 我不是買貴，是壓錯時機！00919與00713調整經驗
+      </a>
+      <a href="https://www.youtube.com/watch?v=1Amo-nkHMeA" target="_blank">
+        📈 高股息 ETF 00713 深入解析
+      </a>
     </div>
   </div>
 
+  <!-- 社群 CTA -->
   <div class="section">
     <h2>📬 成為馬濕克村民！</h2>
-    <p style="text-align:center">加入 LINE 社群，一起打卡任務、分享進度、提問互助</p>
-    <div class="cta">
-      <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">🚪 加入 LINE 社群</a>
+    <p style="text-align:center">
+      不用一個人悶著研究，<strong>把問題帶到社群裡一起討論</strong>，會走得比較久也比較穩。
+    </p>
+    <p style="text-align:center; font-size:0.9rem; color:#555;">
+      建議完成任務 01～03 之後，再加入 LINE 社群，這樣你會更知道自己在問什麼，也比較不容易被市場情緒帶著跑。
+    </p>
+    <div class="cta" style="text-align:center; margin-top:1rem;">
+      <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">🚪 我要加入 LINE 社群</a>
     </div>
   </div>
 
@@ -184,14 +449,39 @@
     👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
   </div>
 
-  <!-- JS 功能：勳章判定 + 完成提示 -->
+  <!-- JS 功能：勳章判定 + 完成提示 + 進度條 + localStorage -->
   <script>
+    const STORAGE_KEY = 'newbieVillageMissionStatus_v1';
+
     const checkboxes = document.querySelectorAll('input[type="checkbox"][data-badge]');
     const badges = document.querySelectorAll('.badge');
     const toast = document.getElementById('toast');
+    const progressLabel = document.getElementById('progress-label');
+    const progressInner = document.getElementById('progressInner');
+    const resetBtn = document.getElementById('resetProgressBtn');
     let completionShown = false;
 
-    checkboxes.forEach(box => {
+    // 初始化：讀取 localStorage
+    (function initProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (Array.isArray(saved) && saved.length === checkboxes.length) {
+          saved.forEach((val, idx) => {
+            if (val) {
+              checkboxes[idx].checked = true;
+              const badgeIndex = parseInt(checkboxes[idx].dataset.badge);
+              badges[badgeIndex].classList.add('earned');
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('無法讀取新手投資村進度：', e);
+      }
+      updateProgress();
+    })();
+
+    // 勾選監聽
+    checkboxes.forEach((box, idx) => {
       box.addEventListener('change', () => {
         const index = parseInt(box.dataset.badge);
         if (box.checked) {
@@ -200,14 +490,33 @@
         } else {
           badges[index].classList.remove('earned');
         }
-
-        const completed = Array.from(checkboxes).filter(i => i.checked).length;
-        if (completed === checkboxes.length && !completionShown) {
-          showFinalCongrats();
-          completionShown = true;
-        }
+        saveProgress();
+        updateProgress();
       });
     });
+
+    function saveProgress() {
+      const status = Array.from(checkboxes).map(c => c.checked);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(status));
+      } catch (e) {
+        console.warn('無法儲存新手投資村進度：', e);
+      }
+    }
+
+    function updateProgress() {
+      const completed = Array.from(checkboxes).filter(i => i.checked).length;
+      const total = checkboxes.length;
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      progressLabel.textContent = `目前完成 ${completed} / ${total} 個任務（約 ${percent}% ）`;
+      progressInner.style.width = percent + '%';
+
+      if (completed === total && !completionShown) {
+        showFinalCongrats();
+        completionShown = true;
+      }
+    }
 
     function showToast(msg) {
       toast.textContent = msg;
@@ -218,51 +527,80 @@
     }
 
     function showFinalCongrats() {
-      const toast = document.createElement('div');
-      toast.textContent = '🎉 恭喜你！五大任務全數達成！正式榮升為「馬濕克村民」一員！請小心，接下來會不小心愛上定期定額，夢裡都在追蹤 ETF 淨值與配息日 😆📈';
-      toast.style.position = 'fixed';
-      toast.style.bottom = '20px';
-      toast.style.left = '50%';
-      toast.style.transform = 'translateX(-50%)';
-      toast.style.background = '#FFD54F';
-      toast.style.color = '#1A1A1A';
-      toast.style.padding = '1rem 1.5rem';
-      toast.style.borderRadius = '999px';
-      toast.style.fontWeight = 'bold';
-      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-      toast.style.zIndex = '1000';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 5000);
+      const toastFinal = document.createElement('div');
+      toastFinal.textContent = '🎉 恭喜你！五大任務全數達成！正式榮升為「馬濕克村民」一員！小心，接下來可能會不小心愛上定期定額，連作夢都在算殖利率 😆📈';
+      toastFinal.style.position = 'fixed';
+      toastFinal.style.bottom = '20px';
+      toastFinal.style.left = '50%';
+      toastFinal.style.transform = 'translateX(-50%)';
+      toastFinal.style.background = '#FFD54F';
+      toastFinal.style.color = '#1A1A1A';
+      toastFinal.style.padding = '1rem 1.5rem';
+      toastFinal.style.borderRadius = '999px';
+      toastFinal.style.fontWeight = 'bold';
+      toastFinal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+      toastFinal.style.zIndex = '1000';
+      document.body.appendChild(toastFinal);
+      setTimeout(() => toastFinal.remove(), 5000);
     }
+
+    // 重設進度
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('確定要重設所有任務進度嗎？（此動作只影響這台裝置）')) return;
+      checkboxes.forEach(c => c.checked = false);
+      badges.forEach(b => b.classList.remove('earned'));
+      completionShown = false;
+      saveProgress();
+      updateProgress();
+      showToast('✅ 已重設任務進度');
+    });
+
+    // viewCounter：目前僅紀錄此裝置瀏覽次數
+    (function initViewCounter() {
+      const viewKey = 'newbieVillageViewCount_v1';
+      let count = 0;
+      try {
+        count = parseInt(localStorage.getItem(viewKey) || '0', 10);
+      } catch(e) {}
+      count += 1;
+      try {
+        localStorage.setItem(viewKey, String(count));
+      } catch(e) {}
+      const span = document.getElementById('viewCount');
+      if (span) span.textContent = `約 ${count} 次（此裝置）`;
+    })();
   </script>
-<hr>
-<section style="text-align:center;max-width:700px;margin:2rem auto;">
-  <h3 style="color:#1D4A35;">☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
-  <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
-  <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
 
-  <p style="margin-top:1rem;">
-    <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       🪐 加入會員星球
-    </a>
+  <hr>
+  <section style="text-align:center;max-width:700px;margin:2rem auto;">
+    <h3 style="color:#1D4A35;">☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
+    <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
+    <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
 
-    <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       🛍️ 選購週邊
-    </a>
+    <p style="margin-top:1rem;">
+      <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank"
+        style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
+        text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
+        🪐 加入會員星球
+      </a>
 
-    <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank"
-       style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
-       text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
-       📱 貼圖支持
-    </a>
-  </p>
+      <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank"
+        style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
+        text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
+        🛍️ 選購週邊
+      </a>
 
-  <p style="font-size:0.9rem;color:#555;margin-top:0.5rem;">感謝你願意支持，讓這些工具陪你一起走得更長遠 💛</p>
-</section>
+      <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank"
+        style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;
+        text-decoration:none;border-radius:8px;font-weight:bold;margin:6px;">
+        📱 貼圖支持
+      </a>
+    </p>
+
+    <p style="font-size:0.9rem;color:#555;margin-top:0.5rem;">
+      感謝你願意支持，讓這些工具陪你一起走得更長遠 💛
+    </p>
+  </section>
 
 </body>
 </html>
