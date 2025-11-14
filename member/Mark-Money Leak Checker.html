@@ -177,6 +177,22 @@
       color: var(--green);
     }
 
+    .sample-link {
+      display: inline-flex;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--green);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .sample-link:hover {
+      opacity: 0.85;
+    }
+
     .remove-btn {
       border: none;
       background: transparent;
@@ -297,6 +313,53 @@
       font-weight: 700;
     }
 
+    .hint {
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .hint span {
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .warning {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .input-error {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 0 2px rgba(192,57,43,0.15) !important;
+    }
+
+    /* 收入分配條 */
+    .bar-wrapper {
+      margin-top: 0.6rem;
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background-color: #eee;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bar {
+      height: 100%;
+      transition: width 0.2s ease;
+    }
+
+    .bar-fixed { background-color: #c8e6c9; }
+    .bar-ent { background-color: #ffe082; }
+    .bar-saving { background-color: #80cbc4; }
+
+    .bar-note {
+      margin-top: 0.3rem;
+      font-size: 0.78rem;
+      color: var(--gray);
+    }
+
     .bubble {
       position: relative;
       background-color: var(--green);
@@ -333,6 +396,12 @@
       padding: 0 0.4rem;
     }
 
+    .summary-text {
+      margin: 0.1rem 0 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
     .bubble ul {
       padding-left: 1.1rem;
       margin: 0.25rem 0 0;
@@ -342,20 +411,27 @@
       margin-bottom: 0.1rem;
     }
 
-    .hint {
-      margin-top: 0.4rem;
+    .next-step {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 0.3rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
       font-size: 0.8rem;
-      color: var(--gray);
+      background-color: var(--yellow);
+      color: #1A1A1A;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
 
-    .hint span {
-      font-weight: 600;
-      color: var(--green);
-    }
-
-    .warning {
-      color: var(--red);
-      font-weight: 600;
+    .cta-btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -388,6 +464,10 @@
           <label for="incomeOther">其他收入</label>
           <input id="incomeOther" type="number" min="0" placeholder="接案、兼職、獎金…" />
         </div>
+
+        <button type="button" class="sample-link" onclick="applySample()">
+          👉 不知道怎麼填？套用 30K 小資示範數字
+        </button>
       </section>
 
       <!-- 固定支出 -->
@@ -558,8 +638,20 @@
             <span class="value" id="resInvestRate">-</span>
           </li>
         </ul>
+
+        <p id="investGapText" class="hint"></p>
+
+        <div class="bar-wrapper">
+          <div class="bar bar-fixed" id="barFixed"></div>
+          <div class="bar bar-ent" id="barEnt"></div>
+          <div class="bar bar-saving" id="barSaving"></div>
+        </div>
+        <p class="bar-note">
+          以「收入 = 100%」為基準，看看錢被分配到固定支出、娛樂與儲蓄 / 投資的比例。
+        </p>
+
         <p class="hint">
-          小提醒：結餘為正，代表你每月還有<span>裕度可以調配</span>；結餘是負數，就代表真的「漏」了，要檢查看哪一區失控。
+          小提醒：結餘為正，代表你每月還有<span>裕度可以調配</span>；結餘是負數，就代表真的「漏」了，要檢查看哪一區失控。紅色數字不是股市大跌，是在提醒你現金流有點危險。
         </p>
       </div>
 
@@ -570,18 +662,33 @@
             抓漏小結論
             <span>試算後會自動更新</span>
           </div>
+          <p class="summary-text" id="adviceSummary">
+            先輸入上面的數字，再按「試算一下」，我會用 30% 準則幫你看財務有沒有走歪。
+          </p>
           <ul id="adviceList">
-            <li>先輸入上面的數字，再按下「試算一下」，我就會用馬克的 30% 準則幫你看財務有沒有走歪。</li>
+            <li>目前尚未填寫數據，建議先輸入收入與幾項主要支出，才看得出現金流狀況。</li>
           </ul>
         </div>
+        <div id="nextStepArea" class="next-step"></div>
       </div>
     </section>
   </div>
 
   <script>
+    const STORAGE_KEY = "markMoney_leakTool_v1";
+    const PERSIST_IDS = [
+      "incomeSalary","incomeOther",
+      "expFood","expTransport","expRent","expElectric","expLiving","expLoan","expCard",
+      "saveInvest","saveDeposit","saveOther",
+      "entMeal","entTravel","entShopping","entSub",
+      "yrInsurance","yrTax"
+    ];
+
     // 取數值：空白就當 0
     function n(id) {
-      const v = parseFloat(document.getElementById(id).value);
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      const v = parseFloat(el.value);
       return isNaN(v) ? 0 : v;
     }
 
@@ -601,9 +708,12 @@
       row.innerHTML = `
         <input type="text" placeholder="項目名稱" class="dyn-name" />
         <input type="number" placeholder="金額" class="dyn-value" min="0" />
-        <button type="button" class="remove-btn" onclick="this.parentNode.remove()">✕</button>
+        <button type="button" class="remove-btn" onclick="this.parentNode.remove(); runCalc();">✕</button>
       `;
       container.appendChild(row);
+
+      const valueInput = row.querySelector(".dyn-value");
+      valueInput.addEventListener("input", runCalc);
     }
 
     // 動態欄位：加總
@@ -617,11 +727,9 @@
       return sum;
     }
 
-    document.getElementById("calcBtn").addEventListener("click", function () {
-      // 收入
+    function collectData() {
       const income = n("incomeSalary") + n("incomeOther");
 
-      // 固定支出
       const fixed =
         n("expFood") +
         n("expTransport") +
@@ -632,7 +740,6 @@
         n("expCard") +
         sumDynamic("fixed-dynamic");
 
-      // 儲蓄 / 投資
       const invest = n("saveInvest"); // 馬克 30% 準則只看純投資
       const saving =
         n("saveInvest") +
@@ -640,7 +747,6 @@
         n("saveOther") +
         sumDynamic("saving-dynamic");
 
-      // 娛樂支出
       const ent =
         n("entMeal") +
         n("entTravel") +
@@ -648,57 +754,77 @@
         n("entSub") +
         sumDynamic("ent-dynamic");
 
-      // 年度支出 & 每月折算
       const yearlyTotal =
         n("yrInsurance") +
         n("yrTax") +
         sumDynamic("yearly-dynamic");
+
+      return { income, fixed, invest, saving, ent, yearlyTotal };
+    }
+
+    function calcMetrics(data) {
+      const { income, fixed, invest, saving, ent, yearlyTotal } = data;
+
       const yearlyMonthly = yearlyTotal / 12;
-
-      // 總支出（不含儲蓄）
       const totalSpending = fixed + ent + yearlyMonthly;
-
-      // 結餘（收入 - 支出 - 儲蓄）
       const surplus = income - totalSpending - saving;
 
-      // 比例
       const savingRate = income > 0 ? (saving / income) * 100 : 0;
       const fixedRate = income > 0 ? (fixed / income) * 100 : 0;
       const entRate = income > 0 ? (ent / income) * 100 : 0;
       const investRate = income > 0 ? (invest / income) * 100 : 0;
+      const surplusRate = income > 0 ? (surplus / income) * 100 : 0;
 
-      // ====== 數字結果填入 ======
+      return {
+        income,
+        fixed,
+        invest,
+        saving,
+        ent,
+        yearlyTotal,
+        yearlyMonthly,
+        totalSpending,
+        surplus,
+        savingRate,
+        fixedRate,
+        entRate,
+        investRate,
+        surplusRate
+      };
+    }
+
+    function renderResults(m) {
       document.getElementById("resIncome").textContent =
-        income > 0 ? formatMoney(income) + " 元" : "-";
+        m.income > 0 ? formatMoney(m.income) + " 元" : "-";
       document.getElementById("resFixed").textContent =
-        fixed > 0 ? formatMoney(fixed) + " 元" : "-";
+        m.fixed > 0 ? formatMoney(m.fixed) + " 元" : "-";
       document.getElementById("resEnt").textContent =
-        ent > 0 ? formatMoney(ent) + " 元" : "-";
+        m.ent > 0 ? formatMoney(m.ent) + " 元" : "-";
       document.getElementById("resYearlyMonthly").textContent =
-        yearlyMonthly > 0
-          ? formatMoney(Math.round(yearlyMonthly)) + " 元 / 月"
+        m.yearlyMonthly > 0
+          ? formatMoney(Math.round(m.yearlyMonthly)) + " 元 / 月"
           : "-";
       document.getElementById("resSaving").textContent =
-        saving > 0 ? formatMoney(saving) + " 元" : "-";
+        m.saving > 0 ? formatMoney(m.saving) + " 元" : "-";
 
       const surplusEl = document.getElementById("resSurplus");
       surplusEl.textContent =
-        income > 0 ? formatMoney(Math.round(surplus)) + " 元" : "-";
-      surplusEl.classList.toggle("warning", surplus < 0);
+        m.income > 0 ? formatMoney(Math.round(m.surplus)) + " 元" : "-";
+      surplusEl.classList.toggle("warning", m.surplus < 0);
 
       document.getElementById("resSavingRate").textContent =
-        saving > 0 && income > 0 ? formatPercent(savingRate) : "-";
+        m.saving > 0 && m.income > 0 ? formatPercent(m.savingRate) : "-";
       document.getElementById("resFixedRate").textContent =
-        fixed > 0 && income > 0 ? formatPercent(fixedRate) : "-";
+        m.fixed > 0 && m.income > 0 ? formatPercent(m.fixedRate) : "-";
       document.getElementById("resEntRate").textContent =
-        ent > 0 && income > 0 ? formatPercent(entRate) : "-";
+        m.ent > 0 && m.income > 0 ? formatPercent(m.entRate) : "-";
 
       const investRateEl = document.getElementById("resInvestRate");
-      if (income > 0 && invest > 0) {
-        const txt = formatPercent(investRate);
+      if (m.income > 0 && m.invest > 0) {
+        const txt = formatPercent(m.investRate);
         investRateEl.textContent = txt;
         investRateEl.classList.remove("pass", "fail");
-        if (investRate >= 30) {
+        if (m.investRate >= 30) {
           investRateEl.classList.add("pass");
         } else {
           investRateEl.classList.add("fail");
@@ -708,127 +834,326 @@
         investRateEl.classList.remove("pass", "fail");
       }
 
-      // ====== 抓漏建議邏輯 ======
-      const advice = [];
-
-      if (income <= 0) {
-        advice.push("目前收入欄位是空的，先把薪水／收入填進去，我才算得出抓漏結果。");
+      // 投資 gap 顯示
+      const investGapEl = document.getElementById("investGapText");
+      if (m.income > 0 && m.invest >= 0) {
+        const targetInvest = m.income * 0.3;
+        const gap = targetInvest - m.invest;
+        if (gap <= 0) {
+          investGapEl.textContent = "✔ 你的純投資比率已達或超過 30%，可以比較心安地安排娛樂與旅遊預算。";
+        } else {
+          investGapEl.textContent =
+            "若要達到「30% 投資指標」，每月還需要多投入約 " +
+            formatMoney(Math.round(gap)) +
+            " 元到純投資（如指數型 / 高股息 ETF）。";
+        }
       } else {
-        // 結餘狀況
-        if (surplus < 0) {
-          advice.push(
-            "你目前每月是 <b class='warning'>入不敷出</b>，支出＋儲蓄已經超過收入，短期可能要靠刷卡或動用存款撐著。先檢查固定支出與娛樂支出哪一塊可以縮。"
-          );
-        } else if (surplus < income * 0.05) {
-          advice.push(
-            "你每月結餘大約是收入的 <b>" +
-              formatPercent((surplus / income) * 100) +
-              "</b>，現金流偏緊，遇到突發事件會比較有壓力。可以試著把固定支出或娛樂花費各削一點。"
-          );
-        } else {
-          advice.push(
-            "你每月還有結餘，大約是收入的 <b>" +
-              formatPercent((surplus / income) * 100) +
-              "</b>，算是有喘息空間。接下來重點是怎麼讓「投資比例」變得更給力。"
-          );
-        }
-
-        // 儲蓄率
-        if (saving <= 0) {
-          advice.push(
-            "目前「每月儲蓄 / 投資」是 0，建議先從收入的 5～10% 開始定期投入，例如指數型ETF或高股息ETF，讓未來的自己也有領配息的一天。"
-          );
-        } else if (savingRate < 10) {
-          advice.push(
-            "整體儲蓄率約 <b>" +
-              formatPercent(savingRate) +
-              "</b>，偏低。可以先把儲蓄率拉到 10～15%，再慢慢往上加，不用一次爆衝。"
-          );
-        } else if (savingRate < 20) {
-          advice.push(
-            "整體儲蓄率約 <b>" +
-              formatPercent(savingRate) +
-              "</b>，已經有基本防禦力了，再往 20% 靠近會更穩。"
-          );
-        } else {
-          advice.push(
-            "整體儲蓄率約 <b>" +
-              formatPercent(savingRate) +
-              "</b>，算是蠻認真存錢的一族。記得分散在指數型ETF與現金預備金，不要全部壓單一標的。"
-          );
-        }
-
-        // 馬克 30% 投資準則
-        if (invest <= 0) {
-          advice.push(
-            "目前純投資金額是 0。若要啟動「馬克 30% 準則」，可以先從每月收入的 5～10% 開始買指數型或高股息ETF，再慢慢往 30% 推進。"
-          );
-        } else if (investRate >= 30) {
-          advice.push(
-            "你的純投資比率約 <b>" +
-              formatPercent(investRate) +
-              "</b>，已經達到「馬克 30% 投資標準」。恭喜，你可以名正言順地對自己說：剩下的錢怎麼花都可以，開心一點沒關係。"
-          );
-        } else if (investRate >= 20) {
-          advice.push(
-            "你的純投資比率約 <b>" +
-              formatPercent(investRate) +
-              "</b>，離 30% 只差一小段。可以用「每年多加 2～5%」的方式慢慢加碼，讓投資比重愈來愈接近你的目標。"
-          );
-        } else {
-          advice.push(
-            "你的純投資比率約 <b>" +
-              formatPercent(investRate) +
-              "</b>，距離馬克心中的 30% 還有一段路。可以先把每月部分娛樂或固定支出移一點點到投資區，不用一次改很大，但要穩定前進。"
-          );
-        }
-
-        // 固定支出
-        const maxFixed = 50;
-        if (fixedRate > maxFixed) {
-          advice.push(
-            "固定支出佔收入約 <b>" +
-              formatPercent(fixedRate) +
-              "</b>，偏高。可以檢查房租、貸款、保費、通勤是否有重新談約、換方案或搬家調整的空間。"
-          );
-        } else {
-          advice.push(
-            "固定支出佔收入約 <b>" +
-              formatPercent(fixedRate) +
-              "</b>，還在合理範圍內。記得避免再加新的分期與訂閱，不然幾個月後固定支出會悄悄膨脹。"
-          );
-        }
-
-        // 娛樂支出
-        const maxEnt = 20;
-        if (entRate > maxEnt) {
-          advice.push(
-            "娛樂性支出佔收入約 <b>" +
-              formatPercent(entRate) +
-              "</b>，有點偏多。可以試試「一半規劃、一半享受」：每花 1 元在娛樂，就多丟 1 元進投資帳戶。"
-          );
-        } else if (entRate > 0) {
-          advice.push(
-            "娛樂性支出佔收入約 <b>" +
-              formatPercent(entRate) +
-              "</b>。有好好享受生活是好事，只要投資比例有逐步往 30% 靠近，就不用太罪惡。"
-          );
-        }
-
-        // 年度支出
-        if (yearlyTotal > 0) {
-          advice.push(
-            "你每年有約 <b>" +
-              formatMoney(Math.round(yearlyTotal)) +
-              " 元</b> 的年度支出，折算下來每月應預留 <b>" +
-              formatMoney(Math.round(yearlyMonthly)) +
-              " 元</b>。建議獨立開一個「年度帳戶」專門存這筆錢，避免到期時又得刷卡硬扛。"
-          );
-        }
+        investGapEl.textContent = "";
       }
 
-      const adviceList = document.getElementById("adviceList");
-      adviceList.innerHTML = advice.map(item => "<li>" + item + "</li>").join("");
+      // 收入分配條（固定 + 娛樂 + 儲蓄）
+      const barFixed = document.getElementById("barFixed");
+      const barEnt = document.getElementById("barEnt");
+      const barSaving = document.getElementById("barSaving");
+      if (m.income > 0) {
+        let fixPct = Math.max(0, Math.min(m.fixedRate, 100));
+        let entPct = Math.max(0, Math.min(m.entRate, 100 - fixPct));
+        let savePct = Math.max(0, Math.min(m.savingRate, 100 - fixPct - entPct));
+        barFixed.style.width = fixPct + "%";
+        barEnt.style.width = entPct + "%";
+        barSaving.style.width = savePct + "%";
+      } else {
+        barFixed.style.width = "0%";
+        barEnt.style.width = "0%";
+        barSaving.style.width = "0%";
+      }
+    }
+
+    function getProfileText(m) {
+      if (m.income <= 0) {
+        return "目前還沒輸入收入與支出，先填幾個主要欄位，我才能幫你看現金流。";
+      }
+      if (m.surplus < 0 && m.savingRate < 10) {
+        return "現金流屬於「火燒屁股型」，目前入不敷出、存的也不多，短期風險偏高。";
+      }
+      if (m.surplus < 0) {
+        return "你是「暫時入不敷出型」，支出與儲蓄壓力都偏大，需要調整支出結構。";
+      }
+      if (m.investRate >= 30) {
+        return "你已經是「30% 投資型」，可以比較問心無愧地享受生活與娛樂。";
+      }
+      if (m.savingRate >= 20 && m.investRate >= 15) {
+        return "你是「認真存錢進階版」，投資節奏有在跑，再往 30% 靠近會更穩。";
+      }
+      if (m.savingRate >= 10) {
+        return "你是「穩健小資型」，有在存錢，但投資比重還沒完全上線。";
+      }
+      return "目前比較像「生活型消費者」，多數錢花在當下，未來資產還在暖身階段。";
+    }
+
+    function renderAdvice(m) {
+      const adviceList = [];
+      const summaryEl = document.getElementById("adviceSummary");
+      const nextStepArea = document.getElementById("nextStepArea");
+
+      summaryEl.textContent = getProfileText(m);
+      nextStepArea.innerHTML = "";
+
+      // 沒有收入就給最基本建議
+      if (m.income <= 0) {
+        const initAdvice = [
+          "先填寫「薪水」或「其他收入」，再加上 2～3 個最大宗支出（房租、餐費、卡費…）。",
+          "如果懶得從零開始，可以先按「套用 30K 小資示範數字」，再改成比較接近自己的情況。",
+          "試算完之後，記得觀察「結餘」和「純投資比率」，這兩個是現金流 & 打底資產的關鍵。"
+        ];
+        const adviceListEl = document.getElementById("adviceList");
+        adviceListEl.innerHTML = initAdvice.map(item => "<li>" + item + "</li>").join("");
+        return;
+      }
+
+      // 結餘狀況
+      if (m.surplus < 0) {
+        adviceList.push(
+          "你目前每月是 <b class='warning'>入不敷出</b>，支出＋儲蓄已經超過收入，短期可能要靠刷卡或動用存款撐著。先檢查固定支出與娛樂支出哪一塊可以縮。"
+        );
+      } else if (m.surplus < m.income * 0.05) {
+        adviceList.push(
+          "你每月結餘大約是收入的 <b>" +
+          formatPercent(m.surplusRate) +
+          "</b>，現金流偏緊，遇到突發事件會比較有壓力。可以試著把固定支出或娛樂花費各削一點。"
+        );
+      } else {
+        adviceList.push(
+          "你每月還有結餘，大約是收入的 <b>" +
+          formatPercent(m.surplusRate) +
+          "</b>，算是有喘息空間。接下來重點是怎麼讓「投資比例」變得更給力。"
+        );
+      }
+
+      // 儲蓄率
+      if (m.saving <= 0) {
+        adviceList.push(
+          "目前「每月儲蓄 / 投資」是 0，建議先從收入的 5～10% 開始定期投入，例如指數型ETF或高股息ETF，讓未來的自己也有領配息的一天。"
+        );
+      } else if (m.savingRate < 10) {
+        adviceList.push(
+          "整體儲蓄率約 <b>" +
+          formatPercent(m.savingRate) +
+          "</b>，偏低。可以先把儲蓄率拉到 10～15%，再慢慢往上加，不用一次爆衝。"
+        );
+      } else if (m.savingRate < 20) {
+        adviceList.push(
+          "整體儲蓄率約 <b>" +
+          formatPercent(m.savingRate) +
+          "</b>，已經有基本防禦力了，再往 20% 靠近會更穩。"
+        );
+      } else {
+        adviceList.push(
+          "整體儲蓄率約 <b>" +
+          formatPercent(m.savingRate) +
+          "</b>，算是蠻認真存錢的一族。記得分散在指數型ETF與現金預備金，不要全部壓單一標的。"
+        );
+      }
+
+      // 馬克 30% 投資準則
+      if (m.invest <= 0) {
+        adviceList.push(
+          "目前純投資金額是 0。若要啟動「馬克 30% 準則」，可以先從每月收入的 5～10% 開始買指數型或高股息ETF，再慢慢往 30% 推進。"
+        );
+      } else if (m.investRate >= 30) {
+        adviceList.push(
+          "你的純投資比率約 <b>" +
+          formatPercent(m.investRate) +
+          "</b>，已經達到「馬克 30% 投資標準」。恭喜，你可以名正言順地對自己說：剩下的錢怎麼花都可以，開心一點沒關係。"
+        );
+      } else if (m.investRate >= 20) {
+        adviceList.push(
+          "你的純投資比率約 <b>" +
+          formatPercent(m.investRate) +
+          "</b>，離 30% 只差一小段。可以用「每年多加 2～5%」的方式慢慢加碼，讓投資比重愈來愈接近你的目標。"
+        );
+      } else {
+        adviceList.push(
+          "你的純投資比率約 <b>" +
+          formatPercent(m.investRate) +
+          "</b>，距離馬克心中的 30% 還有一段路。可以先把每月部分娛樂或固定支出移一點點到投資區，不用一次改很大，但要穩定前進。"
+        );
+      }
+
+      // 固定支出
+      const maxFixed = 50;
+      if (m.fixedRate > maxFixed) {
+        adviceList.push(
+          "固定支出佔收入約 <b>" +
+          formatPercent(m.fixedRate) +
+          "</b>，偏高。可以檢查房租、貸款、保費、通勤是否有重新談約、換方案或搬家調整的空間。"
+        );
+      } else {
+        adviceList.push(
+          "固定支出佔收入約 <b>" +
+          formatPercent(m.fixedRate) +
+          "</b>，還在合理範圍內。記得避免再加新的分期與訂閱，不然幾個月後固定支出會悄悄膨脹。"
+        );
+      }
+
+      // 娛樂支出
+      const maxEnt = 20;
+      if (m.entRate > maxEnt) {
+        adviceList.push(
+          "娛樂性支出佔收入約 <b>" +
+          formatPercent(m.entRate) +
+          "</b>，有點偏多。可以試試「一半規劃、一半享受」：每花 1 元在娛樂，就多丟 1 元進投資帳戶。"
+        );
+      } else if (m.entRate > 0) {
+        adviceList.push(
+          "娛樂性支出佔收入約 <b>" +
+          formatPercent(m.entRate) +
+          "</b>。有好好享受生活是好事，只要投資比例有逐步往 30% 靠近，就不用太罪惡。"
+        );
+      }
+
+      // 年度支出
+      if (m.yearlyTotal > 0) {
+        adviceList.push(
+          "你每年有約 <b>" +
+          formatMoney(Math.round(m.yearlyTotal)) +
+          " 元</b> 的年度支出，折算下來每月應預留 <b>" +
+          formatMoney(Math.round(m.yearlyMonthly)) +
+          " 元</b>。建議獨立開一個「年度帳戶」專門存這筆錢，避免到期時又得刷卡硬扛。"
+        );
+      }
+
+      const adviceListEl = document.getElementById("adviceList");
+      adviceListEl.innerHTML = adviceList.map(item => "<li>" + item + "</li>").join("");
+
+      // 下一步導流：依投資比例分流
+      if (m.investRate < 10) {
+        nextStepArea.innerHTML = `
+          想從零開始把投資觀念補起來，可以先逛逛：
+          <br />
+          <a class="cta-btn" target="_blank"
+             href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">
+            進入 🏡 新手投資村，補齊投資基本功 →
+          </a>
+        `;
+      } else if (m.investRate < 30) {
+        nextStepArea.innerHTML = `
+          既然已經開始投資，可以搭配配息視覺化工具：
+          <br />
+          <a class="cta-btn" target="_blank"
+             href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html">
+            看看你的 ETF 配息圖卡瀑布牆 →
+          </a>
+        `;
+      } else {
+        nextStepArea.innerHTML = `
+          你已經達到 30% 投資區，可以開始玩「配息追蹤」的小宇宙：
+          <br />
+          <a class="cta-btn" target="_blank"
+             href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">
+            用 ETF 投資追蹤牆，記錄你每月領多少 →
+          </a>
+        `;
+      }
+    }
+
+    function saveForm() {
+      const data = {};
+      PERSIST_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        // localStorage 失敗就算了，不影響使用
+      }
+    }
+
+    function loadForm() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        Object.keys(data).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = data[id];
+        });
+      } catch (e) {
+        // 解析錯誤就略過
+      }
+    }
+
+    function runCalc() {
+      const salaryEl = document.getElementById("incomeSalary");
+      const otherIncomeEl = document.getElementById("incomeOther");
+      salaryEl.classList.remove("input-error");
+      otherIncomeEl.classList.remove("input-error");
+
+      const data = collectData();
+      const metrics = calcMetrics(data);
+
+      // 基本輸入檢查
+      if (metrics.income <= 0) {
+        renderResults(metrics);
+        renderAdvice(metrics);
+        salaryEl.classList.add("input-error");
+        otherIncomeEl.classList.add("input-error");
+        saveForm();
+        return;
+      }
+
+      renderResults(metrics);
+      renderAdvice(metrics);
+      saveForm();
+    }
+
+    function applySample() {
+      // 一組 30K 小資族示範數字
+      document.getElementById("incomeSalary").value = 32000;
+      document.getElementById("incomeOther").value = 0;
+
+      document.getElementById("expRent").value = 8000;
+      document.getElementById("expFood").value = 8000;
+      document.getElementById("expTransport").value = 1200;
+      document.getElementById("expElectric").value = 800;
+      document.getElementById("expLiving").value = 800;
+      document.getElementById("expLoan").value = 0;
+      document.getElementById("expCard").value = 3000;
+
+      document.getElementById("saveInvest").value = 6000;
+      document.getElementById("saveDeposit").value = 1000;
+      document.getElementById("saveOther").value = 0;
+
+      document.getElementById("entMeal").value = 2000;
+      document.getElementById("entTravel").value = 0;
+      document.getElementById("entShopping").value = 800;
+      document.getElementById("entSub").value = 400;
+
+      document.getElementById("yrInsurance").value = 12000;
+      document.getElementById("yrTax").value = 6000;
+
+      runCalc();
+    }
+
+    // 綁定事件
+    window.addEventListener("DOMContentLoaded", function () {
+      loadForm();
+
+      // 試算按鈕
+      document.getElementById("calcBtn").addEventListener("click", runCalc);
+
+      // 所有既有 number 欄位即時計算
+      const numberInputs = document.querySelectorAll("input[type='number']");
+      numberInputs.forEach((input) => {
+        input.addEventListener("input", runCalc);
+      });
+
+      // 若已有存過的收入資料，載入後直接算一次
+      const incomeFromStorage = n("incomeSalary") + n("incomeOther");
+      if (incomeFromStorage > 0) {
+        runCalc();
+      }
     });
   </script>
 </body>
