@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>理財抓漏記帳小工具｜幸福理財家會員版</title>
+
+  <style>
+    :root {
+      --green: #1D4A35;
+      --yellow: #FFD54F;
+      --bg: #F5F2E9;
+      --red: #C0392B;
+      --gray: #666;
+      --card: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background-color: var(--bg);
+      color: #222;
+    }
+
+    .page {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+      margin: 0.5rem 0;
+      font-size: 1.8rem;
+      color: var(--green);
+      letter-spacing: 0.06em;
+    }
+
+    header p {
+      margin: 0.25rem 0;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .tagline-row {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background-color: var(--yellow);
+      color: #1A1A1A;
+      font-weight: 600;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .tag-pill.secondary {
+      background-color: #fff;
+      border: 1px dashed var(--green);
+      color: var(--green);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem 1.25rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .card h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .card h2 span.badge {
+      font-size: 0.75rem;
+      padding: 0.05rem 0.5rem;
+      border-radius: 999px;
+      background-color: var(--green);
+      color: #fff;
+    }
+
+    .card small {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0.1rem 0 0.35rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 0.4rem;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .field-row label {
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .field-row input[type="number"],
+    .field-row input[type="text"] {
+      width: 100%;
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.4rem;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+    }
+
+    .field-row input[type="number"]:focus,
+    .field-row input[type="text"]:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(29, 74, 53, 0.15);
+    }
+
+    .field-row.dynamic {
+      grid-template-columns: 1.3fr 1fr auto;
+    }
+
+    .field-row.dynamic input[type="text"] {
+      font-size: 0.85rem;
+    }
+
+    .add-btn {
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      border: 1px dashed #ccc;
+      background-color: #fafafa;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .add-btn:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .remove-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: #aaa;
+      padding: 0.15rem 0.35rem;
+    }
+
+    .remove-btn:hover {
+      color: var(--red);
+    }
+
+    .btn-area {
+      text-align: center;
+      margin: 1.5rem 0 1rem;
+    }
+
+    button#calcBtn {
+      background-color: var(--green);
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.1s;
+    }
+
+    button#calcBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      background-color: #236247;
+    }
+
+    button#calcBtn:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 7px rgba(0,0,0,0.16);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.7fr);
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .results-card {
+      background-color: #ffffff;
+      border-radius: 1rem;
+      padding: 1rem 1.25rem 1.25rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .results-card h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.05rem;
+      color: var(--green);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .results-card h3 span.flag {
+      font-size: 0.78rem;
+      background-color: #fff5cc;
+      padding: 0.1rem 0.55rem;
+      border-radius: 999px;
+      color: #8a6d1f;
+      border: 1px solid #f0d67e;
+    }
+
+    .results-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .results-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.25rem 0;
+      border-bottom: 1px dashed #eee;
+    }
+
+    .results-list li span.label {
+      color: var(--gray);
+    }
+
+    .results-list li span.value {
+      font-weight: 600;
+    }
+
+    .results-list li.strong span.value {
+      color: var(--green);
+      font-size: 1rem;
+    }
+
+    .results-list li.mark-rule span.value.pass {
+      color: #1e8449;
+      font-weight: 700;
+    }
+
+    .results-list li.mark-rule span.value.fail {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .bubble {
+      position: relative;
+      background-color: var(--green);
+      color: #fff;
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.16);
+    }
+
+    .bubble::before {
+      content: "";
+      position: absolute;
+      left: 1.5rem;
+      bottom: -8px;
+      border-width: 8px 8px 0 8px;
+      border-style: solid;
+      border-color: var(--green) transparent transparent transparent;
+    }
+
+    .bubble-title {
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .bubble-title span {
+      font-size: 0.8rem;
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 999px;
+      padding: 0 0.4rem;
+    }
+
+    .bubble ul {
+      padding-left: 1.1rem;
+      margin: 0.25rem 0 0;
+    }
+
+    .bubble li {
+      margin-bottom: 0.1rem;
+    }
+
+    .hint {
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .hint span {
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .warning {
+      color: var(--red);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>理財抓漏記帳小工具</h1>
+      <p>輸入你現在的月收入與支出，看看錢都花去哪、儲蓄率夠不夠力。</p>
+      <div class="tagline-row">
+        <div class="tag-pill">會員實戰版｜數字只給自己看</div>
+        <div class="tag-pill secondary">馬克理念：投資達到 30%，剩下怎麼花都可以</div>
+      </div>
+    </header>
+
+    <!-- ====== 輸入區 ====== -->
+    <div class="grid">
+      <!-- 收入 -->
+      <section class="card">
+        <h2>💰 收入 <span class="badge">每月</span></h2>
+        <small>先把最常見的收入填上去，若有獎金、兼職，可以填在「其他收入」。</small>
+
+        <div class="section-title">收入項目</div>
+
+        <div class="field-row">
+          <label for="incomeSalary">薪水</label>
+          <input id="incomeSalary" type="number" min="0" placeholder="例如：31000" />
+        </div>
+
+        <div class="field-row">
+          <label for="incomeOther">其他收入</label>
+          <input id="incomeOther" type="number" min="0" placeholder="接案、兼職、獎金…" />
+        </div>
+      </section>
+
+      <!-- 固定支出 -->
+      <section class="card">
+        <h2>🏠 固定支出 <span class="badge">每月</span></h2>
+        <small>每個月一定會付的錢：房租、交通、帳單…至少先填一兩項，抓漏才有方向。</small>
+
+        <div class="section-title">生活必要支出</div>
+
+        <div class="field-row">
+          <label for="expFood">餐費</label>
+          <input id="expFood" type="number" min="0" placeholder="例如：8000" />
+        </div>
+        <div class="field-row">
+          <label for="expTransport">交通費</label>
+          <input id="expTransport" type="number" min="0" placeholder="500" />
+        </div>
+        <div class="field-row">
+          <label for="expRent">房租</label>
+          <input id="expRent" type="number" min="0" placeholder="6500" />
+        </div>
+        <div class="field-row">
+          <label for="expElectric">電費 / 水費</label>
+          <input id="expElectric" type="number" min="0" placeholder="600" />
+        </div>
+        <div class="field-row">
+          <label for="expLiving">生活雜費</label>
+          <input id="expLiving" type="number" min="0" placeholder="599" />
+        </div>
+        <div class="field-row">
+          <label for="expLoan">貸款</label>
+          <input id="expLoan" type="number" min="0" placeholder="3344" />
+        </div>
+        <div class="field-row">
+          <label for="expCard">卡費</label>
+          <input id="expCard" type="number" min="0" placeholder="6000" />
+        </div>
+
+        <div id="fixed-dynamic"></div>
+        <button type="button" class="add-btn" onclick="addField('fixed-dynamic')">＋ 新增其他固定支出</button>
+      </section>
+
+      <!-- 儲蓄 / 投資 -->
+      <section class="card">
+        <h2>📈 儲蓄 / 投資 <span class="badge">每月撥出</span></h2>
+        <small>這裡是「給未來的自己」的錢，包含 ETF、定存、儲蓄險等。</small>
+
+        <div class="section-title">儲蓄與投資</div>
+
+        <div class="field-row">
+          <label for="saveInvest">投資（ETF、基金等）</label>
+          <input id="saveInvest" type="number" min="0" placeholder="例如：3000" />
+        </div>
+        <div class="field-row">
+          <label for="saveDeposit">定存 / 儲蓄</label>
+          <input id="saveDeposit" type="number" min="0" placeholder="0" />
+        </div>
+        <div class="field-row">
+          <label for="saveOther">其他儲蓄</label>
+          <input id="saveOther" type="number" min="0" placeholder="選填" />
+        </div>
+
+        <div id="saving-dynamic"></div>
+        <button type="button" class="add-btn" onclick="addField('saving-dynamic')">＋ 新增其他投資 / 儲蓄</button>
+      </section>
+
+      <!-- 娛樂性消費 -->
+      <section class="card">
+        <h2>🎉 娛樂性消費 <span class="badge">每月</span></h2>
+        <small>吃好料、旅遊、購物、訂閱制都算在這裡，誠實一點，工具才抓得到漏。</small>
+
+        <div class="section-title">開心花的錢</div>
+
+        <div class="field-row">
+          <label for="entMeal">聚餐 / 外食加碼</label>
+          <input id="entMeal" type="number" min="0" placeholder="例如：3000" />
+        </div>
+        <div class="field-row">
+          <label for="entTravel">旅遊 / 出遊</label>
+          <input id="entTravel" type="number" min="0" placeholder="選填" />
+        </div>
+        <div class="field-row">
+          <label for="entShopping">購物 / 3C / 衣服</label>
+          <input id="entShopping" type="number" min="0" placeholder="選填" />
+        </div>
+        <div class="field-row">
+          <label for="entSub">訂閱 / 影劇 / 遊戲</label>
+          <input id="entSub" type="number" min="0" placeholder="選填" />
+        </div>
+
+        <div id="ent-dynamic"></div>
+        <button type="button" class="add-btn" onclick="addField('ent-dynamic')">＋ 新增其他娛樂支出</button>
+      </section>
+
+      <!-- 年度支出 -->
+      <section class="card">
+        <h2>📅 年度支出 <span class="badge">年繳</span></h2>
+        <small>一年付一次，但本質上也是支出。會自動折算成「每月應預留」的金額。</small>
+
+        <div class="section-title">一年一次的大筆支出</div>
+
+        <div class="field-row">
+          <label for="yrInsurance">保費（壽險、醫療險）</label>
+          <input id="yrInsurance" type="number" min="0" placeholder="例如：12000" />
+        </div>
+        <div class="field-row">
+          <label for="yrTax">所得稅</label>
+          <input id="yrTax" type="number" min="0" placeholder="例如：12000" />
+        </div>
+
+        <div id="yearly-dynamic"></div>
+        <button type="button" class="add-btn" onclick="addField('yearly-dynamic')">＋ 新增其他年度支出</button>
+      </section>
+    </div>
+
+    <!-- ====== 按鈕 ====== -->
+    <div class="btn-area">
+      <button id="calcBtn">試算一下，看看錢有沒有漏 🌊</button>
+    </div>
+
+    <!-- ====== 結果區 ====== -->
+    <section class="result-grid">
+      <!-- 數字結果 -->
+      <div class="results-card">
+        <h3>
+          📊 數字總整理
+          <span class="flag">先投資，再享受</span>
+        </h3>
+        <ul class="results-list">
+          <li class="strong">
+            <span class="label">每月總收入</span>
+            <span class="value" id="resIncome">-</span>
+          </li>
+          <li>
+            <span class="label">每月固定支出</span>
+            <span class="value" id="resFixed">-</span>
+          </li>
+          <li>
+            <span class="label">每月娛樂性支出</span>
+            <span class="value" id="resEnt">-</span>
+          </li>
+          <li>
+            <span class="label">年度支出折算（每月應預留）</span>
+            <span class="value" id="resYearlyMonthly">-</span>
+          </li>
+          <li>
+            <span class="label">每月儲蓄 / 投資金額（含定存）</span>
+            <span class="value" id="resSaving">-</span>
+          </li>
+          <li class="strong">
+            <span class="label">每月實際結餘（收入 − 支出 − 儲蓄）</span>
+            <span class="value" id="resSurplus">-</span>
+          </li>
+          <li>
+            <span class="label">整體儲蓄率（儲蓄 ÷ 收入）</span>
+            <span class="value" id="resSavingRate">-</span>
+          </li>
+          <li>
+            <span class="label">固定支出佔比</span>
+            <span class="value" id="resFixedRate">-</span>
+          </li>
+          <li>
+            <span class="label">娛樂支出佔比</span>
+            <span class="value" id="resEntRate">-</span>
+          </li>
+          <li class="mark-rule">
+            <span class="label">馬克 30% 投資指標（純投資 ÷ 收入）</span>
+            <span class="value" id="resInvestRate">-</span>
+          </li>
+        </ul>
+        <p class="hint">
+          小提醒：結餘為正，代表你每月還有<span>裕度可以調配</span>；結餘是負數，就代表真的「漏」了，要檢查看哪一區失控。
+        </p>
+      </div>
+
+      <!-- 抓漏建議泡泡 -->
+      <div>
+        <div class="bubble" id="adviceBubble">
+          <div class="bubble-title">
+            抓漏小結論
+            <span>試算後會自動更新</span>
+          </div>
+          <ul id="adviceList">
+            <li>先輸入上面的數字，再按下「試算一下」，我就會用馬克的 30% 準則幫你看財務有沒有走歪。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // 取數值：空白就當 0
+    function n(id) {
+      const v = parseFloat(document.getElementById(id).value);
+      return isNaN(v) ? 0 : v;
+    }
+
+    function formatMoney(num) {
+      return num.toLocaleString("zh-TW", { maximumFractionDigits: 0 });
+    }
+
+    function formatPercent(num) {
+      return num.toFixed(1) + "%";
+    }
+
+    // 動態欄位：新增
+    function addField(containerId) {
+      const container = document.getElementById(containerId);
+      const row = document.createElement("div");
+      row.className = "field-row dynamic";
+      row.innerHTML = `
+        <input type="text" placeholder="項目名稱" class="dyn-name" />
+        <input type="number" placeholder="金額" class="dyn-value" min="0" />
+        <button type="button" class="remove-btn" onclick="this.parentNode.remove()">✕</button>
+      `;
+      container.appendChild(row);
+    }
+
+    // 動態欄位：加總
+    function sumDynamic(containerId) {
+      const rows = document.querySelectorAll(`#${containerId} .dyn-value`);
+      let sum = 0;
+      rows.forEach((el) => {
+        const v = parseFloat(el.value);
+        if (!isNaN(v)) sum += v;
+      });
+      return sum;
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", function () {
+      // 收入
+      const income = n("incomeSalary") + n("incomeOther");
+
+      // 固定支出
+      const fixed =
+        n("expFood") +
+        n("expTransport") +
+        n("expRent") +
+        n("expElectric") +
+        n("expLiving") +
+        n("expLoan") +
+        n("expCard") +
+        sumDynamic("fixed-dynamic");
+
+      // 儲蓄 / 投資
+      const invest = n("saveInvest"); // 馬克 30% 準則只看純投資
+      const saving =
+        n("saveInvest") +
+        n("saveDeposit") +
+        n("saveOther") +
+        sumDynamic("saving-dynamic");
+
+      // 娛樂支出
+      const ent =
+        n("entMeal") +
+        n("entTravel") +
+        n("entShopping") +
+        n("entSub") +
+        sumDynamic("ent-dynamic");
+
+      // 年度支出 & 每月折算
+      const yearlyTotal =
+        n("yrInsurance") +
+        n("yrTax") +
+        sumDynamic("yearly-dynamic");
+      const yearlyMonthly = yearlyTotal / 12;
+
+      // 總支出（不含儲蓄）
+      const totalSpending = fixed + ent + yearlyMonthly;
+
+      // 結餘（收入 - 支出 - 儲蓄）
+      const surplus = income - totalSpending - saving;
+
+      // 比例
+      const savingRate = income > 0 ? (saving / income) * 100 : 0;
+      const fixedRate = income > 0 ? (fixed / income) * 100 : 0;
+      const entRate = income > 0 ? (ent / income) * 100 : 0;
+      const investRate = income > 0 ? (invest / income) * 100 : 0;
+
+      // ====== 數字結果填入 ======
+      document.getElementById("resIncome").textContent =
+        income > 0 ? formatMoney(income) + " 元" : "-";
+      document.getElementById("resFixed").textContent =
+        fixed > 0 ? formatMoney(fixed) + " 元" : "-";
+      document.getElementById("resEnt").textContent =
+        ent > 0 ? formatMoney(ent) + " 元" : "-";
+      document.getElementById("resYearlyMonthly").textContent =
+        yearlyMonthly > 0
+          ? formatMoney(Math.round(yearlyMonthly)) + " 元 / 月"
+          : "-";
+      document.getElementById("resSaving").textContent =
+        saving > 0 ? formatMoney(saving) + " 元" : "-";
+
+      const surplusEl = document.getElementById("resSurplus");
+      surplusEl.textContent =
+        income > 0 ? formatMoney(Math.round(surplus)) + " 元" : "-";
+      surplusEl.classList.toggle("warning", surplus < 0);
+
+      document.getElementById("resSavingRate").textContent =
+        saving > 0 && income > 0 ? formatPercent(savingRate) : "-";
+      document.getElementById("resFixedRate").textContent =
+        fixed > 0 && income > 0 ? formatPercent(fixedRate) : "-";
+      document.getElementById("resEntRate").textContent =
+        ent > 0 && income > 0 ? formatPercent(entRate) : "-";
+
+      const investRateEl = document.getElementById("resInvestRate");
+      if (income > 0 && invest > 0) {
+        const txt = formatPercent(investRate);
+        investRateEl.textContent = txt;
+        investRateEl.classList.remove("pass", "fail");
+        if (investRate >= 30) {
+          investRateEl.classList.add("pass");
+        } else {
+          investRateEl.classList.add("fail");
+        }
+      } else {
+        investRateEl.textContent = "-";
+        investRateEl.classList.remove("pass", "fail");
+      }
+
+      // ====== 抓漏建議邏輯 ======
+      const advice = [];
+
+      if (income <= 0) {
+        advice.push("目前收入欄位是空的，先把薪水／收入填進去，我才算得出抓漏結果。");
+      } else {
+        // 結餘狀況
+        if (surplus < 0) {
+          advice.push(
+            "你目前每月是 <b class='warning'>入不敷出</b>，支出＋儲蓄已經超過收入，短期可能要靠刷卡或動用存款撐著。先檢查固定支出與娛樂支出哪一塊可以縮。"
+          );
+        } else if (surplus < income * 0.05) {
+          advice.push(
+            "你每月結餘大約是收入的 <b>" +
+              formatPercent((surplus / income) * 100) +
+              "</b>，現金流偏緊，遇到突發事件會比較有壓力。可以試著把固定支出或娛樂花費各削一點。"
+          );
+        } else {
+          advice.push(
+            "你每月還有結餘，大約是收入的 <b>" +
+              formatPercent((surplus / income) * 100) +
+              "</b>，算是有喘息空間。接下來重點是怎麼讓「投資比例」變得更給力。"
+          );
+        }
+
+        // 儲蓄率
+        if (saving <= 0) {
+          advice.push(
+            "目前「每月儲蓄 / 投資」是 0，建議先從收入的 5～10% 開始定期投入，例如指數型ETF或高股息ETF，讓未來的自己也有領配息的一天。"
+          );
+        } else if (savingRate < 10) {
+          advice.push(
+            "整體儲蓄率約 <b>" +
+              formatPercent(savingRate) +
+              "</b>，偏低。可以先把儲蓄率拉到 10～15%，再慢慢往上加，不用一次爆衝。"
+          );
+        } else if (savingRate < 20) {
+          advice.push(
+            "整體儲蓄率約 <b>" +
+              formatPercent(savingRate) +
+              "</b>，已經有基本防禦力了，再往 20% 靠近會更穩。"
+          );
+        } else {
+          advice.push(
+            "整體儲蓄率約 <b>" +
+              formatPercent(savingRate) +
+              "</b>，算是蠻認真存錢的一族。記得分散在指數型ETF與現金預備金，不要全部壓單一標的。"
+          );
+        }
+
+        // 馬克 30% 投資準則
+        if (invest <= 0) {
+          advice.push(
+            "目前純投資金額是 0。若要啟動「馬克 30% 準則」，可以先從每月收入的 5～10% 開始買指數型或高股息ETF，再慢慢往 30% 推進。"
+          );
+        } else if (investRate >= 30) {
+          advice.push(
+            "你的純投資比率約 <b>" +
+              formatPercent(investRate) +
+              "</b>，已經達到「馬克 30% 投資標準」。恭喜，你可以名正言順地對自己說：剩下的錢怎麼花都可以，開心一點沒關係。"
+          );
+        } else if (investRate >= 20) {
+          advice.push(
+            "你的純投資比率約 <b>" +
+              formatPercent(investRate) +
+              "</b>，離 30% 只差一小段。可以用「每年多加 2～5%」的方式慢慢加碼，讓投資比重愈來愈接近你的目標。"
+          );
+        } else {
+          advice.push(
+            "你的純投資比率約 <b>" +
+              formatPercent(investRate) +
+              "</b>，距離馬克心中的 30% 還有一段路。可以先把每月部分娛樂或固定支出移一點點到投資區，不用一次改很大，但要穩定前進。"
+          );
+        }
+
+        // 固定支出
+        const maxFixed = 50;
+        if (fixedRate > maxFixed) {
+          advice.push(
+            "固定支出佔收入約 <b>" +
+              formatPercent(fixedRate) +
+              "</b>，偏高。可以檢查房租、貸款、保費、通勤是否有重新談約、換方案或搬家調整的空間。"
+          );
+        } else {
+          advice.push(
+            "固定支出佔收入約 <b>" +
+              formatPercent(fixedRate) +
+              "</b>，還在合理範圍內。記得避免再加新的分期與訂閱，不然幾個月後固定支出會悄悄膨脹。"
+          );
+        }
+
+        // 娛樂支出
+        const maxEnt = 20;
+        if (entRate > maxEnt) {
+          advice.push(
+            "娛樂性支出佔收入約 <b>" +
+              formatPercent(entRate) +
+              "</b>，有點偏多。可以試試「一半規劃、一半享受」：每花 1 元在娛樂，就多丟 1 元進投資帳戶。"
+          );
+        } else if (entRate > 0) {
+          advice.push(
+            "娛樂性支出佔收入約 <b>" +
+              formatPercent(entRate) +
+              "</b>。有好好享受生活是好事，只要投資比例有逐步往 30% 靠近，就不用太罪惡。"
+          );
+        }
+
+        // 年度支出
+        if (yearlyTotal > 0) {
+          advice.push(
+            "你每年有約 <b>" +
+              formatMoney(Math.round(yearlyTotal)) +
+              " 元</b> 的年度支出，折算下來每月應預留 <b>" +
+              formatMoney(Math.round(yearlyMonthly)) +
+              " 元</b>。建議獨立開一個「年度帳戶」專門存這筆錢，避免到期時又得刷卡硬扛。"
+          );
+        }
+      }
+
+      const adviceList = document.getElementById("adviceList");
+      adviceList.innerHTML = advice.map(item => "<li>" + item + "</li>").join("");
+    });
+  </script>
+</body>
+</html>
