@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ETF 投資績效牆｜馬濕克 300 會員專屬</title>
+
+<!-- PapaParse：避免 CSV 欄位錯位 -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+  :root {
+    --dark: #004d40;
+    --light: #ffeb3b;
+    --bg: #f7f8fa;
+    --text: #333;
+    --red: #C0392B;
+    --green: #1D4A35;
+    --yellow: #C59A00;
+    --card: #ffffff;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: "微軟正黑體", sans-serif;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  header {
+    padding: 1.5rem 1rem;
+    background: var(--dark);
+    color: #fff;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+    margin: .2rem 0;
+  }
+
+  header p {
+    font-size: .95rem;
+    margin-top: .4rem;
+    color: #f2f2f2;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+  }
+
+  /* 返回按鈕 */
+  .back-btn {
+    display: inline-block;
+    margin-bottom: 1rem;
+    background: var(--dark);
+    color: #fff;
+    padding: .55rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: bold;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+    margin-top: .8rem;
+  }
+
+  .summary-card {
+    background: var(--card);
+    padding: 1rem;
+    border-radius: 14px;
+    box-shadow: 0 3px 7px rgba(0,0,0,.08);
+    border-left: 6px solid var(--dark);
+  }
+
+  .summary-card h3 {
+    font-size: .9rem;
+    color: #666;
+    margin-bottom: .25rem;
+  }
+
+  .value {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .positive { color: var(--red); }
+  .negative { color: var(--green); }
+
+  /* 卡片 */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .etf-card {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,.08);
+  }
+
+  .etf-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: .4rem;
+  }
+
+  .metric-label {
+    font-size: .8rem;
+    color: #777;
+    margin-top: .7rem;
+  }
+
+  .metric-value {
+    font-size: .95rem;
+    font-weight: 700;
+  }
+
+  /* 估值燈號 */
+  .signal-cheap { color: var(--green); font-weight: bold; }
+  .signal-fair { color: var(--yellow); font-weight: bold; }
+  .signal-expensive { color: var(--red); font-weight: bold; }
+
+  .etf-footer {
+    margin-top: .7rem;
+    padding-top: .6rem;
+    border-top: 1px dashed #ccc;
+    font-size: .8rem;
+    color: #666;
+    text-align: right;
+  }
+
+  footer {
+    text-align: center;
+    margin: 2rem 0 1rem;
+    font-size: .85rem;
+    color: #777;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 🛡 會員守門：不是從 300 主頁來的 → 全部踢回 -->
+<script>
+  if (document.referrer.indexOf("wumark-x-core300") === -1) {
+    window.location.href = "wumark-x-core300.html";
+  }
+</script>
+
+<header>
+  <h1>📊 ETF 投資績效牆</h1>
+  <p>300 會員限定｜公開我的真實成本、報酬、配息與估值燈號</p>
+</header>
+
+<div class="container">
+
+  <a class="back-btn" href="wumark-x-core300.html">← 返回 300 會員主頁</a>
+
+  <div id="summaryArea" class="summary-grid"></div>
+
+  <div id="cardsContainer" class="cards-grid"></div>
+
+  <footer>
+    ⚠️ 本頁為馬克個人 ETF 投資紀錄，不構成投資建議。投資一定有風險，請自主判斷。
+  </footer>
+
+</div>
+
+<script>
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2137337223&single=true&output=csv";
+
+function fmt(n){ return Number(n||0).toLocaleString("zh-TW"); }
+function pct(n){ return Number(n).toFixed(2)+"%"; }
+
+async function init(){
+  const res = await fetch(CSV_URL);
+  const text = await res.text();
+
+  const parsed = Papa.parse(text, {
+    header: true,
+    skipEmptyLines: true
+  });
+
+  const etfs = parsed.data
+    .filter(r => r["股號"] && r["股號"].trim() !== "")
+    .map(r => ({
+      ticker: r["股號"],
+      name: r["股票名稱"],
+      cost: Number(r["總投資成本"]||0),
+      market: Number(r["市值"]||0),
+      returnPct: Number((r["報酬率"]||"0").replace("%","")),
+      cheap: r["便宜價"],
+      fair: r["合理價"],
+      expensive: r["昂貴價"],
+      signal: r["估值燈號"],
+      totalDiv: Number(r["累積股息總額"]||0),
+      freq: r["配息頻率"],
+      update: r["更新日期"]
+    }));
+
+  renderSummary(etfs);
+  renderCards(etfs);
+}
+
+function renderSummary(etfs){
+  const box=document.getElementById("summaryArea");
+
+  const totalCost=etfs.reduce((s,e)=>s+e.cost,0);
+  const totalMarket=etfs.reduce((s,e)=>s+e.market,0);
+  const totalDiv=etfs.reduce((s,e)=>s+e.totalDiv,0);
+  const ret=totalCost>0?(totalMarket-totalCost)/totalCost*100:0;
+
+  const data=[
+    ["總市值","NT$ "+fmt(totalMarket),""],
+    ["總投入成本","NT$ "+fmt(totalCost),""],
+    ["整體含息報酬率",pct(ret),ret>=0?"positive":"negative"],
+    ["累積已領股息","NT$ "+fmt(totalDiv),""]
+  ];
+
+  data.forEach(d=>{
+    const card=document.createElement("div");
+    card.className="summary-card";
+    card.innerHTML=`
+      <h3>${d[0]}</h3>
+      <div class="value ${d[2]}">${d[1]}</div>
+    `;
+    box.appendChild(card);
+  });
+}
+
+function renderCards(etfs){
+  const box=document.getElementById("cardsContainer");
+
+  etfs.forEach(e=>{
+    let sigClass="";
+    if(e.signal?.includes("便宜")) sigClass="signal-cheap";
+    else if(e.signal?.includes("合理")) sigClass="signal-fair";
+    else if(e.signal?.includes("昂貴")) sigClass="signal-expensive";
+
+    const card=document.createElement("div");
+    card.className="etf-card";
+    card.innerHTML=`
+      <div class="etf-title">${e.ticker}｜${e.name}</div>
+
+      <div class="metric-label">含息報酬率</div>
+      <div class="metric-value ${e.returnPct>=0?"positive":"negative"}">${pct(e.returnPct)}</div>
+
+      <div class="metric-label">市值 / 成本</div>
+      <div class="metric-value">NT$ ${fmt(e.market)} ／ ${fmt(e.cost)}</div>
+
+      <div class="metric-label">估值燈號</div>
+      <div class="metric-value ${sigClass}">${e.signal||"-"}</div>
+
+      <div class="metric-label">便宜價 / 合理價 / 昂貴價</div>
+      <div class="metric-value">${e.cheap||"-"} ／ ${e.fair||"-"} ／ ${e.expensive||"-"}</div>
+
+      <div class="metric-label">累積已領股息</div>
+      <div class="metric-value">NT$ ${fmt(e.totalDiv)}</div>
+      <div class="metric-label">${e.freq?`配息頻率：${e.freq}`:""}</div>
+
+      <div class="etf-footer">更新：${e.update||"-"}</div>
+    `;
+    box.appendChild(card);
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
