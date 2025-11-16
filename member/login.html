@@ -24,6 +24,8 @@
       margin: 2rem auto;
       padding: 0 1rem;
     }
+
+    /* 登入切換區 */
     .login-switch {
       display: flex;
       justify-content: center;
@@ -54,9 +56,11 @@
     .login-switch button:hover {
       filter: brightness(1.1);
     }
+
+    /* 頁首形象區 */
     header {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
     header img {
       width: 80px; height: 80px;
@@ -72,6 +76,47 @@
       margin: 0;
       font-size: 1rem;
     }
+
+    /* 會員驗證大橫幅（公告風格） */
+    .verify-banner {
+      margin: 0 0 1.5rem;
+      padding: 1rem 1.2rem;
+      border-left: 6px solid var(--light);
+      background: #fffbe7;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .verify-text {
+      font-size: .95rem;
+      color: #444;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .verify-text .icon {
+      font-size: 1.2rem;
+    }
+    .verify-btn {
+      background: var(--dark);
+      color: #fff;
+      padding: .55rem 1.1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: .9rem;
+      white-space: nowrap;
+      transition: filter .2s;
+    }
+    .verify-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    /* 功能卡片區 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -110,12 +155,25 @@
       transition: background .2s;
     }
     .card-body a:hover { background: #f7e600; }
+
     footer {
       text-align: center;
       margin: 2rem 0 1rem;
       font-size: .85rem;
       color: #777;
     }
+
+    @media (max-width: 520px) {
+      .verify-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .verify-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
     @media(max-width:480px) {
       .login-switch { flex-direction: column; gap: .5rem; }
       .login-switch input,
@@ -123,6 +181,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -132,13 +191,28 @@
       <button id="switchBtn">登入</button>
     </div>
 
+    <!-- 形象頭區 -->
     <header>
       <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克" />
       <h1>幸福星球 × 馬濕克</h1>
       <p>航向股息星系，啟動你的幸福引擎！<strong id="userEmail"></strong></p>
     </header>
 
+    <!-- 放在 header 下方的會員驗證公告橫幅（最佳位置） -->
+    <div class="verify-banner">
+      <div class="verify-text">
+        <span class="icon">🧾</span>
+        <strong>尚未填寫驗證？</strong>
+        <span>若你是剛升級的新會員，請先完成身分核對，我會在 24 小時內寄出資源連結。</span>
+      </div>
+      <a href="https://forms.gle/ikWDDbjh7z3Ae7ns6" target="_blank" class="verify-btn">
+        前往填寫
+      </a>
+    </div>
+
+    <!-- 功能卡片區 -->
     <section class="grid">
+
       <div class="card">
         <div class="card-header">🎥 獨家影片</div>
         <div class="card-body">
@@ -162,42 +236,46 @@
           <a href="https://forms.gle/CxGYDeK3kRTNJG1Q7" target="_blank">立即加入</a>
         </div>
       </div>
+
     </section>
 
     <footer>
       © 2025 吳馬克 • Financial Management creates your lifetime happiness.
     </footer>
+
   </div>
 
-<script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
-  document.getElementById('switchBtn').addEventListener('click', async () => {
-    const e = document.getElementById('switchEmail').value.trim();
-    if (!e) {
-      alert('請輸入 Email');
-      return;
-    }
-    try {
-      const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
-      const data = await res.json();
-      const lvl = parseInt(data.level, 10) || 0;
-      // 新的「防猜」頁面對應表
-      const pageMap = {
-        30: 'https://markmoneylife.github.io/compound-interest-tool/member/capsule-beta30.html',
-        75: 'https://markmoneylife.github.io/compound-interest-tool/member/mission-vault75.html',
-        300: 'https://markmoneylife.github.io/compound-interest-tool/member/wumark-x-core300.html'
-      };
-      if (pageMap[lvl]) {
-        location.href = pageMap[lvl];
-      } else {
-        alert('此 Email 尚未加入會員');
+    document.getElementById('switchBtn').addEventListener('click', async () => {
+      const e = document.getElementById('switchEmail').value.trim();
+      if (!e) {
+        alert('請輸入 Email');
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      alert('驗證失敗，請稍後再試');
-    }
-  });
-</script>
+      try {
+        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
+        const data = await res.json();
+        const lvl = parseInt(data.level, 10) || 0;
 
+        const pageMap = {
+          30: 'https://markmoneylife.github.io/compound-interest-tool/member/capsule-beta30.html',
+          75: 'https://markmoneylife.github.io/compound-interest-tool/member/mission-vault75.html',
+          300: 'https://markmoneylife.github.io/compound-interest-tool/member/wumark-x-core300.html'
+        };
+
+        if (pageMap[lvl]) {
+          location.href = pageMap[lvl];
+        } else {
+          alert('此 Email 尚未加入會員');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('驗證失敗，請稍後再試');
+      }
+    });
+  </script>
+
+</body>
 </html>
