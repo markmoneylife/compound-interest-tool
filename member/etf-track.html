@@ -201,6 +201,7 @@ async function init(){
       cost: Number(r["總投資成本"]||0),
       market: Number(r["市值"]||0),
       returnPct: Number((r["報酬率"]||"0").replace("%","")),
+      price: Number(r["收盤價"]||0),         // ⭐ N 欄 收盤價
       cheap: r["便宜價"],
       fair: r["合理價"],
       expensive: r["昂貴價"],
@@ -256,6 +257,9 @@ function renderCards(etfs){
 
       <div class="metric-label">含息報酬率</div>
       <div class="metric-value ${e.returnPct>=0?"positive":"negative"}">${pct(e.returnPct)}</div>
+
+      <div class="metric-label">收盤價（現價）</div>
+      <div class="metric-value">NT$ ${fmt(e.price)}</div>
 
       <div class="metric-label">市值 / 成本</div>
       <div class="metric-value">NT$ ${fmt(e.market)} ／ ${fmt(e.cost)}</div>
