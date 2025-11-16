@@ -13,11 +13,15 @@
     section { max-width: 900px; margin: 2rem auto; background: #FFF; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
     h2 { color: #1D4A35; margin-bottom: 1rem; }
     p { line-height: 1.6; margin-bottom: 1.2rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.5rem; }
+
     .cta-button {
       display: inline-block; background: #FFD54F; color: #1A1A1A; padding: 0.9rem 1.6rem;
       border-radius: 999px; font-weight: bold; text-decoration: none; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     }
     .cta-button:hover { background: #FFE082; transform: translateY(-2px); }
+
     .card-grid {
       display: flex;
       flex-direction: column;
@@ -34,6 +38,15 @@
       margin: 0 0 0.5rem;
       color: #1D4A35;
     }
+
+    @media (min-width: 768px) {
+      .card-grid {
+        flex-direction: row;
+      }
+      .card {
+        flex: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -42,6 +55,7 @@
     <p>這份表單是我整合財務全貌的核心工具，幫你把「收入－支出－投資」一氣呵成掌握。</p>
   </header>
 
+  <!-- ETF 收益模擬 + 收支管理表 -->
   <section>
     <h2>📋 表單簡介</h2>
     <p>這份表單不是只有 ETF 模擬，更是一份「個人現金流總覽」。內容包含：</p>
@@ -53,68 +67,112 @@
     </ul>
     <p>你也可以自由擴充欄位，加入「目標金額」、「ETF組合配置」、「配息再投入比例」等個人化設計。</p>
     <p style="text-align: center">
-      <a class="cta-button" href="https://docs.google.com/spreadsheets/d/1L4Cq9YbYQnKRwEPVhR4YGz6FqCd9bMYEcxBhvMkMWbk/copy" target="_blank">📥 複製 ETF模擬 + 收支管理表（300元專屬）</a>
+      <a class="cta-button" href="https://docs.google.com/spreadsheets/d/1L4Cq9YbYQnKRwEPVhR4YGz6FqCd9bMYEcxBhvMkMWbk/copy" target="_blank">
+        📥 複製 ETF模擬 + 收支管理表（300元專屬）
+      </a>
     </p>
   </section>
-  <!-- 頁面內容將包含：
-    - ETF收益模擬 Google Sheet 複製連結
-    - 工具特色說明：收益比較、成分追蹤、風險分散模擬
-    - 身分驗證流程
-    - 免費網站工具卡片區（保留）
-    - 社群福利與周邊支持（保留）
-  -->
+
+  <!-- 理財抓漏記帳小工具（會員專屬） -->
+  <section>
+    <h2>💰 理財抓漏記帳小工具（300會員專屬）</h2>
+    <p>ETF 配得再漂亮，如果每個月錢都「不知跑去哪」，其實很難真正累積資產。這個「理財抓漏記帳小工具」，就是專門幫你抓出：</p>
+    <ul>
+      <li>🕳 哪些支出是你以為「沒多少」，實際一年累積卻很驚人？</li>
+      <li>🧃 習慣性小花費（飲料、外食、訂閱制）一年吃掉你多少現金流？</li>
+      <li>🚨 哪些支出如果略為調整，就能多擠出一筆固定的「投資子彈」？</li>
+      <li>📊 透過分階段視覺化，讓你看到「調整前 vs 調整後」的現金流差異。</li>
+    </ul>
+    <p>建議搭配上方的「ETF收益模擬 + 收支管理表」一起使用：先用抓漏工具找出可調整的支出，再把多出來的現金流丟進 ETF 模擬表，看未來資產差多少。</p>
+    <p style="text-align: center">
+      <a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/member/Mark-Money Leak Checker.html" target="_blank">
+        🔍 開啟理財抓漏記帳小工具
+      </a>
+    </p>
+  </section>
+
+  <!-- 會員驗證 -->
   <section>
     <h2>🧾 尚未填寫驗證？</h2>
     <p>若你是剛升級的新會員，請先填寫下方表單進行身分核對，我會在 24 小時內寄出資源連結。</p>
     <p style="text-align: center">
-      <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank">📨 前往會員驗證表單</a>
+      <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank">
+        📨 前往會員驗證表單
+      </a>
     </p>
   </section>
 
+  <!-- 免費工具區 -->
   <section>
     <h2>🛠 更多免費工具</h2>
     <div class="card-grid">
       <div class="card">
         <h3>📊 複利試算工具</h3>
         <p>試算你每月定期定額後的資產累積狀況，看看複利的魔法怎麼發酵！</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">使用複利試算</a></p>
+        <p>
+          <a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">
+            使用複利試算
+          </a>
+        </p>
       </div>
       <div class="card">
         <h3>🎯 退休倒推工具</h3>
         <p>從目標退休金倒推你「現在該投入多少」，幫你反推出每月理想金額。</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">開始倒推試算</a></p>
+        <p>
+          <a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">
+            開始倒推試算
+          </a>
+        </p>
       </div>
       <div class="card">
         <h3>📅 ETF投資追蹤牆</h3>
         <p>整理你持有的ETF配息、成本、投入紀錄，一眼掌握現況與成效。</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">前往ETF追蹤牆</a></p>
+        <p>
+          <a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">
+            前往ETF追蹤牆
+          </a>
+        </p>
       </div>
     </div>
     <p style="text-align: center; margin-top: 2rem">
-      <a class="cta-button" href="https://markmoneylife.com" target="_blank">🌐 前往馬克的投資工具網站</a>
+      <a class="cta-button" href="https://markmoneylife.com" target="_blank">
+        🌐 前往馬克的投資工具網站
+      </a>
     </p>
   </section>
 
+  <!-- 社群互動 -->
   <section>
     <h2>💬 社群互動福利</h2>
     <p>你也可以加入我們的 LINE 社群、Podcast 討論串，與其他投資夥伴交流、討論 ETF、理財心得、生活疑問。</p>
     <p style="text-align: center">
-      <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank">💬 先填表單驗證，再加入LINE社群</a>
+      <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank">
+        💬 先填表單驗證，再加入LINE社群
+      </a>
     </p>
   </section>
 
+  <!-- 支持頻道 -->
   <section>
     <h2>🎁 支持頻道還有這些選擇</h2>
     <div class="card-grid">
       <div class="card">
         <h3>🛍 幸福理財家｜週邊商品</h3>
         <p>馬克設計的帆布袋、杯墊、T-Shirt，每一樣都來自生活體驗＋理財信念。</p>
-        <p><a class="cta-button" href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">逛逛週邊商店</a></p>
+        <p>
+          <a class="cta-button" href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">
+            逛逛週邊商店
+          </a>
+        </p>
       </div>
       <div class="card">
         <h3>😄 馬克角色 LINE貼圖</h3>
         <p>頻道角色「馬克、存骨哥、小韭、K線仔」出現在你的聊天視窗啦！</p>
-        <p><a class="cta-button" href="https://store.line.me/stickershop/author/2187523/zh-Hant" target="_blank">前往LINE貼圖商店</a></p>
+        <p>
+          <a class="cta-button" href="https://store.line.me/stickershop/author/2187523/zh-Hant" target="_blank">
+            前往LINE貼圖商店
+          </a>
+        </p>
       </div>
     </div>
   </section>
