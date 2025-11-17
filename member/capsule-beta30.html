@@ -6,191 +6,442 @@
   <title>馬克 30元會員專屬｜幸福存股估價表 + 社群福利</title>
   <meta name="description" content="30元頻道會員專屬工具頁｜幸福存股估價試算表、LINE社群入口，幫你建立穩定投資習慣。">
   <style>
+    :root {
+      --green: #1D4A35;
+      --yellow: #FFD54F;
+      --bg: #F5F2E9;
+      --card: #FFFFFF;
+      --text: #333333;
+      --subtext: #666666;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: "Noto Sans TC", sans-serif;
-      background-color: #F8F8F8;
-      color: #333;
+      font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
-    }
-    header {
-      background-color: #1D4A35;
-      color: #FFF;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    header p {
-      font-size: 1.1rem;
-    }
-    section {
-      max-width: 900px;
-      margin: 2rem auto;
-      background: #FFF;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    h2 {
-      color: #1D4A35;
-      margin-bottom: 1rem;
-    }
-    p {
-      margin-bottom: 1.2rem;
       line-height: 1.6;
     }
-    .cta-button {
-      display: inline-block;
-      background-color: #FFD54F;
-      color: #1A1A1A;
-      padding: 0.9rem 1.6rem;
-      border-radius: 999px;
+
+    /* 頂端提醒條 */
+    .top-alert {
+      background-color: #123325;
+      color: #F9F7EE;
+      font-size: 0.95rem;
+      text-align: center;
+      padding: 0.6rem 1rem;
+    }
+    .top-alert span {
       font-weight: bold;
-      text-decoration: none;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
+      color: var(--yellow);
     }
-    .cta-button:hover {
-      background-color: #FFE082;
-      transform: translateY(-2px);
+
+    header {
+      background: radial-gradient(circle at top left, #2F6B4B 0%, #1D4A35 45%, #173728 100%);
+      color: #FFF;
+      padding: 2.4rem 1.2rem 2rem;
     }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .member-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      background-color: rgba(255, 213, 79, 0.12);
+      border: 1px solid rgba(255, 213, 79, 0.8);
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+    }
+    .member-tag strong {
+      color: var(--yellow);
+    }
+
+    header h1 {
+      font-size: 2.05rem;
+      margin: 0.3rem 0 0.7rem;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1rem;
+      color: #F5F5F5;
+    }
+
+    /* 主內容容器 */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 3rem;
+    }
+
+    section {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 1.8rem 1.75rem 2rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      margin-bottom: 1.8rem;
+    }
+
+    h2 {
+      color: var(--green);
+      margin: 0 0 1rem;
+      font-size: 1.35rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    h2::after {
+      content: "";
+      display: block;
+      height: 3px;
+      width: 52px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--yellow), #FFE082);
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .subtext {
+      color: var(--subtext);
+      font-size: 0.95rem;
+    }
+
     .image-wrapper {
       text-align: center;
-      margin-bottom: 2rem;
+      margin: 0 0 1.8rem;
     }
+
     .image-wrapper img {
       max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      border: 4px solid #FDF7D7;
     }
-    .card-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 2rem;
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      background-color: var(--yellow);
+      color: #1A1A1A;
+      padding: 0.85rem 1.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.98rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: all 0.18s ease;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    .card {
-      background-color: #F0F4F2;
-      border-left: 6px solid #1D4A35;
-      padding: 1.2rem 1.5rem;
-      border-radius: 12px;
+
+    .cta-button:hover {
+      background-color: #FFE082;
+      transform: translateY(-1.5px);
+      box-shadow: 0 7px 16px rgba(0,0,0,0.18);
     }
-    .card h3 {
-      margin: 0 0 0.5rem;
-      color: #1D4A35;
+
+    .cta-button.secondary {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
     }
-    .back-login {
-      margin: 3rem auto;
+
+    .cta-button.secondary:hover {
+      background-color: #FFFDF4;
+    }
+
+    .center {
       text-align: center;
     }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.3rem;
+      margin-top: 0.8rem;
+    }
+
+    .card {
+      background-color: #F3F7F3;
+      border-left: 5px solid var(--green);
+      padding: 1.1rem 1.2rem 1.2rem;
+      border-radius: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 0.4rem;
+      color: var(--green);
+      font-size: 1.05rem;
+    }
+
+    .card p {
+      margin: 0.2rem 0 0;
+      font-size: 0.95rem;
+      color: var(--subtext);
+    }
+
+    /* 更多工具卡片 */
+    .card-grid.tools .card {
+      border-left-color: var(--yellow);
+      background-color: #FDF9E9;
+    }
+
+    .card-grid.tools .card h3 {
+      color: #8A6A00;
+    }
+
+    .tools-cta {
+      margin-top: 0.6rem;
+    }
+
+    /* 升級說明區塊補充文字 */
+    .upgrade-note {
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      color: var(--subtext);
+    }
+
+    /* 返回登入＆頁尾 */
+    .back-login {
+      text-align: center;
+      margin: 1.2rem auto 0.5rem;
+    }
+
     footer {
       text-align: center;
-      font-size: 0.9rem;
-      color: #999;
-      margin: 2rem auto;
+      font-size: 0.85rem;
+      color: #999999;
+      padding: 1.8rem 1rem 2.2rem;
+    }
+
+    /* RWD */
+    @media (min-width: 720px) {
+      header h1 {
+        font-size: 2.3rem;
+      }
+      header p {
+        font-size: 1.05rem;
+      }
+      section {
+        padding: 2rem 2rem 2.2rem;
+      }
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .card-grid.tools {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 2rem 1rem 1.8rem;
+      }
+      .card-grid.tools .cta-button {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>📈 幸福存股估價工具｜30元會員專屬頁</h1>
-    <p>謝謝你選擇支持馬克頻道，一杯飲料的價格，就是創作最大的動力 💛</p>
-  </header>
-
-  <section>
-    <div class="image-wrapper">
-      <img src="https://images.plurk.com/4kICCd1xGRn4Z0PvVmfmwP.jpg" alt="幸福存股封面圖">
-    </div>
-    <h2>📌 工具簡介</h2>
-    <p>
-      這是我專為新手設計的「幸福存股估價試算表」，讓你在面對紅漲綠跌的台股世界時，可以用簡單的邏輯評估一檔股票是否值得投入。
-    </p>
-    <p>
-      不需要財報高手，只要輸入預期配息、合理殖利率等基本條件，就能估算出大致區間。適合月配息策略、新手存股者、理財自學者使用。
-    </p>
-    <p style="text-align: center">
-      <a class="cta-button" href="https://docs.google.com/spreadsheets/d/1x0zHgL060SpXhI3zuMtQVmKoYqPLDvulAUeDOAHZ38E/copy" target="_blank">
-        📥 複製幸福存股估價表（30元版）
-      </a>
-    </p>
-  </section>
-
-  <section>
-    <h2>✨ 升級更多功能？</h2>
-    <div class="card-grid">
-      <div class="card">
-        <h3>🔓 75元會員</h3>
-        <p>可解鎖「股票記錄表＋複利目標計算＋買賣紀錄」，更進一步掌握整體財務節奏。</p>
-      </div>
-      <div class="card">
-        <h3>🚀 300元會員</h3>
-        <p>可解鎖「ETF收益模擬＋資產圖表分析」，讓你有邏輯、有策略地安排投資配置。</p>
-      </div>
-    </div>
-    <p style="text-align: center; margin-top: 1.5rem">
-      <a class="cta-button" href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">👉 查看會員等級與升級方案</a>
-    </p>
-  </section>
-
-  <section>
-    <h2>💬 社群互動福利</h2>
-    <p>
-      成為 30 元會員後，你也可以加入我們的 LINE 社群、Podcast 討論串，與其他投資夥伴交流、討論 ETF、理財心得、生活疑問。
-    </p>
-    <p style="text-align: center">
-      <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank">💬 先填表單驗證，再加入LINE社群</a>
-    </p>
-  </section>
-
-  <section>
-    <h2>🛠 更多免費工具</h2>
-    <div class="card-grid">
-      <div class="card">
-        <h3>📊 複利試算工具</h3>
-        <p>試算你每月定期定額後的資產累積狀況，看看複利的魔法怎麼發酵！</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">使用複利試算</a></p>
-      </div>
-      <div class="card">
-        <h3>🎯 退休倒推工具</h3>
-        <p>從目標退休金倒推你「現在該投入多少」，幫你反推出每月理想金額。</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">開始倒推試算</a></p>
-      </div>
-      <div class="card">
-        <h3>📅 ETF投資追蹤牆</h3>
-        <p>整理你持有的ETF配息、成本、投入紀錄，一眼掌握現況與成效。</p>
-        <p><a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">前往ETF追蹤牆</a></p>
-      </div>
-    </div>
-    <p style="text-align: center; margin-top: 2rem">
-      <a class="cta-button" href="https://markmoneylife.com" target="_blank">🌐 前往馬克的投資工具網站</a>
-    </p>
-  </section>
-
-  <section>
-    <h2>🎁 支持頻道還有這些選擇</h2>
-    <div class="card-grid">
-      <div class="card">
-        <h3>🛍 幸福理財家｜週邊商品</h3>
-        <p>馬克設計的帆布袋、杯墊、T-Shirt，每一樣都來自生活體驗＋理財信念。</p>
-        <p><a class="cta-button" href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">逛逛週邊商店</a></p>
-      </div>
-      <div class="card">
-        <h3>😄 馬克角色 LINE貼圖</h3>
-        <p>頻道角色「馬克、存骨哥、小韭、K線仔」出現在你的聊天視窗啦！</p>
-        <p><a class="cta-button" href="https://store.line.me/stickershop/author/2187523/zh-Hant" target="_blank">前往LINE貼圖商店</a></p>
-      </div>
-    </div>
-  </section>
-
-  <div class="back-login">
-    <a class="cta-button" href="/compound-interest-tool/member/login.html">🔐 返回登入首頁</a>
+  <div class="top-alert">
+    本頁為 <span>30 元 YouTube 頻道會員</span> 專屬工具與福利，請勿隨意外流連結 🙏
   </div>
 
+  <header>
+    <div class="header-inner">
+      <div class="member-tag">
+        💛 幸福存股 30 元會員 · 入門工具版
+      </div>
+      <h1>📈 幸福存股估價工具｜30 元會員專屬頁</h1>
+      <p>一杯飲料的價格，讓你多一套看行情的邏輯，也讓創作者多一點繼續更新的理由。</p>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- 工具簡介區 -->
+    <section>
+      <div class="image-wrapper">
+        <img src="https://images.plurk.com/4kICCd1xGRn4Z0PvVmfmwP.jpg" alt="幸福存股封面圖">
+      </div>
+
+      <h2>📌 工具簡介</h2>
+
+      <p>
+        「幸福存股估價試算表」是我為新手量身設計的入門工具，讓你在面對紅漲綠跌的台股世界時，
+        不靠小道消息，而是用 <strong>配息＋殖利率</strong> 的簡單邏輯，幫自己抓出一個大致合理區間。
+      </p>
+      <p>
+        你不需要是財報高手，只要大概知道：
+        <span class="subtext">「這家公司未來大約會配多少？」、「我能接受的殖利率是多少？」</span>
+        就能用這張表算出大約的估價帶，幫助你在行情熱的時候冷靜一點、行情冷的時候敢多看一眼。
+      </p>
+      <p class="subtext">
+        特別適合：月配息族、新手存股者、理財自學者，或是正在建立「自己的估價紀律」的人。
+      </p>
+
+      <div class="center" style="margin-top: 1.4rem;">
+        <a class="cta-button" href="https://docs.google.com/spreadsheets/d/1x0zHgL060SpXhI3zuMtQVmKoYqPLDvulAUeDOAHZ38E/copy" target="_blank" rel="noopener">
+          📥 複製幸福存股估價表（30 元版）
+        </a>
+      </div>
+      <p class="subtext center" style="margin-top: 0.8rem;">
+        小提醒：建議先在電腦上開啟 Google 帳號，再點擊上方按鈕複製試算表至自己的雲端硬碟。
+      </p>
+    </section>
+
+    <!-- 升級更多功能 -->
+    <section>
+      <h2>✨ 想把記錄做完整？可以考慮升級</h2>
+
+      <p>
+        如果你用一陣子覺得：「估價不錯，但我還想把自己的持股、買賣、複利進度都記起來」，可以考慮升級更高階的會員等級。
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>🔓 75 元會員｜股票記錄＋複利追蹤</h3>
+          <p>解鎖「股票記錄表＋複利目標計算＋買賣紀錄」，幫你把「看盤」、「下單」、「檢討」串成一套流程，不再只看當下價格的心情起伏。</p>
+        </div>
+        <div class="card">
+          <h3>🚀 300 元會員｜ETF 收益模擬＋資產分析</h3>
+          <p>解鎖「ETF 收益模擬＋資產圖表分析」，讓你從「單一檔案的好不好」走向「整體資產配置合不合理」，更像是在經營一個小型基金。</p>
+        </div>
+      </div>
+
+      <p class="upgrade-note">
+        你不需要一次衝到最頂級，可以先從 30 元開始，用到習慣、有感覺，再決定要不要升級。
+        重要的是：<strong>你已經在為自己的財務做一個小小的版本更新。</strong>
+      </p>
+
+      <div class="center" style="margin-top: 1.3rem;">
+        <a class="cta-button secondary" href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank" rel="noopener">
+          👉 查看會員等級與升級方案
+        </a>
+      </div>
+    </section>
+
+    <!-- 社群互動福利 -->
+    <section>
+      <h2>💬 社群互動福利</h2>
+
+      <p>
+        成為 30 元會員後，你也可以加入我們的 LINE 社群、Podcast 討論串，跟一群一樣在存股、也一樣在煩惱生活開銷的人一起聊天。
+      </p>
+      <p class="subtext">
+        裡面不保證報明牌，但會有人跟你一起討論：<br>
+        「這檔 ETF 配息變少怎麼看？」、「現在還適合加碼嗎？」、「旅遊、生活跟存股要怎麼平衡？」等等。
+      </p>
+
+      <div class="center" style="margin-top: 1.1rem;">
+        <a class="cta-button" href="https://forms.gle/HmWxFrC1RWQqUrRUA" target="_blank" rel="noopener">
+          💬 填寫表單驗證，申請加入 LINE 社群
+        </a>
+      </div>
+      <p class="subtext center" style="margin-top: 0.8rem;">
+        先透過表單簡單確認會員資格與自我介紹，通過後會再寄送社群邀請連結給你。
+      </p>
+    </section>
+
+    <!-- 免費工具 -->
+    <section>
+      <h2>🛠 更多免費工具，搭配一起用更有感</h2>
+
+      <p>
+        即使只有 30 元方案，你也可以把這些免費工具一起搭配使用，讓自己的存股計畫更清楚、目標更具體。
+      </p>
+
+      <div class="card-grid tools">
+        <div class="card">
+          <h3>📊 複利試算工具</h3>
+          <p>試算你每月定期定額後，未來大致能累積多少資產，讓「長期投資」不再只是別人口中的口號。</p>
+          <div class="tools-cta">
+            <a class="cta-button secondary" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">使用複利試算</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🎯 退休倒推工具</h3>
+          <p>先想「希望幾歲、過什麼樣的生活」，再反推「現在該投入多少」，把抽象的『退休焦慮』變成具體數字。</p>
+          <div class="tools-cta">
+            <a class="cta-button secondary" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">開始倒推試算</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>📅 ETF 投資追蹤牆</h3>
+          <p>整理你持有的 ETF 配息、成本、投入紀錄，一眼看出「自己到底在幹嘛」，不再只記得買進當下那一刻。</p>
+          <div class="tools-cta">
+            <a class="cta-button secondary" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">前往 ETF 追蹤牆</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="center" style="margin-top: 1.7rem;">
+        <a class="cta-button" href="https://markmoneylife.com" target="_blank" rel="noopener">
+          🌐 前往馬克的投資工具網站
+        </a>
+      </div>
+    </section>
+
+    <!-- 支持頻道方式 -->
+    <section>
+      <h2>🎁 想多支持頻道？還有這些選擇</h2>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>🛍 幸福理財家｜週邊商品</h3>
+          <p>馬克設計的帆布袋、杯墊、T-Shirt，每一樣都來自生活體驗＋理財信念，讓你在日常生活中也記得「慢慢變有錢」這件事。</p>
+          <div class="tools-cta">
+            <a class="cta-button secondary" href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank" rel="noopener">
+              逛逛週邊商店
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>😄 馬克角色 LINE 貼圖</h3>
+          <p>頻道角色「馬克、存骨哥、小韭、K線仔」搬進你的聊天視窗，把「理財焦慮」變成「互相打氣」的對話素材。</p>
+          <div class="tools-cta">
+            <a class="cta-button secondary" href="https://store.line.me/stickershop/author/2187523/zh-Hant" target="_blank" rel="noopener">
+              前往 LINE 貼圖商店
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 返回登入 -->
+    <div class="back-login">
+      <a class="cta-button secondary" href="https://markmoneylife.github.io/compound-interest-tool/member/login.html">
+        🔐 返回會員登入首頁
+      </a>
+    </div>
+  </main>
+
   <footer>
-    Powered by 馬克的ETF實驗室｜Financial Management creates your lifetime happiness.
+    Powered by 馬克的 ETF 實驗室｜Financial Management creates your lifetime happiness.
   </footer>
 </body>
 </html>
