@@ -182,7 +182,7 @@ const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2137337223&single=true&output=csv";
 
 function fmt(n){ return Number(n||0).toLocaleString("zh-TW"); }
-function pct(n){ return Number(n).toFixed(2)+"%"; }
+function pct(n){ return Number(n||0).toFixed(2)+"%"; }
 
 async function init(){
   const res = await fetch(CSV_URL);
@@ -200,8 +200,9 @@ async function init(){
       name: r["股票名稱"],
       cost: Number(r["總投資成本"]||0),
       market: Number(r["市值"]||0),
-      returnPct: Number((r["報酬率"]||"0").replace("%","")),
-      price: Number(r["收盤價"]||0),         // ⭐ N 欄 收盤價
+      // 原始表單報酬率（可能已含息）
+      returnPct: Number(String(r["報酬率"]||"0").replace("%","")),
+      price: Number(r["收盤價"]||0),         // 現價
       cheap: r["便宜價"],
       fair: r["合理價"],
       expensive: r["昂貴價"],
@@ -211,29 +212,65 @@ async function init(){
       update: r["更新日期"]
     }));
 
+  enhanceEtfs(etfs);
   renderSummary(etfs);
   renderCards(etfs);
 }
 
+/**
+ * 幫每檔 ETF 多算幾個「含息」與「價差」相關指標
+ */
+function enhanceEtfs(etfs){
+  etfs.forEach(e=>{
+    // 價差 & 含息損益
+    e.priceGain = e.market - e.cost;
+    e.totalGain = e.market + e.totalDiv - e.cost;
+
+    // 報酬率（%）
+    e.priceRet = e.cost > 0 ? e.priceGain / e.cost * 100 : 0;
+    const incomeRet = e.cost > 0 ? e.totalDiv / e.cost * 100 : 0;
+    const totalRetCalc = e.cost > 0 ? e.totalGain / e.cost * 100 : 0;
+
+    // 若表單有給報酬率就優先用表單；沒有就用計算值
+    if (isNaN(e.returnPct)) e.returnPct = 0;
+    if (e.returnPct === 0 && totalRetCalc !== 0) {
+      e.returnPct = totalRetCalc;
+    }
+
+    // 存一份「含息總報酬率」欄位，後面直接用
+    e.totalRet = e.returnPct || totalRetCalc;
+    e.incomeRet = incomeRet;
+  });
+}
+
 function renderSummary(etfs){
-  const box=document.getElementById("summaryArea");
+  const box = document.getElementById("summaryArea");
+  box.innerHTML = "";
 
-  const totalCost=etfs.reduce((s,e)=>s+e.cost,0);
-  const totalMarket=etfs.reduce((s,e)=>s+e.market,0);
-  const totalDiv=etfs.reduce((s,e)=>s+e.totalDiv,0);
-  const ret=totalCost>0?(totalMarket-totalCost)/totalCost*100:0;
+  const totalCost   = etfs.reduce((s,e)=>s+e.cost,0);
+  const totalMarket = etfs.reduce((s,e)=>s+e.market,0);
+  const totalDiv    = etfs.reduce((s,e)=>s+e.totalDiv,0);
 
-  const data=[
-    ["總市值","NT$ "+fmt(totalMarket),""],
-    ["總投入成本","NT$ "+fmt(totalCost),""],
-    ["整體含息報酬率",pct(ret),ret>=0?"positive":"negative"],
-    ["累積已領股息","NT$ "+fmt(totalDiv),""]
+  const totalPriceGain = totalMarket - totalCost;                 // 價差損益
+  const totalTotalGain = totalMarket + totalDiv - totalCost;      // 含息總損益
+
+  const totalPriceRet = totalCost>0 ? totalPriceGain/totalCost*100 : 0;
+  const totalTotalRet = totalCost>0 ? totalTotalGain/totalCost*100 : 0;
+  const incomeRet     = totalCost>0 ? totalDiv/totalCost*100 : 0;
+
+  const data = [
+    ["總市值", "NT$ " + fmt(totalMarket), ""],
+    ["總投入成本", "NT$ " + fmt(totalCost), ""],
+    ["含息總損益", "NT$ " + fmt(totalTotalGain), totalTotalGain>=0 ? "positive" : "negative"],
+    ["整體含息報酬率", pct(totalTotalRet), totalTotalRet>=0 ? "positive" : "negative"],
+    ["已領股息報酬率", pct(incomeRet), incomeRet>=0 ? "positive" : "negative"],
+    ["未實現價差損益（不含股息）", "NT$ " + fmt(totalPriceGain), totalPriceGain>=0 ? "positive" : "negative"]
   ];
 
   data.forEach(d=>{
-    const card=document.createElement("div");
-    card.className="summary-card";
-    card.innerHTML=`
+    const card = document.createElement("div");
+    card.className = "summary-card";
+    card.innerHTML = `
       <h3>${d[0]}</h3>
       <div class="value ${d[2]}">${d[1]}</div>
     `;
@@ -242,39 +279,58 @@ function renderSummary(etfs){
 }
 
 function renderCards(etfs){
-  const box=document.getElementById("cardsContainer");
+  const box = document.getElementById("cardsContainer");
+  box.innerHTML = "";
 
-  etfs.forEach(e=>{
+  const totalMarket = etfs.reduce((s,e)=>s+e.market,0);
+
+  // 先依「市值」由大到小排，先看大部位
+  const sorted = [...etfs].sort((a,b)=>b.market - a.market);
+
+  sorted.forEach(e=>{
     let sigClass="";
-    if(e.signal?.includes("便宜")) sigClass="signal-cheap";
-    else if(e.signal?.includes("合理")) sigClass="signal-fair";
-    else if(e.signal?.includes("昂貴")) sigClass="signal-expensive";
+    if(e.signal && e.signal.indexOf("便宜")>-1) sigClass="signal-cheap";
+    else if(e.signal && e.signal.indexOf("合理")>-1) sigClass="signal-fair";
+    else if(e.signal && e.signal.indexOf("昂貴")>-1) sigClass="signal-expensive";
 
-    const card=document.createElement("div");
+    const weight = totalMarket>0 ? e.market / totalMarket * 100 : 0;
+
+    const card = document.createElement("div");
     card.className="etf-card";
     card.innerHTML=`
       <div class="etf-title">${e.ticker}｜${e.name}</div>
 
-      <div class="metric-label">含息報酬率</div>
-      <div class="metric-value ${e.returnPct>=0?"positive":"negative"}">${pct(e.returnPct)}</div>
+      <div class="metric-label">含息總損益（含股息）</div>
+      <div class="metric-value ${e.totalGain>=0?"positive":"negative"}">
+        NT$ ${fmt(e.totalGain)}（${pct(e.totalRet)}）
+      </div>
 
-      <div class="metric-label">收盤價（現價）</div>
+      <div class="metric-label">未實現價差損益（不含股息）</div>
+      <div class="metric-value ${e.priceGain>=0?"positive":"negative"}">
+        NT$ ${fmt(e.priceGain)}（${pct(e.priceRet)}）
+      </div>
+
+      <div class="metric-label">累積已領股息</div>
+      <div class="metric-value">NT$ ${fmt(e.totalDiv)}（${pct(e.incomeRet)}）</div>
+
+      <div class="metric-label">現價（收盤價）</div>
       <div class="metric-value">NT$ ${fmt(e.price)}</div>
 
       <div class="metric-label">市值 / 成本</div>
       <div class="metric-value">NT$ ${fmt(e.market)} ／ ${fmt(e.cost)}</div>
 
+      <div class="metric-label">持股市值占比（對整體部位）</div>
+      <div class="metric-value">${pct(weight)}</div>
+
       <div class="metric-label">估值燈號</div>
-      <div class="metric-value ${sigClass}">${e.signal||"-"}</div>
+      <div class="metric-value ${sigClass}">${e.signal || "-"}</div>
 
       <div class="metric-label">便宜價 / 合理價 / 昂貴價</div>
       <div class="metric-value">${e.cheap||"-"} ／ ${e.fair||"-"} ／ ${e.expensive||"-"}</div>
 
-      <div class="metric-label">累積已領股息</div>
-      <div class="metric-value">NT$ ${fmt(e.totalDiv)}</div>
-      <div class="metric-label">${e.freq?`配息頻率：${e.freq}`:""}</div>
+      <div class="metric-label">${e.freq ? `配息頻率：${e.freq}` : ""}</div>
 
-      <div class="etf-footer">更新：${e.update||"-"}</div>
+      <div class="etf-footer">更新：${e.update || "-"}</div>
     `;
     box.appendChild(card);
   });
