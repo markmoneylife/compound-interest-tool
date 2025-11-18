@@ -94,6 +94,19 @@
   .positive { color: var(--red); }
   .negative { color: var(--green); }
 
+  /* 教學說明區塊 */
+  .hint-section {
+    margin-top: 1.2rem;
+    font-size: .85rem;
+    color: #555;
+    line-height: 1.7;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,.04);
+    border-left: 4px solid var(--yellow);
+  }
+
   /* 卡片 */
   .cards-grid {
     display: grid;
@@ -131,6 +144,21 @@
   .signal-fair { color: var(--yellow); font-weight: bold; }
   .signal-expensive { color: var(--red); font-weight: bold; }
 
+  /* 估值視覺進度條 */
+  .value-bar {
+    margin-top: .35rem;
+    width: 100%;
+    height: 6px;
+    background: #eee;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .value-bar-inner {
+    height: 100%;
+    background: linear-gradient(to right, #1D4A35, #C59A00, #C0392B);
+  }
+
   .etf-footer {
     margin-top: .7rem;
     padding-top: .6rem;
@@ -145,6 +173,22 @@
     margin: 2rem 0 1rem;
     font-size: .85rem;
     color: #777;
+  }
+
+  /* loading / error */
+  #loading, #error {
+    font-size: .9rem;
+    text-align: center;
+    margin: 1.5rem 0 .5rem;
+  }
+
+  #error {
+    color: #C0392B;
+    display: none;
+  }
+
+  #loading {
+    color: #666;
   }
 </style>
 </head>
@@ -167,7 +211,20 @@
 
   <a class="back-btn" href="wumark-x-core300.html">← 返回 300 會員主頁</a>
 
+  <div id="loading">資料載入中，幫你抓 ETF 績效中……</div>
+  <div id="error">無法載入資料，請稍後再試，或通知馬克檢查表單連線。</div>
+
   <div id="summaryArea" class="summary-grid"></div>
+
+  <!-- 會員教育角度：怎麼看這一頁 -->
+  <section class="hint-section">
+    <strong>怎麼解讀這個績效牆？</strong><br>
+    ・<b>含息總損益</b>＝市值 ＋ 已領股息 − 總投入成本。<br>
+    ・<b>未實現價差損益</b>：只看價格漲跌，不含股息。<br>
+    ・<b>累積已領股息</b>：這檔 ETF 到目前為止實際匯進帳戶的現金。<br>
+    ・<b>估值色帶</b>：左邊偏「便宜價」，右邊靠近「昂貴價」，條越往右代表價格越接近昂貴區。<br>
+    建議你也可以在自己的表單中，為每一檔 ETF 記錄成本、股息與估值區間，慢慢練習用「含息」角度看報酬。
+  </section>
 
   <div id="cardsContainer" class="cards-grid"></div>
 
@@ -185,36 +242,49 @@ function fmt(n){ return Number(n||0).toLocaleString("zh-TW"); }
 function pct(n){ return Number(n||0).toFixed(2)+"%"; }
 
 async function init(){
-  const res = await fetch(CSV_URL);
-  const text = await res.text();
+  const loadingEl = document.getElementById("loading");
+  const errorEl   = document.getElementById("error");
 
-  const parsed = Papa.parse(text, {
-    header: true,
-    skipEmptyLines: true
-  });
+  try {
+    const res = await fetch(CSV_URL);
+    if (!res.ok) throw new Error("network error");
+    const text = await res.text();
 
-  const etfs = parsed.data
-    .filter(r => r["股號"] && r["股號"].trim() !== "")
-    .map(r => ({
-      ticker: r["股號"],
-      name: r["股票名稱"],
-      cost: Number(r["總投資成本"]||0),
-      market: Number(r["市值"]||0),
-      // 原始表單報酬率（可能已含息）
-      returnPct: Number(String(r["報酬率"]||"0").replace("%","")),
-      price: Number(r["收盤價"]||0),         // 現價
-      cheap: r["便宜價"],
-      fair: r["合理價"],
-      expensive: r["昂貴價"],
-      signal: r["估值燈號"],
-      totalDiv: Number(r["累積股息總額"]||0),
-      freq: r["配息頻率"],
-      update: r["更新日期"]
-    }));
+    const parsed = Papa.parse(text, {
+      header: true,
+      skipEmptyLines: true
+    });
 
-  enhanceEtfs(etfs);
-  renderSummary(etfs);
-  renderCards(etfs);
+    const etfs = parsed.data
+      .filter(r => r["股號"] && r["股號"].trim() !== "")
+      .map(r => ({
+        ticker: r["股號"],
+        name: r["股票名稱"],
+        cost: Number(r["總投資成本"]||0),
+        market: Number(r["市值"]||0),
+        // 原始表單報酬率（可能已含息）
+        returnPct: Number(String(r["報酬率"]||"0").replace("%","")),
+        price: Number(r["收盤價"]||0),         // 現價
+        cheap: r["便宜價"],
+        fair: r["合理價"],
+        expensive: r["昂貴價"],
+        signal: r["估值燈號"],
+        totalDiv: Number(r["累積股息總額"]||0),
+        freq: r["配息頻率"],
+        update: r["更新日期"]
+      }));
+
+    enhanceEtfs(etfs);
+    renderSummary(etfs);
+    renderCards(etfs);
+
+    if (loadingEl) loadingEl.style.display = "none";
+
+  } catch (err) {
+    console.error(err);
+    if (loadingEl) loadingEl.style.display = "none";
+    if (errorEl) errorEl.style.display = "block";
+  }
 }
 
 /**
@@ -278,6 +348,22 @@ function renderSummary(etfs){
   });
 }
 
+/**
+ * 計算現價在 便宜價～昂貴價 之間的相對位置（0~1）
+ */
+function getValuationRatio(e){
+  const cheap     = Number(e.cheap || 0);
+  const expensive = Number(e.expensive || 0);
+  const price     = Number(e.price || 0);
+
+  if (!cheap || !expensive || !price) return null;
+  if (expensive === cheap) return null;
+
+  let ratio = (price - cheap) / (expensive - cheap);
+  ratio = Math.max(0, Math.min(1, ratio));
+  return ratio;
+}
+
 function renderCards(etfs){
   const box = document.getElementById("cardsContainer");
   box.innerHTML = "";
@@ -294,6 +380,7 @@ function renderCards(etfs){
     else if(e.signal && e.signal.indexOf("昂貴")>-1) sigClass="signal-expensive";
 
     const weight = totalMarket>0 ? e.market / totalMarket * 100 : 0;
+    const ratio = getValuationRatio(e);
 
     const card = document.createElement("div");
     card.className="etf-card";
@@ -324,6 +411,11 @@ function renderCards(etfs){
 
       <div class="metric-label">估值燈號</div>
       <div class="metric-value ${sigClass}">${e.signal || "-"}</div>
+      ${ratio !== null ? `
+      <div class="value-bar">
+        <div class="value-bar-inner" style="width:${(ratio*100).toFixed(1)}%"></div>
+      </div>
+      ` : ""}
 
       <div class="metric-label">便宜價 / 合理價 / 昂貴價</div>
       <div class="metric-value">${e.cheap||"-"} ／ ${e.fair||"-"} ／ ${e.expensive||"-"}</div>
