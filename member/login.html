@@ -10,6 +10,10 @@
       --light: #ffeb3b;
       --bg: #f7f8fa;
       --text: #333;
+      --card: #ffffff;
+      --muted: #666;
+      --done: #22c55e;
+      --current: #f97316;
     }
     *, *::before, *::after { box-sizing: border-box; }
     body {
@@ -116,13 +120,54 @@
       filter: brightness(1.1);
     }
 
-    /* 星球進度條區塊 */
-    .progress-section {
-      background: #ffffff;
+    /* 摺疊卡片：星球任務 & 願望池 */
+    .collapsible-card {
+      background: var(--card);
       border-radius: 10px;
-      padding: 1.25rem 1.1rem 1.4rem;
-      margin-bottom: 1.5rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .collapsible-header {
+      padding: 0.95rem 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .collapsible-title {
+      font-size: 1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .collapsible-sub {
+      font-size: .86rem;
+      color: var(--muted);
+      margin-top: .25rem;
+    }
+    .collapsible-header-main {
+      display: flex;
+      flex-direction: column;
+    }
+    .chevron {
+      font-size: 1rem;
+      transition: transform .2s ease;
+      color: var(--muted);
+    }
+    .collapsible-card.open .chevron {
+      transform: rotate(90deg);
+    }
+    .collapsible-body {
+      padding: 0.9rem 1.1rem 1.1rem;
+      display: none;
+    }
+
+    /* 星球任務進度條區塊（內嵌在摺疊裡） */
+    .progress-section {
+      margin-bottom: 1rem;
     }
     .progress-header {
       display: flex;
@@ -133,7 +178,7 @@
     }
     .progress-title {
       font-weight: bold;
-      font-size: 1.05rem;
+      font-size: .98rem;
       display: flex;
       align-items: center;
       gap: .4rem;
@@ -142,17 +187,16 @@
       font-size: 1.2rem;
     }
     .progress-sub {
-      font-size: .88rem;
-      color: #555;
-      margin-top: .25rem;
+      font-size: .86rem;
+      color: var(--muted);
     }
     .progress-stats {
-      font-size: .9rem;
+      font-size: .88rem;
       text-align: right;
-      color: #666;
+      color: var(--muted);
     }
     .progress-stats strong {
-      font-size: 1.1rem;
+      font-size: 1.02rem;
       color: var(--dark);
     }
     .progress-bar-wrap {
@@ -180,12 +224,13 @@
       font-size: .7rem;
       color: rgba(0,0,0,0.5);
     }
+
     .milestones {
       list-style: none;
       padding: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: .4rem .8rem;
       font-size: .85rem;
     }
@@ -193,7 +238,7 @@
       display: flex;
       align-items: flex-start;
       gap: .4rem;
-      padding: .35rem .4rem;
+      padding: .35rem 0;
       border-radius: 6px;
     }
     .milestone-icon {
@@ -209,58 +254,61 @@
     .milestone-item.done {
       background: #ecfdf3;
     }
+    .milestone-item.done .milestone-icon {
+      color: var(--done);
+    }
     .milestone-item.current {
       background: #fff7ed;
     }
+    .milestone-item.current .milestone-icon {
+      color: var(--current);
+    }
+
     .progress-footnote {
       margin-top: .7rem;
       font-size: .8rem;
-      color: #666;
-    }
-    .progress-footnote a {
-      color: var(--dark);
-      font-weight: bold;
-      text-decoration: underline;
+      color: var(--muted);
     }
 
-    /* 願望池區塊 */
+    /* 願望池 / 導流區塊（摺疊內） */
     .wish-section {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 1.1rem 1.1rem 1.3rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-top: 1px solid #e5e7eb;
+      margin-top: 1rem;
+      padding-top: .9rem;
       font-size: .9rem;
     }
     .wish-section h3 {
-      margin: 0 0 .4rem;
-      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: .4rem;
+      font-size: .98rem;
       display: flex;
       align-items: center;
-      gap: .3rem;
-      color: var(--dark);
+      gap: .4rem;
     }
     .wish-section p {
-      margin: .25rem 0;
+      font-size: .88rem;
+      color: var(--muted);
+      margin-top: 0;
+      margin-bottom: .6rem;
     }
     .wish-list {
-      margin: .5rem 0 .8rem;
-      padding-left: 1.1rem;
-    }
-    .wish-links {
-      margin-top: .55rem;
-      padding: .7rem .8rem;
-      border-radius: 8px;
-      background: #f0fdf4;
-    }
-    .wish-links ul {
-      margin: .4rem 0 0;
+      margin: 0 0 .4rem;
       padding-left: 1.1rem;
       font-size: .88rem;
     }
-    .wish-links li a {
-      color: var(--dark);
-      text-decoration: underline;
+    .wish-list li {
+      margin-bottom: .35rem;
+    }
+    .member-links {
+      margin-top: .6rem;
+      font-size: .88rem;
+    }
+    .member-links ul {
+      padding-left: 1.1rem;
+      margin: .3rem 0 0;
+    }
+    .member-links li {
+      margin-bottom: .3rem;
     }
 
     /* 功能卡片區 */
@@ -326,6 +374,9 @@
       .progress-stats {
         text-align: left;
       }
+      .collapsible-header {
+        align-items: flex-start;
+      }
     }
 
     @media(max-width:480px) {
@@ -357,124 +408,153 @@
       <div class="verify-text">
         <span class="icon">🧾</span>
         <strong>尚未填寫驗證？</strong>
-        <span>若你是剛升級的新會員，請先完成身分核對，我會在 24 小時內寄出資源連結。</span>
+        <span>若你是剛升級的新會員，請先完成身分核對，我會在 24 小時內寄出資源連結與任務說明。</span>
       </div>
       <a href="https://forms.gle/ikWDDbjh7z3Ae7ns6" target="_blank" class="verify-btn">
-        前往填寫
+        前往填寫表單
       </a>
     </div>
 
-    <!-- 星球進度條 + 解鎖任務 -->
-    <section class="progress-section">
-      <div class="progress-header">
-        <div>
-          <div class="progress-title">
-            <span>📬</span>
-            <span>歡迎登艦｜馬克的會員星球接待中心</span>
+    <!-- 摺疊：星球任務進度 + 願望池 -->
+    <div class="collapsible-card" id="missionCard">
+      <div class="collapsible-header" id="missionToggle">
+        <div class="collapsible-header-main">
+          <div class="collapsible-title">
+            🪐 星球任務進度 &amp; 許願池
           </div>
-          <p class="progress-sub">
-            每一位會員都是一顆星，加入後不只是拿工具，而是一起推進整個星球的「解鎖任務線」。
+          <div class="collapsible-sub">
+            目前已有 <strong id="memberCount">15</strong> 位成功接上星球系統。<br>
+            點開查看：解鎖任務進度、頻道許願池結果，以及會員導流小宇宙。
+          </div>
+        </div>
+        <div class="chevron">▶</div>
+      </div>
+
+      <div class="collapsible-body" id="missionDetail">
+        <!-- 星球任務進度條 -->
+        <section class="progress-section">
+          <div class="progress-header">
+            <div>
+              <div class="progress-title">
+                <span>📬</span>
+                <span>歡迎登艦｜馬克的會員星球接待中心</span>
+              </div>
+              <p class="progress-sub">
+                每一位會員都是一顆星星，閃亮加入這個星球宇宙，一起推進任務進度。
+                下面這條進度條，是「已填寫會員表單、正式接上星球系統」的人數。
+              </p>
+            </div>
+            <div class="progress-stats">
+              已接上星球系統：<strong id="memberCountDetail">15</strong> 位<br>
+              下一個任務目標：<strong id="nextGoal">25</strong> 人
+            </div>
+          </div>
+
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-bg">
+              <div id="memberProgressFill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <ul class="milestones">
+            <li class="milestone-item done" data-target="5">
+              <div class="milestone-icon">🎉</div>
+              <div class="milestone-text">
+                <strong>5人｜愛心啟動器｜已解鎖</strong><br>
+                我們從 5 人開始，每月固定捐款台中育幼院。投資不只有成長，還有暖度。
+              </div>
+            </li>
+
+            <li class="milestone-item done" data-target="15">
+              <div class="milestone-icon">🎉</div>
+              <div class="milestone-text">
+                <strong>15人｜社群星艦｜已解鎖</strong><br>
+                LINE 社群正式航行，每天都有人在打卡、討論、抱怨盤勢。
+              </div>
+            </li>
+
+            <li class="milestone-item" data-target="25">
+              <div class="milestone-icon">🎯</div>
+              <div class="milestone-text">
+                <strong>25人｜馬克雷達站｜等待解鎖</strong><br>
+                會員限定直播 &amp; Q&amp;A，帶你讀市場、拆 ETF、談心態。
+              </div>
+            </li>
+
+            <li class="milestone-item" data-target="35">
+              <div class="milestone-icon">📘</div>
+              <div class="milestone-text">
+                <strong>35人｜投資書房密圈｜等待解鎖</strong><br>
+                每月抽電子書 + 馬克選書摘要（會員限定音頻）。
+              </div>
+            </li>
+
+            <li class="milestone-item" data-target="50">
+              <div class="milestone-icon">🏡</div>
+              <div class="milestone-text">
+                <strong>50人｜新手投資村｜已提前啟動</strong><br>
+                你已經是「投資村的居民」，有自己的任務卡、打卡表與進階路線。
+              </div>
+            </li>
+
+            <li class="milestone-item" data-target="75">
+              <div class="milestone-icon">🎙️</div>
+              <div class="milestone-text">
+                <strong>75人｜星球電台｜等待解鎖</strong><br>
+                你的故事，有一天會被做成一集 Podcast。
+              </div>
+            </li>
+
+            <li class="milestone-item" data-target="100">
+              <div class="milestone-icon">🛍️</div>
+              <div class="milestone-text">
+                <strong>100人｜幸福祭典｜最終章</strong><br>
+                一起完成一件人生清單上的目標，再辦一次「星球大抽獎 + 年度影片」。
+              </div>
+            </li>
+          </ul>
+
+          <p class="progress-footnote">
+            📌 若你已經是頻道會員，卻還沒填寫上方表單，<strong>目前就還不會被算進這條進度條</strong>。<br>
+            填完表單，你就會正式接軌星球系統，後續福利、任務、抽獎通知才會準確找到你。
           </p>
-        </div>
-        <div class="progress-stats">
-          目前已接上星球系統：<strong id="verifiedCount">15</strong> 位<br>
-          下一個里程碑：<strong id="nextGoal">25</strong> 人
-        </div>
+        </section>
+
+        <!-- 頻道許願池 + 導流區 -->
+        <section class="wish-section">
+          <h3>🧡 頻道許願池 &amp; 會員小宇宙</h3>
+          <p>
+            之前在頻道許願池裡，我問過大家：<br>
+            <strong>「你最期待的會員專屬活動是什麼？」</strong>
+          </p>
+          <ul class="wish-list">
+            <li>🎯 會員限定直播 &amp; Q&amp;A（馬克雷達站）</li>
+            <li>📘 投資書房密圈：一起看書、一起抽電子書</li>
+            <li>🏡 新手投資村任務版：一步一步把 ETF 練熟</li>
+            <li>🎙️ 星球電台：把會員故事做成 Podcast</li>
+          </ul>
+          <p>
+            表單裡也有一格是：<br>
+            <strong>【其他補充】有沒有想對馬克說的話？（選填）</strong><br>
+            你可以在那裡跟我說心情、吐槽、許願，我都會一則一則慢慢看。
+          </p>
+
+          <div class="member-links">
+            <p>
+              🔗 如果你自己也有在經營：Podcast、YouTube、IG、部落格…<br>
+              也可以在表單中填上你的「想導流的連結」。<br>
+              我會不定期從中挑選幾位，把你們放在這個區塊，幫星球成員多一點曝光。
+            </p>
+            <ul>
+              <!-- 之後你可以手動把有經營、填了連結的會員放上來 -->
+              <li>例：📺 <a href="#" target="_blank">會員 A 的理財頻道</a></li>
+              <li>例：📸 <a href="#" target="_blank">會員 B 的手帳 / 記帳 IG</a></li>
+              <li>例：📻 <a href="#" target="_blank">會員 C 的 Podcast</a></li>
+            </ul>
+          </div>
+        </section>
       </div>
-
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-bg">
-          <div id="memberProgressFill" class="progress-bar-fill"></div>
-        </div>
-      </div>
-
-      <ul class="milestones">
-        <li class="milestone-item" data-target="5">
-          <div class="milestone-icon">🎉</div>
-          <div class="milestone-text">
-            <strong>5人｜愛心啟動器｜已解鎖</strong><br>
-            我們從 5 人開始，每月固定捐款台中育幼院。投資不只有成長，還有暖度。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="15">
-          <div class="milestone-icon">🎉</div>
-          <div class="milestone-text">
-            <strong>15人｜社群星艦｜已解鎖</strong><br>
-            LINE 社群正式航行，每天都有人在打卡、討論、抱怨盤勢。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="25">
-          <div class="milestone-icon">🎯</div>
-          <div class="milestone-text">
-            <strong>25人｜馬克雷達站｜等待解鎖</strong><br>
-            會員限定直播 &amp; Q&amp;A，帶你讀市場、拆 ETF、談心態。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="35">
-          <div class="milestone-icon">📘</div>
-          <div class="milestone-text">
-            <strong>35人｜投資書房密圈｜等待解鎖</strong><br>
-            每月抽電子書 + 馬克選書摘要（會員限定音頻）。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="50">
-          <div class="milestone-icon">🏡</div>
-          <div class="milestone-text">
-            <strong>50人｜新手投資村｜已提前啟動</strong><br>
-            你已經是「投資村的居民」，有自己的任務卡、打卡表與進階路線。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="75">
-          <div class="milestone-icon">🎙️</div>
-          <div class="milestone-text">
-            <strong>75人｜星球電台｜等待解鎖</strong><br>
-            你的故事，有一天會被做成一集 Podcast。
-          </div>
-        </li>
-        <li class="milestone-item" data-target="100">
-          <div class="milestone-icon">🛍️</div>
-          <div class="milestone-text">
-            <strong>100人｜幸福祭典｜最終章</strong><br>
-            一起完成一件人生清單上的目標，再辦一次「星球大抽獎 + 年度影片」。
-          </div>
-        </li>
-      </ul>
-
-      <p class="progress-footnote">
-        📌 目前進度會依照「已填寫會員星球表單」的人數更新。<br>
-        若你還沒填寫表單，請儘快前往完成 ➜
-        <a href="https://forms.gle/ikWDDbjh7z3Ae7ns6" target="_blank">填寫會員星球表單</a>
-      </p>
-    </section>
-
-    <!-- 頻道許願池區塊 -->
-    <section class="wish-section">
-      <h3>🗳 頻道許願池｜你最期待的會員專屬活動？</h3>
-      <p>在會員許願池的投票中，我會不定期詢問：</p>
-      <p><strong>你最期待的會員專屬活動是？（單選）</strong></p>
-      <ul class="wish-list">
-        <li>例：更多深度直播 &amp; Q&amp;A</li>
-        <li>例：實體或線上小型讀書會</li>
-        <li>例：投資書房延伸內容 / 心態工作坊</li>
-        <li>例：新手投資村任務加強版…</li>
-      </ul>
-      <p>
-        也會開放一格小空間讓你說說心裡話：
-        <br><strong>【其他補充】有沒有想對馬克說的話？（選填）</strong>
-      </p>
-
-      <div class="wish-links">
-        <strong>🔗 星球成員小宇宙｜會員導流曝光專區</strong>
-        <p>有在經營 IG、YouTube、部落格或 Podcast 的星球成員，之後會整理在這裡，讓彼此多一個互相支持、互相曝光的地方。</p>
-        <!-- 之後可以在這裡人工補上會員連結 -->
-        <ul>
-          <!-- 範例：
-          <li><a href="https://instagram.com/xxx" target="_blank">@某位星球成員的 IG</a></li>
-          <li><a href="https://youtube.com/xxx" target="_blank">某位星球成員的 YouTube 頻道</a></li>
-          -->
-        </ul>
-      </div>
-    </section>
+    </div>
 
     <!-- 功能卡片區 -->
     <section class="grid">
@@ -482,7 +562,7 @@
       <div class="card">
         <div class="card-header">🎥 獨家影片</div>
         <div class="card-body">
-          <p>只給會員的深度解析影片，會不定期更新，讓你看到數字背後的故事與心法。</p>
+          <p>只給會員的深度解析影片，會不定期更新，從數字、心態到實際操作都會聊。</p>
           <a href="https://www.youtube.com/user/rengary" target="_blank">前往觀看</a>
         </div>
       </div>
@@ -490,7 +570,7 @@
       <div class="card">
         <div class="card-header">🛠️ 快速工具</div>
         <div class="card-body">
-          <p>複利試算｜目標倒推｜ETF 追蹤牆，一次把你的投資節奏視覺化。</p>
+          <p>複利試算｜目標倒推｜ETF追蹤牆，讓你的投資節奏看得見。</p>
           <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">開始使用</a>
         </div>
       </div>
@@ -498,7 +578,7 @@
       <div class="card">
         <div class="card-header">💬 專屬社群</div>
         <div class="card-body">
-          <p>加入 LINE 社群，一起聊理財與生活，有時也只是單純抱怨一下大盤。</p>
+          <p>加入 LINE 社群，一起聊理財與生活，有事可以抱怨，有好消息可以炫耀。</p>
           <a href="https://forms.gle/CxGYDeK3kRTNJG1Q7" target="_blank">立即加入</a>
         </div>
       </div>
@@ -512,9 +592,9 @@
   </div>
 
   <script>
-    // 會員登入切換
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
 
+    // 會員登入切換
     document.getElementById('switchBtn').addEventListener('click', async () => {
       const e = document.getElementById('switchEmail').value.trim();
       if (!e) {
@@ -543,32 +623,45 @@
       }
     });
 
-    // 星球進度條：根據已填表單的人數更新
-    const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQibgAjBqISgz2B7C1u0PwKYrawIQdHfm_GihRsTvMINCVi4XAnms2mUPBJd6LdFSEZxWgo3bTkXaXA/pub?output=csv';
+    // 摺疊切換
+    const missionCard = document.getElementById('missionCard');
+    const missionToggle = document.getElementById('missionToggle');
+    const missionDetail = document.getElementById('missionDetail');
 
-    function updateProgress(verifiedCount) {
+    missionToggle.addEventListener('click', () => {
+      const isOpen = missionDetail.style.display === 'block';
+      missionDetail.style.display = isOpen ? 'none' : 'block';
+      missionCard.classList.toggle('open', !isOpen);
+    });
+
+    // 星球進度條（抓 Google Sheet 表單回應 CSV）
+    const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQibgAjBqISgz2B7C1u0PwKYrawIQdHfm_GihRsTvMINCVi4XAnms2mUPBJd6LdFSEZxWgo3bTkXaXA/pub?output=csv';
+    const fallbackCount = 15; // 抓不到資料時的保險值
+
+    function updateProgress(count) {
       const maxGoal = 100;
       const goals = [5, 15, 25, 35, 50, 75, 100];
 
-      const verifiedSpan = document.getElementById('verifiedCount');
+      const memberCountSpan = document.getElementById('memberCount');
+      const memberCountDetail = document.getElementById('memberCountDetail');
       const nextGoalSpan = document.getElementById('nextGoal');
       const progressFill = document.getElementById('memberProgressFill');
 
-      const safeVerified = Math.max(0, verifiedCount || 0);
+      const safeCount = Math.max(0, count || 0);
+      if (memberCountSpan) memberCountSpan.textContent = safeCount;
+      if (memberCountDetail) memberCountDetail.textContent = safeCount;
 
-      if (verifiedSpan) verifiedSpan.textContent = safeVerified;
-
-      const ratio = Math.max(0, Math.min(safeVerified / maxGoal, 1));
+      const ratio = Math.max(0, Math.min(safeCount / maxGoal, 1));
       if (progressFill) progressFill.style.width = (ratio * 100).toFixed(1) + '%';
 
-      const next = goals.find(g => safeVerified < g) || goals[goals.length - 1];
+      const next = goals.find(g => safeCount < g) || goals[goals.length - 1];
       if (nextGoalSpan) nextGoalSpan.textContent = next;
 
       document.querySelectorAll('.milestone-item').forEach(li => {
         const target = parseInt(li.dataset.target, 10);
         if (!target) return;
         li.classList.remove('current');
-        if (safeVerified >= target) {
+        if (safeCount >= target) {
           li.classList.add('done');
         } else {
           li.classList.remove('done');
@@ -580,19 +673,18 @@
     }
 
     async function loadMemberProgress() {
-      let verifiedCount = 15; // fallback：目前已知大約 15 位
-
       try {
         const res = await fetch(csvURL);
         if (!res.ok) throw new Error('CSV 回傳非 200');
         const text = await res.text();
-        const rows = text.trim().split('\n').filter(r => r.trim() !== '');
-        verifiedCount = Math.max(rows.length - 1, 0);
-      } catch (err) {
-        console.error('載入會員 CSV 失敗，改用預設值：', err);
-      }
 
-      updateProgress(verifiedCount);
+        const rows = text.trim().split('\n').filter(r => r.trim() !== '');
+        const count = Math.max(rows.length - 1, 0); // 扣掉標題列
+        updateProgress(count);
+      } catch (err) {
+        console.error('載入會員 CSV 失敗，改用 fallbackCount：', err);
+        updateProgress(fallbackCount);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', loadMemberProgress);
