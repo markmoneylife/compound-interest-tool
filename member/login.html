@@ -534,6 +534,16 @@
       .login-switch input,
       .login-switch button { width: 100%; border-radius: 4px; }
     }
+
+    /* 桌機版：主卡片佔滿一列，其餘三張小卡 */
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .grid .card-main {
+        grid-column: 1 / -1;
+      }
+    }
   </style>
 </head>
 
@@ -716,6 +726,18 @@
 
     <!-- 功能卡片區 -->
     <section class="grid">
+
+      <!-- 主卡：加入頻道會員 -->
+      <div class="card card-main">
+        <div class="card-header">⭐ 加入頻道會員</div>
+        <div class="card-body">
+          <p>
+            如果你還不是頻道會員，但想正式登艦幸福星球：<br>
+            先到 YouTube 頻道點選「加入」，選擇適合你的會員等級，再回來這裡完成表單與登入。
+          </p>
+          <a href="https://www.youtube.com/user/rengary/join" target="_blank">前往加入會員</a>
+        </div>
+      </div>
 
       <div class="card">
         <div class="card-header">🎥 獨家影片</div>
