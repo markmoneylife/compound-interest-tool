@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>幸福星球 x 馬濕克</title>
+
+  <!-- Favicon：頻道 Logo 作為分頁小圖示 -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://github.com/markmoneylife/compound-interest-tool/blob/main/logo-transparent.png?raw=true">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://github.com/markmoneylife/compound-interest-tool/blob/main/logo-transparent.png?raw=true">
+  <link rel="apple-touch-icon" href="https://github.com/markmoneylife/compound-interest-tool/blob/main/logo-transparent.png?raw=true">
+
   <style>
     :root {
       --dark: #004d40;
@@ -14,26 +20,46 @@
       --muted: #666;
       --done: #22c55e;
       --current: #f97316;
+      --border-soft: #e5e7eb;
+      --shadow-soft: 0 2px 8px rgba(0,0,0,0.05);
     }
+
+    /* 星空基地主題：覆蓋變數 */
+    body.theme-space {
+      --dark: #1d4ed8;
+      --light: #facc15;
+      --bg: radial-gradient(circle at 20% 20%, #0b1120 0, #020617 55%, #000000 100%);
+      --text: #e5e7eb;
+      --card: rgba(15,23,42,0.92);
+      --muted: #9ca3af;
+      --done: #22c55e;
+      --current: #f97316;
+      --border-soft: #1f2937;
+      --shadow-soft: 0 8px 18px rgba(0,0,0,0.6);
+    }
+
     *, *::before, *::after { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: "微軟正黑體", sans-serif;
+      font-family: "微軟正黑體", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
+      transition: background 0.4s ease, color 0.3s ease;
     }
+
     .container {
       max-width: 800px;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 0 1rem 2rem;
     }
 
     /* 登入切換區 */
     .login-switch {
       display: flex;
       justify-content: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
     }
     .login-switch input {
       width: 250px;
@@ -42,11 +68,15 @@
       border: 2px solid #ccc;
       border-radius: 4px 0 0 4px;
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, background .2s, color .2s;
     }
-    .login-switch input:focus {
-      border-color: var(--dark);
+    body.theme-space .login-switch input {
+      background: #020617;
+      border-color: #374151;
+      color: #e5e7eb;
     }
+    .login-switch input:focus { border-color: var(--dark); }
+
     .login-switch button {
       padding: .5rem 1rem;
       font-size: .9rem;
@@ -55,10 +85,40 @@
       border: none;
       border-radius: 0 4px 4px 0;
       cursor: pointer;
-      transition: filter .2s;
+      transition: filter .2s, background .2s;
     }
-    .login-switch button:hover {
-      filter: brightness(1.1);
+    .login-switch button:hover { filter: brightness(1.08); }
+
+    /* 主題切換器 */
+    .theme-switcher {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .4rem;
+      margin-bottom: 1rem;
+      font-size: .86rem;
+      color: var(--muted);
+    }
+    .theme-btn {
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.8);
+      color: #111827;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: .8rem;
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s, transform .08s;
+    }
+    body.theme-space .theme-btn {
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      border-color: #374151;
+    }
+    .theme-btn.active {
+      background: var(--dark);
+      color: #fefce8;
+      border-color: transparent;
+      transform: translateY(-1px);
     }
 
     /* 頁首形象區 */
@@ -66,19 +126,25 @@
       text-align: center;
       margin-bottom: 1.25rem;
     }
-    header img {
+    header img.avatar {
       width: 80px; height: 80px;
       border-radius: 50%;
       border: 3px solid var(--light);
+      display: block;
+      margin: 0 auto;
     }
     header h1 {
-      margin: .5rem 0;
+      margin: .5rem 0 .25rem;
       font-size: 1.8rem;
       color: var(--dark);
+    }
+    body.theme-space header h1 {
+      color: #fefce8;
     }
     header p {
       margin: 0;
       font-size: 1rem;
+      color: var(--muted);
     }
 
     /* 會員驗證大橫幅（公告風格） */
@@ -92,7 +158,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-soft);
+    }
+    body.theme-space .verify-banner {
+      background: rgba(31,41,55,0.9);
+      color: var(--text);
     }
     .verify-text {
       font-size: .95rem;
@@ -102,9 +172,10 @@
       align-items: center;
       gap: .5rem;
     }
-    .verify-text .icon {
-      font-size: 1.2rem;
+    body.theme-space .verify-text {
+      color: var(--text);
     }
+    .verify-text .icon { font-size: 1.2rem; }
     .verify-btn {
       background: var(--dark);
       color: #fff;
@@ -114,19 +185,19 @@
       font-weight: bold;
       font-size: .9rem;
       white-space: nowrap;
-      transition: filter .2s;
+      transition: filter .2s, background .2s;
     }
-    .verify-btn:hover {
-      filter: brightness(1.1);
-    }
+    .verify-btn:hover { filter: brightness(1.1); }
 
     /* 摺疊卡片：星球任務 & 願望池 */
     .collapsible-card {
       background: var(--card);
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-soft);
       margin-bottom: 1.5rem;
       overflow: hidden;
+      border: 1px solid var(--border-soft);
+      transition: background .3s, border-color .3s, box-shadow .3s;
     }
     .collapsible-header {
       padding: 0.95rem 1.1rem;
@@ -134,7 +205,7 @@
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid var(--border-soft);
     }
     .collapsible-title {
       font-size: 1rem;
@@ -157,18 +228,14 @@
       transition: transform .2s ease;
       color: var(--muted);
     }
-    .collapsible-card.open .chevron {
-      transform: rotate(90deg);
-    }
+    .collapsible-card.open .chevron { transform: rotate(90deg); }
     .collapsible-body {
       padding: 0.9rem 1.1rem 1.1rem;
       display: none;
     }
 
-    /* 星球任務進度條區塊（內嵌在摺疊裡） */
-    .progress-section {
-      margin-bottom: 1rem;
-    }
+    /* 星球任務進度條 */
+    .progress-section { margin-bottom: 1rem; }
     .progress-header {
       display: flex;
       justify-content: space-between;
@@ -183,9 +250,7 @@
       align-items: center;
       gap: .4rem;
     }
-    .progress-title span {
-      font-size: 1.2rem;
-    }
+    .progress-title span { font-size: 1.2rem; }
     .progress-sub {
       font-size: .86rem;
       color: var(--muted);
@@ -199,6 +264,9 @@
       font-size: 1.02rem;
       color: var(--dark);
     }
+    body.theme-space .progress-stats strong {
+      color: #facc15;
+    }
     .progress-bar-wrap {
       margin: .6rem 0 1rem;
     }
@@ -209,11 +277,17 @@
       height: 14px;
       position: relative;
     }
+    body.theme-space .progress-bar-bg {
+      background: #111827;
+    }
     .progress-bar-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #22c55e, #84cc16);
       transition: width .6s ease;
+    }
+    body.theme-space .progress-bar-fill {
+      background: linear-gradient(90deg, #38bdf8, #a855f7);
     }
     .progress-bar-bg::after {
       content: "100 人";
@@ -223,6 +297,9 @@
       transform: translateY(-50%);
       font-size: .7rem;
       color: rgba(0,0,0,0.5);
+    }
+    body.theme-space .progress-bar-bg::after {
+      color: #9ca3af;
     }
 
     .milestones {
@@ -254,14 +331,16 @@
     .milestone-item.done {
       background: #ecfdf3;
     }
-    .milestone-item.done .milestone-icon {
-      color: var(--done);
-    }
+    .milestone-item.done .milestone-icon { color: var(--done); }
     .milestone-item.current {
       background: #fff7ed;
     }
-    .milestone-item.current .milestone-icon {
-      color: var(--current);
+    .milestone-item.current .milestone-icon { color: var(--current); }
+    body.theme-space .milestone-item.done {
+      background: rgba(22,163,74,0.18);
+    }
+    body.theme-space .milestone-item.current {
+      background: rgba(245,158,11,0.16);
     }
 
     .progress-footnote {
@@ -270,9 +349,9 @@
       color: var(--muted);
     }
 
-    /* 願望池 / 導流區塊（摺疊內） */
+    /* 願望池 / 導流區塊 */
     .wish-section {
-      border-top: 1px solid #e5e7eb;
+      border-top: 1px solid var(--border-soft);
       margin-top: 1rem;
       padding-top: .9rem;
       font-size: .9rem;
@@ -296,9 +375,7 @@
       padding-left: 1.1rem;
       font-size: .88rem;
     }
-    .wish-list li {
-      margin-bottom: .35rem;
-    }
+    .wish-list li { margin-bottom: .35rem; }
     .member-links {
       margin-top: .6rem;
       font-size: .88rem;
@@ -307,9 +384,7 @@
       padding-left: 1.1rem;
       margin: .3rem 0 0;
     }
-    .member-links li {
-      margin-bottom: .3rem;
-    }
+    .member-links li { margin-bottom: .3rem; }
 
     /* 功能卡片區 */
     .grid {
@@ -320,9 +395,13 @@
     .card {
       background: #fff;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-soft);
       overflow: hidden;
-      transition: transform .2s;
+      transition: transform .2s, background .3s, box-shadow .3s, border-color .3s;
+      border: 1px solid var(--border-soft);
+    }
+    body.theme-space .card {
+      background: rgba(15,23,42,0.95);
     }
     .card:hover { transform: translateY(-4px); }
     .card-header {
@@ -332,30 +411,36 @@
       font-weight: bold;
       font-size: 1rem;
     }
-    .card-body {
-      padding: 1rem;
-    }
+    .card-body { padding: 1rem; }
     .card-body p {
       margin: 0 0 .75rem;
       font-size: .95rem;
+      color: var(--muted);
     }
     .card-body a {
       display: inline-block;
       padding: .5rem 1rem;
       background: var(--light);
-      color: var(--dark);
+      color: #1f2933;
       border-radius: 4px;
       text-decoration: none;
       font-size: .9rem;
-      transition: background .2s;
+      font-weight: 600;
+      transition: background .2s, transform .08s;
     }
-    .card-body a:hover { background: #f7e600; }
+    .card-body a:hover {
+      background: #ffe082;
+      transform: translateY(-1px);
+    }
+    body.theme-space .card-body a {
+      color: #111827;
+    }
 
     footer {
       text-align: center;
       margin: 2rem 0 1rem;
       font-size: .85rem;
-      color: #777;
+      color: var(--muted);
     }
 
     @media (max-width: 520px) {
@@ -390,15 +475,22 @@
 <body>
   <div class="container">
 
-    <!-- 切換會員帳號 -->
+    <!-- 登入切換 -->
     <div class="login-switch">
       <input id="switchEmail" type="email" placeholder="輸入 Email 切換帳號" />
       <button id="switchBtn">登入</button>
     </div>
 
+    <!-- 主題切換器 -->
+    <div class="theme-switcher">
+      <span>主題：</span>
+      <button class="theme-btn active" data-theme="default">日常模式</button>
+      <button class="theme-btn" data-theme="space">星空基地</button>
+    </div>
+
     <!-- 形象頭區 -->
     <header>
-      <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克" />
+      <img class="avatar" src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克" />
       <h1>幸福星球 × 馬濕克</h1>
       <p>航向股息星系，啟動你的幸福引擎！<strong id="userEmail"></strong></p>
     </header>
@@ -688,6 +780,44 @@
     }
 
     document.addEventListener('DOMContentLoaded', loadMemberProgress);
+
+    // 主題切換器
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const bodyEl = document.body;
+
+    function applyTheme(theme) {
+      if (theme === 'space') {
+        bodyEl.classList.add('theme-space');
+      } else {
+        bodyEl.classList.remove('theme-space');
+      }
+      themeButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+      });
+      try {
+        localStorage.setItem('wumark-theme', theme);
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme === 'space' ? 'space' : 'default';
+        applyTheme(theme);
+      });
+    });
+
+    // 初始化主題
+    (function initTheme() {
+      let saved = null;
+      try {
+        saved = localStorage.getItem('wumark-theme');
+      } catch (e) {
+        saved = null;
+      }
+      applyTheme(saved === 'space' ? 'space' : 'default');
+    })();
   </script>
 
 </body>
