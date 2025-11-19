@@ -537,7 +537,8 @@
   </style>
 </head>
 
-<body>
+<!-- 預設就給 theme-space，進來就是星空 -->
+<body class="theme-space">
   <div class="container">
 
     <!-- 登入切換 -->
@@ -549,8 +550,8 @@
     <!-- 主題切換器 -->
     <div class="theme-switcher">
       <span>主題：</span>
-      <button class="theme-btn active" data-theme="default">日常模式</button>
-      <button class="theme-btn" data-theme="space">星空基地</button>
+      <button class="theme-btn" data-theme="default">日常模式</button>
+      <button class="theme-btn active" data-theme="space">星空基地</button>
     </div>
 
     <!-- 形象頭區 -->
@@ -871,7 +872,7 @@
       });
     });
 
-    // 初始化主題
+    // 初始化主題：預設星空基地，若有保存偏好則使用偏好
     (function initTheme() {
       let saved = null;
       try {
@@ -879,7 +880,11 @@
       } catch (e) {
         saved = null;
       }
-      applyTheme(saved === 'space' ? 'space' : 'default');
+      if (saved === 'default' || saved === 'space') {
+        applyTheme(saved);
+      } else {
+        applyTheme('space'); // 沒存過就先給星空基地
+      }
     })();
   </script>
 
