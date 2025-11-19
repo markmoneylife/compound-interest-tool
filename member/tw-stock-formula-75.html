@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>馬克 75元會員專屬｜台股 GOOGLEFINANCE 公式懶人工具頁</title>
+  <meta name="description" content="馬克 75元會員專屬工具｜專為台股與台股ETF整理的 Google Sheets GOOGLEFINANCE 公式懶人包，包含即時股價、52週高低、歷史股價、多檔股票一次抓價、10年高低價等實用語法。">
+  <style>
+    :root {
+      --green: #1D4A35;
+      --yellow: #FFD54F;
+      --bg: #F5F2E9;
+      --card: #FFFFFF;
+      --text: #333333;
+      --sub: #666666;
+      --border: #E0E0E0;
+      --red: #C0392B;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: radial-gradient(circle at top left, #2E7D32, var(--green));
+      color: #fff;
+      text-align: center;
+      padding: 2.5rem 1.5rem 2.2rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.75rem;
+      font-size: 1.9rem;
+      letter-spacing: 0.06em;
+    }
+
+    header p {
+      margin: 0.2rem 0;
+      font-size: 0.98rem;
+      color: #FFECB3;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.9rem;
+      border-radius: 999px;
+      background-color: rgba(255, 213, 79, 0.16);
+      color: #FFECB3;
+      font-size: 0.8rem;
+      margin-bottom: 0.6rem;
+      border: 1px solid rgba(255, 236, 179, 0.4);
+    }
+
+    .badge span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background-color: #FFEB3B;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .note {
+      background-color: #FFFDE7;
+      border-left: 4px solid var(--yellow);
+      padding: 1rem 1rem 0.9rem;
+      margin-bottom: 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      color: #5D4037;
+    }
+
+    .note b {
+      color: #BF360C;
+    }
+
+    .member-warning {
+      background-color: #FFEBEE;
+      border-left: 4px solid var(--red);
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0.75rem;
+      font-size: 0.86rem;
+      color: #B71C1C;
+    }
+
+    h2.section-title {
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.3rem;
+      color: var(--green);
+      border-left: 4px solid var(--green);
+      padding-left: 0.6rem;
+    }
+
+    .section-sub {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: var(--sub);
+    }
+
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .formula-card {
+      background-color: var(--card);
+      border-radius: 0.9rem;
+      padding: 0.9rem 0.9rem 0.8rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .formula-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+      color: #1B5E20;
+    }
+
+    .formula-card p {
+      margin: 0 0 0.5rem;
+      font-size: 0.86rem;
+      color: var(--sub);
+    }
+
+    .hint-label {
+      font-size: 0.8rem;
+      color: #888;
+      margin: 0.45rem 0 0.2rem;
+    }
+
+    pre {
+      margin: 0;
+      font-size: 0.8rem;
+      background-color: #F3F3F3;
+      border-radius: 0.55rem;
+      padding: 0.5rem 0.6rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    code {
+      font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .attr-table-wrapper {
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background-color: var(--card);
+      border-radius: 0.9rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    thead {
+      background-color: #E8F5E9;
+    }
+
+    th, td {
+      padding: 0.55rem 0.6rem;
+      border-bottom: 1px solid #EEEEEE;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      color: #2E7D32;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag-ok {
+      display: inline-block;
+      padding: 0.05rem 0.5rem;
+      border-radius: 999px;
+      background-color: #E8F5E9;
+      color: #2E7D32;
+      font-size: 0.75rem;
+    }
+
+    .tag-bad {
+      display: inline-block;
+      padding: 0.05rem 0.5rem;
+      border-radius: 999px;
+      background-color: #FFEBEE;
+      color: #C62828;
+      font-size: 0.75rem;
+    }
+
+    .tag-maybe {
+      display: inline-block;
+      padding: 0.05rem 0.5rem;
+      border-radius: 999px;
+      background-color: #FFF8E1;
+      color: #FF8F00;
+      font-size: 0.75rem;
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+      color: #888;
+      text-align: center;
+    }
+
+    .footer a {
+      color: #558B2F;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .links {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 0.1rem 0.25rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      background-color: #E0F2F1;
+      text-decoration: none;
+      color: #00695C;
+    }
+
+    .links a:hover {
+      background-color: #B2DFDB;
+    }
+
+    .member-tag {
+      display: inline-block;
+      padding: 0.1rem 0.55rem;
+      border-radius: 999px;
+      background-color: #E3F2FD;
+      color: #1565C0;
+      font-size: 0.75rem;
+      margin-left: 0.4rem;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 0.08rem 0.5rem;
+      border-radius: 999px;
+      background-color: #E0F7FA;
+      color: #006064;
+      font-size: 0.75rem;
+      margin-left: 0.25rem;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 2rem 1.2rem 1.9rem;
+      }
+      header h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">
+      <span class="dot"></span>
+      馬克頻道 75 元會員專屬工具
+    </div>
+    <h1>台股 GOOGLEFINANCE 公式懶人工具頁</h1>
+    <p>專為台股與台股高股息 ETF 設計的 Google Sheets 語法大全</p>
+    <p>搭配「股票記錄表＋複利追蹤工具」使用效果更好 ✅</p>
+  </header>
+
+  <main>
+    <section class="member-warning">
+      <b>🔒 本頁為「馬克 75 元 YouTube 頻道會員」專屬內容，請勿公開轉貼或外流。</b><br>
+      如果你是從分享連結進來，代表對方很信任你，也請你一起守護這份資源 🙌
+    </section>
+
+    <section class="note">
+      <b>🧩 使用提醒（台股版本必看）</b><br>
+      1. 建議一律使用代號前綴：<code>TPE:</code>，例如：<code>TPE:2330</code>、<code>TPE:006208</code>、<code>TPE:00919</code>。<br>
+      2. 台股在 GOOGLEFINANCE 中，最穩定的是：價格、漲跌、成交量、52週高低、歷史價格。<br>
+      3. 本益比、EPS、股息、殖利率等「基本面」欄位，台股大多抓不到，要另外從官網或外部資料處理。<br>
+      4. 下方所有「可直接複製版」公式，已移除註解與空白鍵，直接貼到試算表即可使用。<br>
+    </section>
+
+    <!-- 一、即時價格與漲跌 -->
+    <section>
+      <h2 class="section-title">一、即時價格與漲跌</h2>
+      <p class="section-sub">這一區是台股與台股 ETF 最常用的欄位，用來做「即時報價牆」、「儀表板」、「漲跌排行榜」。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 現價（最新成交價）</h3>
+          <p>顯示目前市場成交價格。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","price")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 今日開盤 / 最高 / 最低</h3>
+          <p>可以搭配做「當日價差」或當日波動。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","priceopen")
+=GOOGLEFINANCE("TPE:2330","high")
+=GOOGLEFINANCE("TPE:2330","low")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>3. 昨日收盤價</h3>
+          <p>用來計算今日漲跌，或在休市時當作「參考價」。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","closeyest")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>4. 今日漲跌金額與漲跌幅</h3>
+          <p>適合做排行榜或顯示「+3.5%」這種欄位。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","change")
+=GOOGLEFINANCE("TPE:2330","changepct")</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 二、成交量與交易資訊 -->
+    <section>
+      <h2 class="section-title">二、成交量與交易資訊</h2>
+      <p class="section-sub">想看市場熱度、量縮量增，就會用到這一區。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 今日成交量</h3>
+          <p>最基本的量能欄位，用來觀察放量或量縮。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","volume")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 最新交易時間</h3>
+          <p>顯示資料更新時間，做儀表板時很好用。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","tradetime")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>3. 交易貨幣</h3>
+          <p>台股通常會顯示 <code>TWD</code>。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","currency")</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 三、52週高低價 -->
+    <section>
+      <h2 class="section-title">三、52 週高低價（估值區間用）</h2>
+      <p class="section-sub">適合拿來做「現價在 52 週高低區間的幾％」之類的估值小工具。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 52 週最高 / 最低</h3>
+          <p>台股、台股 ETF 都可以使用。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","high52")
+=GOOGLEFINANCE("TPE:2330","low52")</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 現價在 52 週區間的百分位<span class="member-tag">會員小進階</span></h3>
+          <p>輸出 0～1 間的數值（0 越接近 52 週低點）。</p>
+
+          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
+          <pre><code>=LET(
+H,GOOGLEFINANCE("TPE:2330","high52"),   // 52週高點
+L,GOOGLEFINANCE("TPE:2330","low52"),    // 52週低點
+P,GOOGLEFINANCE("TPE:2330","price"),    // 現價
+IF(H=L,1,(P-L)/(H-L))                   // 防呆＋估值百分比
+)</code></pre>
+
+          <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
+          <pre><code>=LET(H,GOOGLEFINANCE("TPE:2330","high52"),L,GOOGLEFINANCE("TPE:2330","low52"),P,GOOGLEFINANCE("TPE:2330","price"),IF(H=L,1,(P-L)/(H-L)))</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 四、歷史價格（用來算 5 年 / 10 年高低價） -->
+    <section>
+      <h2 class="section-title">四、歷史價格（5 年 / 10 年高低價、平均價）</h2>
+      <p class="section-sub">這區是做「長期估值」、「十年高低」、「線圖」的基礎。GOOGLEFINANCE 會回傳「日期＋價格」的二維表格。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 從某一天到今天的歷史收盤價</h3>
+          <p>回傳兩欄：日期 + 收盤。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=GOOGLEFINANCE("TPE:2330","close",DATE(2020,1,1),TODAY())</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 最近一年 / 五年 / 十年的價格</h3>
+          <p>用 <code>TODAY()-天數</code> 來抓區間。</p>
+
+          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
+          <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())      // 1年
+=GOOGLEFINANCE("TPE:006208","close",TODAY()-365*5,TODAY())   // 5年
+=GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY())  // 10年</code></pre>
+
+          <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
+          <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())
+=GOOGLEFINANCE("TPE:006208","close",TODAY()-365*5,TODAY())
+=GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY())</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>3. 台股 ETF 十年最低 / 最高 / 平均價<span class="member-tag">會員小進階</span></h3>
+          <p>用 <code>LET</code> 先把資料存起來，再做 MIN / MAX / AVERAGE。</p>
+
+          <p class="hint-label">十年最低價｜教學版（含註解）</p>
+          <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 抓十年歷史資料（日期+價格）
+P,INDEX(R,,2),                                                    // 取第2欄（純價格）
+MIN(FILTER(P,P>0))                                                // 過濾空值後取最低價
+)</code></pre>
+
+          <p class="hint-label">十年最低價｜可直接複製版</p>
+          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MIN(FILTER(P,P>0)))</code></pre>
+
+          <p class="hint-label">十年最高價｜教學版（含註解）</p>
+          <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 十年歷史資料
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+MAX(FILTER(P,P>0))                                                // 過濾空值後取最高價
+)</code></pre>
+
+          <p class="hint-label">十年最高價｜可直接複製版</p>
+          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MAX(FILTER(P,P>0)))</code></pre>
+
+          <p class="hint-label">十年平均價｜教學版（含註解）</p>
+          <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 十年歷史資料
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+AVERAGE(FILTER(P,P>0))                                            // 過濾空值後取平均價
+)</code></pre>
+
+          <p class="hint-label">十年平均價｜可直接複製版</p>
+          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),AVERAGE(FILTER(P,P>0)))</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 五、多檔股票 / ETF 一次抓價 -->
+    <section>
+      <h2 class="section-title">五、多檔台股 / ETF 一次抓價（追蹤牆用）</h2>
+      <p class="section-sub">這一區就是「ETF 追蹤牆」的核心：在一張表裡一次抓出多檔的價格、漲跌、成交量。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 多檔代號一次抓現價</h3>
+          <p>假設 A2:A 放台股代號（不含 TPE:），例如 2330、006208、00919…</p>
+
+          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
+          <pre><code>=ARRAYFORMULA(
+IF(
+A2:A="",                                 // 空白則不顯示
+"",GOOGLEFINANCE("TPE:"&A2:A,"price")    // 對每一列代號抓現價
+)
+)</code></pre>
+
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=ARRAYFORMULA(IF(A2:A="", "", GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 多欄同時抓「價格 / 漲跌幅 / 成交量」<span class="pill">適合做 ETF 追蹤牆</span></h3>
+          <p>輸出變成三欄，適合做一整個報價表。</p>
+
+          <p class="hint-label">教學版（含註解）</p>
+          <pre><code>=ARRAYFORMULA(
+IF(
+A2:A="",                                       // 空白列不顯示
+"",{
+GOOGLEFINANCE("TPE:"&A2:A,"price"),           // 現價
+GOOGLEFINANCE("TPE:"&A2:A,"changepct"),       // 漲跌幅%
+GOOGLEFINANCE("TPE:"&A2:A,"volume")           // 成交量
+}
+)
+)</code></pre>
+
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=ARRAYFORMULA(IF(A2:A="","",{GOOGLEFINANCE("TPE:"&A2:A,"price"),GOOGLEFINANCE("TPE:"&A2:A,"changepct"),GOOGLEFINANCE("TPE:"&A2:A,"volume")}))</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>3. 高股息 / 指數 ETF 一鍵套用</h3>
+          <p>同樣適用於 006208、00919、00713、0050 等台股 ETF。</p>
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 六、休市時的穩定顯示（錯誤保護） -->
+    <section>
+      <h2 class="section-title">六、休市時的顯示方式（錯誤保護版）</h2>
+      <p class="section-sub">假日或停牌時，有時會抓不到 <code>price</code>，可以退而求其次顯示「昨日收盤價」，避免儀表板一片 #N/A。</p>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <h3>1. 抓不到現價時，自動改抓昨日收盤</h3>
+          <p>適合用在單一股票或 ETF。</p>
+
+          <p class="hint-label">教學版（含註解）</p>
+          <pre><code>=IFERROR(
+GOOGLEFINANCE("TPE:2330","price"),     // 先抓現價
+GOOGLEFINANCE("TPE:2330","closeyest")  // 抓不到時改抓昨日收盤
+)</code></pre>
+
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=IFERROR(GOOGLEFINANCE("TPE:2330","price"),GOOGLEFINANCE("TPE:2330","closeyest"))</code></pre>
+        </div>
+
+        <div class="formula-card">
+          <h3>2. 多檔股票也套用錯誤保護</h3>
+          <p>可以包在每一列或每一欄的公式中。</p>
+
+          <p class="hint-label">教學版（含註解）</p>
+          <pre><code>=IFERROR(
+GOOGLEFINANCE("TPE:"&A2,"price"),      // 抓該列股票現價
+GOOGLEFINANCE("TPE:"&A2,"closeyest")   // 抓不到時改用昨日收盤
+)</code></pre>
+
+          <p class="hint-label">可直接複製版</p>
+          <pre><code>=IFERROR(GOOGLEFINANCE("TPE:"&A2,"price"),GOOGLEFINANCE("TPE:"&A2,"closeyest"))</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 七、台股屬性支援度總表 -->
+    <section>
+      <h2 class="section-title">七、台股 GOOGLEFINANCE 屬性支援度總表</h2>
+      <p class="section-sub">整理一下哪些欄位「台股大多有」、哪些「幾乎沒有」，避免你在設定工具時踩空。</p>
+
+      <div class="attr-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>屬性名稱</th>
+              <th>公式寫法（屬性）</th>
+              <th>說明</th>
+              <th>台股支援度</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>現價</td>
+              <td><code>"price"</code></td>
+              <td>最新成交價</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>開盤 / 最高 / 最低</td>
+              <td><code>"priceopen" / "high" / "low"</code></td>
+              <td>當日開高低價</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>昨日收盤</td>
+              <td><code>"closeyest"</code></td>
+              <td>前一交易日收盤價</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>漲跌金額 / 漲跌幅</td>
+              <td><code>"change" / "changepct"</code></td>
+              <td>與前一日相比的漲跌</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>成交量</td>
+              <td><code>"volume"</code></td>
+              <td>當日成交量</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>交易時間 / 貨幣</td>
+              <td><code>"tradetime" / "currency"</code></td>
+              <td>最新更新時間與交易貨幣</td>
+              <td><span class="tag-maybe">部分可用</span></td>
+            </tr>
+            <tr>
+              <td>52 週高 / 低</td>
+              <td><code>"high52" / "low52"</code></td>
+              <td>最近一年的高低價</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>歷史價</td>
+              <td><code>"close" / "price" / "all"</code></td>
+              <td>用日期區間回傳歷史價格</td>
+              <td><span class="tag-ok">大多可用</span></td>
+            </tr>
+            <tr>
+              <td>市值、PE、EPS、股息、殖利率</td>
+              <td><code>"marketcap" / "pe" / "eps" / "dividend" / "yield"</code></td>
+              <td>基本面資料</td>
+              <td><span class="tag-bad">台股幾乎抓不到</span></td>
+            </tr>
+            <tr>
+              <td>報酬率類（YTD、1 年、4 年）</td>
+              <td><code>"returnytd" / "return1y" …</code></td>
+              <td>區間報酬（美股較常用）</td>
+              <td><span class="tag-bad">台股幾乎抓不到</span></td>
+            </tr>
+            <tr>
+              <td>除息日</td>
+              <td><code>"exdate"</code></td>
+              <td>除息交易日</td>
+              <td><span class="tag-bad">台股幾乎抓不到</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>以上範例皆以台股 / 台股 ETF 為主，你可以直接替換成自己的標的（例如：<code>TPE:00919</code>、<code>TPE:00713</code>）。</div>
+      <div class="links">
+        延伸工具｜
+        <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">複利試算工具</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">退休目標倒推</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">ETF 投資追蹤牆</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">ETF 配息瀑布牆</a>
+        <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" target="_blank" rel="noopener">新手投資村計畫</a>
+      </div>
+      <div style="margin-top:0.5rem;">© 吳馬克・幸福理財家｜75元會員專屬｜台股 GOOGLEFINANCE 公式懶人工具頁</div>
+    </div>
+  </main>
+</body>
+</html>
