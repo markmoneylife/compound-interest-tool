@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>馬克 75元會員專屬｜台股 GOOGLEFINANCE 公式懶人工具頁</title>
-  <meta name="description" content="馬克 75元會員專屬工具｜專為台股與台股ETF整理的 Google Sheets GOOGLEFINANCE 公式懶人包，包含即時股價、52週高低、歷史股價、多檔股票一次抓價、10年高低價等實用語法。">
+  <title>馬克 75元會員專屬｜台股＆高股息 GOOGLEFINANCE 公式懶人工具頁</title>
+  <meta name="description" content="馬克 75元會員專屬工具｜專為台股與台股高股息ETF整理的 Google Sheets GOOGLEFINANCE 公式懶人包，包含即時股價、52週高低、歷史股價、多檔股票一次抓價、10年高低價、高股息ETF估值等實用語法。">
   <style>
     :root {
       --green: #1D4A35;
@@ -17,9 +17,7 @@
       --red: #C0392B;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -68,6 +66,39 @@
       background-color: #FFEB3B;
     }
 
+    .top-nav-wrapper {
+      background-color: #1D4A35;
+      padding: 0.6rem 0;
+    }
+
+    .top-nav {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .top-nav a {
+      font-size: 0.9rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    }
+
+    .nav-general {
+      background-color: #FFD54F;
+      color: #1A1A1A;
+    }
+
+    .nav-highdiv {
+      background-color: #FFF3C0;
+      color: #1A1A1A;
+    }
+
     main {
       max-width: 960px;
       margin: 0 auto;
@@ -84,9 +115,7 @@
       color: #5D4037;
     }
 
-    .note b {
-      color: #BF360C;
-    }
+    .note b { color: #BF360C; }
 
     .member-warning {
       background-color: #FFEBEE;
@@ -176,9 +205,7 @@
       border: 1px solid var(--border);
     }
 
-    thead {
-      background-color: #E8F5E9;
-    }
+    thead { background-color: #E8F5E9; }
 
     th, td {
       padding: 0.55rem 0.6rem;
@@ -191,9 +218,7 @@
       color: #2E7D32;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+    tr:last-child td { border-bottom: none; }
 
     .tag-ok {
       display: inline-block;
@@ -234,9 +259,7 @@
       text-decoration: none;
     }
 
-    .footer a:hover {
-      text-decoration: underline;
-    }
+    .footer a:hover { text-decoration: underline; }
 
     .links {
       margin-top: 0.5rem;
@@ -253,9 +276,7 @@
       color: #00695C;
     }
 
-    .links a:hover {
-      background-color: #B2DFDB;
-    }
+    .links a:hover { background-color: #B2DFDB; }
 
     .member-tag {
       display: inline-block;
@@ -277,13 +298,17 @@
       margin-left: 0.25rem;
     }
 
+    .anchor-label {
+      font-size: 0.78rem;
+      color: #999;
+      margin-top: -0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
     @media (max-width: 600px) {
-      header {
-        padding: 2rem 1.2rem 1.9rem;
-      }
-      header h1 {
-        font-size: 1.6rem;
-      }
+      header { padding: 2rem 1.2rem 1.9rem; }
+      header h1 { font-size: 1.6rem; }
+      .top-nav { justify-content: center; }
     }
   </style>
 </head>
@@ -293,218 +318,229 @@
       <span class="dot"></span>
       馬克頻道 75 元會員專屬工具
     </div>
-    <h1>台股 GOOGLEFINANCE 公式懶人工具頁</h1>
-    <p>專為台股與台股高股息 ETF 設計的 Google Sheets 語法大全</p>
-    <p>搭配「股票記錄表＋複利追蹤工具」使用效果更好 ✅</p>
+    <h1>台股＆高股息 ETF 公式懶人工具頁</h1>
+    <p>專為台股個股 + 高股息 ETF 設計的 Google Sheets 語法大全</p>
+    <p>上方可切換「台股通用公式」與「高股息 ETF 專用公式」</p>
   </header>
+
+  <div class="top-nav-wrapper">
+    <nav class="top-nav">
+      <a class="nav-general" href="#general">台股通用公式</a>
+      <a class="nav-highdiv" href="#highdiv">高股息 ETF 專用公式</a>
+    </nav>
+  </div>
 
   <main>
     <section class="member-warning">
       <b>🔒 本頁為「馬克 75 元 YouTube 頻道會員」專屬內容，請勿公開轉貼或外流。</b><br>
-      如果你是從分享連結進來，代表對方很信任你，也請你一起守護這份資源 🙌
+      上方為台股通用公式，下方則是高股息 ETF 專用區。所有「可直接複製版」已移除空白鍵，直接貼進試算表即可。
     </section>
 
     <section class="note">
       <b>🧩 使用提醒（台股版本必看）</b><br>
       1. 建議一律使用代號前綴：<code>TPE:</code>，例如：<code>TPE:2330</code>、<code>TPE:006208</code>、<code>TPE:00919</code>。<br>
       2. 台股在 GOOGLEFINANCE 中，最穩定的是：價格、漲跌、成交量、52週高低、歷史價格。<br>
-      3. 本益比、EPS、股息、殖利率等「基本面」欄位，台股大多抓不到，要另外從官網或外部資料處理。<br>
-      4. 下方所有「可直接複製版」公式，已移除註解與空白鍵，直接貼到試算表即可使用。<br>
+      3. 本益比、EPS、股息、殖利率等「基本面」欄位，台股多半抓不到，要另外從官網或外部資料處理。<br>
+      4. 下方所有「可直接複製版」公式，已移除註解與空白鍵，只要改成你的股票或 ETF 代號就能用。<br>
     </section>
 
-    <!-- 一、即時價格與漲跌 -->
-    <section>
-      <h2 class="section-title">一、即時價格與漲跌</h2>
-      <p class="section-sub">這一區是台股與台股 ETF 最常用的欄位，用來做「即時報價牆」、「儀表板」、「漲跌排行榜」。</p>
+    <!-- ===================== 通用版 ===================== -->
+    <section id="general">
+      <div class="anchor-label">▼ 台股通用公式區</div>
 
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 現價（最新成交價）</h3>
-          <p>顯示目前市場成交價格。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","price")</code></pre>
-        </div>
+      <!-- 一、即時價格與漲跌 -->
+      <section>
+        <h2 class="section-title">一、即時價格與漲跌</h2>
+        <p class="section-sub">這一區是台股與台股 ETF 最常用的欄位，用來做「即時報價牆」、「儀表板」、「漲跌排行榜」。</p>
 
-        <div class="formula-card">
-          <h3>2. 今日開盤 / 最高 / 最低</h3>
-          <p>可以搭配做「當日價差」或當日波動。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","priceopen")
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 現價（最新成交價）</h3>
+            <p>顯示目前市場成交價格。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","price")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 今日開盤 / 最高 / 最低</h3>
+            <p>可以搭配做「當日價差」或當日波動。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","priceopen")
 =GOOGLEFINANCE("TPE:2330","high")
 =GOOGLEFINANCE("TPE:2330","low")</code></pre>
-        </div>
+          </div>
 
-        <div class="formula-card">
-          <h3>3. 昨日收盤價</h3>
-          <p>用來計算今日漲跌，或在休市時當作「參考價」。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","closeyest")</code></pre>
-        </div>
+          <div class="formula-card">
+            <h3>3. 昨日收盤價</h3>
+            <p>用來計算今日漲跌，或在休市時當作「參考價」。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","closeyest")</code></pre>
+          </div>
 
-        <div class="formula-card">
-          <h3>4. 今日漲跌金額與漲跌幅</h3>
-          <p>適合做排行榜或顯示「+3.5%」這種欄位。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","change")
+          <div class="formula-card">
+            <h3>4. 今日漲跌金額與漲跌幅</h3>
+            <p>適合做排行榜或顯示「+3.5%」這種欄位。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","change")
 =GOOGLEFINANCE("TPE:2330","changepct")</code></pre>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 二、成交量與交易資訊 -->
-    <section>
-      <h2 class="section-title">二、成交量與交易資訊</h2>
-      <p class="section-sub">想看市場熱度、量縮量增，就會用到這一區。</p>
+      <!-- 二、成交量與交易資訊 -->
+      <section>
+        <h2 class="section-title">二、成交量與交易資訊</h2>
+        <p class="section-sub">想看市場熱度、量縮量增，就會用到這一區。</p>
 
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 今日成交量</h3>
-          <p>最基本的量能欄位，用來觀察放量或量縮。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","volume")</code></pre>
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 今日成交量</h3>
+            <p>最基本的量能欄位，用來觀察放量或量縮。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","volume")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 最新交易時間</h3>
+            <p>顯示資料更新時間，做儀表板時很好用。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","tradetime")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 交易貨幣</h3>
+            <p>台股通常會顯示 <code>TWD</code>。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","currency")</code></pre>
+          </div>
         </div>
+      </section>
 
-        <div class="formula-card">
-          <h3>2. 最新交易時間</h3>
-          <p>顯示資料更新時間，做儀表板時很好用。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","tradetime")</code></pre>
-        </div>
+      <!-- 三、52週高低價 -->
+      <section>
+        <h2 class="section-title">三、52 週高低價（估值區間用）</h2>
+        <p class="section-sub">適合拿來做「現價在 52 週高低區間的幾％」之類的估值小工具。</p>
 
-        <div class="formula-card">
-          <h3>3. 交易貨幣</h3>
-          <p>台股通常會顯示 <code>TWD</code>。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","currency")</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- 三、52週高低價 -->
-    <section>
-      <h2 class="section-title">三、52 週高低價（估值區間用）</h2>
-      <p class="section-sub">適合拿來做「現價在 52 週高低區間的幾％」之類的估值小工具。</p>
-
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 52 週最高 / 最低</h3>
-          <p>台股、台股 ETF 都可以使用。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","high52")
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 52 週最高 / 最低</h3>
+            <p>台股、台股 ETF 都可以使用。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","high52")
 =GOOGLEFINANCE("TPE:2330","low52")</code></pre>
-        </div>
+          </div>
 
-        <div class="formula-card">
-          <h3>2. 現價在 52 週區間的百分位<span class="member-tag">會員小進階</span></h3>
-          <p>輸出 0～1 間的數值（0 越接近 52 週低點）。</p>
+          <div class="formula-card">
+            <h3>2. 現價在 52 週區間的百分位<span class="member-tag">會員小進階</span></h3>
+            <p>輸出 0～1 間的數值（0 越接近 52 週低點）。</p>
 
-          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
-          <pre><code>=LET(
+            <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
+            <pre><code>=LET(
 H,GOOGLEFINANCE("TPE:2330","high52"),   // 52週高點
 L,GOOGLEFINANCE("TPE:2330","low52"),    // 52週低點
 P,GOOGLEFINANCE("TPE:2330","price"),    // 現價
 IF(H=L,1,(P-L)/(H-L))                   // 防呆＋估值百分比
 )</code></pre>
 
-          <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
-          <pre><code>=LET(H,GOOGLEFINANCE("TPE:2330","high52"),L,GOOGLEFINANCE("TPE:2330","low52"),P,GOOGLEFINANCE("TPE:2330","price"),IF(H=L,1,(P-L)/(H-L)))</code></pre>
+            <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
+            <pre><code>=LET(H,GOOGLEFINANCE("TPE:2330","high52"),L,GOOGLEFINANCE("TPE:2330","low52"),P,GOOGLEFINANCE("TPE:2330","price"),IF(H=L,1,(P-L)/(H-L)))</code></pre>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 四、歷史價格（用來算 5 年 / 10 年高低價） -->
-    <section>
-      <h2 class="section-title">四、歷史價格（5 年 / 10 年高低價、平均價）</h2>
-      <p class="section-sub">這區是做「長期估值」、「十年高低」、「線圖」的基礎。GOOGLEFINANCE 會回傳「日期＋價格」的二維表格。</p>
+      <!-- 四、歷史價格 -->
+      <section>
+        <h2 class="section-title">四、歷史價格（5 年 / 10 年高低價、平均價）</h2>
+        <p class="section-sub">這區是做「長期估值」、「十年高低」、「線圖」的基礎。GOOGLEFINANCE 會回傳「日期＋價格」的二維表格。</p>
 
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 從某一天到今天的歷史收盤價</h3>
-          <p>回傳兩欄：日期 + 收盤。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=GOOGLEFINANCE("TPE:2330","close",DATE(2020,1,1),TODAY())</code></pre>
-        </div>
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 從某一天到今天的歷史收盤價</h3>
+            <p>回傳兩欄：日期 + 收盤。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:2330","close",DATE(2020,1,1),TODAY())</code></pre>
+          </div>
 
-        <div class="formula-card">
-          <h3>2. 最近一年 / 五年 / 十年的價格</h3>
-          <p>用 <code>TODAY()-天數</code> 來抓區間。</p>
+          <div class="formula-card">
+            <h3>2. 最近一年 / 五年 / 十年的價格</h3>
+            <p>用 <code>TODAY()-天數</code> 來抓區間。</p>
 
-          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
-          <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())      // 1年
+            <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
+            <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())      // 1年
 =GOOGLEFINANCE("TPE:006208","close",TODAY()-365*5,TODAY())   // 5年
 =GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY())  // 10年</code></pre>
 
-          <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
-          <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())
+            <p class="hint-label">可直接複製版（貼到 Google 試算表）</p>
+            <pre><code>=GOOGLEFINANCE("TPE:006208","close",TODAY()-365,TODAY())
 =GOOGLEFINANCE("TPE:006208","close",TODAY()-365*5,TODAY())
 =GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY())</code></pre>
-        </div>
+          </div>
 
-        <div class="formula-card">
-          <h3>3. 台股 ETF 十年最低 / 最高 / 平均價<span class="member-tag">會員小進階</span></h3>
-          <p>用 <code>LET</code> 先把資料存起來，再做 MIN / MAX / AVERAGE。</p>
+          <div class="formula-card">
+            <h3>3. 台股 ETF 十年最低 / 最高 / 平均價<span class="member-tag">會員小進階</span></h3>
+            <p>用 <code>LET</code> 先把資料存起來，再做 MIN / MAX / AVERAGE。</p>
 
-          <p class="hint-label">十年最低價｜教學版（含註解）</p>
-          <pre><code>=LET(
-R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 抓十年歷史資料（日期+價格）
-P,INDEX(R,,2),                                                    // 取第2欄（純價格）
-MIN(FILTER(P,P>0))                                                // 過濾空值後取最低價
-)</code></pre>
-
-          <p class="hint-label">十年最低價｜可直接複製版</p>
-          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MIN(FILTER(P,P>0)))</code></pre>
-
-          <p class="hint-label">十年最高價｜教學版（含註解）</p>
-          <pre><code>=LET(
+            <p class="hint-label">十年最低價｜教學版</p>
+            <pre><code>=LET(
 R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 十年歷史資料
 P,INDEX(R,,2),                                                    // 取第2欄（價格）
-MAX(FILTER(P,P>0))                                                // 過濾空值後取最高價
+MIN(FILTER(P,P>0))                                                // 最低價
 )</code></pre>
 
-          <p class="hint-label">十年最高價｜可直接複製版</p>
-          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MAX(FILTER(P,P>0)))</code></pre>
+            <p class="hint-label">十年最低價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MIN(FILTER(P,P>0)))</code></pre>
 
-          <p class="hint-label">十年平均價｜教學版（含註解）</p>
-          <pre><code>=LET(
+            <p class="hint-label">十年最高價｜教學版</p>
+            <pre><code>=LET(
 R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 十年歷史資料
 P,INDEX(R,,2),                                                    // 取第2欄（價格）
-AVERAGE(FILTER(P,P>0))                                            // 過濾空值後取平均價
+MAX(FILTER(P,P>0))                                                // 最高價
 )</code></pre>
 
-          <p class="hint-label">十年平均價｜可直接複製版</p>
-          <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),AVERAGE(FILTER(P,P>0)))</code></pre>
+            <p class="hint-label">十年最高價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MAX(FILTER(P,P>0)))</code></pre>
+
+            <p class="hint-label">十年平均價｜教學版</p>
+            <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),    // 十年歷史資料
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+AVERAGE(FILTER(P,P>0))                                            // 平均價
+)</code></pre>
+
+            <p class="hint-label">十年平均價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:006208","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),AVERAGE(FILTER(P,P>0)))</code></pre>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 五、多檔股票 / ETF 一次抓價 -->
-    <section>
-      <h2 class="section-title">五、多檔台股 / ETF 一次抓價（追蹤牆用）</h2>
-      <p class="section-sub">這一區就是「ETF 追蹤牆」的核心：在一張表裡一次抓出多檔的價格、漲跌、成交量。</p>
+      <!-- 五、多檔股票 / ETF 一次抓價 -->
+      <section>
+        <h2 class="section-title">五、多檔台股 / ETF 一次抓價（追蹤牆用）</h2>
+        <p class="section-sub">這一區就是「ETF 追蹤牆」的核心：在一張表裡一次抓出多檔的價格、漲跌、成交量。</p>
 
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 多檔代號一次抓現價</h3>
-          <p>假設 A2:A 放台股代號（不含 TPE:），例如 2330、006208、00919…</p>
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 多檔代號一次抓現價</h3>
+            <p>假設 A2:A 放台股代號（不含 TPE:），例如 2330、006208、00919…</p>
 
-          <p class="hint-label">教學版（含註解，請勿直接貼到試算表）</p>
-          <pre><code>=ARRAYFORMULA(
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=ARRAYFORMULA(
 IF(
 A2:A="",                                 // 空白則不顯示
 "",GOOGLEFINANCE("TPE:"&A2:A,"price")    // 對每一列代號抓現價
 )
 )</code></pre>
 
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=ARRAYFORMULA(IF(A2:A="", "", GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
-        </div>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+          </div>
 
-        <div class="formula-card">
-          <h3>2. 多欄同時抓「價格 / 漲跌幅 / 成交量」<span class="pill">適合做 ETF 追蹤牆</span></h3>
-          <p>輸出變成三欄，適合做一整個報價表。</p>
+          <div class="formula-card">
+            <h3>2. 多欄同時抓「價格 / 漲跌幅 / 成交量」<span class="pill">適合做 ETF 追蹤牆</span></h3>
+            <p>輸出變成三欄，適合做一整個報價表。</p>
 
-          <p class="hint-label">教學版（含註解）</p>
-          <pre><code>=ARRAYFORMULA(
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=ARRAYFORMULA(
 IF(
 A2:A="",                                       // 空白列不顯示
 "",{
@@ -515,144 +551,466 @@ GOOGLEFINANCE("TPE:"&A2:A,"volume")           // 成交量
 )
 )</code></pre>
 
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=ARRAYFORMULA(IF(A2:A="","",{GOOGLEFINANCE("TPE:"&A2:A,"price"),GOOGLEFINANCE("TPE:"&A2:A,"changepct"),GOOGLEFINANCE("TPE:"&A2:A,"volume")}))</code></pre>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",{GOOGLEFINANCE("TPE:"&A2:A,"price"),GOOGLEFINANCE("TPE:"&A2:A,"changepct"),GOOGLEFINANCE("TPE:"&A2:A,"volume")}))</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 高股息 / 指數 ETF 一鍵套用（通用版）</h3>
+            <p>同樣適用於 006208、00919、00713、0050 等台股 ETF。</p>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+          </div>
         </div>
+      </section>
 
-        <div class="formula-card">
-          <h3>3. 高股息 / 指數 ETF 一鍵套用</h3>
-          <p>同樣適用於 006208、00919、00713、0050 等台股 ETF。</p>
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
-        </div>
-      </div>
-    </section>
+      <!-- 六、休市時的顯示方式 -->
+      <section>
+        <h2 class="section-title">六、休市時的顯示方式（錯誤保護版）</h2>
+        <p class="section-sub">假日或停牌時，有時會抓不到 <code>price</code>，可以退而求其次顯示「昨日收盤價」，避免儀表板一片 #N/A。</p>
 
-    <!-- 六、休市時的穩定顯示（錯誤保護） -->
-    <section>
-      <h2 class="section-title">六、休市時的顯示方式（錯誤保護版）</h2>
-      <p class="section-sub">假日或停牌時，有時會抓不到 <code>price</code>，可以退而求其次顯示「昨日收盤價」，避免儀表板一片 #N/A。</p>
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 抓不到現價時，自動改抓昨日收盤</h3>
+            <p>適合用在單一股票或 ETF。</p>
 
-      <div class="formula-grid">
-        <div class="formula-card">
-          <h3>1. 抓不到現價時，自動改抓昨日收盤</h3>
-          <p>適合用在單一股票或 ETF。</p>
-
-          <p class="hint-label">教學版（含註解）</p>
-          <pre><code>=IFERROR(
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=IFERROR(
 GOOGLEFINANCE("TPE:2330","price"),     // 先抓現價
 GOOGLEFINANCE("TPE:2330","closeyest")  // 抓不到時改抓昨日收盤
 )</code></pre>
 
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=IFERROR(GOOGLEFINANCE("TPE:2330","price"),GOOGLEFINANCE("TPE:2330","closeyest"))</code></pre>
-        </div>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=IFERROR(GOOGLEFINANCE("TPE:2330","price"),GOOGLEFINANCE("TPE:2330","closeyest"))</code></pre>
+          </div>
 
-        <div class="formula-card">
-          <h3>2. 多檔股票也套用錯誤保護</h3>
-          <p>可以包在每一列或每一欄的公式中。</p>
+          <div class="formula-card">
+            <h3>2. 多檔股票也套用錯誤保護</h3>
+            <p>可以包在每一列或每一欄的公式中。</p>
 
-          <p class="hint-label">教學版（含註解）</p>
-          <pre><code>=IFERROR(
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=IFERROR(
 GOOGLEFINANCE("TPE:"&A2,"price"),      // 抓該列股票現價
 GOOGLEFINANCE("TPE:"&A2,"closeyest")   // 抓不到時改用昨日收盤
 )</code></pre>
 
-          <p class="hint-label">可直接複製版</p>
-          <pre><code>=IFERROR(GOOGLEFINANCE("TPE:"&A2,"price"),GOOGLEFINANCE("TPE:"&A2,"closeyest"))</code></pre>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=IFERROR(GOOGLEFINANCE("TPE:"&A2,"price"),GOOGLEFINANCE("TPE:"&A2,"closeyest"))</code></pre>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- 七、台股屬性支援度總表 -->
+      <section>
+        <h2 class="section-title">七、台股 GOOGLEFINANCE 屬性支援度總表</h2>
+        <p class="section-sub">整理一下哪些欄位「台股大多有」、哪些「幾乎沒有」，避免你在設定工具時踩空。</p>
+
+        <div class="attr-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>屬性名稱</th>
+                <th>公式寫法（屬性）</th>
+                <th>說明</th>
+                <th>台股支援度</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>現價</td>
+                <td><code>"price"</code></td>
+                <td>最新成交價</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>開盤 / 最高 / 最低</td>
+                <td><code>"priceopen" / "high" / "low"</code></td>
+                <td>當日開高低價</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>昨日收盤</td>
+                <td><code>"closeyest"</code></td>
+                <td>前一交易日收盤價</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>漲跌金額 / 漲跌幅</td>
+                <td><code>"change" / "changepct"</code></td>
+                <td>與前一日相比的漲跌</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td><code>"volume"</code></td>
+                <td>當日成交量</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>交易時間 / 貨幣</td>
+                <td><code>"tradetime" / "currency"</code></td>
+                <td>最新更新時間與交易貨幣</td>
+                <td><span class="tag-maybe">部分可用</span></td>
+              </tr>
+              <tr>
+                <td>52 週高 / 低</td>
+                <td><code>"high52" / "low52"</code></td>
+                <td>最近一年的高低價</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>歷史價</td>
+                <td><code>"close" / "price" / "all"</code></td>
+                <td>用日期區間回傳歷史價格</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>市值、PE、EPS、股息、殖利率</td>
+                <td><code>"marketcap" / "pe" / "eps" / "dividend" / "yield"</code></td>
+                <td>基本面資料</td>
+                <td><span class="tag-bad">台股幾乎抓不到</span></td>
+              </tr>
+              <tr>
+                <td>報酬率類（YTD、1 年、4 年）</td>
+                <td><code>"returnytd" / "return1y" …</code></td>
+                <td>區間報酬（美股較常用）</td>
+                <td><span class="tag-bad">台股幾乎抓不到</span></td>
+              </tr>
+              <tr>
+                <td>除息日</td>
+                <td><code>"exdate"</code></td>
+                <td>除息交易日</td>
+                <td><span class="tag-bad">台股幾乎抓不到</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </section>
 
-    <!-- 七、台股屬性支援度總表 -->
-    <section>
-      <h2 class="section-title">七、台股 GOOGLEFINANCE 屬性支援度總表</h2>
-      <p class="section-sub">整理一下哪些欄位「台股大多有」、哪些「幾乎沒有」，避免你在設定工具時踩空。</p>
+    <!-- ===================== 高股息專用版 ===================== -->
+    <section id="highdiv">
+      <div class="anchor-label">▼ 高股息 ETF 專用公式區</div>
 
-      <div class="attr-table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>屬性名稱</th>
-              <th>公式寫法（屬性）</th>
-              <th>說明</th>
-              <th>台股支援度</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>現價</td>
-              <td><code>"price"</code></td>
-              <td>最新成交價</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>開盤 / 最高 / 最低</td>
-              <td><code>"priceopen" / "high" / "low"</code></td>
-              <td>當日開高低價</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>昨日收盤</td>
-              <td><code>"closeyest"</code></td>
-              <td>前一交易日收盤價</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>漲跌金額 / 漲跌幅</td>
-              <td><code>"change" / "changepct"</code></td>
-              <td>與前一日相比的漲跌</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>成交量</td>
-              <td><code>"volume"</code></td>
-              <td>當日成交量</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>交易時間 / 貨幣</td>
-              <td><code>"tradetime" / "currency"</code></td>
-              <td>最新更新時間與交易貨幣</td>
-              <td><span class="tag-maybe">部分可用</span></td>
-            </tr>
-            <tr>
-              <td>52 週高 / 低</td>
-              <td><code>"high52" / "low52"</code></td>
-              <td>最近一年的高低價</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>歷史價</td>
-              <td><code>"close" / "price" / "all"</code></td>
-              <td>用日期區間回傳歷史價格</td>
-              <td><span class="tag-ok">大多可用</span></td>
-            </tr>
-            <tr>
-              <td>市值、PE、EPS、股息、殖利率</td>
-              <td><code>"marketcap" / "pe" / "eps" / "dividend" / "yield"</code></td>
-              <td>基本面資料</td>
-              <td><span class="tag-bad">台股幾乎抓不到</span></td>
-            </tr>
-            <tr>
-              <td>報酬率類（YTD、1 年、4 年）</td>
-              <td><code>"returnytd" / "return1y" …</code></td>
-              <td>區間報酬（美股較常用）</td>
-              <td><span class="tag-bad">台股幾乎抓不到</span></td>
-            </tr>
-            <tr>
-              <td>除息日</td>
-              <td><code>"exdate"</code></td>
-              <td>除息交易日</td>
-              <td><span class="tag-bad">台股幾乎抓不到</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- 一、高股息即時價格 -->
+      <section>
+        <h2 class="section-title">一、高股息 ETF 即時價格＆漲跌</h2>
+        <p class="section-sub">以 00919 為例，你可以快速做出「高股息報價牆」，也可以換成 00713、00878、0056…</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 00919 現價</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","price")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 00919 今日開盤 / 最高 / 最低</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","priceopen")
+=GOOGLEFINANCE("TPE:00919","high")
+=GOOGLEFINANCE("TPE:00919","low")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 00919 昨日收盤價</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","closeyest")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>4. 00919 今日漲跌金額與漲跌幅</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","change")
+=GOOGLEFINANCE("TPE:00919","changepct")</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 二、高股息成交量 -->
+      <section>
+        <h2 class="section-title">二、高股息 ETF 成交量與熱度</h2>
+        <p class="section-sub">用來觀察「哪一檔高股息最近特別熱」，可以搭配你的 ETF 追蹤牆一起用。</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 00919 今日成交量</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","volume")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 00713 今日成交量</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00713","volume")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 00919 最新交易時間</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","tradetime")</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 三、高股息 52週估值 -->
+      <section>
+        <h2 class="section-title">三、52 週高低價：高股息現在算貴還是便宜？</h2>
+        <p class="section-sub">這段是高股息 ETF 很好用的「估值區間」，讓你知道 00919 現在離 52 週高低價有多遠。</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 00919 的 52 週最高 / 最低</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","high52")
+=GOOGLEFINANCE("TPE:00919","low52")</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 00919 現價在 52 週區間的百分位<span class="member-tag">高股息進階</span></h3>
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=LET(
+H,GOOGLEFINANCE("TPE:00919","high52"),   // 00919的52週高點
+L,GOOGLEFINANCE("TPE:00919","low52"),    // 00919的52週低點
+P,GOOGLEFINANCE("TPE:00919","price"),    // 00919現價
+IF(H=L,1,(P-L)/(H-L))                    // 防呆＋估值百分比
+)</code></pre>
+
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=LET(H,GOOGLEFINANCE("TPE:00919","high52"),L,GOOGLEFINANCE("TPE:00919","low52"),P,GOOGLEFINANCE("TPE:00919","price"),IF(H=L,1,(P-L)/(H-L)))</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 四、高股息歷史價格 -->
+      <section>
+        <h2 class="section-title">四、歷史價格：高股息 ETF 趨勢＆長期估值</h2>
+        <p class="section-sub">以 00878、0056、00919 為例，你可以做出自己的「高股息長期走勢」與「平均買進成本」估算。</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 00878 歷史收盤價（含日期）</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00878","close",DATE(2020,1,1),TODAY())</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 0056 最近三年收盤價</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:0056","close",TODAY()-365*3,TODAY())</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 00919 自上市以來的歷史價</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=GOOGLEFINANCE("TPE:00919","close",TODAY()-365*10,TODAY())</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>4. 00878 歷史最低 / 最高 / 平均價<span class="member-tag">高股息進階</span></h3>
+            <p class="hint-label">00878 歷史最低價｜教學版</p>
+            <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),    // 00878十年歷史
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+MIN(FILTER(P,P>0))                                                // 最低價
+)</code></pre>
+
+            <p class="hint-label">00878 歷史最低價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MIN(FILTER(P,P>0)))</code></pre>
+
+            <p class="hint-label">00878 歷史最高價｜教學版</p>
+            <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),    // 00878十年歷史
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+MAX(FILTER(P,P>0))                                                // 最高價
+)</code></pre>
+
+            <p class="hint-label">00878 歷史最高價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),MAX(FILTER(P,P>0)))</code></pre>
+
+            <p class="hint-label">00878 歷史平均價｜教學版</p>
+            <pre><code>=LET(
+R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),    // 00878十年歷史
+P,INDEX(R,,2),                                                    // 取第2欄（價格）
+AVERAGE(FILTER(P,P>0))                                            // 平均價
+)</code></pre>
+
+            <p class="hint-label">00878 歷史平均價｜可直接複製版</p>
+            <pre><code>=LET(R,GOOGLEFINANCE("TPE:00878","close",TODAY()-365*10,TODAY()),P,INDEX(R,,2),AVERAGE(FILTER(P,P>0)))</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 五、多檔高股息 ETF 一次抓價 -->
+      <section>
+        <h2 class="section-title">五、多檔高股息 ETF 一次抓價（高股息追蹤牆）</h2>
+        <p class="section-sub">這邊就是「高股息 ETF 追蹤牆」的心臟，你可以把 00919、00713、00878、0056、00900… 一次抓出來。</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 多檔高股息 ETF 一次抓現價</h3>
+            <p>假設 A2:A 放的是 00919、00713、00878、0056…</p>
+
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=ARRAYFORMULA(
+IF(
+A2:A="",                                      // 空白不顯示
+"",GOOGLEFINANCE("TPE:"&A2:A,"price")        // 每一列代號抓現價
+)
+)</code></pre>
+
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 多欄同時抓「價格 / 漲跌幅 / 成交量」<span class="pill">高股息儀表板</span></h3>
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=ARRAYFORMULA(
+IF(
+A2:A="",                                       // 空白列不顯示
+"",{
+GOOGLEFINANCE("TPE:"&A2:A,"price"),           // 現價
+GOOGLEFINANCE("TPE:"&A2:A,"changepct"),       // 漲跌幅%
+GOOGLEFINANCE("TPE:"&A2:A,"volume")           // 成交量
+}
+)
+)</code></pre>
+
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",{GOOGLEFINANCE("TPE:"&A2:A,"price"),GOOGLEFINANCE("TPE:"&A2:A,"changepct"),GOOGLEFINANCE("TPE:"&A2:A,"volume")}))</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>3. 我持有的高股息清單（簡化版）</h3>
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=ARRAYFORMULA(IF(A2:A="","",GOOGLEFINANCE("TPE:"&A2:A,"price")))</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 六、高股息錯誤保護 -->
+      <section>
+        <h2 class="section-title">六、休市時的顯示方式（高股息版本錯誤保護）</h2>
+        <p class="section-sub">有時高股息 ETF 除息或遇到休市，<code>price</code> 會暫時抓不到，這裡提供容錯版本。</p>
+
+        <div class="formula-grid">
+          <div class="formula-card">
+            <h3>1. 00919：抓不到現價時改抓昨日收盤</h3>
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=IFERROR(
+GOOGLEFINANCE("TPE:00919","price"),     // 先抓現價
+GOOGLEFINANCE("TPE:00919","closeyest")  // 抓不到時改抓昨日收盤
+)</code></pre>
+
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=IFERROR(GOOGLEFINANCE("TPE:00919","price"),GOOGLEFINANCE("TPE:00919","closeyest"))</code></pre>
+          </div>
+
+          <div class="formula-card">
+            <h3>2. 多檔高股息一起套錯誤保護</h3>
+            <p class="hint-label">教學版（含註解）</p>
+            <pre><code>=IFERROR(
+GOOGLEFINANCE("TPE:"&A2,"price"),      // 抓該列ETF現價
+GOOGLEFINANCE("TPE:"&A2,"closeyest")   // 抓不到改用昨日收盤
+)</code></pre>
+
+            <p class="hint-label">可直接複製版</p>
+            <pre><code>=IFERROR(GOOGLEFINANCE("TPE:"&A2,"price"),GOOGLEFINANCE("TPE:"&A2,"closeyest"))</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 七、高股息屬性整理 -->
+      <section>
+        <h2 class="section-title">七、適用高股息 ETF 的 GOOGLEFINANCE 屬性整理</h2>
+        <p class="section-sub">整理一下，高股息 ETF 在 GOOGLEFINANCE 中最穩的是哪些屬性，哪些就當參考就好。</p>
+
+        <div class="attr-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>屬性名稱</th>
+                <th>公式寫法（屬性）</th>
+                <th>說明（套用在 00919、00713、00878、0056…）</th>
+                <th>高股息支援度</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>現價</td>
+                <td><code>"price"</code></td>
+                <td>高股息 ETF 最新成交價</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>開盤 / 最高 / 最低</td>
+                <td><code>"priceopen" / "high" / "low"</code></td>
+                <td>當日價格區間</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>昨日收盤</td>
+                <td><code>"closeyest"</code></td>
+                <td>用來計算當日漲跌</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>漲跌金額 / 漲跌幅</td>
+                <td><code>"change" / "changepct"</code></td>
+                <td>做高股息漲跌排行榜很好用</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td><code>"volume"</code></td>
+                <td>量能、熱門程度</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>交易時間 / 貨幣</td>
+                <td><code>"tradetime" / "currency"</code></td>
+                <td>確認是否為當日資料，貨幣通常為 TWD</td>
+                <td><span class="tag-maybe">部分可用</span></td>
+              </tr>
+              <tr>
+                <td>52 週高 / 低</td>
+                <td><code>"high52" / "low52"</code></td>
+                <td>估值區間，配合現價很好用</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>歷史價</td>
+                <td><code>"close" / "price" / "all"</code></td>
+                <td>做高股息長期趨勢、估值、平均成本</td>
+                <td><span class="tag-ok">大多可用</span></td>
+              </tr>
+              <tr>
+                <td>市值、PE、EPS、股息、殖利率</td>
+                <td><code>"marketcap" / "pe" / "eps" / "dividend" / "yield"</code></td>
+                <td>ETF 幾乎抓不到，建議用官網／自己的資料表</td>
+                <td><span class="tag-bad">高股息幾乎抓不到</span></td>
+              </tr>
+              <tr>
+                <td>報酬率類（YTD、1 年、4 年）</td>
+                <td><code>"returnytd" / "return1y" …</code></td>
+                <td>美股較適用，高股息 ETF 不穩定</td>
+                <td><span class="tag-bad">高股息幾乎抓不到</span></td>
+              </tr>
+              <tr>
+                <td>除息日</td>
+                <td><code>"exdate"</code></td>
+                <td>高股息 ETF 幾乎沒有資料，建議用官網或你的配息牆</td>
+                <td><span class="tag-bad">高股息幾乎抓不到</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </section>
 
     <div class="footer">
-      <div>以上範例皆以台股 / 台股 ETF 為主，你可以直接替換成自己的標的（例如：<code>TPE:00919</code>、<code>TPE:00713</code>）。</div>
+      <div>以上公式以台股個股與高股息 ETF 為主，你可以把 2330、006208 改成自己的標的，或把 00919 換成 00713、00878、0056、00900… 直接套用。</div>
       <div class="links">
         延伸工具｜
         <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">複利試算工具</a>
@@ -661,7 +1019,7 @@ GOOGLEFINANCE("TPE:"&A2,"closeyest")   // 抓不到時改用昨日收盤
         <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">ETF 配息瀑布牆</a>
         <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" target="_blank" rel="noopener">新手投資村計畫</a>
       </div>
-      <div style="margin-top:0.5rem;">© 吳馬克・幸福理財家｜75元會員專屬｜台股 GOOGLEFINANCE 公式懶人工具頁</div>
+      <div style="margin-top:0.5rem;">© 吳馬克・幸福理財家｜75元會員專屬｜台股＆高股息 ETF GOOGLEFINANCE 公式懶人工具頁</div>
     </div>
   </main>
 </body>
