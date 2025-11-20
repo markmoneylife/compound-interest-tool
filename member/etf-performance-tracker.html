@@ -7,22 +7,23 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="幸福星球會員專屬｜台股ETF績效儀表板，整合多期報酬＋歷史價格走勢，一眼掌握熱門 ETF 的體質與表現。">
-  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克, 幸福星球, 頻道會員">
-  <link rel="canonical" href="https://markmoneylife.com/etf-performance-wall/">
+  <!-- 75 元會員版定位 -->
+  <meta name="description" content="75元頻道會員專屬｜台股ETF績效儀表板，將多期價格與報酬視覺化，搭配你的股票紀錄表與複利追蹤，一起練習用數據看ETF。">
+  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克, 幸福星球, 75元會員">
+  <link rel="canonical" href="https://markmoneylife.com/etf-performance-dashboard-75/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://markmoneylife.com/etf-performance-wall/">
-  <meta property="og:title" content="台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克">
-  <meta property="og:description" content="幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。">
+  <meta property="og:url" content="https://markmoneylife.com/etf-performance-dashboard-75/">
+  <meta property="og:title" content="75元會員專屬｜台股ETF績效儀表板｜幸福星球 x 吳馬克">
+  <meta property="og:description" content="75元頻道會員專屬 ETF 績效儀表板：把多期價格＋報酬做成卡片牆與清單表，示範如何用數據理解ETF，而不是只看配息。">
   <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@markmoneylife">
-  <meta name="twitter:title" content="台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克">
-  <meta name="twitter:description" content="幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。">
+  <meta name="twitter:title" content="75元會員專屬｜台股ETF績效儀表板｜幸福星球 x 吳馬克">
+  <meta name="twitter:description" content="75元頻道會員專屬 ETF 績效儀表板：把多期價格＋報酬做成卡片牆與清單表，示範如何用數據理解ETF，而不是只看配息。">
   <meta name="twitter:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
 
   <!-- Structured Data -->
@@ -30,13 +31,13 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "台股ETF績效儀表板（會員版）",
-    "description": "幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。",
-    "url": "https://markmoneylife.com/etf-performance-wall/"
+    "name": "75元會員專屬｜台股ETF績效儀表板",
+    "description": "75元頻道會員專屬 ETF 績效儀表板：把多期價格＋報酬做成卡片牆與清單表，示範如何用數據理解ETF，而不是只看配息。",
+    "url": "https://markmoneylife.com/etf-performance-dashboard-75/"
   }
   </script>
 
-  <title>台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克</title>
+  <title>75元會員專屬｜台股ETF績效儀表板｜幸福星球 x 吳馬克</title>
 
   <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -57,7 +58,7 @@
       padding: 2rem 1rem 3rem;
     }
 
-    /* 綠色標題 Banner（把標題＋副標放裡面） */
+    /* 綠色標題 Banner（標題＋副標＋75元徽章） */
     .top-actions {
       margin: 0 auto 0.8rem;
       max-width: 900px;
@@ -70,6 +71,7 @@
       align-items: center;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      position: relative;
     }
     .top-actions h1 {
       margin: 0;
@@ -81,6 +83,18 @@
       font-size: 0.9rem;
       line-height: 1.6;
       color: #f4f4f4;
+    }
+    .member-tag {
+      position: absolute;
+      top: -0.6rem;
+      right: 1.2rem;
+      background: #FFD54F;
+      color: #1A1A1A;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     /* 綠框下面的按鈕列 */
@@ -118,6 +132,10 @@
       }
       .top-actions h1 {
         font-size: 1.4rem;
+      }
+      .member-tag {
+        position: static;
+        margin-top: 0.4rem;
       }
       .top-actions-buttons {
         padding: 0 0.3rem;
@@ -376,22 +394,26 @@
 </head>
 <body>
   <main id="top">
-    <!-- 頂部：綠色 Banner -->
+    <!-- 頂部：綠色 Banner（75 元標籤 + 標題 + 副標） -->
     <div class="top-actions">
-      <h1>💎 台股ETF績效儀表板（會員版）</h1>
-      <p>專為幸福星球會員設計的 ETF 資料牆，用「多期價格＋報酬」陪你一起練習長線思維。</p>
+      <div class="member-tag">75 元會員專屬</div>
+      <h1>台股ETF績效儀表板</h1>
+      <p>專為 75 元頻道會員設計的 ETF 資料牆，用「多期價格＋報酬」陪你一起練習用數據看 ETF，而不是只看配息。</p>
     </div>
 
-    <!-- 綠框下方的兩顆按鈕 -->
+    <!-- 綠框下方的按鈕 -->
     <div class="top-actions-buttons">
-      <!-- 這兩個網址依你實際路徑調整 -->
-      <a href="../index.html">⬅ 回會員首頁</a>
-      <a href="../guide-etf-performance.html">📺 查看使用教學</a>
+      <a href="../index.html">⬅ 回 75 元會員首頁</a>
     </div>
 
-    <!-- 橘色說明條：使用步驟 -->
+    <!-- 橘色說明條：使用步驟／示範定位 -->
     <div class="member-banner">
-      <strong>怎麼用這個儀表板？建議你這樣看：</strong>
+      <strong>這個頁面是什麼？</strong>
+      <p style="margin-top:0.2rem;">
+        這個儀表板，算是馬克拿來示範「怎麼用資料看 ETF」的一個小作品。非常適合搭配你的
+        <strong>股票紀錄表＋複利追蹤表</strong> 一起使用。
+      </p>
+      <strong>建議你這樣看：</strong>
       <ol>
         <li>先看上方小儀表板：抓感覺，知道「現在大概是甜蜜期、平穩期還是修正期」。</li>
         <li>再看卡片牆：挑自己關注的 ETF，對照 <strong>1M → 3M → 1Y → 3Y/5Y/10Y</strong> 報酬，分辨短期情緒 vs 長期趨勢。</li>
@@ -399,7 +421,7 @@
       </ol>
       <p style="margin-top:0.4rem;">
         這裡的報酬都是以 <strong>價格變化（價差）</strong> 為主，<strong>不包含配息再投入</strong>，
-        所以記得配合自己的買進成本、持有年數一起看，才不會被單一數字嚇到或洗腦。
+        比較像是「ETF 體感溫度計」，不是買賣訊號。請搭配你的投資紀律一起使用。
       </p>
     </div>
 
@@ -474,8 +496,8 @@
 
     <!-- 支持方式 -->
     <section id="support-methods" class="section-support">
-      <h2>謝謝你成為幸福星球的一份子 🌍</h2>
-      <p>你願意看到這裡，代表你不是只想「猜ETF」，而是願意練習看數據的人。以下是如果你想再多支持一點點，可以選擇的方式：</p>
+      <h2>謝謝你升級到 75 元會員 🌱</h2>
+      <p>你願意多跨出這一步，代表你不只是想「聽故事」，而是願意多看一點數據、多練習一點紀律的那種存股人。</p>
       <div class="support-methods">
         <div class="method-card">
           <h3>LINE貼圖</h3>
@@ -488,9 +510,9 @@
           <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" class="btn" target="_blank">逛逛周邊</a>
         </div>
         <div class="method-card">
-          <h3>持續當會員</h3>
-          <p>最重要的支持，其實就是你沒有退訂，願意給我時間慢慢把這些工具做完整。</p>
-          <a href="https://www.youtube.com/user/rengary/join" class="btn" target="_blank">調整會員方案</a>
+          <h3>幫忙分享</h3>
+          <p>如果你覺得這個工具對你有幫助，截圖分享給朋友，順便帶一句：「這是我在馬克 75 元會員裡看到的示範工具」。</p>
+          <a href="https://www.youtube.com/user/rengary" class="btn" target="_blank">回到頻道逛逛</a>
         </div>
       </div>
     </section>
