@@ -107,7 +107,7 @@
     font-weight: bold;
   }
 
-  /* 快速導覽列（與 75 版一致風格） */
+  /* 快速導覽列 */
   .nav-bar-wrapper {
     background-color: #163629;
     padding: 1rem 0;
@@ -149,7 +149,7 @@
     padding: 0 1rem 0.5rem;
   }
 
-  /* 區塊標題（跟 75 版一致感） */
+  /* 區塊標題 */
   .section {
     margin-bottom: 2.4rem;
   }
@@ -190,7 +190,7 @@
     margin-top: .25rem;
   }
 
-  /* 三欄卡片區 */
+  /* 卡片區 */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -348,10 +348,10 @@
     <img src="https://images.plurk.com/4HywvWQZU9G9PuosacjNvg.jpg" alt="吳馬克頭像">
     <h1>幸福星球｜300 會員中心</h1>
     <p class="tagline">你的理財導航塔，持續亮著，不只看得到也看得懂。</p>
-    <p class="subline">解鎖：ETF 投資績效牆、資金配置表、專屬工具與社群互動。</p>
+    <p class="subline">解鎖：ETF 投資績效牆、資金配置表、75 工具全套 + 專屬工具與社群互動。</p>
     <div class="member-badge">
       ⭐ 300 MEMBER
-      <span>核心會員專區</span>
+      <span>核心會員專區（含 75 全套工具）</span>
     </div>
   </div>
 </header>
@@ -360,14 +360,15 @@
 <div class="top-note-wrapper">
   <div class="top-note">
     <div class="top-note-tag">你現在的位置</div>
-    <div>已進入 <strong>300 會員核心專區</strong>，本頁所有工具與內容僅提供給 300 會員使用，不需要再切換其他會員層級。</div>
+    <div>已進入 <strong>300 會員核心專區</strong>。你同時擁有：<strong>300 專屬工具 ＋ 75 會員工具全套</strong>，不需要再切換其他會員層級。</div>
   </div>
 </div>
 
 <!-- 快速導覽列 -->
 <div class="nav-bar-wrapper">
   <nav class="nav-bar">
-    <a href="#core-tools">核心工具牆</a>
+    <a href="#core-tools">300 核心工具</a>
+    <a href="#tools-75">75 會員工具</a>
     <a href="#free-tools">免費實用工具</a>
     <a href="#verify">會員驗證</a>
     <a href="#community">LINE 社群</a>
@@ -413,6 +414,50 @@
     </div>
   </section>
 
+  <!-- 區塊 1.5：75 會員工具（300 也全部擁有） -->
+  <section class="section" id="tools-75">
+    <div class="section-head">
+      <div class="section-tag">
+        <span>STAGE 1.5</span> 已內含的 75 會員工具
+      </div>
+      <h2>📚 75 會員工具（你已全部解鎖）</h2>
+      <p class="section-sub">
+        升級到 300 之後，<strong>不用另外再升級 75</strong>，<br>
+        這些 75 會員工具你都可以直接用，當作「紀錄＋估值＋追蹤」的基本配備。
+      </p>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-label">原 75 會員｜紀律起點</div>
+        <h3>📋 股票記錄表 ＋ 複利追蹤表</h3>
+        <p>紀錄你的每一筆買進、賣出、配息，搭配簡單的複利目標欄位，幫你看清楚「自己是不是有在照計畫走」。</p>
+        <a class="cta-button" href="https://docs.google.com/spreadsheets/d/1NJqhO-3C3wtGoNB8ctfyE3RdqhiYtBjN3507qli7WP4/copy" target="_blank">複製 75 版記錄表</a>
+      </div>
+
+      <div class="card">
+        <div class="card-label">原 75 會員｜公式保險庫</div>
+        <h3>🧠 台股＆高股息 GOOGLEFINANCE 公式懶人包</h3>
+        <p>整理台股可抓的欄位、示範語法、可直接複製的 GOOGLEFINANCE 公式，幫你建立自己的估值表與 ETF 儀表板。</p>
+        <a class="cta-button" href="/compound-interest-tool/member/tw-stock-formula-75.html">打開公式懶人包</a>
+      </div>
+
+      <div class="card">
+        <div class="card-label">原 75 會員｜多檔 ETF 追蹤</div>
+        <h3>📈 ETF 績效追蹤器（75 版）</h3>
+        <p>針對多檔 ETF 做區間報酬與價格變化整理，幫你比對「長期持有 vs 調整部位」的效果差異。</p>
+        <a class="cta-button" href="/compound-interest-tool/member/etf-performance-tracker.html">前往 ETF 績效追蹤器</a>
+      </div>
+
+    </div>
+
+    <p class="section-sub" style="margin-top:1rem;">
+      想要看 75 會員專屬首頁的完整說明，也可以另外打開：<br>
+      <a href="/compound-interest-tool/member/mission-vault75.html" class="cta-button" style="margin-top:.6rem;">查看 75 會員工具總覽頁</a>
+    </p>
+  </section>
+
   <!-- 區塊 2：免費工具 -->
   <section class="section" id="free-tools">
     <div class="section-head">
@@ -441,7 +486,7 @@
       <div class="card">
         <div class="card-label">掌握自己的 ETF 進度條</div>
         <h3>📁 ETF 投資追蹤牆</h3>
-        <p>紀錄自己每一檔 ETF 的成本、張數、現價與配息累積，讓「投資進度」一目瞭然。</p>
+        <p>紀錄自己每一檔 ETF 的成本、張數、現價與配息累積，讓「投資進度」一目了然。</p>
         <a class="cta-button" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">前往 ETF 追蹤牆</a>
       </div>
     </div>
