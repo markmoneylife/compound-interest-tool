@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <!-- 網站小圖示 -->
+  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
+  <link rel="shortcut icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="幸福星球會員專屬｜台股ETF績效儀表板，整合多期報酬＋歷史價格走勢，一眼掌握熱門 ETF 的體質與表現。">
+  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克, 幸福星球, 頻道會員">
+  <link rel="canonical" href="https://markmoneylife.com/etf-performance-wall/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://markmoneylife.com/etf-performance-wall/">
+  <meta property="og:title" content="台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克">
+  <meta property="og:description" content="幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。">
+  <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@markmoneylife">
+  <meta name="twitter:title" content="台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克">
+  <meta name="twitter:description" content="幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。">
+  <meta name="twitter:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "台股ETF績效儀表板（會員版）",
+    "description": "幸福星球會員專屬 ETF 績效儀表板：台股熱門 ETF 多期報酬＋價格走勢卡片牆，再搭配完整清單表格，幫你穩穩看懂長期績效。",
+    "url": "https://markmoneylife.com/etf-performance-wall/"
+  }
+  </script>
+
+  <title>台股ETF績效儀表板（會員版）｜幸福星球 x 吳馬克</title>
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+  <style>
+    /* 全局樣式 */
+    body {
+      background: #F5F2E9;
+      font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", system-ui, sans-serif;
+      color: #333;
+      margin: 0;
+      padding: 0 0 3rem;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+    }
+
+    /* 綠色標題 Banner（把標題＋副標放裡面） */
+    .top-actions {
+      margin: 0 auto 0.8rem;
+      max-width: 900px;
+      background: #1D4A35;
+      color: #fff;
+      border-radius: 999px;
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .top-actions h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+    .top-actions p {
+      margin: 0.45rem 0 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #f4f4f4;
+    }
+
+    /* 綠框下面的按鈕列 */
+    .top-actions-buttons {
+      margin: 0.8rem auto 1.2rem;
+      max-width: 900px;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .top-actions-buttons a {
+      padding: 0.45rem 1.1rem;
+      background: #FFD54F;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #1A1A1A;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .2s;
+      white-space: nowrap;
+    }
+    .top-actions-buttons a:hover {
+      background: #FFE082;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 600px) {
+      .top-actions {
+        border-radius: 18px;
+        padding: 0.9rem 0.8rem;
+      }
+      .top-actions h1 {
+        font-size: 1.4rem;
+      }
+      .top-actions-buttons {
+        padding: 0 0.3rem;
+      }
+    }
+
+    /* 橘色會員說明條 */
+    .member-banner {
+      background: #FFF7E6;
+      border-radius: .75rem;
+      border: 1px solid #FFD27F;
+      padding: .9rem 1rem;
+      margin: 0 0 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .member-banner strong {
+      color: #C46A00;
+    }
+    .member-banner ol {
+      padding-left: 1.3rem;
+      margin: .5rem 0 .2rem;
+    }
+    .member-banner li {
+      margin-bottom: 0.2rem;
+    }
+
+    /* 總覽小儀表板 */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: .8rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-card {
+      background: #FFFFFF;
+      border-radius: .75rem;
+      padding: .75rem 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .summary-card-title {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: .3rem;
+    }
+    .summary-card-main {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1A3C34;
+    }
+    .summary-card-sub {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: .2rem;
+    }
+    .summary-highlight {
+      color: #C0392B;
+      font-weight: 700;
+    }
+
+    /* 補充說明框 */
+    .dialog {
+      background: #fff7e6;
+      border: 1px solid #ffd27f;
+      border-left: 4px solid #f0a500;
+      padding: 0.75rem 1rem;
+      margin: 0 0 1.2rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .dialog p { margin: 0.25rem 0; }
+
+    /* 區塊標題 */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 1.4rem 0 .5rem;
+    }
+    .section-title h2 {
+      font-size: 1.2rem;
+      color: #1A3C34;
+      margin: 0;
+    }
+    .section-title span {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    /* 卡片牆 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .card-header {
+      background: #1a3c34;
+      color: #fff;
+      padding: 0.7rem 0.9rem;
+      font-weight: bold;
+      font-size: 0.98rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header span {
+      font-size: 0.8rem;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+    .card-body {
+      padding: 1.1rem 0.9rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .price-label {
+      font-size: 0.75rem;
+      color: #777;
+    }
+    .price {
+      font-size: 1.5rem;
+      color: #1a3c34;
+      margin: 0.15rem 0 0.6rem;
+      font-weight: 700;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 0.6rem;
+    }
+    .metric {
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 0.45rem 0.3rem;
+      text-align: center;
+    }
+    .metric .label {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .metric .value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-top: 0.15rem;
+    }
+    .positive { color: #C0392B; }  /* 紅漲 */
+    .negative { color: #1D8A3B; }  /* 綠跌 */
+
+    .chart-container {
+      position: relative;
+      height: 120px;
+      margin-bottom: 1rem;
+    }
+
+    .card-footer {
+      background: #fafafa;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.75rem;
+      text-align: right;
+      color: #999;
+      border-top: 1px solid #eee;
+    }
+
+    /* Loading */
+    #loading {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      padding: 1rem 0;
+    }
+
+    /* 表格區 */
+    .table-wrapper {
+      margin-top: 2rem;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    table.dataTable thead th {
+      background: #F1F5F3;
+      color: #1A3C34;
+      font-size: 0.85rem;
+    }
+    table.dataTable tbody td {
+      font-size: 0.83rem;
+    }
+
+    /* 支持區 */
+    .section-support {
+      background: #eef6f4;
+      padding: 2rem 1rem;
+      margin: 2.5rem 0 0;
+      border-radius: 1rem;
+    }
+    .section-support h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #1a3c34;
+      margin-bottom: 1rem;
+    }
+    .section-support > p {
+      text-align: center;
+      margin-bottom: 1.4rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .support-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .method-card {
+      background: #fff;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .method-card h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .method-card p {
+      margin-bottom: 1rem;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .method-card .btn {
+      display: inline-block;
+      background: #1d4a35;
+      color: #fff;
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background .2s, transform .2s;
+    }
+    .method-card .btn:hover {
+      background: #163a2a;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <main id="top">
+    <!-- 頂部：綠色 Banner -->
+    <div class="top-actions">
+      <h1>💎 台股ETF績效儀表板（會員版）</h1>
+      <p>專為幸福星球會員設計的 ETF 資料牆，用「多期價格＋報酬」陪你一起練習長線思維。</p>
+    </div>
+
+    <!-- 綠框下方的兩顆按鈕 -->
+    <div class="top-actions-buttons">
+      <!-- 這兩個網址依你實際路徑調整 -->
+      <a href="../index.html">⬅ 回會員首頁</a>
+      <a href="../guide-etf-performance.html">📺 查看使用教學</a>
+    </div>
+
+    <!-- 橘色說明條：使用步驟 -->
+    <div class="member-banner">
+      <strong>怎麼用這個儀表板？建議你這樣看：</strong>
+      <ol>
+        <li>先看上方小儀表板：抓感覺，知道「現在大概是甜蜜期、平穩期還是修正期」。</li>
+        <li>再看卡片牆：挑自己關注的 ETF，對照 <strong>1M → 3M → 1Y → 3Y/5Y/10Y</strong> 報酬，分辨短期情緒 vs 長期趨勢。</li>
+        <li>最後用底下表格：詳細比較同族群 ETF，練習「不要只看配息，至少也看一下價差績效」。</li>
+      </ol>
+      <p style="margin-top:0.4rem;">
+        這裡的報酬都是以 <strong>價格變化（價差）</strong> 為主，<strong>不包含配息再投入</strong>，
+        所以記得配合自己的買進成本、持有年數一起看，才不會被單一數字嚇到或洗腦。
+      </p>
+    </div>
+
+    <!-- 小儀表板 -->
+    <section class="summary-strip" id="summary-strip" style="display:none;">
+      <div class="summary-card">
+        <div class="summary-card-title">近 1 年價格報酬王（列表範圍內）</div>
+        <div class="summary-card-main" id="best-1y-name">-</div>
+        <div class="summary-card-sub">
+          價差報酬：<span class="summary-highlight" id="best-1y-return">-</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-title">列表 ETF 近 1 年平均價差報酬</div>
+        <div class="summary-card-main" id="avg-1y-return">-</div>
+        <div class="summary-card-sub">只是參考基準，<strong>不代表你個人持有績效</strong></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-title">資料最近更新日</div>
+        <div class="summary-card-main" id="last-update">-</div>
+        <div class="summary-card-sub">每月月底整理一次，如有錯漏歡迎回報</div>
+      </div>
+    </section>
+
+    <!-- 補充說明 -->
+    <div class="dialog">
+      <p>• 0050已於 <strong>2025/06/18</strong> 完成 <strong>1拆4</strong> 拆股，投資門檻由約20萬元降至約4.7萬元，歷史價格已反映拆股後調整。</p>
+      <p>• 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，中間若遇到極端行情，數字可能會與你券商畫面略有落差。</p>
+      <p><strong>閱讀順序小提醒：</strong><br>
+         1. 先看 <strong>1Y / 3Y / 5Y / 10Y</strong>：大方向對不對，ETF 有沒有跟上市場。<br>
+         2. 再看 <strong>1M / 3M</strong>：短期是修正、反彈還是整理，不要拿 1M 報酬來否定 10Y 趨勢。<br>
+         3. 投資有風險，配息≠報酬，也≠存股成就，請依照自己的投資計畫行動。
+      </p>
+    </div>
+
+    <!-- 卡片牆 -->
+    <div class="section-title">
+      <h2>🔥 前十大 ETF 卡片牆</h2>
+      <span>依工作表排序前 10 檔，適合快速掃描、建立整體感覺。</span>
+    </div>
+
+    <div id="loading">載入中，請稍候…</div>
+    <div id="card-grid" class="grid" style="display:none;"></div>
+
+    <!-- 完整清單表格版 -->
+    <section id="table" class="table-wrapper">
+      <div class="section-title">
+        <h2>📊 完整清單（表格版）</h2>
+        <span>可自行搜尋、排序，適合細部比較與做筆記。</span>
+      </div>
+      <p style="font-size:0.85rem; color:#666; margin:0 0 .6rem;">
+        建議搭配你的「持股清單」一起看：找出自己壓最多的標的，觀察它在同族群裡的表現，是「領先、落後還是普通」。
+      </p>
+      <table id="etf-table" class="display" style="width:100%;">
+        <thead>
+          <tr>
+            <th>ETF代碼</th>
+            <th>ETF名稱</th>
+            <th>最新股價</th>
+            <th>1M報酬</th>
+            <th>3M報酬</th>
+            <th>1Y報酬</th>
+            <th>3Y報酬</th>
+            <th>5Y報酬</th>
+            <th>10Y報酬</th>
+            <th>更新日期</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- 支持方式 -->
+    <section id="support-methods" class="section-support">
+      <h2>謝謝你成為幸福星球的一份子 🌍</h2>
+      <p>你願意看到這裡，代表你不是只想「猜ETF」，而是願意練習看數據的人。以下是如果你想再多支持一點點，可以選擇的方式：</p>
+      <div class="support-methods">
+        <div class="method-card">
+          <h3>LINE貼圖</h3>
+          <p>下載專屬「吳馬克」LINE貼圖，讓聊天室也出現「存股哥、小韭、K線仔」的身影。</p>
+          <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" class="btn" target="_blank">看看貼圖</a>
+        </div>
+        <div class="method-card">
+          <h3>周邊商品</h3>
+          <p>穿上頻道週邊，提醒自己——今天也要穩穩往財務自由靠近一點點。</p>
+          <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" class="btn" target="_blank">逛逛周邊</a>
+        </div>
+        <div class="method-card">
+          <h3>持續當會員</h3>
+          <p>最重要的支持，其實就是你沒有退訂，願意給我時間慢慢把這些工具做完整。</p>
+          <a href="https://www.youtube.com/user/rengary/join" class="btn" target="_blank">調整會員方案</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS：jQuery、PapaParse、Chart.js、DataTables -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2044574772&single=true&output=csv";
+
+    function parsePercent(str) {
+      if (!str) return NaN;
+      return parseFloat(String(str).replace('%','').replace(',',''));
+    }
+
+    function formatPercent(num) {
+      if (isNaN(num)) return "-";
+      return num.toFixed(1) + "%";
+    }
+
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        let data = results.data.filter(r => r['ETF代碼']);
+
+        if (!data.length) {
+          document.getElementById('loading').textContent = '目前尚無資料，請稍後再試。';
+          return;
+        }
+
+        $('#loading').hide();
+        $('#card-grid').show();
+
+        // 小儀表板：近1年王者、平均、最近更新日
+        const sorted1Y = data
+          .filter(r => !isNaN(parsePercent(r['1Y報酬率'])))
+          .sort((a, b) => parsePercent(b['1Y報酬率']) - parsePercent(a['1Y報酬率']));
+
+        if (sorted1Y.length > 0) {
+          const best = sorted1Y[0];
+          $('#best-1y-name').text(`${best['ETF代碼']} ${best['ETF名稱']}`);
+          $('#best-1y-return').text(best['1Y報酬率'] || '-');
+        }
+
+        const avg1Y = (function() {
+          const nums = data.map(r => parsePercent(r['1Y報酬率'])).filter(n => !isNaN(n));
+          if (!nums.length) return NaN;
+          const sum = nums.reduce((a, b) => a + b, 0);
+          return sum / nums.length;
+        })();
+
+        $('#avg-1y-return').text(formatPercent(avg1Y));
+
+        const lastUpdate = data
+          .map(r => r['更新日期'])
+          .filter(Boolean)
+          .sort()
+          .slice(-1)[0];
+
+        if (lastUpdate) {
+          $('#last-update').text(lastUpdate);
+        }
+
+        $('#summary-strip').show();
+
+        // 前十大卡片牆（圖表優先）
+        const top10 = data.slice(0, 10);
+        top10.forEach((row, idx) => {
+          const labels = [
+            row['10Y前日期'],
+            row['5Y前日期'],
+            row['3Y前日期'],
+            row['1Y前日期'],
+            row['3M前日期'],
+            row['1M前日期'],
+            '最新'
+          ];
+
+          const prices = [
+            row['10Y前價格'],
+            row['5Y前價格'],
+            row['3Y前價格'],
+            row['1Y前價格'],
+            row['3M前價格'],
+            row['1M前價格'],
+            row['最新股價']
+          ].map(v => parseFloat(v) || null);
+
+          const card = $(`
+            <div class="card">
+              <div class="card-header">
+                <div>${row['ETF代碼']} ${row['ETF名稱']}</div>
+                <span>多期價格走勢</span>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="chart-${idx}"></canvas>
+                </div>
+
+                <div class="price-label">最新股價</div>
+                <div class="price">${row['最新股價'] || '-'}</div>
+
+                <div class="metrics">
+                  <div class="metric">
+                    <div class="label">1M報酬</div>
+                    <div class="value ${String(row['1M報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['1M報酬率'] || '-'}
+                    </div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">3M報酬</div>
+                    <div class="value ${String(row['3M報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['3M報酬率'] || '-'}
+                    </div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">1Y報酬</div>
+                    <div class="value ${String(row['1Y報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['1Y報酬率'] || '-'}
+                    </div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">3Y報酬</div>
+                    <div class="value ${String(row['3Y報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['3Y報酬率'] || '-'}
+                    </div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">5Y報酬</div>
+                    <div class="value ${String(row['5Y報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['5Y報酬率'] || '-'}
+                    </div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">10Y報酬</div>
+                    <div class="value ${String(row['10Y報酬率']).includes('-') ? 'negative' : 'positive'}">
+                      ${row['10Y報酬率'] || '-'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                更新：${row['更新日期'] || '-'}
+              </div>
+            </div>
+          `);
+
+          $('#card-grid').append(card);
+
+          const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                data: prices,
+                borderColor: '#1a3c34',
+                backgroundColor: 'rgba(26,60,52,0.08)',
+                tension: 0.3,
+                pointRadius: 2,
+                spanGaps: true
+              }]
+            },
+            options: {
+              scales: {
+                x: { display: false },
+                y: { display: false }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+              },
+              elements: {
+                line: { borderWidth: 2 }
+              },
+              maintainAspectRatio: false
+            }
+          });
+        });
+
+        // 完整清單表格
+        const tbody = $('#etf-table tbody');
+        data.forEach(row => {
+          const tr = $(`
+            <tr>
+              <td>${row['ETF代碼'] || ''}</td>
+              <td>${row['ETF名稱'] || ''}</td>
+              <td>${row['最新股價'] || ''}</td>
+              <td>${row['1M報酬率'] || ''}</td>
+              <td>${row['3M報酬率'] || ''}</td>
+              <td>${row['1Y報酬率'] || ''}</td>
+              <td>${row['3Y報酬率'] || ''}</td>
+              <td>${row['5Y報酬率'] || ''}</td>
+              <td>${row['10Y報酬率'] || ''}</td>
+              <td>${row['更新日期'] || ''}</td>
+            </tr>
+          `);
+          tbody.append(tr);
+        });
+
+        $('#etf-table').DataTable({
+          pageLength: 10,
+          lengthMenu: [10, 25, 50, 100],
+          language: {
+            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json"
+          },
+          order: [[5, 'desc']]
+        });
+      },
+      error: function() {
+        $('#loading').text('讀取資料失敗，請確認 Google Sheet 已設為「公開」或「任何知道連結的人」。');
+      }
+    });
+  </script>
+</body>
+</html>
