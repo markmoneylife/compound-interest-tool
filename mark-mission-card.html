@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>馬克 會員專屬｜M.A.R.K 財商任務卡</title>
+
+  <style>
+    :root {
+      --dark: #1D4A35;
+      --yellow: #FFD54F;
+      --bg: #F5F2E9;
+      --card: #FFFFFF;
+      --text: #333;
+      --sub: #666;
+      --border-soft: #E0E4DD;
+      --accent-soft: #E6F0EA;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #254d3a 0, #1D4A35 22%, #13271b 40%, #0c1811 60%, #020705 100%);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 頁首區：星空基地感 */
+    header {
+      padding: 2.4rem 1.5rem 1.5rem;
+      text-align: center;
+      color: #fff;
+    }
+
+    header h1 {
+      margin: 0 0 .5rem;
+      font-size: 1.9rem;
+      letter-spacing: 0.08em;
+    }
+
+    header p {
+      margin: .2rem 0;
+      font-size: .98rem;
+      color: rgba(255,255,255,.85);
+    }
+
+    .tagline {
+      margin-top: .9rem;
+      font-size: .9rem;
+      color: #FFE082;
+    }
+
+    .highlight-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(0,0,0,.42);
+      border-radius: 999px;
+      padding: .35rem .9rem;
+      margin-top: .7rem;
+      font-size: .8rem;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+
+    .highlight-pill span {
+      font-weight: 600;
+    }
+
+    /* 主要內容卡片 */
+    .main {
+      flex: 1;
+      background: linear-gradient(to bottom, rgba(9,19,13,0.9), #020705);
+      padding: 0 1rem 2rem;
+    }
+
+    .shell {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--bg);
+      border-radius: 18px;
+      padding: 1.6rem 1.3rem 1.8rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      position: relative;
+      top: -10px;
+    }
+
+    @media (min-width: 768px) {
+      .shell {
+        padding: 2rem 2.2rem 2.4rem;
+        top: -18px;
+      }
+    }
+
+    .shell-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .shell-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: .4rem;
+    }
+
+    .shell-title small {
+      font-size: .8rem;
+      color: var(--sub);
+      letter-spacing: .04em;
+    }
+
+    .shell-desc {
+      font-size: .9rem;
+      color: var(--sub);
+    }
+
+    /* 整體進度條 */
+    .progress-bar-wrapper {
+      margin: .6rem 0 1.1rem;
+      background: var(--accent-soft);
+      border-radius: 999px;
+      padding: .6rem .85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem .8rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .progress-label {
+      font-size: .82rem;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .progress-group {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(18,80,51,.12);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(to right, #FFD54F, #FFB300);
+      transition: width .28s ease-out;
+    }
+
+    .progress-percent {
+      font-size: .8rem;
+      color: var(--dark);
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* TAB 切換 */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin: .4rem 0 1.3rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 65px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: .45rem .4rem;
+      background: #fff;
+      font-size: .86rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      cursor: pointer;
+      transition: all .2s ease;
+      color: var(--sub);
+    }
+
+    .tab-btn span.key {
+      font-weight: 700;
+      letter-spacing: .12em;
+      font-size: .74rem;
+    }
+
+    .tab-btn span.label {
+      font-size: .78rem;
+    }
+
+    .tab-btn.active {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.06), 0 8px 16px rgba(0,0,0,.25);
+    }
+
+    .tab-btn.active span.label {
+      color: #FFE082;
+    }
+
+    /* 區塊說明 */
+    .zone-summary {
+      margin-bottom: .6rem;
+      font-size: .86rem;
+      color: var(--sub);
+    }
+
+    .zone-summary strong {
+      color: var(--dark);
+    }
+
+    /* 區塊小進度條 */
+    .zone-progress {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .8rem;
+      padding: .4rem .65rem;
+      border-radius: 999px;
+      background: #EEF3ED;
+    }
+
+    .zone-progress-label {
+      font-size: .78rem;
+      color: var(--dark);
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .zone-progress-track {
+      flex: 1;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(18,80,51,.12);
+      overflow: hidden;
+    }
+
+    .zone-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(to right, #A5D6A7, #1D4A35);
+      transition: width .25s ease-out;
+    }
+
+    .zone-progress-percent {
+      font-size: .76rem;
+      color: var(--dark);
+      white-space: nowrap;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* 任務區塊 */
+    .zone {
+      display: none;
+    }
+
+    .zone.active {
+      display: block;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .9rem;
+    }
+
+    @media (min-width: 720px) {
+      .mission-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .mission-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: .85rem .9rem .9rem;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 4px 10px rgba(0,0,0,.03);
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      position: relative;
+    }
+
+    .mission-head {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+
+    .mission-title {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .mission-tag {
+      font-size: .7rem;
+      padding: .1rem .45rem;
+      border-radius: 999px;
+      background: #FDF3C5;
+      color: #8C6B00;
+      border: 1px solid #F3DEA0;
+      white-space: nowrap;
+    }
+
+    .mission-desc {
+      font-size: .8rem;
+      color: var(--text);
+    }
+
+    .mission-meta {
+      font-size: .75rem;
+      color: var(--sub);
+    }
+
+    .mission-meta span {
+      display: inline-block;
+      margin-right: .35rem;
+    }
+
+    .mission-footer {
+      margin-top: .2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      font-size: .78rem;
+    }
+
+    .mission-quote {
+      font-size: .75rem;
+      color: var(--sub);
+      flex: 1;
+    }
+
+    .mission-quote strong {
+      color: var(--dark);
+    }
+
+    .check-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: .78rem;
+      color: var(--dark);
+    }
+
+    .check-wrap input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--dark);
+      cursor: pointer;
+    }
+
+    /* 星球工具導覽 */
+    .tool-links {
+      margin-top: 1.6rem;
+      padding: 1rem 0 0.4rem;
+      border-top: 1px solid #D5DBD1;
+    }
+
+    .tool-links-title {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .6rem;
+    }
+
+    .tool-links-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .5rem;
+    }
+
+    @media (min-width: 720px) {
+      .tool-links-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .tool-link-card {
+      display: block;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: .65rem .75rem;
+      border: 1px solid #D8DED4;
+      text-decoration: none;
+      color: var(--text);
+      font-size: .8rem;
+      transition: all .18s ease-out;
+    }
+
+    .tool-link-card:hover {
+      border-color: var(--dark);
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      transform: translateY(-1px);
+    }
+
+    .tool-link-title {
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .2rem;
+      font-size: .86rem;
+    }
+
+    .tool-link-desc {
+      font-size: .78rem;
+      color: var(--sub);
+    }
+
+    /* 底部小提醒 */
+    .foot-note {
+      margin-top: 1.3rem;
+      padding-top: .9rem;
+      border-top: 1px dashed #D0D6CC;
+      font-size: .8rem;
+      color: var(--sub);
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem .8rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .foot-note strong {
+      color: var(--dark);
+    }
+
+    .foot-note a {
+      color: var(--dark);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(29,74,53,.5);
+      font-size: .78rem;
+    }
+
+    .foot-note a:hover {
+      border-bottom-style: solid;
+    }
+
+    /* 完成 12/12 任務後的祝賀 Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-backdrop.is-visible {
+      display: flex;
+    }
+
+    .modal-card {
+      max-width: 380px;
+      width: 90%;
+      background: #0c1811;
+      border-radius: 18px;
+      padding: 1.6rem 1.4rem 1.4rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,.7);
+      color: #F5F2E9;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top, rgba(255,213,79,.18), transparent 60%);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .modal-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: .4rem;
+      letter-spacing: .06em;
+    }
+
+    .modal-sub {
+      font-size: .9rem;
+      color: #FFE082;
+      margin-bottom: .8rem;
+    }
+
+    .modal-text {
+      font-size: .86rem;
+      color: #E3E8E1;
+      margin-bottom: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .modal-text strong {
+      color: #FFD54F;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    .modal-btn-main {
+      border: none;
+      border-radius: 999px;
+      padding: .5rem 1.6rem;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(to right, #FFD54F, #FFB300);
+      color: #1A1A1A;
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    }
+
+    .modal-btn-main:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,.35);
+    }
+
+    .modal-note {
+      font-size: .78rem;
+      color: #C5D0C7;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>M.A.R.K 財商任務卡</h1>
+    <p>會員專屬｜讓你不靠意志力，就一路升級財商</p>
+    <div class="tagline">Mindset・Automate・Reinvest・Keep｜從理清頭腦，到讓錢替你工作</div>
+    <div class="highlight-pill">
+      <span>🎯 目標：</span>
+      <span>幫你省下更多錢，活得更有選擇。</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="shell">
+
+      <div class="shell-header">
+        <div class="shell-title">
+          <span>M.A.R.K 任務地圖</span>
+          <small>完成愈多 ✔，你的財務就愈「不靠天份、只靠系統」。</small>
+        </div>
+        <p class="shell-desc">
+          每一個任務都設計成「做得到的小步驟」，不是要你變超人，而是幫你找到自己能長期維持的節奏。勾起來之前，先問自己一句：「這個我是做得到，且願意做的嗎？」
+        </p>
+      </div>
+
+      <!-- 整體進度條 -->
+      <div class="progress-bar-wrapper">
+        <div class="progress-label">整體進度</div>
+        <div class="progress-group">
+          <div class="progress-track">
+            <div class="progress-fill" id="overall-progress"></div>
+          </div>
+          <div class="progress-percent" id="overall-percent">0%</div>
+        </div>
+        <div class="progress-label" id="current-zone-label">目前區塊：Mindset 心態</div>
+      </div>
+
+      <!-- TAB -->
+      <div class="tabs">
+        <button class="tab-btn active" data-zone="zone-m">
+          <span class="key">M</span>
+          <span class="label">Mindset 心態</span>
+        </button>
+        <button class="tab-btn" data-zone="zone-a">
+          <span class="key">A</span>
+          <span class="label">Automate 自動化</span>
+        </button>
+        <button class="tab-btn" data-zone="zone-r">
+          <span class="key">R</span>
+          <span class="label">Reinvest 再投入</span>
+        </button>
+        <button class="tab-btn" data-zone="zone-k">
+          <span class="key">K</span>
+          <span class="label">Keep 堅持節奏</span>
+        </button>
+      </div>
+
+      <!-- M 區 -->
+      <section class="zone active" id="zone-m">
+        <p class="zone-summary">
+          <strong>Mindset｜心態：</strong>先搞定的是「頭腦」，不是報酬率。這一區幫你看懂自己的情緒，避免被新聞、群組、KOL 嚇到亂動作。
+        </p>
+        <div class="zone-progress">
+          <div class="zone-progress-label">Mindset 自己人進度</div>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="zone-m-progress-bar"></div>
+          </div>
+          <div class="zone-progress-percent" id="zone-m-progress-text">0/3</div>
+        </div>
+        <div class="mission-grid">
+          <!-- M1 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">M1｜情緒偵測 24H</div>
+                <div class="mission-desc">
+                  一天之內，記下至少三個讓你覺得「焦慮、怕買貴、怕跌」的瞬間，包含看到什麼消息、在哪裡、你腦中第一句話是什麼。
+                </div>
+              </div>
+              <div class="mission-tag">自我覺察</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 10–15 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>你先抓到「是什麼在嚇你」，市場就比較嚇不到你。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-m1">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- M2 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">M2｜投資恐嚇黑名單</div>
+                <div class="mission-desc">
+                  寫下三種最常嚇到你的訊號，例如：某些新聞標題、群組風向、名嘴喊崩盤。之後看到它，就先提醒自己：「這只是我黑名單上的噪音」。
+                </div>
+              </div>
+              <div class="mission-tag">降噪行動</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 5–10 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>你不一定要關掉世界，但可以幫自己關掉一部分噪音。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-m2">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- M3 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">M3｜「我為什麼要投資？」一句話</div>
+                <div class="mission-desc">
+                  用 20 個字內，寫下你投資的理由，例如：「為了 55 歲前可以自由選工作」或「為了讓小孩學費更安心」。
+                </div>
+              </div>
+              <div class="mission-tag">核心信念</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 10 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>這句話是你未來跌到心虛時，最重要的盾牌。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-m3">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- A 區 -->
+      <section class="zone" id="zone-a">
+        <p class="zone-summary">
+          <strong>Automate｜自動化：</strong>不要再靠意志力撐了，用系統幫你把「該發生的好事」變成自動完成。
+        </p>
+        <div class="zone-progress">
+          <div class="zone-progress-label">Automate 自己人進度</div>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="zone-a-progress-bar"></div>
+          </div>
+          <div class="zone-progress-percent" id="zone-a-progress-text">0/3</div>
+        </div>
+        <div class="mission-grid">
+          <!-- A1 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">A1｜建立 1 個自動扣款</div>
+                <div class="mission-desc">
+                  選一個你現在就願意開始的金額（不怕小），設定自動扣款到投資或儲蓄帳戶，讓錢自己先離開你的生活帳。
+                </div>
+              </div>
+              <div class="mission-tag">系統上線</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 10–20 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>金額不用偉大，先建立「不用想也會發生」這件事比較重要。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-a1">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- A2 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">A2｜生活安全墊自動轉帳</div>
+                <div class="mission-desc">
+                  為生活建立一個「緊急備用金」帳戶，每月自動轉入固定金額（例如 500、1000、3000），金額小沒關係，但要固定。
+                </div>
+              </div>
+              <div class="mission-tag">降低焦慮</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 10 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>很多財務焦慮不是因為沒錢，而是沒有一個讓你安心的安全墊。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-a2">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- A3 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">A3｜取消 1 個不必要訂閱</div>
+                <div class="mission-desc">
+                  打開你的信用卡或 App 訂閱列表，找出一個其實沒那麼需要、卻每月自動扣款的服務，把它停掉。節省下來的金額改投資自己。
+                </div>
+              </div>
+              <div class="mission-tag">挪出空間</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 5–10 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>你不是沒錢投資，只是有些錢被你默默花在不重要的地方。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-a3">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- R 區 -->
+      <section class="zone" id="zone-r">
+        <p class="zone-summary">
+          <strong>Reinvest｜再投入：</strong>把你已經做到的好結果，不要花光、不要散掉，而是變成下一輪的起跑線。
+        </p>
+        <div class="zone-progress">
+          <div class="zone-progress-label">Reinvest 自己人進度</div>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="zone-r-progress-bar"></div>
+          </div>
+          <div class="zone-progress-percent" id="zone-r-progress-text">0/3</div>
+        </div>
+        <div class="mission-grid">
+          <!-- R1 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">R1｜寫下你的「配息再投入」規則</div>
+                <div class="mission-desc">
+                  設計一條屬於你的規則，例如：「配息累積到 3,000 元，就買入一次 00878」，或是「每次配息都買同一檔長期ETF」。
+                </div>
+              </div>
+              <div class="mission-tag">行動準則</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 10–15 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>再投入不是口號，是你願意重複很多年的小動作。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-r1">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- R2 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">R2｜回顧你過去一年的配息總額</div>
+                <div class="mission-desc">
+                  將你過去一年收到的配息做一個總整理（可以用券商對帳單或自己的紀錄表），寫下一個數字：「去年，錢已經幫我工作了 XX 元」。
+                </div>
+              </div>
+              <div class="mission-tag">看見累積</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 20–30 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>你可能會嚇一跳，其實你已經比自己以為的更努力在前進。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-r2">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- R3 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">R3｜用倒推工具看一次「未來的你」</div>
+                <div class="mission-desc">
+                  打開退休目標倒推工具，預估你希望的被動收入，讓工具幫你算出需要多少本金與時間，讓「未來的你」變得更具體。
+                </div>
+              </div>
+              <div class="mission-tag">未來視角</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 10–15 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>當你看見未來的自己，現在的每一點再投入都會變得更有意義。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-r3">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- K 區 -->
+      <section class="zone" id="zone-k">
+        <p class="zone-summary">
+          <strong>Keep｜堅持節奏：</strong>跟自己和解，找到一個你可以「走得長久」的步頻，而不是每次都衝一波、累一波。
+        </p>
+        <div class="zone-progress">
+          <div class="zone-progress-label">Keep 自己人進度</div>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="zone-k-progress-bar"></div>
+          </div>
+          <div class="zone-progress-percent" id="zone-k-progress-text">0/3</div>
+        </div>
+        <div class="mission-grid">
+          <!-- K1 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">K1｜設定一個「不痛苦的固定金額」</div>
+                <div class="mission-desc">
+                  選一個你真心覺得「不會太勉強、可以維持一整年」的投資金額，寫下來（例如：每月 2,000 元、5,000 元），之後只要守住它即可。
+                </div>
+              </div>
+              <div class="mission-tag">找到步頻</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 5 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>最棒的金額不是別人的，是你不會因為它而討厭投資的那個數字。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-k1">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- K2 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">K2｜訂一個「小到會想笑」的財商目標</div>
+                <div class="mission-desc">
+                  設定一個很小、很輕鬆、但只要做到就代表你離財務自由更近一步的習慣，例如：每月看完一支 ETF 教學影片，或每週記一次收支。
+                </div>
+              </div>
+              <div class="mission-tag">習慣建設</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★☆☆</span>
+              <span>時間：約 5–10 分鐘</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>能做十年的小目標，比只能撐十天的大目標有價值得多。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-k2">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- K3 -->
+          <article class="mission-card">
+            <div class="mission-head">
+              <div>
+                <div class="mission-title">K3｜設一個「每月財商回顧日」</div>
+                <div class="mission-desc">
+                  在行事曆裡選一個你喜歡的日子（例如每月 5 號），每個月固定檢查：本月有沒有跟上節奏？有沒有衝動行為？有沒有做一件讓未來自己感謝的事情？
+                </div>
+              </div>
+              <div class="mission-tag">長期維持</div>
+            </div>
+            <div class="mission-meta">
+              <span>難度：★★☆</span>
+              <span>時間：約 10 分鐘／每月</span>
+            </div>
+            <div class="mission-footer">
+              <p class="mission-quote">
+                <strong>馬克小提醒：</strong>投資不是比今天誰比較用力，而是十年後誰還在場上。
+              </p>
+              <label class="check-wrap">
+                <input type="checkbox" id="task-k3">
+                <span>完成 ✔</span>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 星球工具導覽 -->
+      <section class="tool-links">
+        <div class="tool-links-title">星球工具捷徑｜完成任務後可以接著玩這些</div>
+        <div class="tool-links-grid">
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">
+            <div class="tool-link-title">複利試算工具</div>
+            <div class="tool-link-desc">看看長期定期定額，未來可以長成什麼樣子。</div>
+          </a>
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">
+            <div class="tool-link-title">退休目標倒推</div>
+            <div class="tool-link-desc">想要多少被動收入？倒推需要多少本金與時間。</div>
+          </a>
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">
+            <div class="tool-link-title">ETF 投資追蹤牆</div>
+            <div class="tool-link-desc">把你的 ETF 清單放上牆，看見自己的累積。</div>
+          </a>
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" target="_blank" rel="noopener">
+            <div class="tool-link-title">新手投資村</div>
+            <div class="tool-link-desc">如果你覺得自己還是小韭，從這裡開始。</div>
+          </a>
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">
+            <div class="tool-link-title">ETF 配息圖卡瀑布牆</div>
+            <div class="tool-link-desc">每次配息都不是偶然，都是你系統化的結果。</div>
+          </a>
+          <a class="tool-link-card" href="https://markmoneylife.github.io/compound-interest-tool/member/login.html" target="_blank" rel="noopener">
+            <div class="tool-link-title">會員工具首頁</div>
+            <div class="tool-link-desc">還有更多星球任務與工具，在這裡等你解鎖。</div>
+          </a>
+        </div>
+      </section>
+
+      <div class="foot-note">
+        <span>
+          <strong>小結：</strong>全數完成 ✔ 不代表你變完美，只代表你正在用「系統」而不是「情緒」面對財務。
+        </span>
+        <span>
+          想進一步試算未來？可以搭配：
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">複利試算工具</a>、
+          <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">退休倒推工具</a>
+        </span>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- 完成 12/12 任務祝賀 Modal -->
+<div class="modal-backdrop" id="all-done-modal">
+  <div class="modal-card">
+    <div class="modal-inner">
+      <div class="modal-title">12 / 12 任務 ALL CLEAR 🎉</div>
+      <div class="modal-sub">恭喜，你正式啟動了自己的 M.A.R.K 財商系統。</div>
+      <div class="modal-text">
+        你剛剛做的不是一堆小勾勾，<br>
+        是幫「未來的你」打下第一層防護罩。<br><br>
+        <strong>接下來，就讓系統和時間，慢慢替你工作。</strong>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn-main" id="close-modal-btn">收到，繼續前進 ✅</button>
+        <div class="modal-note">如果哪天節奏亂了，也歡迎回來重刷任務卡。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const STORAGE_KEY_PREFIX = "mark_mission_";
+    const STORAGE_ALL_DONE_KEY = "mark_mission_all_done_shown_v1";
+    const allCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][id^="task-"]'));
+    const overallProgressBar = document.getElementById("overall-progress");
+    const overallPercentText = document.getElementById("overall-percent");
+    const currentZoneLabel = document.getElementById("current-zone-label");
+    const tabButtons = Array.from(document.querySelectorAll(".tab-btn"));
+    const zones = Array.from(document.querySelectorAll(".zone"));
+
+    const allDoneModal = document.getElementById("all-done-modal");
+    const closeModalBtn = document.getElementById("close-modal-btn");
+
+    // 區塊任務配置
+    const zoneConfig = {
+      "zone-m": {
+        tasks: ["task-m1", "task-m2", "task-m3"],
+        barId: "zone-m-progress-bar",
+        textId: "zone-m-progress-text"
+      },
+      "zone-a": {
+        tasks: ["task-a1", "task-a2", "task-a3"],
+        barId: "zone-a-progress-bar",
+        textId: "zone-a-progress-text"
+      },
+      "zone-r": {
+        tasks: ["task-r1", "task-r2", "task-r3"],
+        barId: "zone-r-progress-bar",
+        textId: "zone-r-progress-text"
+      },
+      "zone-k": {
+        tasks: ["task-k1", "task-k2", "task-k3"],
+        barId: "zone-k-progress-bar",
+        textId: "zone-k-progress-text"
+      }
+    };
+
+    // localStorage：載入 checkbox 狀態
+    allCheckboxes.forEach(cb => {
+      const saved = localStorage.getItem(STORAGE_KEY_PREFIX + cb.id);
+      if (saved === "1") cb.checked = true;
+
+      cb.addEventListener("change", () => {
+        localStorage.setItem(STORAGE_KEY_PREFIX + cb.id, cb.checked ? "1" : "0");
+        updateProgress();
+      });
+    });
+
+    function updateProgress() {
+      const total = allCheckboxes.length;
+      const done = allCheckboxes.filter(cb => cb.checked).length;
+      const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+      overallProgressBar.style.width = percent + "%";
+      overallPercentText.textContent = percent + "%";
+
+      updateZoneProgress();
+
+      // 檢查是否全數完成 12/12
+      if (done === total && total > 0) {
+        const shown = localStorage.getItem(STORAGE_ALL_DONE_KEY);
+        if (shown !== "1") {
+          showAllDoneModal();
+          localStorage.setItem(STORAGE_ALL_DONE_KEY, "1");
+        }
+      }
+    }
+
+    function updateZoneProgress() {
+      Object.keys(zoneConfig).forEach(zoneId => {
+        const cfg = zoneConfig[zoneId];
+        const barEl = document.getElementById(cfg.barId);
+        const textEl = document.getElementById(cfg.textId);
+        if (!barEl || !textEl) return;
+
+        const total = cfg.tasks.length;
+        let done = 0;
+        cfg.tasks.forEach(id => {
+          const cb = document.getElementById(id);
+          if (cb && cb.checked) done++;
+        });
+
+        const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+        barEl.style.width = percent + "%";
+        textEl.textContent = done + "/" + total;
+      });
+    }
+
+    function setCurrentZoneLabel(zoneId) {
+      let text = "目前區塊：";
+      switch (zoneId) {
+        case "zone-m":
+          text += "Mindset 心態";
+          break;
+        case "zone-a":
+          text += "Automate 自動化";
+          break;
+        case "zone-r":
+          text += "Reinvest 再投入";
+          break;
+        case "zone-k":
+          text += "Keep 堅持節奏";
+          break;
+        default:
+          text += "";
+      }
+      currentZoneLabel.textContent = text;
+    }
+
+    // TAB 切換功能
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-zone");
+
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        zones.forEach(z => {
+          if (z.id === target) {
+            z.classList.add("active");
+          } else {
+            z.classList.remove("active");
+          }
+        });
+
+        setCurrentZoneLabel(target);
+      });
+    });
+
+    // Modal 控制
+    function showAllDoneModal() {
+      if (allDoneModal) {
+        allDoneModal.classList.add("is-visible");
+      }
+    }
+
+    function hideAllDoneModal() {
+      if (allDoneModal) {
+        allDoneModal.classList.remove("is-visible");
+      }
+    }
+
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", hideAllDoneModal);
+    }
+
+    if (allDoneModal) {
+      allDoneModal.addEventListener("click", (e) => {
+        if (e.target === allDoneModal) {
+          hideAllDoneModal();
+        }
+      });
+    }
+
+    // 初始
+    updateProgress();
+    setCurrentZoneLabel("zone-m");
+  })();
+</script>
+</body>
+</html>
