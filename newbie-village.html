@@ -6,11 +6,11 @@
   <title>🏡 新手投資村計畫｜馬克理財工具箱</title>
 
   <!-- ✅ SEO 基本設定 -->
-  <meta name="description" content="新手專屬 ETF 入門任務地圖：從開戶、定期定額、建立追蹤表，到懂得看配息、選 ETF 與面對回檔，一步步變成會思考的 ETF 投資人。">
+  <meta name="description" content="新手專屬 ETF 入門任務地圖：從開戶、定期定額、建立追蹤表，到懂得看配息、選 ETF 與面對回檔，再搭配 4 大免費理財工具，一步步變成會思考的 ETF 投資人。">
 
   <!-- ✅ OG for 新手投資村 -->
   <meta property="og:title" content="🏡 新手投資村計畫｜從零開始學 ETF｜馬克理財" />
-  <meta property="og:description" content="每週一個小任務，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。" />
+  <meta property="og:description" content="每週一個小任務，搭配 4 大免費理財工具，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。" />
   <meta property="og:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
   <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" />
   <meta property="og:type" content="website" />
@@ -19,7 +19,7 @@
   <!-- Twitter（選填） -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="🏡 新手投資村計畫｜從零開始學 ETF｜馬克理財">
-  <meta name="twitter:description" content="每週一個小任務，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。">
+  <meta name="twitter:description" content="每週一個小任務，搭配 4 大免費理財工具，帶你從完全新手到會用工具、看得懂配息與風險，慢慢變成會思考的 ETF 投資人。">
   <meta name="twitter:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png">
 
   <link rel="icon" href="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" type="image/png">
@@ -87,6 +87,22 @@
     .hero-highlight {
       color: var(--yellow);
       font-weight: 600;
+    }
+
+    .hero-steps {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .hero-step-tag {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 213, 79, 0.8);
+      padding: 0.25rem 0.8rem;
+      background: rgba(0,0,0,0.14);
     }
 
     .hero-cta {
@@ -187,6 +203,21 @@
 
     tbody tr:nth-child(even) {
       background: #FFFDF5;
+    }
+
+    .mission-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      background: #E3F2E9;
+      color: var(--green);
+      margin-left: 0.25rem;
+    }
+
+    .mission-tag-adv {
+      background: #FFF3CD;
+      color: #8A6D00;
     }
 
     .cta a {
@@ -326,6 +357,67 @@
       margin-top: 0.3rem;
     }
 
+    /* 工具包卡片 */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tool-card {
+      background: #FFFFFF;
+      border-radius: 0.9rem;
+      padding: 1rem;
+      border: 1px solid #E5EBE4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .tool-card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+      color: var(--green);
+    }
+
+    .tool-card p {
+      font-size: 0.85rem;
+      color: #555;
+      margin: 0.2rem 0;
+    }
+
+    .tool-card a {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      text-decoration: none;
+      color: var(--green);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: #E3F2E9;
+    }
+
+    .tool-card a:hover {
+      background: #D2E7DD;
+    }
+
+    /* FAQ */
+    .faq-item {
+      margin-top: 0.8rem;
+      padding-top: 0.4rem;
+      border-top: 1px dashed #D7DDD6;
+    }
+
+    .faq-q {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .faq-a {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 0.2rem;
+    }
+
     #viewCounter {
       margin-top:1.5rem;
       text-align:center;
@@ -361,6 +453,12 @@
       filter: brightness(1.05);
     }
 
+    @media (max-width: 720px) {
+      .tool-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 600px) {
       .hero h1 {
         font-size: 1.6rem;
@@ -379,6 +477,9 @@
         border-radius: 1rem;
         padding-inline: 0.7rem;
       }
+      .hero-steps {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -394,6 +495,11 @@
         建議節奏：<span class="hero-highlight">每週 1 個任務</span>，前 5 個任務打好基礎，<br>
         任務 06、07 則幫你搞定「怎麼選」和「遇到大跌怎麼辦」。
       </p>
+      <div class="hero-steps">
+        <div class="hero-step-tag">STEP 1：弄懂 ETF 是什麼</div>
+        <div class="hero-step-tag">STEP 2：開戶＋定期定額啟動</div>
+        <div class="hero-step-tag">STEP 3：用工具追蹤＆看懂回檔</div>
+      </div>
       <div class="hero-cta">
         <a href="#mission-map">從 01 任務開始破關 ▶</a>
       </div>
@@ -434,7 +540,10 @@
         <tbody>
           <tr>
             <td>01</td>
-            <td>什麼是 ETF？跟股票有什麼不同？</td>
+            <td>
+              什麼是 ETF？跟股票有什麼不同？
+              <span class="mission-tag">基礎</span>
+            </td>
             <td>
               <a href="https://youtu.be/lXZMPNxH-T4" target="_blank">📺 新手投資村 第 1 集</a>
             </td>
@@ -446,7 +555,10 @@
           </tr>
           <tr>
             <td>02</td>
-            <td>準備資料開證券戶＆設定第一個定期定額</td>
+            <td>
+              準備資料開證券戶＆設定第一個定期定額
+              <span class="mission-tag">基礎</span>
+            </td>
             <td>
               <a href="https://youtu.be/S3SaVYtBXJY" target="_blank">📺 新手投資村 第 2 集</a><br>
               <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 複利試算工具</a><br>
@@ -460,7 +572,10 @@
           </tr>
           <tr>
             <td>03</td>
-            <td>建立自己的 ETF 追蹤表（不是看盤，是看人生）</td>
+            <td>
+              建立自己的 ETF 追蹤表（不是看盤，是看人生）
+              <span class="mission-tag">基礎</span>
+            </td>
             <td>
               <a href="https://docs.google.com/spreadsheets/d/1wGTL7QmNVxmf-SJsUVmjD-uMx5lTLBRia9A9mQaOb-4/edit?usp=sharing" target="_blank">📊 Google Sheet 範本</a><br>
               <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">📌 ETF 追蹤牆</a>
@@ -473,7 +588,10 @@
           </tr>
           <tr>
             <td>04</td>
-            <td>加入 LINE 社群，找到一起走路的人</td>
+            <td>
+              加入 LINE 社群，找到一起走路的人
+              <span class="mission-tag">基礎</span>
+            </td>
             <td>
               <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">👥 填表加入「馬濕克村民」</a>
             </td>
@@ -485,7 +603,10 @@
           </tr>
           <tr>
             <td>05</td>
-            <td>弄懂紅漲綠跌、殖利率 &「配息 ≠ 獲利」</td>
+            <td>
+              弄懂紅漲綠跌、殖利率 &「配息 ≠ 獲利」
+              <span class="mission-tag">基礎</span>
+            </td>
             <td>
               <a href="#" target="_blank">📸 IG 圖卡教學（更新中）</a><br>
               <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">💧 ETF 配息瀑布牆</a>
@@ -498,7 +619,10 @@
           </tr>
           <tr>
             <td>06</td>
-            <td>挑出你的第一檔 ETF（配息派 vs 指數派）</td>
+            <td>
+              挑出你的第一檔 ETF（配息派 vs 指數派）
+              <span class="mission-tag mission-tag-adv">進階</span>
+            </td>
             <td>
               <a href="#" target="_blank">🎬 新手投資村 第 3 集（規劃中）</a><br>
               <small style="color:#777;">先釐清：你是想要「現金流感受」還是「資本利得成長」？</small>
@@ -511,7 +635,10 @@
           </tr>
           <tr>
             <td>07</td>
-            <td>第一次遇到大回檔，寫下你的「停看聽 SOP」</td>
+            <td>
+              第一次遇到大回檔，寫下你的「停看聽 SOP」
+              <span class="mission-tag mission-tag-adv">進階</span>
+            </td>
             <td>
               <a href="#" target="_blank">🎧 心態特輯影片 / Podcast（規劃中）</a><br>
               <small style="color:#777;">先想好跌 10% / 20% 時，你要看什麼指標、對自己說什麼。</small>
@@ -553,6 +680,46 @@
 
       <p style="margin-top:0.6rem; font-size:0.85rem; color:#777;">
         小提醒：如果你現在資金不多也沒關係，<strong>先把任務做完，觀念建立好，比急著進場更重要。</strong>
+      </p>
+    </div>
+
+    <!-- 🔧 新手投資工具包 -->
+    <div class="section">
+      <h2>🔧 新手投資工具包：4 大免費工具一次搞定</h2>
+      <p>搭配上面的任務一起用，效果最好。這 4 個工具就是你影片裡那套「投資變簡單」工具箱：</p>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h3>1️⃣ 複利試算工具</h3>
+          <p>幫你試算「每月存多少＋報酬率大概多少」未來可能長成什麼樣子。</p>
+          <p>適合用在：任務 02 決定定期定額金額時，先看一眼未來的可能範圍。</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">開啟複利試算工具 ▶</a>
+        </div>
+
+        <div class="tool-card">
+          <h3>2️⃣ 退休倒推試算</h3>
+          <p>從「想要的退休生活」倒推回來，推算現在大概要存多少、報酬率要抓多少比較合理。</p>
+          <p>適合用在：完成 01–03 任務後，開始思考中長期目標。</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">開啟退休倒推 ▶</a>
+        </div>
+
+        <div class="tool-card">
+          <h3>3️⃣ ETF 追蹤牆</h3>
+          <p>把你實際持有或關注的 ETF 放在一起，看長期績效與紀律，而不是每天盯 K 線。</p>
+          <p>適合用在：任務 03「建立自己的 ETF 追蹤表」時，一起搭配。</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">開啟 ETF 追蹤牆 ▶</a>
+        </div>
+
+        <div class="tool-card">
+          <h3>4️⃣ ETF 配息瀑布牆</h3>
+          <p>用圖卡方式看配息時間、殖利率，不再只看單一次公告的「數字爽度」。</p>
+          <p>適合用在：任務 05「配息 ≠ 獲利」時，練習看懂入帳節奏與風險。</p>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">開啟配息瀑布牆 ▶</a>
+        </div>
+      </div>
+
+      <p style="font-size:0.85rem;color:#777;margin-top:0.7rem;">
+        小建議：你可以把這一區加入書籤，或直接在手機主畫面建立捷徑，讓自己「滑 IG 之前，先滑一下工具」。😆
       </p>
     </div>
 
@@ -644,6 +811,39 @@
         <a href="https://www.youtube.com/watch?v=1Amo-nkHMeA" target="_blank">
           📈 高股息 ETF 00713 深入解析
         </a>
+      </div>
+    </div>
+
+    <!-- 常見卡關 Q&A -->
+    <div class="section">
+      <h2>❓ 新手常見卡關：你可能也在想這些</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">Q1. 我現在錢很少，真的有必要現在就開始嗎？</div>
+        <div class="faq-a">
+          有。你一開始存的不是「錢」，而是「習慣」和「紀錄」。<br>
+          就算每月只定期定額 1,000 元，先完成 01～03 任務，<strong>讓自己習慣看追蹤表、用工具思考</strong>，之後收入變多，你只要把數字放大就好。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Q2. 我很怕買在高點，一直猶豫不敢按下去…</div>
+        <div class="faq-a">
+          這就是為什麼有「任務 02：定期定額」跟「任務 07：回檔 SOP」。<br>
+          <strong>你不用猜高低點</strong>，你只要決定：<br>
+          （1）這筆錢是要放多久？<br>
+          （2）如果跌 20%，你要看哪些指標、會不會睡不著？<br>
+          想清楚，反而比在那邊「等完美點位」安全得多。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Q3. 這麼多 ETF，我到底要選哪一檔？</div>
+        <div class="faq-a">
+          先不要一次研究十檔。<br>
+          任務 06 就是要你<strong>先決定自己是偏「配息派」還是「指數成長派」</strong>，再從每個族群挑 1 檔當起點。<br>
+          你也可以把自己的想法打在紀錄表裡，之後回頭看，會發現自己的眼光也在進化。
+        </div>
       </div>
     </div>
 
