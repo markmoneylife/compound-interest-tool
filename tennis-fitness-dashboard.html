@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>網球體能教練中心｜測驗儀表板＋成長圖＋隊伍分析</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     :root {
       --bg: #0b1020;
@@ -14,18 +15,21 @@
       --text: #E5E7EB;
       --border: #1F2937;
     }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC",
-                   "Microsoft JhengHei", system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei",
+                   system-ui, sans-serif;
       background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
       color: var(--text);
     }
+
     .page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
     header { margin-bottom: 1.5rem; }
     header h1 { margin: 0 0 .25rem; font-size: 1.6rem; letter-spacing: .08em; }
     header p { margin: 0.1rem 0; color: var(--muted); font-size: .92rem; }
+
     .tagline {
       display: inline-flex; align-items: center; gap: .4rem;
       padding: .3rem .75rem; border-radius: 999px;
@@ -37,20 +41,8 @@
       background: var(--accent); box-shadow: 0 0 8px rgba(34,197,94,.8);
     }
 
-    .section-title {
-      margin: 1.5rem 0 .75rem;
-      font-size: 1.15rem;
-      letter-spacing: .06em;
-      color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-    .section-title span.small {
-      font-size: .78rem;
-      color: var(--muted);
-      font-weight: 400;
-    }
+    .section-title { margin: 1.5rem 0 .75rem; font-size: 1.15rem; letter-spacing: .06em; }
+    .section-title span.small { font-size: .78rem; color: var(--muted); }
 
     .layout {
       display: grid;
@@ -60,6 +52,7 @@
     @media (max-width: 960px) {
       .layout { grid-template-columns: minmax(0, 1fr); }
     }
+
     .card {
       background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(3,7,18,.98));
       border-radius: 1rem;
@@ -67,13 +60,8 @@
       padding: 1.25rem 1.25rem 1.4rem;
       box-shadow: 0 20px 45px rgba(0,0,0,.55);
     }
-    .card h2 {
-      margin: 0 0 .2rem;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
+
+    .card h2 { margin: 0 0 .2rem; font-size: 1.1rem; display: flex; align-items: center; gap: .5rem; }
     .card h2 .pill {
       padding: .05rem .55rem; font-size: .7rem;
       border-radius: 999px; border: 1px solid rgba(148,163,184,.4);
@@ -88,9 +76,11 @@
     @media (max-width: 720px) {
       .player-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
+
     label span {
       display: block; font-size: .78rem; color: var(--muted); margin-bottom: .2rem;
     }
+
     input, select {
       width: 100%; border-radius: .6rem;
       border: 1px solid rgba(55,65,81,.9);
@@ -101,6 +91,7 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(34,197,94,.4);
     }
+
     .tests-table {
       width: 100%; border-collapse: collapse; margin-top: .75rem; font-size: .8rem;
     }
@@ -115,18 +106,20 @@
     }
     .tests-table tr:last-child td { border-bottom: none; }
     .test-name { white-space: nowrap; }
+
     .badge {
       display: inline-flex; padding: .1rem .45rem; border-radius: 999px;
       font-size: .68rem; border: 1px solid rgba(75,85,99,.9);
       color: var(--muted); background: rgba(15,23,42,.9);
     }
-    .badge.jump     { border-color: rgba(96,165,250,.7); color:#bfdbfe;}
-    .badge.upper    { border-color: rgba(251,191,36,.7); color:#fde68a;}
-    .badge.agility  { border-color: rgba(45,212,191,.7); color:#99f6e4;}
+    .badge.jump     { border-color: rgba(96,165,250,.7);   color:#bfdbfe;}
+    .badge.upper    { border-color: rgba(251,191,36,.7);   color:#fde68a;}
+    .badge.agility  { border-color: rgba(45,212,191,.7);   color:#99f6e4;}
     .badge.speed    { border-color: rgba(248,113,113,.75); color:#fecaca;}
-    .badge.aerobic  { border-color: rgba(52,211,153,.75); color:#bbf7d0;}
+    .badge.aerobic  { border-color: rgba(52,211,153,.75);  color:#bbf7d0;}
     .badge.reaction { border-color: rgba(167,139,250,.75); color:#e9d5ff;}
-    .text-right { text-align: right; }
+
+    .text-right { text-align:right; }
     .score-select { width: 80px; }
     .hint-row { font-size: .72rem; color: var(--muted); padding-top: .4rem; }
 
@@ -134,6 +127,7 @@
       margin-top: 1rem; display: flex; flex-wrap: wrap;
       gap: .75rem; align-items: center; justify-content: space-between;
     }
+
     button#analyzeBtn {
       border: none; border-radius: 999px;
       padding: .55rem 1.3rem; font-size: .88rem; font-weight: 600;
@@ -147,6 +141,7 @@
       transform: translateY(1px);
       box-shadow: 0 6px 12px rgba(34,197,94,.4);
     }
+
     .sessions-select {
       display: inline-flex; align-items: center; gap: .4rem;
       font-size: .8rem; color: var(--muted);
@@ -154,6 +149,7 @@
     .sessions-select select { width: 70px; padding-inline: .4rem; }
 
     .results-section { display: flex; flex-direction: column; gap: 1rem; }
+
     .summary-grid {
       display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: .6rem; margin-top: .6rem;
@@ -161,6 +157,7 @@
     @media (max-width: 720px) {
       .summary-grid { grid-template-columns: minmax(0, 1fr); }
     }
+
     .summary-item {
       border-radius: .75rem; padding: .55rem .7rem;
       border: 1px solid rgba(55,65,81,.9);
@@ -168,6 +165,7 @@
       font-size: .78rem;
     }
     .summary-item strong { display: block; margin-bottom: .1rem; }
+
     .summary-tag {
       display: inline-flex; align-items: center; gap: .2rem;
       font-size: .7rem; border-radius: 999px;
@@ -183,6 +181,7 @@
       border-radius: .9rem; border: 1px solid rgba(31,41,55,.95);
       padding: .6rem .65rem .8rem;
     }
+
     .schedule {
       margin-top: .75rem; border-radius: .9rem;
       border: 1px solid rgba(31,41,55,.95);
@@ -203,12 +202,13 @@
     .module-label { font-weight: 500; }
     .module-detail { color: var(--muted); font-size: .76rem; }
     .empty-note { margin-top: .5rem; font-size: .76rem; color: var(--muted); }
+
     .footer-note {
       margin-top: 1.5rem; font-size: .72rem; color: var(--muted);
       text-align: right; opacity: .7;
     }
 
-    /* 教練中心區塊 */
+    /* 教練中心 layout */
     .coach-layout {
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -217,13 +217,16 @@
     @media (max-width: 1024px) {
       .coach-layout { grid-template-columns: minmax(0, 1fr); }
     }
+
     .coach-controls {
-      display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0 1rem;
+      display: flex; flex-wrap: wrap; gap: .6rem;
+      margin: .7rem 0 1rem;
       align-items: center; font-size: .82rem;
     }
     .coach-controls select {
       width: auto; min-width: 150px;
     }
+
     .badge-small {
       display: inline-flex;
       align-items: center;
@@ -234,6 +237,7 @@
       color: var(--muted);
       font-size: .72rem;
     }
+
     .table-basic {
       width: 100%; border-collapse: collapse; font-size: .78rem; margin-top: .5rem;
     }
@@ -244,7 +248,7 @@
     .table-basic th {
       text-align: left; font-weight: 500; color: var(--muted);
     }
-    .text-right { text-align:right; }
+    .table-basic td.text-right { text-align:right; }
   </style>
 </head>
 <body>
@@ -258,11 +262,11 @@
       <p>上半部：輸入最新測驗、即時分析並寫入歷史紀錄。<br>下半部：讀取 <code>records</code>，看球員成長曲線與整隊弱項。</p>
     </header>
 
-    <!-- ========= 上半部：輸入＋寫入（保留原本功能） ========= -->
+    <!-- ========= 上半部：輸入＋寫入 ========= -->
     <h2 class="section-title">一、單次測驗輸入區 <span class="small">（測完當下用）</span></h2>
 
     <main class="layout">
-      <!-- 左側：輸入區 -->
+      <!-- 左：輸入區 -->
       <section class="card">
         <h2>1. 球員資料與測驗分數 <span class="pill">Input</span></h2>
         <small>由教練根據實際成績換算 1–5 分：3＝平均、1–2＝明顯弱、4–5＝明顯強。</small>
@@ -346,63 +350,108 @@
               <td class="test-name">爆發俯臥撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="overhead_throw">
               <td class="test-name">觸球過頭拋</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="boat_overhead_throw">
               <td class="test-name">船姿簍球過頭拋</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="horizontal_throw_r">
               <td class="test-name">觸球水平拋（右）</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="horizontal_throw_l">
               <td class="test-name">觸球水平拋（左）</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="inverted_row">
               <td class="test-name">反向划船</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="shoulder_iso">
               <td class="test-name">肩關節等長</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="plank">
               <td class="test-name">平板撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="pushup">
               <td class="test-name">俯臥撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
 
@@ -411,14 +460,24 @@
               <td class="test-name">505敏捷跑（右）</td>
               <td><span class="badge agility">敏捷變向</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="agility_505_l">
               <td class="test-name">505敏捷跑（左）</td>
               <td><span class="badge agility">敏捷變向</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
 
@@ -427,21 +486,36 @@
               <td class="test-name">發球速度</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="sprint_20m">
               <td class="test-name">20米衝刺</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
             <tr data-test-id="sprint_10m">
               <td class="test-name">10米衝刺</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
 
@@ -450,7 +524,12 @@
               <td class="test-name">最大有氧</td>
               <td><span class="badge aerobic">最大有氧</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
 
@@ -459,7 +538,12 @@
               <td class="test-name">反應燈測試</td>
               <td><span class="badge reaction">反應能力</span></td>
               <td class="text-right">
-                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
               </td>
             </tr>
 
@@ -489,7 +573,7 @@
         </div>
       </section>
 
-      <!-- 右側：單次分析 -->
+      <!-- 右：單次分析 -->
       <section class="results-section">
         <div class="card">
           <h2>2. 分類分數 & 優先順序 <span class="pill">Analysis</span></h2>
@@ -524,7 +608,7 @@
       </section>
     </main>
 
-    <!-- ========= 下半部：教練中心（成長圖＋隊伍儀表板） ========= -->
+    <!-- ========= 下半部：教練中心 ========= -->
     <h2 class="section-title">二、教練中心 <span class="small">（讀取 records 歷史紀錄）</span></h2>
 
     <section class="coach-layout">
@@ -585,15 +669,15 @@
 
   </div>
 
-  <!-- 第三方套件：Chart.js + PapaParse -->
+  <!-- Chart.js + PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    // ★★★ 替換為你的 Apps Script Web App URL（目前已填你給的那一串） ★★★
+    // ★ Apps Script Web App URL（你那串）
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxZ18o8e96xYH9OFbQmHU8snC0uTP8HU-1TfGdq2X1BVl6kuu_CyXJzaiIHnK-kB9mUJQ/exec';
 
-    // ★★★ records 公開 CSV 連結，如有換 gid 再自己改 ★★★
+    // ★ records 的 CSV 連結
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv';
 
     // 測驗項目 → 分類 key
@@ -682,7 +766,7 @@
     let playerCompareRadarInstance = null;
     let teamRadarInstance = null;
 
-    // ========= 上半部：單次分析 & 寫入 =========
+    // ========= 上半部：單次分析 =========
     function analyze() {
       const rows = document.querySelectorAll("#testsBody tr[data-test-id]");
       const scoresByCategory = {};
@@ -857,25 +941,50 @@
 
     document.getElementById("analyzeBtn").addEventListener("click", analyze);
 
-    // ========= 下半部：讀取 records，做成長圖＋隊伍儀表板 =========
+    // ========= 下半部：讀取 records =========
     async function loadRecordsCSV() {
       const res = await fetch(CSV_URL);
       const text = await res.text();
-      const parsed = Papa.parse(text, { header: true });
-      const rows = parsed.data.filter(r => r.Timestamp && r.PlayerName);
+
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+
+      // 1) 正規化欄位名稱（去掉空白）
+      const normalizedRows = parsed.data.map(row => {
+        const normalized = {};
+        Object.keys(row || {}).forEach(k => {
+          const keyTrim = k ? k.trim() : "";
+          normalized[keyTrim] = row[k];
+        });
+        return normalized;
+      });
+
+      // 2) 有 PlayerName 就算一筆有效紀錄
+      const rows = normalizedRows.filter(r => {
+        if (!r) return false;
+        const name = (r.PlayerName || "").toString().trim();
+        return name !== "";
+      });
+
+      // 3) 型別處理
       rows.forEach(r => {
+        r.PlayerName = (r.PlayerName || "").toString().trim();
+        r.Timestamp  = (r.Timestamp  || "").toString().trim();
+
+        r.JumpScore     = parseFloat(r.JumpScore)     || 0;
+        r.UpperScore    = parseFloat(r.UpperScore)    || 0;
+        r.AgilityScore  = parseFloat(r.AgilityScore)  || 0;
+        r.SpeedScore    = parseFloat(r.SpeedScore)    || 0;
+        r.AerobicScore  = parseFloat(r.AerobicScore)  || 0;
+        r.ReactionScore = parseFloat(r.ReactionScore) || 0;
+
         try {
           r.raw = r.RawDetailJson ? JSON.parse(r.RawDetailJson) : {};
-        } catch {
+        } catch (e) {
           r.raw = {};
         }
-        r.JumpScore    = parseFloat(r.JumpScore)    || 0;
-        r.UpperScore   = parseFloat(r.UpperScore)   || 0;
-        r.AgilityScore = parseFloat(r.AgilityScore) || 0;
-        r.SpeedScore   = parseFloat(r.SpeedScore)   || 0;
-        r.AerobicScore = parseFloat(r.AerobicScore) || 0;
-        r.ReactionScore= parseFloat(r.ReactionScore)|| 0;
       });
+
+      console.log("loaded records:", rows);
       return rows;
     }
 
@@ -885,6 +994,12 @@
 
       const namesSet = new Set(records.map(r => r.PlayerName).filter(Boolean));
       const names = Array.from(namesSet).sort();
+
+      if (!names.length) {
+        select.innerHTML = '<option value="">目前沒有球員紀錄</option>';
+        info.textContent = "尚未有任何 records 紀錄。";
+        return;
+      }
 
       select.innerHTML = '<option value="">請選擇球員</option>';
       names.forEach(name => {
@@ -932,12 +1047,12 @@
       const data = {
         labels,
         datasets: [
-          { label: "下肢爆發", data: jump, borderWidth: 2 },
-          { label: "上肢＆核心", data: upper, borderWidth: 2 },
-          { label: "敏捷", data: agility, borderWidth: 2 },
-          { label: "速度", data: speed, borderWidth: 2 },
-          { label: "最大有氧", data: aerobic, borderWidth: 2 },
-          { label: "反應", data: reaction, borderWidth: 2 }
+          { label: "下肢爆發",   data: jump,    borderWidth: 2 },
+          { label: "上肢＆核心", data: upper,   borderWidth: 2 },
+          { label: "敏捷",       data: agility, borderWidth: 2 },
+          { label: "速度",       data: speed,   borderWidth: 2 },
+          { label: "最大有氧",   data: aerobic, borderWidth: 2 },
+          { label: "反應",       data: reaction,borderWidth: 2 }
         ]
       };
 
@@ -951,7 +1066,8 @@
             grid: { color: "rgba(31,41,55,0.6)" }
           },
           y: {
-            min: 0, max: 5, ticks: { stepSize: 1, color: "#9CA3AF" },
+            min: 0, max: 5,
+            ticks: { stepSize: 1, color: "#9CA3AF" },
             grid: { color: "rgba(31,41,55,0.6)" }
           }
         }
@@ -975,8 +1091,10 @@
       const last  = records[records.length - 1];
 
       const labels = ["下肢爆發","上肢核心","敏捷","速度","最大有氧","反應"];
-      const firstData = [first.JumpScore, first.UpperScore, first.AgilityScore, first.SpeedScore, first.AerobicScore, first.ReactionScore];
-      const lastData  = [last.JumpScore,  last.UpperScore,  last.AgilityScore,  last.SpeedScore,  last.AerobicScore,  last.ReactionScore];
+      const firstData = [first.JumpScore, first.UpperScore, first.AgilityScore,
+                         first.SpeedScore, first.AerobicScore, first.ReactionScore];
+      const lastData  = [last.JumpScore,  last.UpperScore,  last.AgilityScore,
+                         last.SpeedScore,  last.AerobicScore,  last.ReactionScore];
 
       const data = {
         labels,
@@ -1027,12 +1145,12 @@
       let count = 0;
 
       records.forEach(r => {
-        if (!isNaN(r.JumpScore))    sums.jump    += r.JumpScore;
-        if (!isNaN(r.UpperScore))   sums.upper   += r.UpperScore;
-        if (!isNaN(r.AgilityScore)) sums.agility += r.AgilityScore;
-        if (!isNaN(r.SpeedScore))   sums.speed   += r.SpeedScore;
-        if (!isNaN(r.AerobicScore)) sums.aerobic += r.AerobicScore;
-        if (!isNaN(r.ReactionScore))sums.reaction+= r.ReactionScore;
+        sums.jump    += r.JumpScore;
+        sums.upper   += r.UpperScore;
+        sums.agility += r.AgilityScore;
+        sums.speed   += r.SpeedScore;
+        sums.aerobic += r.AerobicScore;
+        sums.reaction+= r.ReactionScore;
         count++;
       });
 
@@ -1053,6 +1171,7 @@
           fill: true
         }]
       };
+
       const options = {
         scales: {
           r: {
@@ -1100,11 +1219,11 @@
         drawTeamDashboard(records);
       } catch (e) {
         console.error("載入 records 失敗：", e);
-        document.getElementById("teamSummaryInfo").textContent = "載入 records 失敗，請檢查 CSV_URL 是否正確公開。";
+        document.getElementById("teamSummaryInfo").textContent =
+          "載入 records 失敗，請檢查 CSV_URL 是否正確公開。";
       }
     }
 
-    // 初始化教練中心
     window.addEventListener('load', initCoachCenter);
   </script>
 </body>
