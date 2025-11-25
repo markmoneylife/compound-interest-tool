@@ -2,18 +2,14 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>網球體能測驗儀表板＋排課 AI 模組</title>
+  <title>網球體能教練中心｜測驗儀表板＋成長圖＋隊伍分析</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
       --bg: #0b1020;
       --card: #111827;
-      --card-soft: #111111;
       --accent: #22c55e;
-      --accent-soft: rgba(34,197,94,0.12);
       --accent-strong: #16a34a;
-      --danger: #ef4444;
-      --warning: #f97316;
       --muted: #9CA3AF;
       --text: #E5E7EB;
       --border: #1F2937;
@@ -40,6 +36,22 @@
       width: .4rem; height: .4rem; border-radius: 999px;
       background: var(--accent); box-shadow: 0 0 8px rgba(34,197,94,.8);
     }
+
+    .section-title {
+      margin: 1.5rem 0 .75rem;
+      font-size: 1.15rem;
+      letter-spacing: .06em;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .section-title span.small {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -68,6 +80,7 @@
       color: var(--muted);
     }
     .card small { color: var(--muted); font-size: .78rem; }
+
     .player-grid {
       display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: .75rem; margin-top: 1rem; margin-bottom: 1rem;
@@ -116,6 +129,7 @@
     .text-right { text-align: right; }
     .score-select { width: 80px; }
     .hint-row { font-size: .72rem; color: var(--muted); padding-top: .4rem; }
+
     .actions {
       margin-top: 1rem; display: flex; flex-wrap: wrap;
       gap: .75rem; align-items: center; justify-content: space-between;
@@ -193,6 +207,44 @@
       margin-top: 1.5rem; font-size: .72rem; color: var(--muted);
       text-align: right; opacity: .7;
     }
+
+    /* 教練中心區塊 */
+    .coach-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 1024px) {
+      .coach-layout { grid-template-columns: minmax(0, 1fr); }
+    }
+    .coach-controls {
+      display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0 1rem;
+      align-items: center; font-size: .82rem;
+    }
+    .coach-controls select {
+      width: auto; min-width: 150px;
+    }
+    .badge-small {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      padding: .1rem .5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.4);
+      color: var(--muted);
+      font-size: .72rem;
+    }
+    .table-basic {
+      width: 100%; border-collapse: collapse; font-size: .78rem; margin-top: .5rem;
+    }
+    .table-basic th, .table-basic td {
+      padding: .35rem .4rem;
+      border-bottom: 1px solid rgba(31,41,55,.9);
+    }
+    .table-basic th {
+      text-align: left; font-weight: 500; color: var(--muted);
+    }
+    .text-right { text-align:right; }
   </style>
 </head>
 <body>
@@ -200,17 +252,20 @@
     <header>
       <div class="tagline">
         <span class="dot"></span>
-        <span>網球體能總教練用｜測驗整理 × 弱項分析 × 自動排課建議</span>
+        <span>網球體能總教練用｜測驗紀錄 × 個別成長 × 隊伍儀表板</span>
       </div>
-      <h1>體能測驗儀表板 ＋ 排課 AI 模組</h1>
-      <p>先幫每個測驗打 1–5 分（5 分最好），系統會自動分析優勢與弱項，並產生一週訓練建議，且寫入 Google Sheet 歷史紀錄。</p>
+      <h1>網球體能教練中心</h1>
+      <p>上半部：輸入最新測驗、即時分析並寫入歷史紀錄。<br>下半部：讀取 <code>records</code>，看球員成長曲線與整隊弱項。</p>
     </header>
 
+    <!-- ========= 上半部：輸入＋寫入（保留原本功能） ========= -->
+    <h2 class="section-title">一、單次測驗輸入區 <span class="small">（測完當下用）</span></h2>
+
     <main class="layout">
-      <!-- 左側輸入 -->
+      <!-- 左側：輸入區 -->
       <section class="card">
         <h2>1. 球員資料與測驗分數 <span class="pill">Input</span></h2>
-        <small>建議由教練根據實際成績換算 1–5 分：3＝平均、1–2＝明顯弱、4–5＝明顯強。</small>
+        <small>由教練根據實際成績換算 1–5 分：3＝平均、1–2＝明顯弱、4–5＝明顯強。</small>
 
         <div class="player-grid">
           <label>
@@ -291,108 +346,63 @@
               <td class="test-name">爆發俯臥撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="overhead_throw">
               <td class="test-name">觸球過頭拋</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="boat_overhead_throw">
               <td class="test-name">船姿簍球過頭拋</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="horizontal_throw_r">
               <td class="test-name">觸球水平拋（右）</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="horizontal_throw_l">
               <td class="test-name">觸球水平拋（左）</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="inverted_row">
               <td class="test-name">反向划船</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="shoulder_iso">
               <td class="test-name">肩關節等長</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="plank">
               <td class="test-name">平板撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="pushup">
               <td class="test-name">俯臥撐</td>
               <td><span class="badge upper">上肢爆發 / 核心</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
 
@@ -401,24 +411,14 @@
               <td class="test-name">505敏捷跑（右）</td>
               <td><span class="badge agility">敏捷變向</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="agility_505_l">
               <td class="test-name">505敏捷跑（左）</td>
               <td><span class="badge agility">敏捷變向</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
 
@@ -427,36 +427,21 @@
               <td class="test-name">發球速度</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="sprint_20m">
               <td class="test-name">20米衝刺</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
             <tr data-test-id="sprint_10m">
               <td class="test-name">10米衝刺</td>
               <td><span class="badge speed">速度 / 爆發</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
 
@@ -465,12 +450,7 @@
               <td class="test-name">最大有氧</td>
               <td><span class="badge aerobic">最大有氧</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
 
@@ -479,12 +459,7 @@
               <td class="test-name">反應燈測試</td>
               <td><span class="badge reaction">反應能力</span></td>
               <td class="text-right">
-                <select class="score-select">
-                  <option value="">–</option>
-                  <option value="1">1</option><option value="2">2</option>
-                  <option value="3">3</option><option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+                <select class="score-select"><option value="">–</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
               </td>
             </tr>
 
@@ -514,11 +489,11 @@
         </div>
       </section>
 
-      <!-- 右側結果 -->
+      <!-- 右側：單次分析 -->
       <section class="results-section">
         <div class="card">
           <h2>2. 分類分數 & 優先順序 <span class="pill">Analysis</span></h2>
-          <small>分數越低代表越需要補強。系統會依照平均分數排序。</small>
+          <small>分數越低代表越需要補強。系統依平均分數排序。</small>
 
           <div id="summaryGrid" class="summary-grid"></div>
 
@@ -548,14 +523,78 @@
         </div>
       </section>
     </main>
+
+    <!-- ========= 下半部：教練中心（成長圖＋隊伍儀表板） ========= -->
+    <h2 class="section-title">二、教練中心 <span class="small">（讀取 records 歷史紀錄）</span></h2>
+
+    <section class="coach-layout">
+      <!-- 左：個別球員成長 -->
+      <section class="card">
+        <h2>4. 球員成長圖 <span class="pill">Player Progress</span></h2>
+        <small>從 <code>records</code> 抓出同一球員多次測驗，畫出 6 大分類的成長曲線，並比較第一次 vs 最新一次。</small>
+
+        <div class="coach-controls">
+          <span>選擇球員：</span>
+          <select id="playerSelect">
+            <option value="">讀取中...</option>
+          </select>
+          <span class="badge-small" id="playerSessionsInfo">尚未載入資料</span>
+        </div>
+
+        <div style="margin-bottom:.6rem;font-size:.78rem;color:var(--muted);">
+          折線圖：看每個分類隨時間的變化。<br>
+          雷達圖：比較該球員「第一次測驗」 vs 「最新一次」的體能輪廓。
+        </div>
+
+        <div class="radar-container" style="margin-bottom:0.75rem;">
+          <canvas id="playerProgressChart" height="250"></canvas>
+        </div>
+        <div class="radar-container">
+          <canvas id="playerCompareRadar" height="250"></canvas>
+          <p class="empty-note" id="playerCompareNote">
+            請先選擇球員，若該球員至少有兩次測驗紀錄，會顯示第一次 vs 最新一次的雷達比較。
+          </p>
+        </div>
+      </section>
+
+      <!-- 右：隊伍儀表板 -->
+      <section class="card">
+        <h2>5. 隊伍儀表板 <span class="pill">Team Dashboard</span></h2>
+        <small>觀察整隊目前的平均體能輪廓與弱項，適合排年度／學期訓練主軸。</small>
+
+        <div class="badge-small" id="teamSummaryInfo" style="margin:.6rem 0 0.4rem;">
+          讀取中...
+        </div>
+
+        <div class="radar-container" style="margin-bottom:.75rem;">
+          <canvas id="teamRadarChart" height="250"></canvas>
+        </div>
+
+        <table class="table-basic" id="teamWeaknessTable">
+          <thead>
+            <tr>
+              <th>排序</th>
+              <th>分類</th>
+              <th class="text-right">全隊平均分數</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </section>
+
   </div>
 
-  <!-- Chart.js CDN -->
+  <!-- 第三方套件：Chart.js + PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    // ★★★ 這裡改成你的 Apps Script Web App URL ★★★
+    // ★★★ 替換為你的 Apps Script Web App URL（目前已填你給的那一串） ★★★
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxZ18o8e96xYH9OFbQmHU8snC0uTP8HU-1TfGdq2X1BVl6kuu_CyXJzaiIHnK-kB9mUJQ/exec';
+
+    // ★★★ records 公開 CSV 連結，如有換 gid 再自己改 ★★★
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv';
 
     // 測驗項目 → 分類 key
     const TEST_CATEGORY_MAP = {
@@ -581,11 +620,9 @@
       reaction_light: 'reaction'
     };
 
-    // 分類資訊
     const CATEGORY_INFO = {
       jump: {
         label: "下肢跳躍 / 爆發力",
-        badgeClass: "jump",
         trainingName: "下肢爆發與制動控制",
         focus: [
           "箱子跳＋深蹲跳組合訓練",
@@ -595,7 +632,6 @@
       },
       upper: {
         label: "上肢爆發 / 核心穩定",
-        badgeClass: "upper",
         trainingName: "上肢揮拍力量與核心傳導",
         focus: [
           "藥球旋轉拋＋過頭拋訓練",
@@ -605,7 +641,6 @@
       },
       agility: {
         label: "敏捷變向",
-        badgeClass: "agility",
         trainingName: "變向敏捷與第一步啟動",
         focus: [
           "505、T 字跑、3-5-10 敏捷變向",
@@ -615,7 +650,6 @@
       },
       speed: {
         label: "速度 / 衝刺",
-        badgeClass: "speed",
         trainingName: "直線加速與發球步伐",
         focus: [
           "10–20 公尺漸進衝刺（技術專注）",
@@ -625,7 +659,6 @@
       },
       aerobic: {
         label: "最大有氧",
-        badgeClass: "aerobic",
         trainingName: "比賽耐力與恢復能力",
         focus: [
           "間歇跑（例如 15/15、30/30）",
@@ -635,7 +668,6 @@
       },
       reaction: {
         label: "反應能力",
-        badgeClass: "reaction",
         trainingName: "視覺 / 神經反應",
         focus: [
           "反應燈或顏色指令變向訓練",
@@ -646,7 +678,11 @@
     };
 
     let radarChartInstance = null;
+    let playerProgressChartInstance = null;
+    let playerCompareRadarInstance = null;
+    let teamRadarInstance = null;
 
+    // ========= 上半部：單次分析 & 寫入 =========
     function analyze() {
       const rows = document.querySelectorAll("#testsBody tr[data-test-id]");
       const scoresByCategory = {};
@@ -675,26 +711,21 @@
         const avg = scoresByCategory[key] / countByCategory[key];
         categoryResults.push({ key, avg, label: CATEGORY_INFO[key].label });
       }
-
-      // 最弱 → 最強
       categoryResults.sort((a, b) => a.avg - b.avg);
 
       renderSummary(categoryResults);
       renderRadarChart(categoryResults);
       renderSchedule(categoryResults);
 
-      // 取得輸入的球員資訊
       const playerName = document.getElementById("playerName").value || "";
       const age = parseInt(document.getElementById("playerAge").value || "", 10) || "";
       const level = document.getElementById("playerLevel").value || "";
 
-      // 分類平均分數 payload
       const categoriesPayload = {};
       categoryResults.forEach(c => {
         categoriesPayload[c.key] = c.avg;
       });
 
-      // 原始分數 payload
       const rawScores = {};
       document.querySelectorAll("#testsBody tr[data-test-id]").forEach(row => {
         const id = row.getAttribute("data-test-id");
@@ -702,7 +733,6 @@
         rawScores[id] = select.value ? Number(select.value) : null;
       });
 
-      // 寫入試算表
       saveToSheet({
         playerName,
         age,
@@ -778,8 +808,8 @@
       if (radarChartInstance) radarChartInstance.destroy();
       radarChartInstance = new Chart(ctx, { type: "radar", data: chartData, options });
 
-      const note = document.getElementById("chartNote");
-      note.textContent = "雷達圖越貼近外圈代表表現越好。看哪一邊凹下去，就是目前最需要補強的類別。";
+      document.getElementById("chartNote").textContent =
+        "雷達圖越貼近外圈代表表現越好。看哪一邊凹下去，就是目前最需要補強的類別。";
     }
 
     function renderSchedule(categoryResults) {
@@ -810,11 +840,7 @@
     }
 
     async function saveToSheet(payload) {
-      if (!WEB_APP_URL || WEB_APP_URL.indexOf('XXXXXXXXXXXXXXXX') !== -1) {
-        console.warn('尚未設定 Web App URL，略過寫入。');
-        return;
-      }
-
+      if (!WEB_APP_URL) return;
       try {
         await fetch(WEB_APP_URL, {
           method: 'POST',
@@ -823,8 +849,6 @@
           body: JSON.stringify(payload)
         });
         console.log('已送出到 records 分頁');
-        // 如果想給教練明確回饋，可以打開這行：
-        // alert('已寫入試算表歷史紀錄！');
       } catch (err) {
         console.error('寫入試算表失敗：', err);
         alert('寫入試算表失敗，請稍後再試。');
@@ -832,6 +856,256 @@
     }
 
     document.getElementById("analyzeBtn").addEventListener("click", analyze);
+
+    // ========= 下半部：讀取 records，做成長圖＋隊伍儀表板 =========
+    async function loadRecordsCSV() {
+      const res = await fetch(CSV_URL);
+      const text = await res.text();
+      const parsed = Papa.parse(text, { header: true });
+      const rows = parsed.data.filter(r => r.Timestamp && r.PlayerName);
+      rows.forEach(r => {
+        try {
+          r.raw = r.RawDetailJson ? JSON.parse(r.RawDetailJson) : {};
+        } catch {
+          r.raw = {};
+        }
+        r.JumpScore    = parseFloat(r.JumpScore)    || 0;
+        r.UpperScore   = parseFloat(r.UpperScore)   || 0;
+        r.AgilityScore = parseFloat(r.AgilityScore) || 0;
+        r.SpeedScore   = parseFloat(r.SpeedScore)   || 0;
+        r.AerobicScore = parseFloat(r.AerobicScore) || 0;
+        r.ReactionScore= parseFloat(r.ReactionScore)|| 0;
+      });
+      return rows;
+    }
+
+    function initPlayerSelect(records) {
+      const select = document.getElementById("playerSelect");
+      const info = document.getElementById("playerSessionsInfo");
+
+      const namesSet = new Set(records.map(r => r.PlayerName).filter(Boolean));
+      const names = Array.from(namesSet).sort();
+
+      select.innerHTML = '<option value="">請選擇球員</option>';
+      names.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+
+      info.textContent = `目前共有 ${names.length} 位球員，有 ${records.length} 筆測驗紀錄。`;
+
+      select.addEventListener('change', () => {
+        const name = select.value;
+        if (!name) return;
+        drawPlayerViews(records, name);
+      });
+    }
+
+    function drawPlayerViews(records, playerName) {
+      const filtered = records.filter(r => r.PlayerName === playerName);
+      const info = document.getElementById("playerSessionsInfo");
+
+      if (!filtered.length) {
+        info.textContent = `球員「${playerName}」暫無紀錄。`;
+        return;
+      }
+
+      filtered.sort((a, b) => new Date(a.Timestamp) - new Date(b.Timestamp));
+      info.textContent = `球員「${playerName}」共有 ${filtered.length} 次測驗紀錄。`;
+
+      drawPlayerProgressChart(filtered);
+      drawPlayerCompareRadar(filtered);
+    }
+
+    function drawPlayerProgressChart(records) {
+      const ctx = document.getElementById("playerProgressChart").getContext("2d");
+      const labels = records.map(r => r.Timestamp);
+      const jump    = records.map(r => r.JumpScore);
+      const upper   = records.map(r => r.UpperScore);
+      const agility = records.map(r => r.AgilityScore);
+      const speed   = records.map(r => r.SpeedScore);
+      const aerobic = records.map(r => r.AerobicScore);
+      const reaction= records.map(r => r.ReactionScore);
+
+      const data = {
+        labels,
+        datasets: [
+          { label: "下肢爆發", data: jump, borderWidth: 2 },
+          { label: "上肢＆核心", data: upper, borderWidth: 2 },
+          { label: "敏捷", data: agility, borderWidth: 2 },
+          { label: "速度", data: speed, borderWidth: 2 },
+          { label: "最大有氧", data: aerobic, borderWidth: 2 },
+          { label: "反應", data: reaction, borderWidth: 2 }
+        ]
+      };
+
+      const options = {
+        plugins: {
+          legend: { labels: { color: "#E5E7EB", font: { size: 10 } } }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#9CA3AF", font: { size: 9 } },
+            grid: { color: "rgba(31,41,55,0.6)" }
+          },
+          y: {
+            min: 0, max: 5, ticks: { stepSize: 1, color: "#9CA3AF" },
+            grid: { color: "rgba(31,41,55,0.6)" }
+          }
+        }
+      };
+
+      if (playerProgressChartInstance) playerProgressChartInstance.destroy();
+      playerProgressChartInstance = new Chart(ctx, { type: 'line', data, options });
+    }
+
+    function drawPlayerCompareRadar(records) {
+      const note = document.getElementById("playerCompareNote");
+      const ctx = document.getElementById("playerCompareRadar").getContext("2d");
+
+      if (records.length < 2) {
+        note.textContent = "該球員目前只有一次測驗紀錄，無法比較第一次 vs 最新一次。";
+        if (playerCompareRadarInstance) playerCompareRadarInstance.destroy();
+        return;
+      }
+
+      const first = records[0];
+      const last  = records[records.length - 1];
+
+      const labels = ["下肢爆發","上肢核心","敏捷","速度","最大有氧","反應"];
+      const firstData = [first.JumpScore, first.UpperScore, first.AgilityScore, first.SpeedScore, first.AerobicScore, first.ReactionScore];
+      const lastData  = [last.JumpScore,  last.UpperScore,  last.AgilityScore,  last.SpeedScore,  last.AerobicScore,  last.ReactionScore];
+
+      const data = {
+        labels,
+        datasets: [
+          {
+            label: `第一次測驗（${first.Timestamp}）`,
+            data: firstData,
+            fill: true
+          },
+          {
+            label: `最新一次（${last.Timestamp}）`,
+            data: lastData,
+            fill: true
+          }
+        ]
+      };
+
+      const options = {
+        scales: {
+          r: {
+            min: 0,
+            max: 5,
+            ticks: { stepSize: 1, showLabelBackdrop: false, color: "#9CA3AF" },
+            grid: { color: "rgba(75,85,99,0.6)" },
+            angleLines: { color: "rgba(55,65,81,0.9)" },
+            pointLabels: { color: "#E5E7EB", font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: "#E5E7EB", font: { size: 10 } } }
+        }
+      };
+
+      if (playerCompareRadarInstance) playerCompareRadarInstance.destroy();
+      playerCompareRadarInstance = new Chart(ctx, { type: 'radar', data, options });
+
+      note.textContent = "綠區越往外代表進步越多，可以用來跟球員與家長說明訓練成效。";
+    }
+
+    function drawTeamDashboard(records) {
+      const info = document.getElementById("teamSummaryInfo");
+      if (!records.length) {
+        info.textContent = "目前沒有任何 records 紀錄。";
+        return;
+      }
+
+      const sums = { jump: 0, upper: 0, agility: 0, speed: 0, aerobic: 0, reaction: 0 };
+      let count = 0;
+
+      records.forEach(r => {
+        if (!isNaN(r.JumpScore))    sums.jump    += r.JumpScore;
+        if (!isNaN(r.UpperScore))   sums.upper   += r.UpperScore;
+        if (!isNaN(r.AgilityScore)) sums.agility += r.AgilityScore;
+        if (!isNaN(r.SpeedScore))   sums.speed   += r.SpeedScore;
+        if (!isNaN(r.AerobicScore)) sums.aerobic += r.AerobicScore;
+        if (!isNaN(r.ReactionScore))sums.reaction+= r.ReactionScore;
+        count++;
+      });
+
+      const avg = {};
+      for (const key in sums) avg[key] = (sums[key] / count) || 0;
+
+      info.textContent = `目前共有 ${count} 筆測驗紀錄，以下為整隊平均體能輪廓。`;
+
+      const radarCtx = document.getElementById("teamRadarChart").getContext("2d");
+      const labels = ["下肢爆發","上肢核心","敏捷","速度","最大有氧","反應"];
+      const dataVals = [avg.jump, avg.upper, avg.agility, avg.speed, avg.aerobic, avg.reaction];
+
+      const data = {
+        labels,
+        datasets: [{
+          label: "隊伍平均分數",
+          data: dataVals,
+          fill: true
+        }]
+      };
+      const options = {
+        scales: {
+          r: {
+            min: 0, max: 5,
+            ticks: { stepSize: 1, showLabelBackdrop: false, color: "#9CA3AF" },
+            grid: { color: "rgba(75,85,99,0.6)" },
+            angleLines: { color: "rgba(55,65,81,0.9)" },
+            pointLabels: { color: "#E5E7EB", font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: "#E5E7EB", font: { size: 10 } } }
+        }
+      };
+
+      if (teamRadarInstance) teamRadarInstance.destroy();
+      teamRadarInstance = new Chart(radarCtx, { type: 'radar', data, options });
+
+      const list = [
+        { key: 'jump',    label: CATEGORY_INFO.jump.label,    value: avg.jump },
+        { key: 'upper',   label: CATEGORY_INFO.upper.label,   value: avg.upper },
+        { key: 'agility', label: CATEGORY_INFO.agility.label, value: avg.agility },
+        { key: 'speed',   label: CATEGORY_INFO.speed.label,   value: avg.speed },
+        { key: 'aerobic', label: CATEGORY_INFO.aerobic.label, value: avg.aerobic },
+        { key: 'reaction',label: CATEGORY_INFO.reaction.label,value: avg.reaction }
+      ].sort((a, b) => a.value - b.value);
+
+      const tbody = document.querySelector("#teamWeaknessTable tbody");
+      tbody.innerHTML = "";
+      list.forEach((item, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${item.label}</td>
+          <td class="text-right">${item.value.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function initCoachCenter() {
+      try {
+        const records = await loadRecordsCSV();
+        initPlayerSelect(records);
+        drawTeamDashboard(records);
+      } catch (e) {
+        console.error("載入 records 失敗：", e);
+        document.getElementById("teamSummaryInfo").textContent = "載入 records 失敗，請檢查 CSV_URL 是否正確公開。";
+      }
+    }
+
+    // 初始化教練中心
+    window.addEventListener('load', initCoachCenter);
   </script>
 </body>
 </html>
