@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>網球體能測驗儀表板＋排課 AI 模組</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #111827;
+      --card-soft: #111111;
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.12);
+      --accent-strong: #16a34a;
+      --danger: #ef4444;
+      --warning: #f97316;
+      --muted: #9CA3AF;
+      --text: #E5E7EB;
+      --border: #1F2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC",
+                   "Microsoft JhengHei", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
+      color: var(--text);
+    }
+    .page { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+    header { margin-bottom: 1.5rem; }
+    header h1 { margin: 0 0 .25rem; font-size: 1.6rem; letter-spacing: .08em; }
+    header p { margin: 0.1rem 0; color: var(--muted); font-size: .92rem; }
+    .tagline {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .3rem .75rem; border-radius: 999px;
+      background: rgba(15,23,42,.9); border: 1px solid rgba(148,163,184,.35);
+      font-size: .78rem; color: var(--muted); margin-bottom: .75rem;
+    }
+    .tagline span.dot {
+      width: .4rem; height: .4rem; border-radius: 999px;
+      background: var(--accent); box-shadow: 0 0 8px rgba(34,197,94,.8);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+    }
+    .card {
+      background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(3,7,18,.98));
+      border-radius: 1rem;
+      border: 1px solid rgba(55,65,81,.9);
+      padding: 1.25rem 1.25rem 1.4rem;
+      box-shadow: 0 20px 45px rgba(0,0,0,.55);
+    }
+    .card h2 {
+      margin: 0 0 .2rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .card h2 .pill {
+      padding: .05rem .55rem; font-size: .7rem;
+      border-radius: 999px; border: 1px solid rgba(148,163,184,.4);
+      color: var(--muted);
+    }
+    .card small { color: var(--muted); font-size: .78rem; }
+    .player-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .75rem; margin-top: 1rem; margin-bottom: 1rem;
+    }
+    @media (max-width: 720px) {
+      .player-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    label span {
+      display: block; font-size: .78rem; color: var(--muted); margin-bottom: .2rem;
+    }
+    input, select {
+      width: 100%; border-radius: .6rem;
+      border: 1px solid rgba(55,65,81,.9);
+      background: rgba(15,23,42,.95); color: var(--text);
+      padding: .4rem .6rem; font-size: .86rem; outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(34,197,94,.4);
+    }
+    .tests-table {
+      width: 100%; border-collapse: collapse; margin-top: .75rem; font-size: .8rem;
+    }
+    .tests-table thead { background: rgba(15,23,42,.9); }
+    .tests-table th, .tests-table td {
+      padding: .4rem .5rem;
+      border-bottom: 1px solid rgba(31,41,55,.9);
+      vertical-align: middle;
+    }
+    .tests-table th {
+      text-align: left; font-weight: 500; color: var(--muted); font-size: .78rem;
+    }
+    .tests-table tr:last-child td { border-bottom: none; }
+    .test-name { white-space: nowrap; }
+    .badge {
+      display: inline-flex; padding: .1rem .45rem; border-radius: 999px;
+      font-size: .68rem; border: 1px solid rgba(75,85,99,.9);
+      color: var(--muted); background: rgba(15,23,42,.9);
+    }
+    .badge.jump     { border-color: rgba(96,165,250,.7); color:#bfdbfe;}
+    .badge.upper    { border-color: rgba(251,191,36,.7); color:#fde68a;}
+    .badge.agility  { border-color: rgba(45,212,191,.7); color:#99f6e4;}
+    .badge.speed    { border-color: rgba(248,113,113,.75); color:#fecaca;}
+    .badge.aerobic  { border-color: rgba(52,211,153,.75); color:#bbf7d0;}
+    .badge.reaction { border-color: rgba(167,139,250,.75); color:#e9d5ff;}
+    .text-right { text-align: right; }
+    .score-select { width: 80px; }
+    .hint-row { font-size: .72rem; color: var(--muted); padding-top: .4rem; }
+    .actions {
+      margin-top: 1rem; display: flex; flex-wrap: wrap;
+      gap: .75rem; align-items: center; justify-content: space-between;
+    }
+    button#analyzeBtn {
+      border: none; border-radius: 999px;
+      padding: .55rem 1.3rem; font-size: .88rem; font-weight: 600;
+      background: radial-gradient(circle at top, var(--accent-strong), var(--accent));
+      color: #022c22; cursor: pointer;
+      box-shadow: 0 12px 25px rgba(34,197,94,.45);
+      display: inline-flex; align-items: center; gap: .4rem;
+    }
+    button#analyzeBtn span.icon { font-size: 1rem; }
+    button#analyzeBtn:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 12px rgba(34,197,94,.4);
+    }
+    .sessions-select {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .8rem; color: var(--muted);
+    }
+    .sessions-select select { width: 70px; padding-inline: .4rem; }
+
+    .results-section { display: flex; flex-direction: column; gap: 1rem; }
+    .summary-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .6rem; margin-top: .6rem;
+    }
+    @media (max-width: 720px) {
+      .summary-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    .summary-item {
+      border-radius: .75rem; padding: .55rem .7rem;
+      border: 1px solid rgba(55,65,81,.9);
+      background: radial-gradient(circle at top left, rgba(15,23,42,.95), rgba(2,6,23,.98));
+      font-size: .78rem;
+    }
+    .summary-item strong { display: block; margin-bottom: .1rem; }
+    .summary-tag {
+      display: inline-flex; align-items: center; gap: .2rem;
+      font-size: .7rem; border-radius: 999px;
+      padding: .05rem .45rem; margin-top: .1rem;
+    }
+    .tag-weak  { background: rgba(248,113,113,.12); color: #fecaca; border: 1px solid rgba(248,113,113,.7); }
+    .tag-mid   { background: rgba(251,191,36,.08); color: #facc15; border: 1px solid rgba(251,191,36,.6); }
+    .tag-strong{ background: rgba(52,211,153,.12); color: #bbf7d0; border: 1px solid rgba(52,211,153,.7); }
+
+    .radar-container {
+      margin-top: .75rem;
+      background: radial-gradient(circle at top, rgba(15,23,42,.98), rgba(2,6,23,1));
+      border-radius: .9rem; border: 1px solid rgba(31,41,55,.95);
+      padding: .6rem .65rem .8rem;
+    }
+    .schedule {
+      margin-top: .75rem; border-radius: .9rem;
+      border: 1px solid rgba(31,41,55,.95);
+      background: radial-gradient(circle at top, rgba(15,23,42,.96), rgba(3,7,18,1));
+      padding: .75rem .8rem; font-size: .8rem;
+    }
+    .schedule h3 { margin: 0 0 .35rem; font-size: .9rem; }
+    .schedule-list {
+      list-style: none; padding: 0; margin: .2rem 0 0;
+    }
+    .schedule-list li {
+      padding: .25rem 0;
+      border-bottom: 1px dashed rgba(55,65,81,.9);
+      display: flex; justify-content: space-between; gap: .7rem;
+    }
+    .schedule-list li:last-child { border-bottom: none; }
+    .day-label { color: var(--muted); min-width: 3.2rem; }
+    .module-label { font-weight: 500; }
+    .module-detail { color: var(--muted); font-size: .76rem; }
+    .empty-note { margin-top: .5rem; font-size: .76rem; color: var(--muted); }
+    .footer-note {
+      margin-top: 1.5rem; font-size: .72rem; color: var(--muted);
+      text-align: right; opacity: .7;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="tagline">
+        <span class="dot"></span>
+        <span>網球體能總教練用｜測驗整理 × 弱項分析 × 自動排課建議</span>
+      </div>
+      <h1>體能測驗儀表板 ＋ 排課 AI 模組</h1>
+      <p>先幫每個測驗打 1–5 分（5 分最好），系統會自動分析優勢與弱項，並產生一週訓練建議，且寫入 Google Sheet 歷史紀錄。</p>
+    </header>
+
+    <main class="layout">
+      <!-- 左側輸入 -->
+      <section class="card">
+        <h2>1. 球員資料與測驗分數 <span class="pill">Input</span></h2>
+        <small>建議由教練根據實際成績換算 1–5 分：3＝平均、1–2＝明顯弱、4–5＝明顯強。</small>
+
+        <div class="player-grid">
+          <label>
+            <span>球員姓名</span>
+            <input type="text" id="playerName" placeholder="例如：王小明">
+          </label>
+          <label>
+            <span>年齡</span>
+            <input type="number" id="playerAge" min="6" max="80" placeholder="例如：14">
+          </label>
+          <label>
+            <span>分級 / 組別</span>
+            <input type="text" id="playerLevel" placeholder="例如：U12 選手 / 成人組">
+          </label>
+        </div>
+
+        <table class="tests-table">
+          <thead>
+            <tr>
+              <th>測驗項目</th>
+              <th>分類</th>
+              <th class="text-right">評分（1–5）</th>
+            </tr>
+          </thead>
+          <tbody id="testsBody">
+            <!-- 跳躍類 -->
+            <tr data-test-id="vertical_jump">
+              <td class="test-name">垂直跳</td>
+              <td><span class="badge jump">下肢跳躍 / 爆發力</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1 弱</option><option value="2">2</option>
+                  <option value="3">3 中</option><option value="4">4</option>
+                  <option value="5">5 強</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="mid_isometric">
+              <td class="test-name">中段等長拉</td>
+              <td><span class="badge jump">下肢跳躍 / 爆發力</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="straight_leg_jump">
+              <td class="test-name">直腿連續跳</td>
+              <td><span class="badge jump">下肢跳躍 / 爆發力</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="double_under">
+              <td class="test-name">雙迴旋</td>
+              <td><span class="badge jump">下肢跳躍 / 爆發力</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <!-- 上肢 / 核心 -->
+            <tr data-test-id="explosive_pushup">
+              <td class="test-name">爆發俯臥撐</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="overhead_throw">
+              <td class="test-name">觸球過頭拋</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="boat_overhead_throw">
+              <td class="test-name">船姿簍球過頭拋</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="horizontal_throw_r">
+              <td class="test-name">觸球水平拋（右）</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="horizontal_throw_l">
+              <td class="test-name">觸球水平拋（左）</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="inverted_row">
+              <td class="test-name">反向划船</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="shoulder_iso">
+              <td class="test-name">肩關節等長</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="plank">
+              <td class="test-name">平板撐</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="pushup">
+              <td class="test-name">俯臥撐</td>
+              <td><span class="badge upper">上肢爆發 / 核心</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <!-- 敏捷 -->
+            <tr data-test-id="agility_505_r">
+              <td class="test-name">505敏捷跑（右）</td>
+              <td><span class="badge agility">敏捷變向</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="agility_505_l">
+              <td class="test-name">505敏捷跑（左）</td>
+              <td><span class="badge agility">敏捷變向</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <!-- 速度 -->
+            <tr data-test-id="serve_speed">
+              <td class="test-name">發球速度</td>
+              <td><span class="badge speed">速度 / 爆發</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="sprint_20m">
+              <td class="test-name">20米衝刺</td>
+              <td><span class="badge speed">速度 / 爆發</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+            <tr data-test-id="sprint_10m">
+              <td class="test-name">10米衝刺</td>
+              <td><span class="badge speed">速度 / 爆發</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <!-- 有氧 -->
+            <tr data-test-id="aerobic_max">
+              <td class="test-name">最大有氧</td>
+              <td><span class="badge aerobic">最大有氧</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <!-- 反應 -->
+            <tr data-test-id="reaction_light">
+              <td class="test-name">反應燈測試</td>
+              <td><span class="badge reaction">反應能力</span></td>
+              <td class="text-right">
+                <select class="score-select">
+                  <option value="">–</option>
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="3" class="hint-row">
+                ⓘ 沒測到的項目可以空白，只會用有填分數的項目計算平均。
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="actions">
+          <button id="analyzeBtn">
+            <span class="icon">✨</span>
+            <span>分析體能 & 寫入歷史紀錄</span>
+          </button>
+
+          <div class="sessions-select">
+            <span>每週訓練堂數：</span>
+            <select id="sessionsPerWeek">
+              <option value="2">2 堂</option>
+              <option value="3" selected>3 堂</option>
+              <option value="4">4 堂</option>
+              <option value="5">5 堂</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右側結果 -->
+      <section class="results-section">
+        <div class="card">
+          <h2>2. 分類分數 & 優先順序 <span class="pill">Analysis</span></h2>
+          <small>分數越低代表越需要補強。系統會依照平均分數排序。</small>
+
+          <div id="summaryGrid" class="summary-grid"></div>
+
+          <div class="radar-container">
+            <canvas id="radarChart" height="260"></canvas>
+            <p class="empty-note" id="chartNote">
+              還沒有資料。請先為幾個測驗填入分數，然後按下「分析體能」。
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>3. 一週排課建議 <span class="pill">AI-like Planner</span></h2>
+          <small>依據「最需要補強的類別 → 次要類別 → 優勢維持」，自動分配到每週訓練堂數。</small>
+
+          <div class="schedule" id="scheduleBox">
+            <h3>建議課表</h3>
+            <ul class="schedule-list" id="scheduleList"></ul>
+            <p class="empty-note" id="scheduleNote">
+              尚未產生建議。請輸入測驗分數並按下「分析體能」。
+            </p>
+          </div>
+
+          <div class="footer-note">
+            提醒：這只是決策輔助。實際排課仍需依照球員年齡、賽程、傷勢由教練調整。
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // ★★★ 這裡改成你的 Apps Script Web App URL ★★★
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxZ18o8e96xYH9OFbQmHU8snC0uTP8HU-1TfGdq2X1BVl6kuu_CyXJzaiIHnK-kB9mUJQ/exec';
+
+    // 測驗項目 → 分類 key
+    const TEST_CATEGORY_MAP = {
+      vertical_jump: 'jump',
+      mid_isometric: 'jump',
+      straight_leg_jump: 'jump',
+      double_under: 'jump',
+      explosive_pushup: 'upper',
+      overhead_throw: 'upper',
+      boat_overhead_throw: 'upper',
+      horizontal_throw_r: 'upper',
+      horizontal_throw_l: 'upper',
+      inverted_row: 'upper',
+      shoulder_iso: 'upper',
+      plank: 'upper',
+      pushup: 'upper',
+      agility_505_r: 'agility',
+      agility_505_l: 'agility',
+      serve_speed: 'speed',
+      sprint_20m: 'speed',
+      sprint_10m: 'speed',
+      aerobic_max: 'aerobic',
+      reaction_light: 'reaction'
+    };
+
+    // 分類資訊
+    const CATEGORY_INFO = {
+      jump: {
+        label: "下肢跳躍 / 爆發力",
+        badgeClass: "jump",
+        trainingName: "下肢爆發與制動控制",
+        focus: [
+          "箱子跳＋深蹲跳組合訓練",
+          "單腳落地穩定與制動訓練",
+          "多方向跳躍（前後、左右、斜向）"
+        ]
+      },
+      upper: {
+        label: "上肢爆發 / 核心穩定",
+        badgeClass: "upper",
+        trainingName: "上肢揮拍力量與核心傳導",
+        focus: [
+          "藥球旋轉拋＋過頭拋訓練",
+          "俯臥撐變化（爆發式、上斜、下斜）",
+          "前後側核心（平板撐、死蟲、反向划船）"
+        ]
+      },
+      agility: {
+        label: "敏捷變向",
+        badgeClass: "agility",
+        trainingName: "變向敏捷與第一步啟動",
+        focus: [
+          "505、T 字跑、3-5-10 敏捷變向",
+          "反應變向（聲音或視覺訊號）",
+          "單腳制動與切入動作訓練"
+        ]
+      },
+      speed: {
+        label: "速度 / 衝刺",
+        badgeClass: "speed",
+        trainingName: "直線加速與發球步伐",
+        focus: [
+          "10–20 公尺漸進衝刺（技術專注）",
+          "發球前的啟動步伐與跨步訓練",
+          "短距離加速＋減速組合"
+        ]
+      },
+      aerobic: {
+        label: "最大有氧",
+        badgeClass: "aerobic",
+        trainingName: "比賽耐力與恢復能力",
+        focus: [
+          "間歇跑（例如 15/15、30/30）",
+          "多球拉鋸模式下的心率控制訓練",
+          "長時間低強度移動（恢復日）"
+        ]
+      },
+      reaction: {
+        label: "反應能力",
+        badgeClass: "reaction",
+        trainingName: "視覺 / 神經反應",
+        focus: [
+          "反應燈或顏色指令變向訓練",
+          "教練口令隨機球路反應",
+          "手眼協調小遊戲（接球、拍球挑戰）"
+        ]
+      }
+    };
+
+    let radarChartInstance = null;
+
+    function analyze() {
+      const rows = document.querySelectorAll("#testsBody tr[data-test-id]");
+      const scoresByCategory = {};
+      const countByCategory = {};
+
+      rows.forEach(row => {
+        const id = row.getAttribute("data-test-id");
+        const select = row.querySelector(".score-select");
+        const value = parseFloat(select.value);
+        if (!value) return;
+
+        const category = TEST_CATEGORY_MAP[id];
+        if (!category) return;
+
+        scoresByCategory[category] = (scoresByCategory[category] || 0) + value;
+        countByCategory[category] = (countByCategory[category] || 0) + 1;
+      });
+
+      if (Object.keys(scoresByCategory).length === 0) {
+        alert("請至少替一個測驗填入分數再分析。");
+        return;
+      }
+
+      const categoryResults = [];
+      for (const key in scoresByCategory) {
+        const avg = scoresByCategory[key] / countByCategory[key];
+        categoryResults.push({ key, avg, label: CATEGORY_INFO[key].label });
+      }
+
+      // 最弱 → 最強
+      categoryResults.sort((a, b) => a.avg - b.avg);
+
+      renderSummary(categoryResults);
+      renderRadarChart(categoryResults);
+      renderSchedule(categoryResults);
+
+      // 取得輸入的球員資訊
+      const playerName = document.getElementById("playerName").value || "";
+      const age = parseInt(document.getElementById("playerAge").value || "", 10) || "";
+      const level = document.getElementById("playerLevel").value || "";
+
+      // 分類平均分數 payload
+      const categoriesPayload = {};
+      categoryResults.forEach(c => {
+        categoriesPayload[c.key] = c.avg;
+      });
+
+      // 原始分數 payload
+      const rawScores = {};
+      document.querySelectorAll("#testsBody tr[data-test-id]").forEach(row => {
+        const id = row.getAttribute("data-test-id");
+        const select = row.querySelector(".score-select");
+        rawScores[id] = select.value ? Number(select.value) : null;
+      });
+
+      // 寫入試算表
+      saveToSheet({
+        playerName,
+        age,
+        level,
+        categories: categoriesPayload,
+        rawScores
+      });
+    }
+
+    function renderSummary(categoryResults) {
+      const container = document.getElementById("summaryGrid");
+      container.innerHTML = "";
+
+      categoryResults.forEach(item => {
+        let tagClass, tagText;
+        if (item.avg <= 2.5) {
+          tagClass = "tag-weak";
+          tagText = "優先補強";
+        } else if (item.avg >= 4) {
+          tagClass = "tag-strong";
+          tagText = "優勢維持";
+        } else {
+          tagClass = "tag-mid";
+          tagText = "中等，視賽季調整";
+        }
+
+        const div = document.createElement("div");
+        div.className = "summary-item";
+        div.innerHTML = `
+          <strong>${item.label}</strong>
+          <div>平均分數：${item.avg.toFixed(2)} / 5</div>
+          <div class="summary-tag ${tagClass}">${tagText}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderRadarChart(categoryResults) {
+      const ctx = document.getElementById("radarChart").getContext("2d");
+      const labels = categoryResults.map(c => c.label);
+      const data = categoryResults.map(c => c.avg);
+
+      const chartData = {
+        labels,
+        datasets: [{
+          label: "體能分類平均分數",
+          data,
+          fill: true,
+          backgroundColor: "rgba(34,197,94,0.18)",
+          borderColor: "rgba(34,197,94,0.8)",
+          pointBackgroundColor: "rgba(34,197,94,1)",
+          pointBorderColor: "#022c22",
+          pointHoverRadius: 5
+        }]
+      };
+
+      const options = {
+        scales: {
+          r: {
+            min: 0,
+            max: 5,
+            ticks: { stepSize: 1, showLabelBackdrop: false, color: "#9CA3AF" },
+            grid: { color: "rgba(75,85,99,0.6)" },
+            angleLines: { color: "rgba(55,65,81,0.9)" },
+            pointLabels: { color: "#E5E7EB", font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: "#E5E7EB", font: { size: 11 } } }
+        }
+      };
+
+      if (radarChartInstance) radarChartInstance.destroy();
+      radarChartInstance = new Chart(ctx, { type: "radar", data: chartData, options });
+
+      const note = document.getElementById("chartNote");
+      note.textContent = "雷達圖越貼近外圈代表表現越好。看哪一邊凹下去，就是目前最需要補強的類別。";
+    }
+
+    function renderSchedule(categoryResults) {
+      const sessions = parseInt(document.getElementById("sessionsPerWeek").value, 10) || 3;
+      const scheduleList = document.getElementById("scheduleList");
+      const note = document.getElementById("scheduleNote");
+      scheduleList.innerHTML = "";
+
+      const days = ["週一", "週二", "週三", "週四", "週五", "週六", "週日"];
+      const priorities = categoryResults.map(c => c.key);
+
+      for (let i = 0; i < sessions; i++) {
+        const categoryKey = priorities[i % priorities.length];
+        const info = CATEGORY_INFO[categoryKey];
+        const focusIdx = i % info.focus.length;
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="day-label">${days[i]}</span>
+          <div>
+            <div class="module-label">${info.trainingName}</div>
+            <div class="module-detail">${info.focus[focusIdx]}</div>
+          </div>
+        `;
+        scheduleList.appendChild(li);
+      }
+
+      note.textContent = "說明：從最需要補強的類別開始排，建議一週 1–2 堂弱項強化，1 堂優勢維持課程。實際時間、順序可再依賽程與場地調整。";
+    }
+
+    async function saveToSheet(payload) {
+      if (!WEB_APP_URL || WEB_APP_URL.indexOf('XXXXXXXXXXXXXXXX') !== -1) {
+        console.warn('尚未設定 Web App URL，略過寫入。');
+        return;
+      }
+
+      try {
+        await fetch(WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        console.log('已送出到 records 分頁');
+        // 如果想給教練明確回饋，可以打開這行：
+        // alert('已寫入試算表歷史紀錄！');
+      } catch (err) {
+        console.error('寫入試算表失敗：', err);
+        alert('寫入試算表失敗，請稍後再試。');
+      }
+    }
+
+    document.getElementById("analyzeBtn").addEventListener("click", analyze);
+  </script>
+</body>
+</html>
