@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>馬克 ETF 工具箱｜一鍵開啟你的配息宇宙</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="吳馬克精選 ETF 投資工具：複利試算、退休目標倒推、ETF 投資追蹤牆、ETF 配息瀑布牆、新手投資村，一鍵開啟你的配息宇宙。" />
+
+  <!-- PWA 相關 -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#1D4A35" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="馬克 ETF 工具箱" />
+  <!-- iOS Icon（請自己準備對應尺寸的圖示檔） -->
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+
+  <style>
+    :root {
+      --bg: #0c1a15;
+      --bg-alt: #12241d;
+      --card-bg: #1d4a35;
+      --card-bg-soft: #203f32;
+      --accent: #ffd54f;
+      --accent-soft: #ffe59b;
+      --text-main: #f5f2e9;
+      --text-sub: #cbd5ce;
+      --danger: #ff6b81;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #193f32 0, #050908 55%, #020304 100%);
+      color: var(--text-main);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 2.5rem;
+    }
+
+    header {
+      padding: 0.25rem 0 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffe59b, #ffd54f 35%, #1d4a35 75%);
+      box-shadow: 0 0 16px rgba(255, 213, 79, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo::after {
+      content: "★";
+      position: absolute;
+      right: 9px;
+      top: 5px;
+      font-size: 14px;
+      color: #fffdf2;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+    }
+
+    .brand-text-main {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-text-sub {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      border: 1px solid rgba(255, 213, 79, 0.4);
+      color: var(--accent-soft);
+      background: rgba(29, 74, 53, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 6px rgba(255, 213, 79, 0.9);
+    }
+
+    .hero {
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding: 1.5rem 1.25rem;
+      border-radius: 1.2rem;
+      background: radial-gradient(circle at top left, rgba(255, 213, 79, 0.24), transparent 55%),
+                  linear-gradient(135deg, #1d4a35, #12241d);
+      box-shadow:
+        0 0 45px rgba(0, 0, 0, 0.7),
+        0 0 26px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.4;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.5) 0, transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.6) 0, transparent 55%),
+        radial-gradient(circle at 90% 30%, rgba(255,255,255,0.5) 0, transparent 50%);
+      mix-blend-mode: screen;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin: 0 0 0.4rem;
+      line-height: 1.3;
+    }
+
+    .hero-highlight {
+      color: var(--accent);
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
+
+    .hero-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin: 0 0 0.9rem;
+      line-height: 1.6;
+    }
+
+    .hero-subtitle strong {
+      color: var(--accent-soft);
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffd54f, #ffb300);
+      color: #1c1a10;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.45);
+    }
+
+    .btn-ghost {
+      background: rgba(4,12,9,0.7);
+      color: var(--accent-soft);
+      border: 1px solid rgba(255, 229, 155, 0.4);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255,229,155,0.08);
+    }
+
+    .btn-icon {
+      font-size: 1rem;
+    }
+
+    .hero-note {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      opacity: 0.95;
+    }
+
+    .hero-note strong {
+      color: var(--accent-soft);
+    }
+
+    main {
+      margin-top: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+    }
+
+    .section-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      opacity: 0.9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .hero {
+        padding: 1.8rem 1.8rem;
+      }
+      .hero-title {
+        font-size: 1.9rem;
+      }
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .tool-card {
+      position: relative;
+      border-radius: 1rem;
+      padding: 0.9rem 0.9rem 0.8rem;
+      background: radial-gradient(circle at top, rgba(255, 213, 79, 0.18), transparent 60%),
+                  linear-gradient(135deg, var(--card-bg), var(--card-bg-soft));
+      box-shadow: 0 10px 18px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 170px;
+    }
+
+    .tool-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      opacity: 0.9;
+    }
+
+    .tool-tag {
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.3);
+      font-size: 0.7rem;
+    }
+
+    .tool-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-top: 0.1rem;
+    }
+
+    .tool-title span {
+      color: var(--accent-soft);
+    }
+
+    .tool-desc {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .tool-meta {
+      font-size: 0.72rem;
+      color: rgba(244, 244, 244, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.1rem;
+    }
+
+    .tool-cta {
+      margin-top: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .tool-cta a {
+      font-size: 0.78rem;
+    }
+
+    .tool-hint {
+      font-size: 0.7rem;
+      opacity: 0.9;
+      color: var(--accent-soft);
+    }
+
+    .link-btn {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(0, 0, 0, 0.6);
+      background: rgba(4, 12, 9, 0.6);
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 600;
+      transition: background 0.12s ease, transform 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .link-btn:hover {
+      background: rgba(255, 229, 155, 0.09);
+      transform: translateY(-1px);
+    }
+
+    .link-btn-icon {
+      font-size: 0.9rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(0, 0, 0, 0.35);
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 1.6rem;
+    }
+
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .social-link {
+      font-size: 0.78rem;
+      text-decoration: none;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-sub);
+      background: rgba(0, 0, 0, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .social-link span {
+      font-size: 0.9rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      opacity: 0.9;
+      padding-bottom: 0.5rem;
+    }
+
+    footer a {
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-text-main">吳馬克・幸福理財家</div>
+          <div class="brand-text-sub">ETF 投資｜配息工具｜退休規劃</div>
+        </div>
+      </div>
+      <div class="chip">
+        <div class="chip-dot"></div>
+        <span>一鍵開啟我的 ETF 世界</span>
+      </div>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-stars"></div>
+      <div class="hero-inner">
+        <div class="hero-eyebrow">ETF TOOLS • PWA</div>
+        <h1 class="hero-title">
+          <span class="hero-highlight">馬克 ETF 工具箱</span><br />
+          把配息宇宙收進你的主畫面
+        </h1>
+        <p class="hero-subtitle">
+          把這個頁面<b>加入主畫面</b>，以後想算
+          <strong>複利、退休目標、ETF 配息、投資進度</strong>，
+          一指點開，就到馬克的 ETF 世界。
+        </p>
+        <div class="hero-cta-row">
+          <a class="btn btn-primary" href="#tools">
+            <span class="btn-icon">🚀</span>
+            <span>立刻開啟工具列表</span>
+          </a>
+          <a class="btn btn-ghost" href="https://markmoneylife.com/" target="_blank" rel="noopener">
+            <span class="btn-icon">🌐</span>
+            <span>回到馬克的網站</span>
+          </a>
+        </div>
+        <div class="hero-note">
+          iPhone／Android 都可以：<strong>分享 → 加入主畫面</strong>，這頁就會變成像 App 一樣的圖示。
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <!-- 工具區塊 -->
+      <section class="section" id="tools">
+        <div class="section-header">
+          <div>
+            <div class="section-title">ETF 工具宇宙</div>
+            <div class="section-subtitle">常用工具都幫你排好，從新手存股到退休試算，一次到位。</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <!-- 複利試算工具 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">複利 × 定期定額</span>
+              <span>推薦：每月檢查一次</span>
+            </div>
+            <h2 class="tool-title">複利試算工具｜<span>本金＋時間＝配息放大鏡</span></h2>
+            <p class="tool-desc">
+              想知道每月投入多少、幾年後股息長到哪？這裡幫你算清楚。
+              也可以拿來測試「如果今天不亂賣，十年後的自己會感謝你多少」。
+            </p>
+            <div class="tool-meta">
+              <span>支援：單筆＋定期定額</span>
+              <span>輸出：累積資產＆股息軌跡</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">
+                <span class="link-btn-icon">📈</span>
+                <span>開啟複利試算</span>
+              </a>
+              <span class="tool-hint">小提醒：先輸入你現在的本金，會比較有感。</span>
+            </div>
+          </article>
+
+          <!-- 退休目標倒推 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">退休倒推試算</span>
+              <span>推薦：每年重算一次</span>
+            </div>
+            <h2 class="tool-title">退休目標倒推｜<span>從「想領多少」開始算</span></h2>
+            <p class="tool-desc">
+              想退休時每年領多少股息？這個工具會反推需要準備的資產、
+              需要投多少、殖利率要多少才夠，不再只是一句「希望早點退休」。
+            </p>
+            <div class="tool-meta">
+              <span>支援：目標年齡＆目標股息</span>
+              <span>輸出：需要資產＆投資節奏</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">
+                <span class="link-btn-icon">🎯</span>
+                <span>開啟退休倒推</span>
+              </a>
+              <span class="tool-hint">可以拉朋友一起算，才知道誰比較佛系。</span>
+            </div>
+          </article>
+
+          <!-- ETF 投資追蹤牆 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">ETF 追蹤牆</span>
+              <span>推薦：每月加碼前看一次</span>
+            </div>
+            <h2 class="tool-title">ETF 投資追蹤牆｜<span>你的持股雷達圖</span></h2>
+            <p class="tool-desc">
+              把你關注或持有的 ETF 丟上牆，一次看清楚殖利率、配息頻率、
+              市值型、高股息怎麼搭配，不再只靠印象選標的。
+            </p>
+            <div class="tool-meta">
+              <span>支援：自訂標的筆記</span>
+              <span>輸出：ETF 組合一覽</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">
+                <span class="link-btn-icon">🧱</span>
+                <span>開啟 ETF 追蹤牆</span>
+              </a>
+              <span class="tool-hint">加進去的 ETF，記得寫下「為什麼買」。</span>
+            </div>
+          </article>
+
+          <!-- ETF 配息瀑布牆 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">配息瀑布牆</span>
+              <span>推薦：每月公告更新</span>
+            </div>
+            <h2 class="tool-title">ETF 配息瀑布牆｜<span>看見現金流的時間軸</span></h2>
+            <p class="tool-desc">
+              整年 ETF 配息時間表一張圖看懂，什麼時候誰在發，
+              你的現金流有沒有「渴水月」，一眼就抓出來。
+            </p>
+            <div class="tool-meta">
+              <span>支援：月度配息節奏</span>
+              <span>輸出：12 個月現金流視覺化</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">
+                <span class="link-btn-icon">💧</span>
+                <span>開啟配息瀑布牆</span>
+              </a>
+              <span class="tool-hint">可以當作「加碼前」的現金流體檢表。</span>
+            </div>
+          </article>
+
+          <!-- 新手投資村 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">新手投資村</span>
+              <span>推薦：轉貼給剛入坑朋友</span>
+            </div>
+            <h2 class="tool-title">ETF 新手投資村｜<span>從 0 到第一檔 ETF 的地圖</span></h2>
+            <p class="tool-desc">
+              還分不清楚「配息 ≠ 獲利」？剛進市場就想 All in 高股息？
+              新手村用最白話的方式，帶你走過第一圈安全教學。
+            </p>
+            <div class="tool-meta">
+              <span>支援：教學路線＆資源整理</span>
+              <span>輸出：新手入門清單</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html" target="_blank" rel="noopener">
+                <span class="link-btn-icon">🏡</span>
+                <span>進入新手投資村</span>
+              </a>
+              <span class="tool-hint">很適合丟給家人，省去你重講 10 次。</span>
+            </div>
+          </article>
+
+          <!-- 預留：未來新工具 -->
+          <article class="tool-card">
+            <div class="tool-tag-row">
+              <span class="tool-tag">預留座位</span>
+              <span>下一個工具：由你決定</span>
+            </div>
+            <h2 class="tool-title">下一個 ETF 工具｜<span>給馬濕克們許願的框</span></h2>
+            <p class="tool-desc">
+              你還想要什麼樣的 ETF 或理財工具？例如稅額估算、健保費試算、
+              或是「幫你整理配息再投入記錄」的追蹤器，都可以在社群跟我說。
+            </p>
+            <div class="tool-meta">
+              <span>支援：需求許願中</span>
+              <span>輸出：跟著社群一起長大的工具箱</span>
+            </div>
+            <div class="tool-cta">
+              <a class="link-btn" href="https://forms.gle/DrWZfDPHunLzjM7N8" target="_blank" rel="noopener">
+                <span class="link-btn-icon">📮</span>
+                <span>投稿你的工具願望</span>
+              </a>
+              <span class="tool-hint">也可以寫下你怎麼用這些工具。</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 社群與內容入口 -->
+      <section class="section" id="social">
+        <div class="section-header">
+          <div>
+            <div class="section-title">跟著內容一起用工具</div>
+            <div class="section-subtitle">工具＋影片＋社群，一起把 ETF 當成生活的一部分。</div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill">配息成長日記</span>
+          <span class="pill">300 萬本金的實驗</span>
+          <span class="pill">高股息＋指數型搭配</span>
+          <span class="pill">價值投資，不追紅K</span>
+        </div>
+
+        <div class="social-row" style="margin-top:0.8rem">
+          <a class="social-link" href="https://www.youtube.com/user/rengary" target="_blank" rel="noopener">
+            <span>▶️</span>
+            <span>YouTube｜馬克的 ETF 研究室</span>
+          </a>
+          <a class="social-link" href="https://open.firstory.me/user/wumark/platforms" target="_blank" rel="noopener">
+            <span>🎙️</span>
+            <span>Podcast｜幸福理財家</span>
+          </a>
+          <a class="social-link" href="https://www.instagram.com/rengary0301/" target="_blank" rel="noopener">
+            <span>📸</span>
+            <span>IG｜生活理財日常</span>
+          </a>
+          <a class="social-link" href="https://forms.gle/DrWZfDPHunLzjM7N8" target="_blank" rel="noopener">
+            <span>💌</span>
+            <span>幸福理財家信箱</span>
+          </a>
+          <a class="social-link" href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" rel="noopener">
+            <span>👥</span>
+            <span>加入 LINE 社群申請表</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>※ 投資一定有風險，基金與 ETF 投資可能產生損失，過去績效不代表未來表現，請務必評估自身風險承受度。</div>
+      <div style="margin-top:0.35rem;">
+        © <span id="year"></span> 吳馬克・幸福理財家 ｜
+        <a href="https://markmoneylife.com/" target="_blank" rel="noopener">markmoneylife.com</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // 動態年份
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // 註冊 Service Worker（PWA 核心）
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./sw.js")
+          .catch(function (err) {
+            console.log("Service Worker 註冊失敗：", err);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
