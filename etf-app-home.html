@@ -4,18 +4,20 @@
   <meta charset="UTF-8" />
   <title>馬克 ETF 工具箱｜一鍵開啟你的配息宇宙</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="吳馬克精選 ETF 投資工具：複利試算、退休目標倒推、ETF 投資追蹤牆、ETF 配息瀑布牆、新手投資村，一鍵開啟你的配息宇宙。" />
+  <meta name="description" content="吳馬克打造的 ETF 工具箱：複利試算、退休目標倒推、ETF 投資追蹤牆、ETF 配息瀑布牆、新手投資村，一鍵開啟你的配息宇宙。" />
 
-  <!-- PWA / Icons -->
+  <!-- PWA 相關 -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1D4A35" />
+
+  <!-- iOS 桌面圖示（請把 apple-touch-icon.png 放在 etf-app-home.html 同一層） -->
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="馬克 ETF免費工具箱" />
-<!-- iOS 桌面圖示 -->
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png?v=1" />
-<!-- 瀏覽器分頁的小 icon -->
-<link rel="icon" type="image/png" href="logo-transparent.png" />
+  <meta name="apple-mobile-web-app-title" content="馬克 ETF 工具箱" />
+
+  <!-- 瀏覽器分頁小圖示 -->
+  <link rel="icon" type="image/png" href="logo-transparent.png" />
 
   <style>
     :root {
@@ -68,7 +70,7 @@
       gap: 0.6rem;
     }
 
-    /* ✅ 使用你的 logo 圖檔 */
+    /* 左上角 LOGO（用你的黃 W 圖） */
     .brand-logo {
       width: 40px;
       height: 40px;
@@ -450,13 +452,13 @@
       text-decoration: underline;
     }
 
-    /* ===== 啟動畫面（splash screen）====== */
+    /* 啟動畫面（Splash） */
     #splash-screen {
       position: fixed;
       inset: 0;
       z-index: 9999;
       background:
-        radial-gradient(circle at top, rgba(255, 213, 79, 0.12), transparent 55%),
+        radial-gradient(circle at top, rgba(255, 213, 79, 0.17), transparent 55%),
         radial-gradient(circle at bottom, rgba(29, 74, 53, 0.8), #020304);
       display: flex;
       align-items: center;
@@ -472,7 +474,7 @@
 
     .splash-inner {
       text-align: center;
-      padding: 1.5rem 1.75rem;
+      padding: 1.6rem 2rem;
       border-radius: 1.5rem;
       background: rgba(0, 0, 0, 0.55);
       box-shadow: 0 18px 38px rgba(0, 0, 0, 0.85);
@@ -480,8 +482,8 @@
     }
 
     .splash-logo {
-      width: 84px;
-      height: 84px;
+      width: 86px;
+      height: 86px;
       margin: 0 auto 0.9rem;
       border-radius: 999px;
       overflow: hidden;
@@ -728,7 +730,7 @@
             </div>
           </article>
 
-          <!-- 預留：未來新工具 -->
+          <!-- 預留工具 / 許願區 -->
           <article class="tool-card">
             <div class="tool-tag-row">
               <span class="tool-tag">預留座位</span>
@@ -808,7 +810,7 @@
     // 動態年份
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 註冊 Service Worker
+    // 註冊 Service Worker（與 sw.js 同一層）
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("sw.js")
@@ -818,7 +820,7 @@
       });
     }
 
-    // 啟動畫面：等頁面載完後淡出
+    // 啟動畫面：等載完後淡出
     window.addEventListener("load", function () {
       const splash = document.getElementById("splash-screen");
       if (!splash) return;
