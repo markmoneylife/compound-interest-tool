@@ -1,24 +1,17 @@
 const CACHE_NAME = "mark-etf-tools-v1";
 
-// 這裡列出你希望「第一次開」就預先快取的檔案
 const URLS_TO_CACHE = [
+  "./",
   "./etf-app-home.html",
+  "./reverse.html",
+  "./etf-tracker.html",
+  "./etf-dividend-wall.html",
+  "./newbie-village.html",
   "./manifest.json",
-  "./sw.js",
-
-  // 主要工具頁（可以按需要增減）
-  "./", // 有些情況下會指向 repo 頁面
-  "./index.html",
-
-  "./compound-interest-tool/",
-  "./compound-interest-tool/index.html",
-  "./compound-interest-tool/reverse.html",
-  "./compound-interest-tool/etf-tracker.html",
-  "./compound-interest-tool/etf-dividend-wall.html",
-  "./compound-interest-tool/newbie-village.html"
+  "./sw.js"
 ];
 
-// 安裝階段：建立快取
+// 安裝：預先快取
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -30,12 +23,12 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// 啟用階段：清掉舊版快取
+// 啟用：清除舊快取
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keyList => {
+    caches.keys().then(keys => {
       return Promise.all(
-        keyList.map(key => {
+        keys.map(key => {
           if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
@@ -46,11 +39,10 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-// 擷取階段：優先讀快取，沒有再走網路
+// 取得：快取優先，沒有再走網路
 self.addEventListener("fetch", event => {
   const request = event.request;
 
-  // 只處理 GET
   if (request.method !== "GET") return;
 
   event.respondWith(
@@ -59,17 +51,16 @@ self.addEventListener("fetch", event => {
         return cachedResponse;
       }
 
-      // 走網路，並順手更新快取
       return fetch(request)
         .then(networkResponse => {
-          const responseClone = networkResponse.clone();
+          const copy = networkResponse.clone();
           caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, responseClone);
+            cache.put(request, copy);
           });
           return networkResponse;
         })
         .catch(() => {
-          // 真的離線又沒快取，就回一個簡單的離線頁（可客製）
+          // 離線又沒快取 → 給簡單離線頁
           if (request.headers.get("accept")?.includes("text/html")) {
             return new Response(`
               <!doctype html>
