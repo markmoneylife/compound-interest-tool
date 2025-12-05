@@ -6,98 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="吳馬克精選 ETF 投資工具：複利試算、退休目標倒推、ETF 投資追蹤牆、ETF 配息瀑布牆、新手投資村，一鍵開啟你的配息宇宙。" />
 
-  <!-- PWA 相關 -->
-  <link rel="manifest" href="./manifest.json" />
+  <!-- PWA / Icons -->
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1D4A35" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="馬克 ETF 工具箱" />
-  <!-- iOS Icon（請自己準備對應尺寸的圖示檔） -->
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-
-/* ====== 啟動畫面：全螢幕 overlay ====== */
-#splash-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background:
-    radial-gradient(circle at top, rgba(255, 213, 79, 0.12), transparent 55%),
-    radial-gradient(circle at bottom, rgba(29, 74, 53, 0.8), #020304);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-#splash-screen.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.splash-inner {
-  text-align: center;
-  padding: 1.5rem 1.75rem;
-  border-radius: 1.5rem;
-  background: rgba(0, 0, 0, 0.55);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.85);
-  max-width: 320px;
-}
-
-.splash-logo {
-  width: 84px;
-  height: 84px;
-  margin: 0 auto 0.9rem;
-  border-radius: 999px;
-  overflow: hidden;
-  box-shadow: 0 0 22px rgba(255, 213, 79, 0.8);
-  background: #020304;
-}
-
-.splash-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.splash-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin: 0 0 0.25rem;
-}
-
-.splash-subtitle {
-  font-size: 0.86rem;
-  color: var(--text-sub);
-  margin: 0 0 0.75rem;
-}
-
-.splash-subtitle span {
-  color: var(--accent);
-}
-
-.splash-spinner {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  border: 3px solid rgba(255, 255, 255, 0.18);
-  border-top-color: var(--accent);
-  margin: 0 auto 0.45rem;
-  animation: spin 0.9s linear infinite;
-}
-
-.splash-note {
-  font-size: 0.72rem;
-  color: var(--text-sub);
-  opacity: 0.9;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" href="logo-transparent.png" />
 
   <style>
     :root {
@@ -150,24 +66,21 @@
       gap: 0.6rem;
     }
 
+    /* ✅ 使用你的 logo 圖檔 */
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #ffe59b, #ffd54f 35%, #1d4a35 75%);
-      box-shadow: 0 0 16px rgba(255, 213, 79, 0.6);
-      position: relative;
       overflow: hidden;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+      background: #020304;
     }
 
-    .brand-logo::after {
-      content: "★";
-      position: absolute;
-      right: 9px;
-      top: 5px;
-      font-size: 14px;
-      color: #fffdf2;
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .brand-text-main {
@@ -534,27 +447,114 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    /* ===== 啟動畫面（splash screen）====== */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background:
+        radial-gradient(circle at top, rgba(255, 213, 79, 0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(29, 74, 53, 0.8), #020304);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #splash-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-inner {
+      text-align: center;
+      padding: 1.5rem 1.75rem;
+      border-radius: 1.5rem;
+      background: rgba(0, 0, 0, 0.55);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.85);
+      max-width: 320px;
+    }
+
+    .splash-logo {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 0.9rem;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: 0 0 22px rgba(255, 213, 79, 0.8);
+      background: #020304;
+    }
+
+    .splash-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .splash-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0 0 0.25rem;
+    }
+
+    .splash-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-sub);
+      margin: 0 0 0.75rem;
+    }
+
+    .splash-subtitle span {
+      color: var(--accent);
+    }
+
+    .splash-spinner {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, 0.18);
+      border-top-color: var(--accent);
+      margin: 0 auto 0.45rem;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .splash-note {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      opacity: 0.9;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- 啟動畫面 -->
   <div id="splash-screen">
-  <div class="splash-inner">
-    <div class="splash-logo">
-      <img src="logo-transparent.png" alt="吳馬克 幸福理財家 Logo">
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <img src="logo-transparent.png" alt="吳馬克 幸福理財家 Logo">
+      </div>
+      <h1 class="splash-title">馬克 ETF 工具箱</h1>
+      <p class="splash-subtitle">
+        <span>一鍵開啟</span> 你的配息宇宙
+      </p>
+      <div class="splash-spinner"></div>
+      <p class="splash-note">正在載入工具…請稍等一下下</p>
     </div>
-    <h1 class="splash-title">馬克 ETF 工具箱</h1>
-    <p class="splash-subtitle">
-      <span>一鍵開啟</span> 你的配息宇宙
-    </p>
-    <div class="splash-spinner"></div>
-    <p class="splash-note">正在載入工具…請稍等一下下</p>
   </div>
-</div>
 
   <div class="page">
     <header>
       <div class="brand">
-        <div class="brand-logo"></div>
+        <div class="brand-logo">
+          <img src="logo-transparent.png" alt="吳馬克 幸福理財家 Logo">
+        </div>
         <div>
           <div class="brand-text-main">吳馬克・幸福理財家</div>
           <div class="brand-text-sub">ETF 投資｜配息工具｜退休規劃</div>
@@ -806,15 +806,24 @@
     // 動態年份
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 註冊 Service Worker（PWA 核心）
+    // 註冊 Service Worker
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js")
+        navigator.serviceWorker.register("sw.js")
           .catch(function (err) {
             console.log("Service Worker 註冊失敗：", err);
           });
       });
     }
+
+    // 啟動畫面：等頁面載完後淡出
+    window.addEventListener("load", function () {
+      const splash = document.getElementById("splash-screen");
+      if (!splash) return;
+      setTimeout(function () {
+        splash.classList.add("hidden");
+      }, 800);
+    });
   </script>
 </body>
 </html>
