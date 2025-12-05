@@ -1,0 +1,22 @@
+{
+  "name": "馬克 ETF 工具箱｜幸福理財家",
+  "short_name": "馬克 ETF 工具",
+  "start_url": "./etf-app-home.html",
+  "display": "standalone",
+  "background_color": "#0c1a15",
+  "theme_color": "#1d4a35",
+  "lang": "zh-Hant",
+  "description": "吳馬克打造的 ETF 工具箱，包含複利試算、退休目標倒推、ETF 追蹤牆與配息瀑布牆，一鍵開啟你的配息宇宙。",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
