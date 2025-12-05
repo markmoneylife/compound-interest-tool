@@ -15,6 +15,90 @@
   <!-- iOS Icon（請自己準備對應尺寸的圖示檔） -->
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
 
+/* ====== 啟動畫面：全螢幕 overlay ====== */
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background:
+    radial-gradient(circle at top, rgba(255, 213, 79, 0.12), transparent 55%),
+    radial-gradient(circle at bottom, rgba(29, 74, 53, 0.8), #020304);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#splash-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-inner {
+  text-align: center;
+  padding: 1.5rem 1.75rem;
+  border-radius: 1.5rem;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.85);
+  max-width: 320px;
+}
+
+.splash-logo {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 0.9rem;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 0 22px rgba(255, 213, 79, 0.8);
+  background: #020304;
+}
+
+.splash-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.splash-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+}
+
+.splash-subtitle {
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  margin: 0 0 0.75rem;
+}
+
+.splash-subtitle span {
+  color: var(--accent);
+}
+
+.splash-spinner {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--accent);
+  margin: 0 auto 0.45rem;
+  animation: spin 0.9s linear infinite;
+}
+
+.splash-note {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+  opacity: 0.9;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
   <style>
     :root {
       --bg: #0c1a15;
@@ -453,6 +537,20 @@
   </style>
 </head>
 <body>
+  <div id="splash-screen">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <img src="logo-transparent.png" alt="吳馬克 幸福理財家 Logo">
+    </div>
+    <h1 class="splash-title">馬克 ETF 工具箱</h1>
+    <p class="splash-subtitle">
+      <span>一鍵開啟</span> 你的配息宇宙
+    </p>
+    <div class="splash-spinner"></div>
+    <p class="splash-note">正在載入工具…請稍等一下下</p>
+  </div>
+</div>
+
   <div class="page">
     <header>
       <div class="brand">
