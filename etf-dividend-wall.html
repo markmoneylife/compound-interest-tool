@@ -1,329 +1,1150 @@
-<style>
-/* ============================
-   ETF 配息圖卡瀑布牆 – 導流版樣式
-   （所有 class 以 .mw- 開頭，避免跟主題衝突）
-   ============================ */
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>ETF配息圖卡瀑布牆＋配息入帳時間表｜吳馬克</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-.mw-page {
-  font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #102027;
-  line-height: 1.7;
-}
+  <!-- OG / SEO -->
+  <meta name="description" content="每月更新的 ETF 配息圖卡瀑布牆，包含單期殖利率、每股配息、除息日、入帳日與收益組成，一眼看懂你的現金流節奏。" />
+  <meta property="og:title" content="ETF配息圖卡瀑布牆｜一眼看懂每月現金流｜吳馬克" />
+  <meta property="og:description" content="把 ETF 配息做成一張一張圖卡，排成瀑布牆。單期殖利率、每股配息、除息日、入帳日與收益組成，一眼看懂配息節奏。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" />
+  <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" />
 
-/* 版心 */
-.mw-shell {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2.2rem 1.5rem;
-}
+  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png" />
 
-@media (max-width: 768px) {
-  .mw-shell {
-    padding: 1.8rem 1.2rem;
-  }
-}
+  <!-- 字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-/* HERO 區 */
-.mw-hero-eyebrow {
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #8a97a6;
-  margin-bottom: 0.5rem;
-}
+  <!-- PapaParse for CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-.mw-hero-title {
-  font-size: clamp(1.9rem, 3vw, 2.4rem);
-  margin-bottom: 0.6rem;
-  color: #102027;
-}
+  <style>
+    /* =====================================================
+       Mark UI v2.4 – 全頁基底
+       ===================================================== */
 
-.mw-hero-highlight {
-  color: #1b8060;
-}
+    :root {
+      /* 色彩系統 */
+      --mark-bg-body: #020915;
+      --mark-bg-alt: #06141f;
+      --mark-bg-soft: #0b2733;
+      --mark-surface-light: #f5f3e7;
 
-.mw-hero-lead {
-  font-size: 0.98rem;
-  max-width: 38rem;
-  color: #455a64;
-  margin-bottom: 0.9rem;
-}
+      --mark-green-deep: #0f3b33;
+      --mark-green-card: #005146;
+      --mark-yellow-main: #ffd666;
+      --mark-yellow-deep: #f2b935;
 
-.mw-hero-note {
-  font-size: 0.82rem;
-  color: #78909c;
-}
+      --mark-border-soft: rgba(255, 255, 255, 0.07);
+      --mark-border-strong: rgba(255, 255, 255, 0.15);
 
-/* 按鈕區 */
-.mw-btn-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-top: 1rem;
-  margin-bottom: 0.6rem;
-}
+      --mark-text-main: #f5f2e9;
+      --mark-text-sub: #c9d3df;
+      --mark-text-mute: #8a97a6;
+      --mark-text-dark: #17212f;
 
-.mw-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1.3rem;
-  border-radius: 999px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border: 1px solid transparent;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.12s, border-color 0.12s;
-}
+      --mark-shell-max: 1120px;
+      --mark-shell-pad-x: 1.4rem;
+      --mark-shell-pad-y: 2.6rem;
 
-.mw-btn--primary {
-  background: linear-gradient(135deg, #1b8060, #1ea3d8);
-  color: #ffffff;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
-}
+      --mark-radius-lg: 18px;
+      --mark-radius-md: 14px;
+      --mark-radius-pill: 999px;
 
-.mw-btn--primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
-}
+      --mark-shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.7);
+      --mark-shadow-card: 0 22px 48px rgba(0, 0, 0, 0.9);
 
-.mw-btn--ghost {
-  background: #ffffff;
-  color: #102027;
-  border-color: rgba(16,32,39,0.12);
-}
+      --mark-font-base: 15px;
+      --mark-line-height: 1.7;
+    }
 
-.mw-btn--ghost:hover {
-  background: #f5f5f5;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-/* 小 badge */
-.mw-badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: var(--mark-font-base);
+      line-height: var(--mark-line-height);
+      color: var(--mark-text-main);
+      background:
+        radial-gradient(circle at top, rgba(24, 46, 79, 0.9) 0, #020915 55%, #000309 100%);
+    }
 
-.mw-badge {
-  font-size: 0.78rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: 999px;
-  background: #edf7f2;
-  color: #1b5e20;
-}
+    a {
+      color: #f5e0a4;
+      text-decoration: none;
+    }
+    a:hover {
+      color: var(--mark-yellow-main);
+    }
 
-/* 分隔線標題 */
-.mw-section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
+    h1,h2,h3,h4,p {
+      margin: 0;
+    }
 
-/* 工具 iframe 區塊 */
-.mw-tool-card {
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.14);
-  padding: 1.2rem 1.3rem 1rem;
-}
+    /* 版心 */
+    .mu-shell {
+      max-width: var(--mark-shell-max);
+      margin: 0 auto;
+      padding: var(--mark-shell-pad-y) var(--mark-shell-pad-x);
+    }
+    .mu-shell--tight {
+      padding-top: 1.5rem;
+      padding-bottom: 1.8rem;
+    }
 
-.mw-tool-frame {
-  position: relative;
-  width: 100%;
-  height: 900px;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
-}
+    .mu-section {
+      padding: 2.6rem 0;
+    }
+    .mu-section--dark {
+      background: radial-gradient(circle at top, #0e2230 0, #020915 55%, #02060a 100%);
+    }
+    .mu-section--soft {
+      background: linear-gradient(180deg, #06141f 0, #040b12 70%, #020915 100%);
+    }
+    .mu-section--light {
+      background: #f5f3e7;
+      color: var(--mark-text-dark);
+    }
 
-.mw-tool-frame iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+    /* =====================================================
+       Topbar / 導覽
+       ===================================================== */
 
-.mw-tool-note {
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  color: #78909c;
-}
+    .mu-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(90deg, rgba(2, 9, 21, 0.98), rgba(2, 9, 21, 0.92));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .mu-topbar-inner {
+      max-width: var(--mark-shell-max);
+      margin: 0 auto;
+      padding: 0.65rem var(--mark-shell-pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      font-size: 0.88rem;
+    }
+    .mu-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .mu-brand-logo {
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 30% 0, #ffd666 0, #f39c12 35%, #0f3b33 100%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #02120f;
+      font-weight: 700;
+    }
+    .mu-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      justify-content: flex-end;
+      color: var(--mark-text-mute);
+    }
+    .mu-nav a {
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+    .mu-nav a span {
+      opacity: 0.78;
+    }
+    .mu-nav a.mu-nav-active {
+      color: var(--mark-yellow-main);
+      font-weight: 600;
+      opacity: 1;
+    }
 
-@media (max-width: 960px) {
-  .mw-tool-frame {
-    height: 640px;
-  }
-}
+    /* =====================================================
+       Hero
+       ===================================================== */
 
-/* 下方導流卡片區 */
-.mw-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.4rem;
-  margin-top: 1rem;
-}
+    .mu-hero-eyebrow {
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mark-text-mute);
+      margin-bottom: 0.6rem;
+    }
+    .mu-hero-title {
+      font-size: clamp(1.85rem, 3vw, 2.4rem);
+      line-height: 1.35;
+      margin-bottom: 0.9rem;
+    }
+    .mu-hero-highlight {
+      color: var(--mark-yellow-main);
+    }
+    .mu-hero-lead {
+      font-size: 0.98rem;
+      color: var(--mark-text-sub);
+      max-width: 38rem;
+      margin-bottom: 1.3rem;
+    }
+    .mu-hero-note {
+      font-size: 0.8rem;
+      color: var(--mark-text-mute);
+    }
 
-@media (max-width: 960px) {
-  .mw-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
+    .mu-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.1rem;
+    }
+    .mu-badge {
+      font-size: 0.8rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--mark-radius-pill);
+      background: rgba(11, 39, 51, 0.9);
+      border: 1px solid rgba(177, 220, 232, 0.45);
+    }
+    .mu-badge--alt {
+      background: rgba(27, 128, 96, 0.1);
+      border-color: rgba(255, 214, 102, 0.7);
+    }
 
-.mw-card {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.06);
-  padding: 1rem 1.1rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
-}
+    .mu-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 0.6rem;
+    }
+    .mu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.62rem 1.35rem;
+      border-radius: var(--mark-radius-pill);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.12s, border-color 0.12s;
+    }
+    .mu-btn-icon {
+      margin-left: 0.3rem;
+      font-size: 1rem;
+    }
+    .mu-btn--primary {
+      background: linear-gradient(135deg, #1b8060, #1ea3d8);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+    }
+    .mu-btn--primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.9);
+    }
+    .mu-btn--ghost {
+      background: transparent;
+      color: var(--mark-text-main);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+    .mu-btn--ghost:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
 
-.mw-card-title {
-  font-size: 0.98rem;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
-}
+    /* =====================================================
+       小標題 / 段落
+       ===================================================== */
 
-.mw-card-text {
-  font-size: 0.85rem;
-  color: #546e7a;
-  margin-bottom: 0.7rem;
-}
+    .mu-heading-2 {
+      font-size: 1.35rem;
+      margin-bottom: 0.45rem;
+    }
+    .mu-heading-3 {
+      font-size: 1.08rem;
+      margin-bottom: 0.35rem;
+    }
+    .mu-section-sub {
+      font-size: 0.9rem;
+      color: var(--mark-text-sub);
+      max-width: 32rem;
+      margin-bottom: 1.5rem;
+    }
 
-.mw-card-link {
-  font-size: 0.82rem;
-  color: #1b8060;
-  text-decoration: none;
-  font-weight: 600;
-}
+    .mu-list {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+    .mu-list li + li {
+      margin-top: 0.12rem;
+    }
 
-.mw-card-link:hover {
-  text-decoration: underline;
-}
+    /* =====================================================
+       卡片 / 容器
+       ===================================================== */
 
-/* 風險說明 */
-.mw-footnote {
-  margin-top: 1.4rem;
-  padding: 1rem 1.1rem;
-  border-radius: 12px;
-  background: #fafafa;
-  border: 1px dashed rgba(0,0,0,0.16);
-  font-size: 0.78rem;
-  color: #607d8b;
-}
-</style>
+    .mu-card {
+      border-radius: var(--mark-radius-lg);
+      background: radial-gradient(circle at top left, #123c33 0, #071b24 50%, #020915 100%);
+      border: 1px solid var(--mark-border-strong);
+      box-shadow: var(--mark-shadow-card);
+      padding: 1.25rem 1.3rem;
+    }
+    .mu-card--soft {
+      background: rgba(6, 20, 31, 0.94);
+      border-color: var(--mark-border-soft);
+    }
+    .mu-card--light {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid rgba(20, 43, 36, 0.12);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+      padding: 1.25rem 1.3rem;
+    }
 
-<div class="mw-page">
+    .mu-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+    .mu-card-grid--2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+    @media (max-width: 960px) {
+      .mu-card-grid,
+      .mu-card-grid--2 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
 
-  <!-- HERO ＋ 導流 -->
-  <section>
-    <div class="mw-shell">
-      <p class="mw-hero-eyebrow">ETF 配息・現金流・長期存股</p>
+    .mu-footnote-box {
+      margin-top: 1.3rem;
+      padding: 1rem 1.1rem;
+      border-radius: 12px;
+      background: rgba(2, 7, 11, 0.96);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      font-size: 0.8rem;
+      color: var(--mark-text-mute);
+    }
 
-      <h1 class="mw-hero-title">
-        ETF 配息圖卡瀑布牆｜<span class="mw-hero-highlight">一眼看懂每月現金流</span>
-      </h1>
+    /* =====================================================
+       工具本體 – 頂端試算 / 排行卡
+       ===================================================== */
 
-      <p class="mw-hero-lead">
-        這一頁是我自己的「配息儀表板」：把追蹤的 ETF 配息做成圖卡，
-        按照月份排好，你可以一眼看到每個月大概有哪些 ETF 在幫你發薪水。
-      </p>
+    .wall-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
+      gap: 1.6rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 960px) {
+      .wall-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
 
-      <div class="mw-badge-row">
-        <span class="mw-badge">不報名牌，只幫你把現金流看清楚</span>
-        <span class="mw-badge">配息是現金流，不等於賺到這麼多</span>
+    .wall-label {
+      font-size: 0.8rem;
+      color: var(--mark-text-sub);
+      margin-bottom: 0.2rem;
+    }
+    .wall-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+    .wall-input-group {
+      flex: 1 1 150px;
+      min-width: 0;
+    }
+    .wall-input {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid rgba(180, 204, 220, 0.4);
+      background: rgba(3, 16, 26, 0.95);
+      color: var(--mark-text-main);
+      font-size: 0.9rem;
+    }
+    .wall-input:focus {
+      outline: none;
+      border-color: #1ea3d8;
+      box-shadow: 0 0 0 1px rgba(30, 163, 216, 0.65);
+    }
+
+    .wall-note-small {
+      font-size: 0.78rem;
+      color: var(--mark-text-mute);
+      margin-top: 0.35rem;
+    }
+
+    .wall-highlight-box {
+      margin-top: 0.8rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(1, 20, 17, 0.92);
+      border: 1px solid rgba(255, 214, 102, 0.45);
+      font-size: 0.86rem;
+      color: var(--mark-text-sub);
+    }
+    .wall-highlight-box strong {
+      color: var(--mark-yellow-main);
+    }
+
+    .wall-top5-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.88rem;
+    }
+    .wall-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(20, 43, 36, 0.3);
+      background: #f5f3e7;
+      color: #344054;
+    }
+
+    .wall-top5-list {
+      margin: 0.2rem 0 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.88rem;
+    }
+    .wall-top5-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0;
+      border-bottom: 1px dashed rgba(15, 45, 36, 0.16);
+    }
+    .wall-top5-item:last-child {
+      border-bottom: none;
+    }
+    .wall-top5-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .wall-top5-code {
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .wall-top5-name {
+      font-size: 0.78rem;
+      color: #5c6c7a;
+    }
+    .wall-top5-right {
+      text-align: right;
+      font-size: 0.78rem;
+    }
+    .wall-top5-yield {
+      font-weight: 700;
+      color: #b35600;
+      font-size: 0.9rem;
+    }
+
+    /* =====================================================
+       瀑布牆卡片
+       ===================================================== */
+
+    .wall-grid-wrapper {
+      margin-top: 1.6rem;
+    }
+    .wall-grid-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .wall-grid-title-row small {
+      font-size: 0.78rem;
+      color: var(--mark-text-mute);
+    }
+
+    .wall-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+    @media (max-width: 1120px) {
+      .wall-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 880px) {
+      .wall-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 600px) {
+      .wall-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .etf-card {
+      background: var(--mark-green-card);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.8rem;
+      color: #fefbf5;
+    }
+
+    .etf-card-header {
+      background: linear-gradient(180deg, var(--mark-yellow-main) 0, var(--mark-yellow-deep) 70%, #f2a93b 100%);
+      padding: 0.5rem 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      color: #342405;
+    }
+    .etf-card-code {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 0.86rem;
+    }
+    .etf-card-name {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    .etf-card-badge {
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.12);
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .etf-card-body {
+      padding: 0.5rem 0.65rem 0.55rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .etf-card-metric-label {
+      font-size: 0.65rem;
+      opacity: 0.78;
+    }
+    .etf-card-metric-main {
+      font-weight: 700;
+      margin-top: 1px;
+    }
+    .etf-card-metric-main--yield {
+      color: #ffd666;
+      font-size: 0.92rem;
+    }
+
+    .etf-card-footer {
+      padding: 0.45rem 0.6rem 0.55rem;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .etf-card-dates span {
+      display: block;
+    }
+    .etf-card-tagline {
+      text-align: right;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .etf-card-flag {
+      display: inline-block;
+      padding: 0.08rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 0.68rem;
+      margin-bottom: 2px;
+    }
+
+    .wall-empty {
+      font-size: 0.86rem;
+      color: var(--mark-text-mute);
+      margin-top: 0.6rem;
+    }
+
+    /* =====================================================
+       風險說明
+       ===================================================== */
+
+    .wall-risk-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 0.4rem;
+      padding-top: 1rem;
+    }
+
+    /* =====================================================
+       RWD
+       ===================================================== */
+
+    @media (max-width: 720px) {
+      .mu-shell {
+        padding-left: 1.05rem;
+        padding-right: 1.05rem;
+      }
+      .mu-btn-row {
+        flex-direction: column;
+      }
+      .mu-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .mu-topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .mu-nav {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================
+       Sticky 導覽列
+       ========================================= -->
+  <header class="mu-topbar">
+    <div class="mu-topbar-inner">
+      <div class="mu-brand">
+        <span class="mu-brand-logo">M</span>
+        <span>吳馬克｜ETF 理財工具箱</span>
       </div>
-
-      <div class="mw-btn-row">
-        <a href="#wall-tool" class="mw-btn mw-btn--primary">
-          直接滑到瀑布牆工具 👇
-        </a>
-        <a href="https://markmoneylife.com" class="mw-btn mw-btn--ghost">
-          回到馬克理財首頁
-        </a>
-        <a href="https://www.youtube.com/user/rengary" class="mw-btn mw-btn--ghost" target="_blank" rel="noopener">
-          追蹤我的 YouTube
-        </a>
-      </div>
-
-      <p class="mw-hero-note">
-        建議用電腦或橫向平板開啟，圖卡會比較清楚。如果你本身就有 ETF 清單，
-        可以邊看邊對照，想像未來每個月的被動收入節奏。
-      </p>
+      <nav class="mu-nav">
+        <a href="compound-interest.html"><span>複利試算</span></a>
+        <a href="reverse.html"><span>退休倒推</span></a>
+        <a href="etf-tracker.html"><span>ETF 追蹤牆</span></a>
+        <a href="newbie-village.html"><span>新手投資村</span></a>
+        <a href="etf-dividend-wall.html" class="mu-nav-active"><span>ETF 配息瀑布牆</span></a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <!-- 工具本體（GitHub 頁嵌入） -->
-  <section id="wall-tool">
-    <div class="mw-shell">
-      <h2 class="mw-section-title">ETF 配息圖卡瀑布牆｜工具本體</h2>
+  <main>
 
-      <div class="mw-tool-card">
-        <div class="mw-tool-frame">
-          <iframe
-            src="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html"
-            title="ETF 配息圖卡瀑布牆"
-            loading="lazy">
-          </iframe>
-        </div>
+    <!-- =========================================
+         Hero 區
+         ========================================= -->
+    <section class="mu-section mu-section--dark">
+      <div class="mu-shell">
+        <p class="mu-hero-eyebrow">ETF 配息 · 現金流 · 長期存股</p>
 
-        <p class="mw-tool-note">
-          如果工具沒有正常顯示，可以重新整理這一頁，或改用桌機 / Chrome 瀏覽器試試看。
-          GitHub 端更新配息資料後，這裡會自動跟著更新。
+        <h1 class="mu-hero-title">
+          ETF 配息圖卡瀑布牆｜<span class="mu-hero-highlight">一眼看懂每月現金流</span>
+        </h1>
+
+        <p class="mu-hero-lead">
+          把每檔 ETF 的配息做成一張圖卡，從 1 月排到 12 月。
+          與其每天盯 K 線，不如先把 <strong>「現金流節奏」</strong> 看清楚：
+          什麼時候錢會進來？這些配息穩不穩？跟你的退休目標合不合理？
         </p>
-      </div>
-    </div>
-  </section>
 
-  <!-- 下方導流：其他工具 ＋ 退休規劃 -->
-  <section>
-    <div class="mw-shell">
-      <h2 class="mw-section-title">搭配這幾個工具一起用，更像一個完整的退休儀表板</h2>
-
-      <div class="mw-grid">
-        <div class="mw-card">
-          <p class="mw-card-title">複利試算工具｜每月扣多少，未來可以領多少？</p>
-          <p class="mw-card-text">
-            把你現在的年紀、每月投資金額、預估報酬率打進去，
-            看看十年、二十年後，這些配息瀑布牆背後的資產大概長什麼樣子。
-          </p>
-          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">
-            → 開啟複利試算工具
-          </a>
+        <div class="mu-badge-row">
+          <span class="mu-badge">不報名牌，只幫你把數字整理好看</span>
+          <span class="mu-badge mu-badge--alt">配息是現金流，不等於賺到這麼多</span>
         </div>
 
-        <div class="mw-card">
-          <p class="mw-card-title">退休目標倒推｜要準備多少本金比較安心？</p>
-          <p class="mw-card-text">
-            先想像你退休後每個月想過什麼樣的生活，再用倒推工具算出
-            「大概要多少資產＋多少報酬率」，配息瀑布牆就變成你實際的現金流對照表。
-          </p>
-          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">
-            → 用倒推工具算算看
-          </a>
-        </div>
+        <p class="mu-hero-note">
+          下方是互動式瀑布牆本體（桌機體驗最佳）。如果畫面空白或載入很久，
+          通常是 CSV 資料還在更新，稍等或重新整理即可。
+        </p>
 
-        <div class="mw-card">
-          <p class="mw-card-title">ETF 投資追蹤牆｜不是只有配息，績效也要看</p>
-          <p class="mw-card-text">
-            配息只是現金流的一部分，還要搭配總報酬、回撤、持有成本一起看。
-            這個頁面會整理我手上與關注 ETF 的績效數字，當成投資體檢。
-          </p>
-          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">
-            → 查看 ETF 投資追蹤牆
+        <div class="mu-btn-row">
+          <button type="button" class="mu-btn mu-btn--primary" onclick="scrollToWall()">
+            直接看本月配息瀑布牆 <span class="mu-btn-icon">↓</span>
+          </button>
+          <a href="https://markmoneylife.com" target="_blank" rel="noopener" class="mu-btn mu-btn--ghost">
+            把工具加到你的理財首頁 <span class="mu-btn-icon">↗</span>
           </a>
         </div>
       </div>
+    </section>
 
-      <div class="mw-footnote">
-        投資一定有風險，基金與 ETF 申購前請先詳閱公開說明書。
-        以上工具僅供教學與紀錄使用，不構成任何買賣建議。
-        實際配息與金額仍以各發行公司公告為準。
+    <!-- =========================================
+         工具本體：試算 + 前五名 + 瀑布牆
+         ========================================= -->
+    <section class="mu-section mu-section--soft" id="wall-main-section">
+      <div class="mu-shell mu-shell--tight">
+
+        <!-- 上半部：左試算、右排行榜 -->
+        <div class="wall-layout mu-card mu-card--soft">
+
+          <!-- 左：你的 ETF 這期配多少 -->
+          <div>
+            <h2 class="mu-heading-2">你的 ETF 這期配多少？</h2>
+            <p class="mu-section-sub">
+              輸入 ETF 代號與持有張數，就可以根據本月資料，粗估這次大概可以領多少配息。
+              這只是「單次配息」試算，不是年報酬率，也不包含稅。
+            </p>
+
+            <div class="wall-input-row">
+              <div class="wall-input-group">
+                <label class="wall-label" for="inputSymbol">ETF 代號（例如：00919、00713）</label>
+                <input id="inputSymbol" class="wall-input" placeholder="請輸入 5 碼數字代號" />
+              </div>
+              <div class="wall-input-group" style="max-width:160px;">
+                <label class="wall-label" for="inputShares">持有張數</label>
+                <input id="inputShares" class="wall-input" type="number" min="0" step="1" placeholder="例如 10" />
+              </div>
+              <button type="button" class="mu-btn mu-btn--primary" onclick="handleEstimate()">
+                幫我算這次可以領多少
+              </button>
+            </div>
+
+            <p class="wall-note-small">
+              資料來源：臺灣證券交易所及公開資訊觀測站。實際配息金額與入帳時間仍以發行公司公告為準。
+            </p>
+
+            <div id="estimateBox" class="wall-highlight-box">
+              請先在上方輸入 ETF 代號與持有張數，我會幫你找出本月該檔 ETF 的配息紀錄。
+            </div>
+          </div>
+
+          <!-- 右：前五名單期殖利率 -->
+          <div>
+            <div class="wall-top5-header">
+              <div>
+                <h3 class="mu-heading-3">本期前五名單期殖利率</h3>
+                <p style="font-size:0.8rem;color:var(--mark-text-sub);margin-top:0.1rem;">
+                  以本月「公告配息」資料為主，不代表長期績效，也不是推薦名單。
+                </p>
+              </div>
+              <span id="wallUpdateTime" class="wall-pill">資料載入中...</span>
+            </div>
+
+            <ul id="top5List" class="wall-top5-list">
+              <li class="wall-top5-item">
+                <span style="font-size:0.86rem;color:var(--mark-text-mute);">資料載入中...</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 下半部：瀑布牆 -->
+        <div class="wall-grid-wrapper mu-card" style="margin-top:1.8rem;">
+          <div class="wall-grid-title-row">
+            <div>
+              <h2 class="mu-heading-2">本月 ETF 配息圖卡瀑布牆</h2>
+              <small id="wallMonthLabel">讀取中...</small>
+            </div>
+            <small id="wallSummaryHint">
+              提醒：單期殖利率是「這次配息」相對於除息前股價的比率，並不是年化。
+            </small>
+          </div>
+
+          <div id="wallGrid" class="wall-grid">
+            <!-- JS 產生卡片 -->
+          </div>
+
+          <p id="wallEmptyMsg" class="wall-empty" style="display:none;">
+            目前 CSV 中找不到任何配息紀錄，可能是資料還沒更新，或欄位名稱尚未設定正確。
+          </p>
+        </div>
+
+        <!-- 風險說明 -->
+        <div class="wall-risk-section">
+          <div class="mu-card mu-card--soft">
+            <h3 class="mu-heading-3">風險與資料使用聲明</h3>
+            <ul class="mu-list">
+              <li>本工具僅供投資紀錄與教學分享，<strong>不構成任何買賣建議</strong>。</li>
+              <li>配息資料整理自公開資訊，可能有時間差或疏漏，<strong>實際數字以發行公司公告為準</strong>。</li>
+              <li>本工具不需要登入，也不會蒐集你的姓名、身分證字號或銀行帳號。</li>
+              <li>你若自行在瀏覽器輸入持股張數，僅存在你的裝置端，不會傳回伺服器。</li>
+              <li>ETF 仍有淨值下跌、配息縮水、匯率波動等風險，請務必留意你自己的風險承受度。</li>
+            </ul>
+            <div class="mu-footnote-box">
+              <p>
+                我會盡量維持工具的更新與正確性，但無法保證資料完全正確或不中斷。<br/>
+                使用本工具代表你同意自行負擔投資風險。若有任何建議或想看到的新功能，
+                歡迎透過
+                <a href="https://forms.gle/DrWZfDPHunLzjM7N8" target="_blank" rel="noopener">幸福理財家信箱</a>
+                跟我說。
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </section>
-</div>
+    </section>
+
+  </main>
+
+  <script>
+    /* =========================================================
+       Mark UI v2.4 – ETF 配息瀑布牆 JS
+       ========================================================= */
+
+    // 🔧 這一段是你最常需要調整的地方 --------------------
+
+    // 1）CSV 來源：請改成你自己的 Google Sheet / CSV 連結
+    //    建議用 Google 試算表「發佈為 CSV」的網址
+    const CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/XXXXXXXXXXXXXXXXXXXXXXX/pub?output=csv";
+    // ↑ 請把上面這串換成你現在實際在用的 CSV 連結
+
+    // 2）欄位名稱對應：請依照你 CSV 的欄位標題改這裡
+    const COLUMN = {
+      symbol: "代號",
+      name: "名稱",
+      cash: "每股配息",
+      yield: "單期殖利率(%)",
+      price: "除息前收盤價",
+      exDate: "除息日",
+      payDate: "入帳日",
+      month: "配息月份",      // 例如 2024-12
+      group: "配息群組",      // 例如 月配 / 季配，可空白
+      rank: "本月排行",       // 1,2,3... 可用來排序；若沒有就留空
+      incomeKind: "收益組成說明", // 股利/利息/平準金 … 的文字
+      healthShares: "54C估算張數" // 可選，沒有就留空
+    };
+
+    // ---------------------------------------------------------
+
+    let allRows = [];   // 原始 CSV
+    let validRows = []; // 有單期殖利率與每股配息的列
+
+    function scrollToWall() {
+      const el = document.getElementById("wall-main-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function formatPercent(val) {
+      const n = Number(val);
+      if (!isFinite(n)) return "-";
+      return n.toFixed(2) + "%";
+    }
+
+    function formatMoney(val) {
+      const n = Number(val);
+      if (!isFinite(n)) return "-";
+      return n.toLocaleString("zh-TW", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "-";
+      // 支援 2024-12-15 或 20241215
+      const cleaned = String(dateStr).trim();
+      if (/^\d{8}$/.test(cleaned)) {
+        const y = cleaned.slice(0, 4);
+        const m = cleaned.slice(4, 6);
+        const d = cleaned.slice(6, 8);
+        return `${y}/${m}/${d}`;
+      }
+      if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(cleaned)) {
+        const [y, m, d] = cleaned.split("-");
+        return `${y}/${m.padStart(2, "0")}/${d.padStart(2, "0")}`;
+      }
+      return cleaned;
+    }
+
+    function getField(row, key) {
+      const col = COLUMN[key];
+      return col && row[col] !== undefined ? row[col] : "";
+    }
+
+    function parseNumber(row, key) {
+      const v = getField(row, key);
+      const n = parseFloat(String(v).replace(/[,%]/g, ""));
+      return isFinite(n) ? n : NaN;
+    }
+
+    // 讀 CSV 並初始化畫面
+    function loadCsv() {
+      Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          allRows = result.data || [];
+          prepareData();
+        },
+        error: (err) => {
+          console.error("CSV 讀取失敗", err);
+          document.getElementById("wallUpdateTime").textContent = "CSV 載入失敗，請稍後再試";
+          document.getElementById("wallEmptyMsg").style.display = "block";
+        }
+      });
+    }
+
+    function prepareData() {
+      // 過濾出有配息資料的列
+      validRows = allRows.filter((row) => {
+        const cash = parseNumber(row, "cash");
+        const yld = parseNumber(row, "yield");
+        const symbol = getField(row, "symbol");
+        return symbol && isFinite(cash) && isFinite(yld);
+      });
+
+      // 設定「本月」文字（從第一筆 month 欄位推）
+      const monthColName = COLUMN.month;
+      let monthLabel = "";
+      if (monthColName) {
+        const firstWithMonth = allRows.find(r => r[monthColName]);
+        if (firstWithMonth) {
+          monthLabel = String(firstWithMonth[monthColName]);
+        }
+      }
+      const monthLabelEl = document.getElementById("wallMonthLabel");
+      monthLabelEl.textContent = monthLabel
+        ? `本頁顯示「${monthLabel}」當期已公告配息的 ETF`
+        : "本頁顯示最近一次更新的配息資料";
+
+      // 更新時間（若 CSV 有名為「最後更新」的欄位就抓，沒有則用今天）
+      let updatedText = "";
+      const updateFieldName = "最後更新";
+      const rowWithUpdate = allRows.find(r => r[updateFieldName]);
+      if (rowWithUpdate) {
+        updatedText = String(rowWithUpdate[updateFieldName]);
+      } else {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, "0");
+        const d = String(now.getDate()).padStart(2, "0");
+        updatedText = `${y}/${m}/${d}`;
+      }
+      document.getElementById("wallUpdateTime").textContent = `資料更新時間：${updatedText}`;
+
+      renderTop5();
+      renderWall();
+    }
+
+    // 前五名單期殖利率
+    function renderTop5() {
+      const top5ListEl = document.getElementById("top5List");
+      top5ListEl.innerHTML = "";
+
+      if (!validRows.length) {
+        top5ListEl.innerHTML = `
+          <li class="wall-top5-item">
+            <span style="font-size:0.86rem;color:var(--mark-text-mute);">
+              目前沒有可用的配息資料，請確認 CSV 是否已更新。
+            </span>
+          </li>`;
+        return;
+      }
+
+      const sorted = [...validRows].sort((a, b) => {
+        const ya = parseNumber(a, "yield");
+        const yb = parseNumber(b, "yield");
+        return (isFinite(yb) ? yb : -999) - (isFinite(ya) ? ya : -999);
+      }).slice(0, 5);
+
+      sorted.forEach((row, idx) => {
+        const symbol = getField(row, "symbol");
+        const name = getField(row, "name");
+        const yld = parseNumber(row, "yield");
+        const cash = parseNumber(row, "cash");
+        const exDate = formatDate(getField(row, "exDate"));
+
+        const li = document.createElement("li");
+        li.className = "wall-top5-item";
+        li.innerHTML = `
+          <div class="wall-top5-left">
+            <span class="wall-top5-code">#${idx + 1}｜${symbol}</span>
+            <span class="wall-top5-name">${name || ""}</span>
+          </div>
+          <div class="wall-top5-right">
+            <div class="wall-top5-yield">${formatPercent(yld)}</div>
+            <div>每股約 ${isFinite(cash) ? cash.toFixed(3) : "-"} 元</div>
+            <div style="color:#8a97a6;">除息日：${exDate}</div>
+          </div>
+        `;
+        top5ListEl.appendChild(li);
+      });
+    }
+
+    // 主瀑布牆卡片
+    function renderWall() {
+      const gridEl = document.getElementById("wallGrid");
+      const emptyEl = document.getElementById("wallEmptyMsg");
+      gridEl.innerHTML = "";
+
+      if (!validRows.length) {
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
+
+      // 若有「本月排行」欄位就照那個排序，沒有就用單期殖利率
+      const haveRank = validRows.some(r => getField(r, "rank"));
+      const sorted = [...validRows].sort((a, b) => {
+        if (haveRank) {
+          const ra = parseFloat(getField(a, "rank")) || 999;
+          const rb = parseFloat(getField(b, "rank")) || 999;
+          return ra - rb;
+        }
+        const ya = parseNumber(a, "yield");
+        const yb = parseNumber(b, "yield");
+        return (isFinite(yb) ? yb : -999) - (isFinite(ya) ? ya : -999);
+      });
+
+      sorted.forEach((row) => {
+        const symbol = getField(row, "symbol");
+        const name = getField(row, "name");
+        const cash = parseNumber(row, "cash");
+        const yld = parseNumber(row, "yield");
+        const price = parseNumber(row, "price");
+        const exDate = formatDate(getField(row, "exDate"));
+        const payDate = formatDate(getField(row, "payDate"));
+        const group = getField(row, "group");
+        const incomeKind = getField(row, "incomeKind");
+        const healthShares = getField(row, "healthShares");
+
+        const card = document.createElement("article");
+        card.className = "etf-card";
+        card.innerHTML = `
+          <header class="etf-card-header">
+            <div>
+              <div class="etf-card-code">${symbol}</div>
+              <div class="etf-card-name">${name || ""}</div>
+            </div>
+            <div class="etf-card-badge">
+              ${(group || "本期配息").replace(/\s+/g, "")}
+            </div>
+          </header>
+
+          <div class="etf-card-body">
+            <div>
+              <div class="etf-card-metric-label">單期殖利率</div>
+              <div class="etf-card-metric-main etf-card-metric-main--yield">
+                ${formatPercent(yld)}
+              </div>
+            </div>
+            <div>
+              <div class="etf-card-metric-label">每股配息</div>
+              <div class="etf-card-metric-main">
+                ${isFinite(cash) ? cash.toFixed(3) + " 元" : "-"}
+              </div>
+            </div>
+            <div>
+              <div class="etf-card-metric-label">除息前收盤價</div>
+              <div class="etf-card-metric-main">
+                ${isFinite(price) ? price.toFixed(2) : "-"}
+              </div>
+            </div>
+          </div>
+
+          <footer class="etf-card-footer">
+            <div class="etf-card-dates">
+              <span class="etf-card-flag">${incomeKind || "收益組成：詳見公告"}</span>
+              <span>除息日：${exDate}</span>
+              <span>入帳日：${payDate}</span>
+            </div>
+            <div class="etf-card-tagline">
+              ${healthShares
+                ? `<div>二代健保試算張數：約 <strong>${healthShares}</strong> 張</div>`
+                : `<div>提醒：配息≠報酬率，請搭配總報酬一起看。</div>`}
+            </div>
+          </footer>
+        `;
+        gridEl.appendChild(card);
+      });
+    }
+
+    // 單檔配息試算
+    function handleEstimate() {
+      if (!validRows.length) {
+        alert("還沒有配息資料可以查詢，請確認 CSV 是否已成功載入。");
+        return;
+      }
+      const symbolInput = document.getElementById("inputSymbol");
+      const sharesInput = document.getElementById("inputShares");
+      const symbol = (symbolInput.value || "").trim();
+      const shares = parseFloat(sharesInput.value || "0");
+
+      if (!symbol) {
+        alert("請先輸入 ETF 代號（例如 00919）");
+        symbolInput.focus();
+        return;
+      }
+      if (!isFinite(shares) || shares <= 0) {
+        alert("請輸入持有張數（必須大於 0）");
+        sharesInput.focus();
+        return;
+      }
+
+      const targetRow = validRows.find(r => String(getField(r, "symbol")).trim() === symbol);
+      const box = document.getElementById("estimateBox");
+
+      if (!targetRow) {
+        box.innerHTML = `
+          找不到代號 <strong>${symbol}</strong> 的配息資料。<br/>
+          可能原因：這檔 ETF 本期沒有公告配息，或 CSV 尚未更新。
+        `;
+        return;
+      }
+
+      const name = getField(targetRow, "name");
+      const cash = parseNumber(targetRow, "cash");
+      const yld = parseNumber(targetRow, "yield");
+      const exDate = formatDate(getField(targetRow, "exDate"));
+      const payDate = formatDate(getField(targetRow, "payDate"));
+      const incomeKind = getField(targetRow, "incomeKind") || "收益組成：詳見公告";
+
+      if (!isFinite(cash)) {
+        box.innerHTML = `
+          有找到 <strong>${symbol} ${name}</strong>，但 CSV 中沒有完整的「每股配息」資料，
+          暫時無法幫你估算金額。請稍後再試或檢查資料表。
+        `;
+        return;
+      }
+
+      const total = cash * shares * 1000; // 一張 1000 股
+      box.innerHTML = `
+        <strong>${symbol}｜${name}</strong><br/><br/>
+        這次每股配息約 <strong>${cash.toFixed(3)} 元</strong>，
+        以你輸入的 <strong>${shares.toLocaleString()} 張</strong> 粗估，<br/>
+        預計可以領到的配息約為：
+        <br/><br/>
+        <span style="font-size:1.1rem;color:#ffd666;font-weight:700;">
+          約 ${total.toLocaleString("zh-TW", { maximumFractionDigits: 0 })} 元（未扣稅）
+        </span>
+        <br/><br/>
+        補充資訊：<br/>
+        ・單期殖利率：約 <strong>${formatPercent(yld)}</strong><br/>
+        ・除息日：<strong>${exDate}</strong>，入帳日：約 <strong>${payDate}</strong><br/>
+        ・${incomeKind}<br/><br/>
+        ⚠️ 注意：這只是根據目前公開資料的簡易估算，
+        實際配息金額仍以發行公司公告、你的持股實際除息日當天狀況為主。
+      `;
+    }
+
+    // 初始化
+    document.addEventListener("DOMContentLoaded", loadCsv);
+  </script>
+</body>
+</html>
