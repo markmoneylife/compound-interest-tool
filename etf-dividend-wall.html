@@ -1,322 +1,329 @@
 <style>
 /* ============================
-   Mark UI v2.4 – ETF瀑布牆專用
+   ETF 配息圖卡瀑布牆 – 導流版樣式
+   （所有 class 以 .mw- 開頭，避免跟主題衝突）
    ============================ */
 
-/* 🔧 全螢幕根容器：突破 WordPress 內容寬度 */
-.mark-ui-root {
-  position: relative;
-  width: 100vw;          /* 直接吃整個視窗寬 */
-  left: 50%;             /* 先移到中線 */
-  transform: translateX(-50%); /* 再往左拉回一半，剛好對齊畫面 */
-}
-
-/* 🔧 全螢幕背景層：蓋掉主題的米色背景 */
-.mark-ui-bg {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at top, rgba(24, 46, 79, 0.9) 0, #020915 55%, #000309 100%);
-  z-index: 0;
-}
-
-/* 內層工具頁主體 */
-.mark-ui-page {
-  --mark-text-main: #f5f2e9;
-  --mark-text-sub: #c9d3df;
-  --mark-text-mute: #8a97a6;
-  --mark-text-dark: #17212f;
-  --mark-accent-main: #ffd666;
-  --mark-accent-soft: #f5e0a4;
-
-  --mark-shell-max: 1100px;
-  --mark-shell-pad-x: 1.5rem;
-  --mark-shell-pad-y: 2.5rem;
-
-  --mark-radius-lg: 18px;
-  --mark-shadow-card: 0 18px 40px rgba(0,0,0,0.8);
-}
-
-/* 主內容層：壓在背景上面 */
-.mark-ui-main {
-  position: relative;
-  z-index: 1;
-  color: var(--mark-text-main);
+.mw-page {
   font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 15px;
+  color: #102027;
   line-height: 1.7;
 }
 
-/* 基本 reset（只影響這一坨） */
-.mark-ui-page * {
-  box-sizing: border-box;
-}
-.mark-ui-page h1,
-.mark-ui-page h2,
-.mark-ui-page h3,
-.mark-ui-page p {
-  margin: 0;
-}
-.mark-ui-page img {
-  max-width: 100%;
-  display: block;
-}
-
 /* 版心 */
-.mu-shell {
-  max-width: var(--mark-shell-max);
+.mw-shell {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: var(--mark-shell-pad-y) var(--mark-shell-pad-x);
-}
-.mu-shell--tight {
-  padding-top: 1.4rem;
-  padding-bottom: 1.4rem;
+  padding: 2.2rem 1.5rem;
 }
 
-/* 區塊背景 */
-.mu-section {
-  padding: 2.4rem 0;
-}
-.mu-section--dark {
-  background: radial-gradient(circle at top, #0e2230 0, #020915 60%, #02060a 100%);
-}
-.mu-section--soft {
-  background: linear-gradient(180deg, #06141f 0, #020915 100%);
-}
-.mu-section--light {
-  background: #f5f3e7;
-  color: var(--mark-text-dark);
-}
-
-/* HERO */
-.mu-hero-eyebrow {
-  font-size: 0.8rem;
-  letter-spacing: 0.16em;
-  color: var(--mark-text-mute);
-  margin-bottom: 0.6rem;
-}
-.mu-hero-title {
-  font-size: clamp(1.9rem, 3vw, 2.4rem);
-  line-height: 1.35;
-  margin-bottom: 0.9rem;
-}
-.mu-hero-highlight {
-  color: var(--mark-accent-main);
-}
-.mu-hero-lead {
-  font-size: 0.98rem;
-  color: var(--mark-text-sub);
-  max-width: 36rem;
-  margin-bottom: 1.2rem;
-}
-.mu-hero-note {
-  font-size: 0.8rem;
-  color: var(--mark-text-mute);
-}
-
-/* Badge */
-.mu-badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-bottom: 1.2rem;
-}
-.mu-badge {
-  font-size: 0.8rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  background: rgba(11,39,51,0.9);
-  border: 1px solid rgba(177,220,232,0.4);
-}
-
-/* 標題＋清單 */
-.mu-heading-2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.6rem;
-}
-.mu-list {
-  margin: 0.4rem 0 0;
-  padding-left: 1.1rem;
-  font-size: 0.9rem;
-  line-height: 1.8;
-}
-
-/* 卡片 */
-.mu-card {
-  border-radius: var(--mark-radius-lg);
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.12);
-  box-shadow: var(--mark-shadow-card);
-  padding: 1.4rem 1.5rem;
-}
-.mu-card--soft {
-  background: rgba(6,20,31,0.92);
-  border: 1px solid rgba(255,255,255,0.18);
-}
-
-/* 雙欄說明 */
-.etf-wall-cols {
-  display: grid;
-  grid-template-columns: minmax(0,1.2fr) minmax(0,1.1fr);
-  gap: 1.6rem;
-}
-@media (max-width: 960px) {
-  .etf-wall-cols {
-    grid-template-columns: minmax(0,1fr);
+@media (max-width: 768px) {
+  .mw-shell {
+    padding: 1.8rem 1.2rem;
   }
 }
 
-/* 瀑布牆 iframe 卡片 */
-.etf-wall-frame-card {
-  background: #f5f3e7;
-  border-radius: 20px;
-  border: 1px solid rgba(15,45,36,0.16);
-  box-shadow: 0 16px 36px rgba(0,0,0,0.25);
-  padding: 1.4rem 1.5rem 1.1rem;
+/* HERO 區 */
+.mw-hero-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a97a6;
+  margin-bottom: 0.5rem;
 }
 
-/* iframe 外框 */
-.etf-wall-iframe-wrap {
+.mw-hero-title {
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  margin-bottom: 0.6rem;
+  color: #102027;
+}
+
+.mw-hero-highlight {
+  color: #1b8060;
+}
+
+.mw-hero-lead {
+  font-size: 0.98rem;
+  max-width: 38rem;
+  color: #455a64;
+  margin-bottom: 0.9rem;
+}
+
+.mw-hero-note {
+  font-size: 0.82rem;
+  color: #78909c;
+}
+
+/* 按鈕區 */
+.mw-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.mw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.3rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.12s, border-color 0.12s;
+}
+
+.mw-btn--primary {
+  background: linear-gradient(135deg, #1b8060, #1ea3d8);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+
+.mw-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+
+.mw-btn--ghost {
+  background: #ffffff;
+  color: #102027;
+  border-color: rgba(16,32,39,0.12);
+}
+
+.mw-btn--ghost:hover {
+  background: #f5f5f5;
+}
+
+/* 小 badge */
+.mw-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.mw-badge {
+  font-size: 0.78rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: #edf7f2;
+  color: #1b5e20;
+}
+
+/* 分隔線標題 */
+.mw-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+/* 工具 iframe 區塊 */
+.mw-tool-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+  padding: 1.2rem 1.3rem 1rem;
+}
+
+.mw-tool-frame {
   position: relative;
   width: 100%;
   height: 900px;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid rgba(15,45,36,0.12);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.28);
+  border: 1px solid rgba(0,0,0,0.05);
 }
-.etf-wall-iframe-wrap iframe {
+
+.mw-tool-frame iframe {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   border: none;
 }
-.etf-wall-embed-note {
+
+.mw-tool-note {
   margin-top: 0.6rem;
   font-size: 0.8rem;
-  color: rgba(17,35,44,0.8);
+  color: #78909c;
 }
 
-/* 小字區塊 */
-.mu-footnote-box {
-  margin-top: 1.2rem;
+@media (max-width: 960px) {
+  .mw-tool-frame {
+    height: 640px;
+  }
+}
+
+/* 下方導流卡片區 */
+.mw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+  .mw-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.mw-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+}
+
+.mw-card-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.mw-card-text {
+  font-size: 0.85rem;
+  color: #546e7a;
+  margin-bottom: 0.7rem;
+}
+
+.mw-card-link {
+  font-size: 0.82rem;
+  color: #1b8060;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mw-card-link:hover {
+  text-decoration: underline;
+}
+
+/* 風險說明 */
+.mw-footnote {
+  margin-top: 1.4rem;
   padding: 1rem 1.1rem;
   border-radius: 12px;
-  border: 1px dashed rgba(255,255,255,0.25);
-  font-size: 0.8rem;
-  color: var(--mark-text-mute);
-}
-
-/* RWD */
-@media (max-width: 960px) {
-  .etf-wall-iframe-wrap { height: 640px; }
-  .mu-shell { padding-left: 1.2rem; padding-right: 1.2rem; }
+  background: #fafafa;
+  border: 1px dashed rgba(0,0,0,0.16);
+  font-size: 0.78rem;
+  color: #607d8b;
 }
 </style>
 
-<div class="mark-ui-root">
-  <div class="mark-ui-bg"></div>
+<div class="mw-page">
 
-  <div class="mark-ui-page etf-wall-page">
-    <main class="mark-ui-main">
+  <!-- HERO ＋ 導流 -->
+  <section>
+    <div class="mw-shell">
+      <p class="mw-hero-eyebrow">ETF 配息・現金流・長期存股</p>
 
-      <!-- HERO 區 -->
-      <section class="mu-section mu-section--dark">
-        <div class="mu-shell">
-          <p class="mu-hero-eyebrow">ETF 配息・現金流・長期存股</p>
+      <h1 class="mw-hero-title">
+        ETF 配息圖卡瀑布牆｜<span class="mw-hero-highlight">一眼看懂每月現金流</span>
+      </h1>
 
-          <h1 class="mu-hero-title">
-            ETF 配息圖卡瀑布牆｜<span class="mu-hero-highlight">一眼看懂每月現金流</span>
-          </h1>
+      <p class="mw-hero-lead">
+        這一頁是我自己的「配息儀表板」：把追蹤的 ETF 配息做成圖卡，
+        按照月份排好，你可以一眼看到每個月大概有哪些 ETF 在幫你發薪水。
+      </p>
 
-          <p class="mu-hero-lead">
-            每檔 ETF 的配息都用圖卡視覺排出月份順序，
-            讓你快速理解 <strong>現金流節奏、發放頻率與配息特性</strong>。
+      <div class="mw-badge-row">
+        <span class="mw-badge">不報名牌，只幫你把現金流看清楚</span>
+        <span class="mw-badge">配息是現金流，不等於賺到這麼多</span>
+      </div>
+
+      <div class="mw-btn-row">
+        <a href="#wall-tool" class="mw-btn mw-btn--primary">
+          直接滑到瀑布牆工具 👇
+        </a>
+        <a href="https://markmoneylife.com" class="mw-btn mw-btn--ghost">
+          回到馬克理財首頁
+        </a>
+        <a href="https://www.youtube.com/user/rengary" class="mw-btn mw-btn--ghost" target="_blank" rel="noopener">
+          追蹤我的 YouTube
+        </a>
+      </div>
+
+      <p class="mw-hero-note">
+        建議用電腦或橫向平板開啟，圖卡會比較清楚。如果你本身就有 ETF 清單，
+        可以邊看邊對照，想像未來每個月的被動收入節奏。
+      </p>
+    </div>
+  </section>
+
+  <!-- 工具本體（GitHub 頁嵌入） -->
+  <section id="wall-tool">
+    <div class="mw-shell">
+      <h2 class="mw-section-title">ETF 配息圖卡瀑布牆｜工具本體</h2>
+
+      <div class="mw-tool-card">
+        <div class="mw-tool-frame">
+          <iframe
+            src="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html"
+            title="ETF 配息圖卡瀑布牆"
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <p class="mw-tool-note">
+          如果工具沒有正常顯示，可以重新整理這一頁，或改用桌機 / Chrome 瀏覽器試試看。
+          GitHub 端更新配息資料後，這裡會自動跟著更新。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下方導流：其他工具 ＋ 退休規劃 -->
+  <section>
+    <div class="mw-shell">
+      <h2 class="mw-section-title">搭配這幾個工具一起用，更像一個完整的退休儀表板</h2>
+
+      <div class="mw-grid">
+        <div class="mw-card">
+          <p class="mw-card-title">複利試算工具｜每月扣多少，未來可以領多少？</p>
+          <p class="mw-card-text">
+            把你現在的年紀、每月投資金額、預估報酬率打進去，
+            看看十年、二十年後，這些配息瀑布牆背後的資產大概長什麼樣子。
           </p>
+          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">
+            → 開啟複利試算工具
+          </a>
+        </div>
 
-          <div class="mu-badge-row">
-            <span class="mu-badge">不報名牌，只幫你把配息數字看清楚</span>
-            <span class="mu-badge">配息是現金流，不等於賺到這麼多</span>
-          </div>
-
-          <p class="mu-hero-note">
-            下方就是完整的 ETF 配息瀑布牆工具本體（直接嵌入 GitHub 頁面），
-            建議使用電腦或橫向平板觀看，圖卡會更清楚。
+        <div class="mw-card">
+          <p class="mw-card-title">退休目標倒推｜要準備多少本金比較安心？</p>
+          <p class="mw-card-text">
+            先想像你退休後每個月想過什麼樣的生活，再用倒推工具算出
+            「大概要多少資產＋多少報酬率」，配息瀑布牆就變成你實際的現金流對照表。
           </p>
+          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">
+            → 用倒推工具算算看
+          </a>
         </div>
-      </section>
 
-      <!-- 內嵌瀑布牆工具 -->
-      <section class="mu-section mu-section--soft">
-        <div class="mu-shell mu-shell--tight">
-          <div class="mu-card etf-wall-frame-card">
-            <div class="etf-wall-iframe-wrap">
-              <iframe
-                src="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html"
-                title="ETF 配息圖卡瀑布牆"
-                loading="lazy">
-              </iframe>
-            </div>
-
-            <p class="etf-wall-embed-note">
-              若工具未正常顯示，可嘗試重新整理本頁，或改用桌機 / Chrome 瀏覽器開啟。
-            </p>
-          </div>
+        <div class="mw-card">
+          <p class="mw-card-title">ETF 投資追蹤牆｜不是只有配息，績效也要看</p>
+          <p class="mw-card-text">
+            配息只是現金流的一部分，還要搭配總報酬、回撤、持有成本一起看。
+            這個頁面會整理我手上與關注 ETF 的績效數字，當成投資體檢。
+          </p>
+          <a class="mw-card-link" href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">
+            → 查看 ETF 投資追蹤牆
+          </a>
         </div>
-      </section>
+      </div>
 
-      <!-- 說明區 -->
-      <section class="mu-section mu-section--light">
-        <div class="mu-shell">
-          <h2 class="mu-heading-2">這個工具可以幫你什麼？</h2>
-
-          <div class="etf-wall-cols">
-            <div class="mu-card">
-              <h3>把配息當成現金流來看</h3>
-              <ul class="mu-list">
-                <li>看到一年配幾次、一個月大概哪幾檔在發。</li>
-                <li>分辨哪些 ETF 比較偏「穩定現金流」，哪些偏價差型。</li>
-                <li>當作你自己的「配息儀表板」，配息入帳就來這裡勾一下。</li>
-              </ul>
-            </div>
-
-            <div class="mu-card">
-              <h3>適合誰？不適合誰？</h3>
-              <ul class="mu-list">
-                <li>已經有 2 檔以上 ETF、想看每月現金流節奏的人。</li>
-                <li>準備做退休金規劃，需要先看清楚被動收入的人。</li>
-                <li>不適合拿來猜短線進出點，也不是報名牌工具。</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 風險說明 -->
-      <section class="mu-section mu-section--dark">
-        <div class="mu-shell">
-          <h2 class="mu-heading-2">風險與資料使用說明</h2>
-
-          <div class="mu-card mu-card--soft">
-            <ul class="mu-list">
-              <li>本工具僅供教學展示與紀錄，不構成任何買賣建議。</li>
-              <li>配息資料整理自公開資訊，可能有時間差或疏漏，實際金額以發行公司公告為準。</li>
-              <li>工具本身不要求登入，也不會記錄你的姓名、身分證字號、銀行帳號等個資。</li>
-              <li>任何你自己在瀑布牆加註的數字，只存在你的裝置裡，不會回傳給我。</li>
-              <li>ETF 投資仍有淨值波動、配息縮水、匯率變動等風險，請審慎評估。</li>
-            </ul>
-
-            <div class="mu-footnote-box">
-              如果你對工具內容或使用方式有疑問，歡迎透過
-              <a href="https://forms.gle/DrWZfDPHunLzjM7N8" target="_blank" rel="noopener">幸福理財家信箱</a>
-              跟我說，我會盡力維持工具在「可用、好用」的狀態。
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </main>
-  </div>
+      <div class="mw-footnote">
+        投資一定有風險，基金與 ETF 申購前請先詳閱公開說明書。
+        以上工具僅供教學與紀錄使用，不構成任何買賣建議。
+        實際配息與金額仍以各發行公司公告為準。
+      </div>
+    </div>
+  </section>
 </div>
