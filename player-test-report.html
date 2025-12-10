@@ -536,8 +536,8 @@
       const intl = parseCsv(intlCsv);
 
       playersByName = new Map();
-      testsByName = new Map();
-      intlByGroup = new Map();
+      testsByName   = new Map();
+      intlByGroup   = new Map();
 
       // 學員主資料：假設有欄位「姓名」「性別」「生日」「分級」「傷病／限制」「目標」「一週可上課時段」「聯絡方式」
       players.forEach(row => {
@@ -554,24 +554,18 @@
         testsByName.get(name).push(row);
       });
 
-      // 國際標準：每一列是一個「分級」，H欄是平均，I欄是標準差（未來如果你多加欄位也能抓）
+      // 國際標準：每一列是一個「分級」，某些欄位是平均值，對應的「XXX(標準差)」是 SD
       intl.forEach(row => {
         const group = row["分級"]?.trim();
         if (!group) return;
 
         const metrics = {};
-        Object.keys(row).forEach(h => {
-          if (!h || h === "分級") return;
-          if (h.includes("標準差")) return; // 先略過 SD 欄，下面一起處理
-        });
-
-        // 尋找成對欄位：XXX 與 XXX(標準差)
         Object.keys(row).forEach(header => {
           if (!header) return;
           if (header.includes("標準差")) {
             const base = header.replace("(標準差)", "").trim();
             const mean = toNumber(row[base]);
-            const sd = toNumber(row[header]);
+            const sd   = toNumber(row[header]);
             if (mean !== null && sd !== null) {
               metrics[base] = { mean, sd };
             }
@@ -600,7 +594,8 @@
       });
 
       lastLoadedAt = new Date();
-      document.getElementById("placeholder").textContent = "資料載入完成，請從上方選擇學員並按「產生報告」。";
+      document.getElementById("placeholder").textContent =
+        "資料載入完成，請從上方選擇學員並按「產生報告」。";
       document.getElementById("loadReportBtn").disabled = false;
 
     } catch (err) {
@@ -621,7 +616,7 @@
     container.innerHTML = ""; // 清空
 
     const playerInfo = playersByName.get(name) || { "姓名": name };
-    const testRows = testsByName.get(name) || [];
+    const testRows   = testsByName.get(name)   || [];
 
     if (testRows.length === 0) {
       container.innerHTML = `<p class="muted">找不到「${name}」的測驗成績。</p>`;
@@ -631,10 +626,10 @@
 
     // 目前策略：第一筆當「前測」、最後一筆當「後測」
     const firstTest = testRows[0];
-    const lastTest = testRows[testRows.length - 1];
+    const lastTest  = testRows[testRows.length - 1];
 
-    const group = lastTest["分級"] || playerInfo["分級"] || "";
-    const intlMetrics = intlByGroup.get(group) || {};
+    const group        = lastTest["分級"] || playerInfo["分級"] || "";
+    const intlMetrics  = intlByGroup.get(group) || {};
 
     /* ====== 報告 Header ====== */
 
@@ -679,7 +674,6 @@
 
     const cardSummary = document.createElement("div");
     cardSummary.className = "card";
-    const totalCount = Object.keys(intlMetrics).length;
     cardSummary.innerHTML = `
       <div class="card-header">
         <div class="card-title">SUMMARY</div>
@@ -694,47 +688,41 @@
     gridTop.appendChild(cardSummary);
     container.appendChild(gridTop);
 
-    /* ====== 把測驗指標抓出來（只留數字欄位） ====== */
+    /* ====== 把測驗指標抓出來（只用「國際標準」有定義的項目） ====== */
 
-    const identityKeys = new Set(["姓名", "性別", "年齡", "分級", "備註", "日期", "測驗日期"]);
-    const metricNames = [];
+    // 只拿「國際標準分頁」裡有平均＋標準差的欄位名稱
+    const metricNames = Object.keys(intlMetrics);
 
-    Object.keys(lastTest).forEach(key => {
-      if (!key || identityKeys.has(key)) return;
-      const val = toNumber(lastTest[key]);
-      if (val === null) return;
-      metricNames.push(key);
-    });
+    const compareRows  = [];
+    const trendRows    = [];
+    const intlCompare  = [];
 
-    // 依序建立比較用資料
-    const compareRows = [];
-    const trendRows = [];
-    const intlCompare = [];
-
-    const radarLabels = [];
+    const radarLabels       = [];
     const radarPlayerScores = [];
-    const radarIntlScores = [];
+    const radarIntlScores   = [];
 
-    const strengths = [];
+    const strengths  = [];
     const weaknesses = [];
 
     metricNames.forEach(metric => {
-      const latest = toNumber(lastTest[metric]);
+      const latest   = toNumber(lastTest[metric]);
       const earliest = toNumber(firstTest[metric]);
       if (latest === null) return;
 
       const intl = intlMetrics[metric] || null;
-      let mean = intl ? intl.mean : null;
-      let sd = intl ? intl.sd : null;
+      let mean   = intl ? intl.mean : null;
+      let sd     = intl ? intl.sd   : null;
 
       // 前後測差異
       let deltaAbs = null;
       let deltaPct = null;
       if (earliest !== null) {
-        const diff = latest - earliest;
+        const diff       = latest - earliest;
         const betterSign = isLowerBetter(metric) ? -1 : 1; // 小為佳 -> 下降是好
-        const trendGood = diff * betterSign < 0;
-        const trendText = earliest === 0 ? "—" : ((latest - earliest) / earliest * 100).toFixed(1) + "%";
+        const trendGood  = diff * betterSign < 0;
+        const trendText  = earliest === 0
+          ? "—"
+          : ((latest - earliest) / earliest * 100).toFixed(1) + "%";
         deltaAbs = diff;
         deltaPct = trendText;
 
@@ -751,9 +739,9 @@
       // 國際比較
       if (mean !== null && sd !== null && sd !== 0) {
         const lowerBetter = isLowerBetter(metric);
-        const z = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
+        const z           = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
         const scorePlayer = zToScore(z);
-        const scoreIntl = 50; // by definition
+        const scoreIntl   = 50; // by definition
 
         radarLabels.push(metric);
         radarPlayerScores.push(scorePlayer);
@@ -761,15 +749,15 @@
 
         let level, chipClass;
         if (z >= 1) {
-          level = "優於國際樣本";
+          level     = "優於國際樣本";
           chipClass = "good";
           strengths.push({ metric, z });
         } else if (z <= -0.5) {
-          level = "低於國際樣本";
+          level     = "低於國際樣本";
           chipClass = "bad";
           weaknesses.push({ metric, z });
         } else {
-          level = "接近國際平均";
+          level     = "接近國際平均";
           chipClass = "ok";
         }
 
@@ -902,15 +890,18 @@
     const tbodyTrend = table1Card.querySelector("#tbodyTrend");
     trendRows.forEach(row => {
       const tr = document.createElement("tr");
-      const diffText = row.diff === null ? "—" : row.diff.toFixed(2);
       const diffClass = row.trendGood ? "trend-up" : "trend-down";
-      const diffLabel = row.diff === null ? "—" : (row.trendGood ? "↑ " : "↓ ") + Math.abs(row.diff).toFixed(2);
+      const diffLabel = row.diff === null
+        ? "—"
+        : (row.trendGood ? "↑ " : "↓ ") + Math.abs(row.diff).toFixed(2);
 
       tr.innerHTML = `
         <td>${row.metric}</td>
         <td>${row.earliest ?? "—"}</td>
         <td>${row.latest ?? "—"}</td>
-        <td class="${row.diff === null ? "" : diffClass}">${row.diff === null ? "—" : diffLabel}</td>
+        <td class="${row.diff === null ? "" : diffClass}">
+          ${row.diff === null ? "—" : diffLabel}
+        </td>
         <td>${row.trendText}</td>
       `;
       tbodyTrend.appendChild(tr);
@@ -945,7 +936,9 @@
           <tbody id="tbodyIntl"></tbody>
         </table>
       </div>
-      <p class="note">Z 分數約在 -0.5 ~ +0.5 為接近國際平均；≥ +1 為明顯優於國際樣本；≤ -0.5 建議列入訓練重點。</p>
+      <p class="note">
+        Z 分數約在 -0.5 ~ +0.5 為接近國際平均；≥ +1 為明顯優於國際樣本；≤ -0.5 建議列入訓練重點。
+      </p>
     `;
     container.appendChild(table2Card);
 
@@ -966,12 +959,13 @@
 
     /* ====== 教練建議文案 ====== */
 
-    const summaryEl = document.getElementById("coachSummary");
-    const topStrengths = strengths.sort((a, b) => b.z - a.z).slice(0, 3);
+    const summaryEl     = document.getElementById("coachSummary");
+    const topStrengths  = strengths.sort((a, b) => b.z - a.z).slice(0, 3);
     const topWeaknesses = weaknesses.sort((a, b) => a.z - b.z).slice(0, 3);
 
     const buildMetricList = arr =>
-      arr.map(item => `${item.metric}（Z = ${item.z.toFixed(2)}）`).join("、") || "目前沒有特別突出／明顯落後的單一項目。";
+      arr.map(item => `${item.metric}（Z = ${item.z.toFixed(2)}）`).join("、") ||
+      "目前沒有特別突出／明顯落後的單一項目。";
 
     summaryEl.innerHTML = `
       <div class="coach-notes">
@@ -999,8 +993,8 @@
 
   function downloadPdf() {
     const selectEl = document.getElementById("playerSelect");
-    const name = selectEl.value || "report";
-    const element = document.getElementById("reportPage");
+    const name     = selectEl.value || "report";
+    const element  = document.getElementById("reportPage");
 
     const opt = {
       margin: [10, 10, 10, 10],
@@ -1021,14 +1015,14 @@
 
   document.getElementById("loadReportBtn").addEventListener("click", () => {
     const selectEl = document.getElementById("playerSelect");
-    const name = selectEl.value;
+    const name     = selectEl.value;
     if (!name) return;
     buildReportFor(name);
   });
 
   document.getElementById("pdfBtn").addEventListener("click", downloadPdf);
 
-  // 首次進來就嘗試載入一次（如果你不想自動載入，可以註解掉）
+  // 如果一進頁面就想自動載入，可以打開這行：
   // reloadAll();
 </script>
 </body>
