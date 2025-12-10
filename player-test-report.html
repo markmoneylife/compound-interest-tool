@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>教練中心｜體能檢測報告 v5</title>
+  <title>教練中心｜體能檢測報告 v6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Chart.js for radar chart -->
@@ -180,7 +180,7 @@
       <span class="badge accent">教練中心 · 內部工具</span>
     </div>
     <p class="app-subtitle">
-      從 Google Sheets 自動讀取學員基本資料與檢測成績，對比國際標準，產生可下載的 PDF 報告，讓家長一眼看懂孩子目前的體能狀況。
+      直接從 Google 試算表讀取學員基本資料與檢測成績，對比國際標準，產生可下載的 PDF 報告，讓家長一眼看懂孩子目前的體能狀況。
     </p>
   </header>
 
@@ -214,21 +214,21 @@
 </div>
 
 <script>
-  /********** 1. 這裡貼上你「發布到網路 → CSV」的三條網址 **********/
-  const CSV_URLS = {
-    // 學員主資料表（姓名 / 性別 / 生日 / 分級 / 目標 / 聯絡方式）
-    players: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
+  /********** 只要改這一行：你的 Spreadsheet FILE_ID **********/
+  const SHEET_FILE_ID = "1N-8HQZaxHYj4vE824raG1fWyNxt5w7B9_m8oHn8f4As"; // 例如：1AbCdEfGhIjKlMn...
 
-    // 檢測成績（一位學生一行，垂直跳 / 立定跳 / 實心球 / 10米衝刺 / 505敏捷跑 …）
-    tests:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-
-    // 國際標準（寬表：分級 / 垂直跳 / … / 實心球過頂拋(標準差)…）
-    intl:    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
+  /********** sheet 名稱（請跟底下分頁標籤一樣） **********/
+  const SHEET_NAMES = {
+    players: "學員主資料表",
+    tests: "檢測成績",
+    intl: "國際標準"
   };
 
-  async function fetchCsv(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("無法讀取 CSV：" + url);
+  // 用 gviz 把指定 sheet 變成 CSV
+  async function fetchSheetCsv(sheetName) {
+    const base = `https://docs.google.com/spreadsheets/d/${SHEET_FILE_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+    const res = await fetch(base);
+    if (!res.ok) throw new Error("無法讀取工作表：「" + sheetName + "」");
     return await res.text();
   }
 
@@ -250,7 +250,7 @@
     return isNaN(n) ? null : n;
   }
 
-  const LOWER_IS_BETTER_KEYS = ["10米衝刺", "10M衝刺", "20米衝刺", "20M衝刺", "505", "敏捷跑", "蜘蛛跑", "反應"];
+  const LOWER_IS_BETTER_KEYS = ["10米", "10M", "20米", "20M", "505", "蜘蛛", "敏捷", "反應"];
   function isLowerBetter(metricName) {
     return LOWER_IS_BETTER_KEYS.some(k => metricName.includes(k));
   }
@@ -260,8 +260,8 @@
   }
 
   let playersByName = new Map();
-  let testsByName   = new Map();   // 每位學生一行測驗
-  let intlByGroup   = new Map();   // 每個分級的國際標準
+  let testsByName   = new Map();
+  let intlByGroup   = new Map();
   let lastLoadedAt  = null;
   let radarInstance = null;
 
@@ -278,9 +278,9 @@
 
     try {
       const [playersCsv, testsCsv, intlCsv] = await Promise.all([
-        fetchCsv(CSV_URLS.players),
-        fetchCsv(CSV_URLS.tests),
-        fetchCsv(CSV_URLS.intl)
+        fetchSheetCsv(SHEET_NAMES.players),
+        fetchSheetCsv(SHEET_NAMES.tests),
+        fetchSheetCsv(SHEET_NAMES.intl)
       ]);
 
       const players = parseCsv(playersCsv);
@@ -291,21 +291,19 @@
       testsByName   = new Map();
       intlByGroup   = new Map();
 
-      // 學員主資料表
       players.forEach(row => {
         const name = (row["姓名"] || "").trim();
         if (!name) return;
         playersByName.set(name, row);
       });
 
-      // 檢測成績（一位學生一行）
       tests.forEach(row => {
         const name = (row["姓名"] || "").trim();
         if (!name) return;
         testsByName.set(name, row);
       });
 
-      // 國際標準（寬表：分級 + 多個指標 + 指標(標準差)）
+      // 國際標準：寬表 格式：分級 | 垂直跳 | 垂直跳(標準差) | ...
       intl.forEach(row => {
         const group = (row["分級"] || "").trim();
         if (!group) return;
@@ -329,7 +327,6 @@
         intlByGroup.set(group, metrics);
       });
 
-      // 下拉選單
       const allNames = Array.from(new Set([
         ...playersByName.keys(),
         ...testsByName.keys()
@@ -355,7 +352,11 @@
 
     } catch (err) {
       console.error(err);
-      placeholder.textContent = "資料讀取失敗，請確認三條 CSV 連結都填對，且三個分頁都有「發布到網路 → CSV」。";
+      placeholder.textContent =
+        "資料讀取失敗，請確認：\n" +
+        "1）試算表已設為「知道連結的任何人 → 檢視者」。\n" +
+        "2）SHEET_FILE_ID 填寫正確。\n" +
+        "3）分頁名稱為：學員主資料表 / 檢測成績 / 國際標準。";
     }
   }
 
@@ -367,15 +368,15 @@
     const testRow = testsByName.get(name);
 
     if (!testRow) {
-      container.innerHTML = `<p class="muted">找不到「${name}」的檢測成績資料（請確認『檢測成績』分頁也有這位學員，並已發布為 CSV）。</p>`;
+      container.innerHTML =
+        `<p class="muted">找不到「${name}」的檢測成績，請確認「檢測成績」分頁中也有這位學員的姓名。</p>`;
       document.getElementById("pdfBtn").disabled = true;
       return;
     }
 
-    const group = playerInfo["分級"] || "";
+    const group = playerInfo["分級"] || testRow["分級"] || "";
     const intlMetrics = intlByGroup.get(group) || {};
 
-    // 頂部 header
     const headerEl = document.createElement("div");
     headerEl.className = "report-header";
     headerEl.innerHTML = `
@@ -391,7 +392,6 @@
     `;
     container.appendChild(headerEl);
 
-    // 上半部：基本資料 + 教練摘要
     const gridTop = document.createElement("div");
     gridTop.className = "grid-two";
 
@@ -404,7 +404,7 @@
       </div>
       <ul class="info-list">
         <li><span class="label">姓名：</span>${playerInfo["姓名"] || name}</li>
-        <li><span class="label">性別：</span>${playerInfo["性別"] || "—"}</li>
+        <li><span class="label">性別：</span>${playerInfo["性別"] || testRow["性別"] || "—"}</li>
         <li><span class="label">年齡：</span>${playerInfo["年齡"] || "—"}</li>
         <li><span class="label">分級：</span>${group || "—"}</li>
         <li><span class="label">生日：</span>${playerInfo["生日"] || "—"}</li>
@@ -429,7 +429,6 @@
     gridTop.appendChild(cardSummary);
     container.appendChild(gridTop);
 
-    // 🔎 把「檢測成績」裡真正的測驗欄位抓出來
     const identityKeys = new Set([
       "姓名","性別","年齡","分級","生日",
       "傷勢/限制","傷病／限制","傷勢／限制",
@@ -445,18 +444,16 @@
       metricNames.push(key);
     });
 
-    // 如果完全抓不到任何數字 → 直接跟你說「你測驗那張表不對」
     if (metricNames.length === 0) {
       container.innerHTML = `
         <p class="muted">
-          「${name}」的檢測成績資料中沒有找到任何數字欄位。<br>
-          請確認你填入 <strong>『檢測成績』分頁的 CSV 連結</strong>，而不是學員主資料表。
+          「${name}」的檢測成績裡沒有任何數值欄位。<br>
+          請確認「檢測成績」分頁中，除了姓名/性別/分級以外，其他欄位都是數字（不要有中文單位）。
         </p>`;
       document.getElementById("pdfBtn").disabled = true;
       return;
     }
 
-    // 整理：國際標準對照 & 雷達圖資料
     const intlCompare = [];
     const radarLabels = [];
     const radarPlayerScores = [];
@@ -484,11 +481,10 @@
         radarPlayerScores.push(scorePlayer);
         radarIntlScores.push(scoreIntl);
 
-        if (z >= 1)       { level = "優於國際樣本"; chipClass = "good"; }
+        if (z >= 1)        { level = "優於國際樣本"; chipClass = "good"; }
         else if (z <= -0.5){ level = "低於國際樣本"; chipClass = "bad"; }
-        else              { level = "接近國際平均"; chipClass = "ok"; }
+        else               { level = "接近國際平均"; chipClass = "ok"; }
       } else if (mean !== null) {
-        // 至少有平均值，沒有 SD 就不算 Z
         level = "有國際平均，無 SD";
         chipClass = "ok";
       }
@@ -496,7 +492,6 @@
       intlCompare.push({ metric, latest, mean, sd, z, level, chipClass });
     });
 
-    // 雷達圖卡片
     const radarCard = document.createElement("div");
     radarCard.className = "card";
     radarCard.style.marginTop = "0.75rem";
@@ -554,7 +549,6 @@
       }
     });
 
-    // 📊 本次測驗成績列表（原本的 BASELINE VS LATEST，現在改成 snapshot）
     const section1Title = document.createElement("h3");
     section1Title.className = "section-title";
     section1Title.textContent = "本次檢測成績一覽";
@@ -565,7 +559,7 @@
     table1Card.innerHTML = `
       <div class="card-header">
         <div class="card-title">CURRENT TEST SNAPSHOT</div>
-        <div class="card-tag">目前每個指標的數值（尚未有前後測比較）</div>
+        <div class="card-tag">目前每個指標的數值（暫時不做前後測比較）</div>
       </div>
       <div class="table-wrapper">
         <table>
@@ -578,7 +572,6 @@
           <tbody id="tbodySnapshot"></tbody>
         </table>
       </div>
-      <p class="note">目前每位學生只有一筆測驗紀錄，未來若有「前測 / 後測」記錄，再另外設計前後比較表。</p>
     `;
     container.appendChild(table1Card);
 
@@ -586,14 +579,10 @@
     metricNames.forEach(metric => {
       const val = testRow[metric];
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${metric}</td>
-        <td>${val ?? "—"}</td>
-      `;
+      tr.innerHTML = `<td>${metric}</td><td>${val ?? "—"}</td>`;
       tbodySnapshot.appendChild(tr);
     });
 
-    // 🌍 國際標準對照表
     const section2Title = document.createElement("h3");
     section2Title.className = "section-title";
     section2Title.textContent = "與國際標準對照";
@@ -652,7 +641,6 @@
       tbodyIntl.appendChild(tr);
     });
 
-    // ✏️ 教練摘要：用 Z 分數抓強項 / 弱項
     const summaryEl = document.getElementById("coachSummary");
     const strengths = intlCompare.filter(r => r.z != null && r.z >= 1);
     const weaknesses = intlCompare.filter(r => r.z != null && r.z <= -0.5);
