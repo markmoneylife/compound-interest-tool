@@ -336,7 +336,7 @@
       <span class="badge">教練中心 · Internal</span>
     </div>
     <p class="app-subtitle">
-      從 Google Sheets 自動抓學員資料與測驗成績，對比國際標準並生成 PDF 報告。建議先在電腦版使用。
+      從 Google Sheets 自動抓學員資料與測驗成績，對比國際標準並生成 PDF 報告。
     </p>
   </header>
 
@@ -364,12 +364,21 @@
 </div>
 
 <script>
-  /********** 1. 這三個改成你自己的 CSV 網址 **********/
+  /********** 1. 這裡換成你的 FILE_ID 與三個 gid **********/
+
+  // 例如網址是 https://docs.google.com/spreadsheets/d/ABC123xyz456/edit#gid=0
+  // 那 FILE_ID 就是 ABC123xyz456
+  const FILE_ID = "1Wov1o-GIHgoekcMhldWauTqJ8CCcGh9X2DAYh_SOXzo"; // ← 改成你的
+
+  // 分別改成三個分頁的 gid
+  const GID_PLAYERS = "123456789";  // 學員主資料表分頁的 gid
+const GID_TESTS   = "122705340";  // 檢測成績分頁的 gid
+const GID_INTL    = "987654321";  // 國際標準分頁的 gid
 
   const CSV_URLS = {
-    tests:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-    players: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-    intl:    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
+    players: `https://docs.google.com/spreadsheets/d/${FILE_ID}/export?format=csv&gid=${GID_PLAYERS}`,
+    tests:   `https://docs.google.com/spreadsheets/d/${FILE_ID}/export?format=csv&gid=${GID_TESTS}`,
+    intl:    `https://docs.google.com/spreadsheets/d/${FILE_ID}/export?format=csv&gid=${GID_INTL}`
   };
 
   /********** 2. 共用工具 **********/
@@ -400,7 +409,6 @@
     return isNaN(n) ? null : n;
   }
 
-  // 哪些指標是「數越小越好」
   const LOWER_IS_BETTER = ["10米衝刺", "10M衝刺", "20米衝刺", "20M衝刺", "505敏捷跑", "蜘蛛跑", "反應測試"];
 
   function isLowerBetter(metricName) {
@@ -439,14 +447,12 @@
       testsByName   = new Map();
       intlByGroup   = new Map();
 
-      // 學員主資料
       players.forEach(row => {
         const name = row["姓名"]?.trim();
         if (!name) return;
         playersByName.set(name, row);
       });
 
-      // 測驗成績
       tests.forEach(row => {
         const name = row["姓名"]?.trim();
         if (!name) return;
@@ -454,7 +460,7 @@
         testsByName.get(name).push(row);
       });
 
-      // 國際標準：每列一個分級，所有非空欄位先當「平均值」
+      // 國際標準：每列一個分級，欄位 = 平均，含「標準差」的欄位 = SD
       intl.forEach(row => {
         const group = row["分級"]?.trim();
         if (!group) return;
@@ -467,12 +473,10 @@
           if (val === null) return;
 
           if (header.includes("標準差")) {
-            // 例如「實心球過頂拋(標準差)」→ 實心球過頂拋
             let base = header;
             base = base.replace(/[\(\（]標準差[\)\）]/g, "");
             base = base.replace("標準差", "");
             base = base.trim();
-
             if (!metrics[base]) metrics[base] = {};
             metrics[base].sd = val;
           } else {
@@ -484,7 +488,6 @@
         intlByGroup.set(group, metrics);
       });
 
-      // 下拉選單
       const selectEl = document.getElementById("playerSelect");
       selectEl.innerHTML = "";
       const optEmpty = document.createElement("option");
@@ -510,7 +513,7 @@
     } catch (err) {
       console.error(err);
       document.getElementById("placeholder").textContent =
-        "資料讀取失敗，請確認 CSV 網址是否正確。";
+        "資料讀取失敗，請確認 FILE_ID / gid 是否填對，以及試算表權限。";
     }
   }
 
@@ -537,8 +540,6 @@
     const group       = lastTest["分級"] || playerInfo["分級"] || "";
     const intlMetrics = intlByGroup.get(group) || {};
 
-    /* Header */
-
     const headerEl = document.createElement("div");
     headerEl.className = "report-header";
     headerEl.innerHTML = `
@@ -553,8 +554,6 @@
       </div>
     `;
     container.appendChild(headerEl);
-
-    /* 基本資料 + Summary */
 
     const gridTop = document.createElement("div");
     gridTop.className = "grid-two";
@@ -594,8 +593,6 @@
     gridTop.appendChild(cardSummary);
     container.appendChild(gridTop);
 
-    /* 指標名稱：從「檢測成績」抓，排除身份欄位 */
-
     const identityKeys = new Set([
       "姓名","性別","年齡","分級","生日",
       "傷勢/限制","傷病／限制","傷勢／限制",
@@ -627,11 +624,9 @@
       const earliest = toNumber(firstTest[metric]);
       if (latest === null) return;
 
-      const intl    = intlMetrics[metric] || {};
-      const mean    = intl.mean ?? null;
-      const sd      = intl.sd   ?? null;
-
-      /* 前後測 */
+      const intl = intlMetrics[metric] || {};
+      const mean = intl.mean ?? null;
+      const sd   = intl.sd   ?? null;
 
       if (earliest !== null) {
         const diff       = latest - earliest;
@@ -650,8 +645,6 @@
           trendGood
         });
       }
-
-      /* 國際比較（如果有平均） */
 
       if (mean !== null) {
         let z = null;
@@ -696,8 +689,6 @@
 
       compareRows.push({ metric, latest, earliest });
     });
-
-    /* 雷達圖 */
 
     const radarCard = document.createElement("div");
     radarCard.className = "card";
@@ -762,8 +753,6 @@
       }
     });
 
-    /* 前後測表 */
-
     const section1Title = document.createElement("h3");
     section1Title.className = "section-title";
     section1Title.textContent = "前後測比較";
@@ -811,8 +800,6 @@
       tbodyTrend.appendChild(tr);
     });
 
-    /* 國際標準表 */
-
     const section2Title = document.createElement("h3");
     section2Title.className = "section-title";
     section2Title.textContent = "與國際標準對照";
@@ -856,8 +843,8 @@
 
     intlCompare.forEach(row => {
       const tr = document.createElement("tr");
-      const zText   = row.z == null ? "—" : row.z.toFixed(2);
-      const evalTd  = row.level
+      const zText  = row.z == null ? "—" : row.z.toFixed(2);
+      const evalTd = row.level
         ? `<span class="chip ${row.chipClass}">${row.level}</span>`
         : "—";
 
@@ -871,8 +858,6 @@
       `;
       tbodyIntl.appendChild(tr);
     });
-
-    /* 建議文字 */
 
     const summaryEl     = document.getElementById("coachSummary");
     const topStrengths  = strengths.sort((a, b) => b.z - a.z).slice(0, 3);
@@ -903,7 +888,7 @@
     document.getElementById("pdfBtn").disabled = false;
   }
 
-  /********** 5. 下載 PDF **********/
+  /********** 5. 匯出 PDF **********/
 
   function downloadPdf() {
     const selectEl = document.getElementById("playerSelect");
@@ -931,7 +916,7 @@
   });
   document.getElementById("pdfBtn").addEventListener("click", downloadPdf);
 
-  // 如需一進頁面就自動載入，解除註解這行：
+  // 如要進頁就載入，可打開：
   // reloadAll();
 </script>
 </body>
