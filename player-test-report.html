@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>教練中心｜體能檢測報告 v4</title>
+  <title>教練中心｜體能檢測報告 v4.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Chart.js for radar chart -->
@@ -13,8 +13,6 @@
   <style>
     :root {
       --bg-main: #020617;
-      --bg-panel: #020617;
-      --bg-card: #020617;
       --accent: #22c55e;
       --accent-soft: rgba(34, 197, 94, 0.15);
       --accent-border: rgba(34, 197, 94, 0.55);
@@ -24,22 +22,15 @@
       --border-soft: #1f2937;
       --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       --danger: #f97373;
-      --warn: #facc15;
       --good: #4ade80;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: var(--font-main);
-      background:
-        radial-gradient(circle at top, #0b1120 0, #020617 45%, #000 100%);
+      background: radial-gradient(circle at top, #0b1120 0, #020617 45%, #000 100%);
       color: var(--text-main);
     }
-
     .app-root {
       min-height: 100vh;
       max-width: 1120px;
@@ -49,258 +40,90 @@
       flex-direction: column;
       gap: 1.25rem;
     }
-
     @media (min-width: 960px) {
-      .app-root {
-        padding: 2.25rem 1.25rem 3rem;
-      }
+      .app-root { padding: 2.25rem 1.25rem 3rem; }
     }
-
-    .app-header {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .app-title-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .app-title {
-      font-size: clamp(1.5rem, 2.4vw, 1.9rem);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
+    .app-header { display: flex; flex-direction: column; gap: 0.35rem; }
+    .app-title-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .app-title { font-size: clamp(1.5rem, 2.4vw, 1.9rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.18rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      color: #e5e7eb;
-      background: rgba(15, 23, 42, 0.85);
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.18rem 0.6rem; border-radius: 999px;
+      font-size: 0.75rem; border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #e5e7eb; background: rgba(15, 23, 42, 0.85);
     }
-
-    .badge.accent {
-      border-color: var(--accent-border);
-      background: var(--accent-soft);
-      color: var(--accent-strong);
-    }
-
-    .app-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      max-width: 640px;
-    }
-
-    /* 控制面板 */
+    .badge.accent { border-color: var(--accent-border); background: var(--accent-soft); color: var(--accent-strong); }
+    .app-subtitle { font-size: 0.9rem; color: var(--text-sub); max-width: 640px; }
 
     .control-panel {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: flex-end;
-      padding: 1rem 1.2rem;
-      border-radius: 0.9rem;
-      background:
-        radial-gradient(circle at top left, rgba(34, 197, 94, 0.35) 0, rgba(15, 23, 42, 0.98) 55%, #020617 100%);
+      display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+      padding: 1rem 1.2rem; border-radius: 0.9rem;
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.35) 0, rgba(15, 23, 42, 0.98) 55%, #020617 100%);
       border: 1px solid rgba(55, 65, 81, 0.9);
-      box-shadow:
-        0 0 40px rgba(34, 197, 94, 0.15),
-        0 20px 60px rgba(15, 23, 42, 0.95);
+      box-shadow: 0 0 40px rgba(34, 197, 94, 0.15), 0 20px 60px rgba(15, 23, 42, 0.95);
     }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      min-width: 220px;
-    }
-
-    .field-label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--text-sub);
-    }
-
-    select, button {
-      font-family: var(--font-main);
-      font-size: 0.9rem;
-    }
-
+    .field-group { display: flex; flex-direction: column; gap: 0.3rem; min-width: 220px; }
+    .field-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-sub); }
+    select, button { font-family: var(--font-main); font-size: 0.9rem; }
     select {
-      padding: 0.5rem 0.7rem;
-      border-radius: 0.55rem;
+      padding: 0.5rem 0.7rem; border-radius: 0.55rem;
       border: 1px solid rgba(148, 163, 184, 0.75);
-      background: rgba(15, 23, 42, 0.93);
-      color: var(--text-main);
-      min-width: 220px;
-      outline: none;
+      background: rgba(15, 23, 42, 0.93); color: var(--text-main); min-width: 220px; outline: none;
     }
-
-    select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.7);
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-
+    select:focus { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.7); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .btn {
-      padding: 0.5rem 1.1rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 0.86rem;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      cursor: pointer;
-      background: var(--accent);
-      color: #022c22;
+      padding: 0.5rem 1.1rem; border-radius: 999px; border: 1px solid transparent;
+      font-size: 0.86rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.35rem;
+      cursor: pointer; background: var(--accent); color: #022c22;
       box-shadow: 0 12px 30px rgba(34, 197, 94, 0.45);
-      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
     }
-
     .btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 40px rgba(34, 197, 94, 0.6);
-      background: #22c55e;
+      transform: translateY(-1px); box-shadow: 0 16px 40px rgba(34, 197, 94, 0.6); background: #22c55e;
     }
-
     .btn.secondary {
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--text-main);
-      border-color: rgba(148, 163, 184, 0.6);
-      box-shadow: none;
+      background: rgba(15, 23, 42, 0.95); color: var(--text-main);
+      border-color: rgba(148, 163, 184, 0.6); box-shadow: none;
     }
-
     .btn.secondary:hover:not(:disabled) {
-      background: rgba(31, 41, 55, 0.95);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+      background: rgba(31, 41, 55, 0.95); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
     }
-
-    .btn:disabled {
-      opacity: 0.45;
-      cursor: default;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-icon {
-      font-size: 1rem;
-      line-height: 1;
-    }
-
-    /* 報告容器 */
+    .btn:disabled { opacity: 0.45; cursor: default; box-shadow: none; transform: none; }
+    .btn-icon { font-size: 1rem; }
 
     .report-shell {
-      margin-top: 0.25rem;
-      border-radius: 1rem;
-      border: 1px solid var(--border-soft);
-      background:
-        radial-gradient(circle at top left, #111827 0, #020617 52%, #000 100%);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.95);
-      padding: 1.2rem;
+      margin-top: 0.25rem; border-radius: 1rem; border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at top left, #111827 0, #020617 52%, #000 100%);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.95); padding: 1.2rem;
     }
-
     .report-page {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #020617;
-      border-radius: 0.8rem;
-      border: 1px solid #111827;
-      padding: 1.4rem 1.6rem 1.8rem;
+      max-width: 900px; margin: 0 auto; background: #020617;
+      border-radius: 0.8rem; border: 1px solid #111827; padding: 1.4rem 1.6rem 1.8rem;
     }
-
-    /* 報告 header */
 
     .report-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 0.8rem;
-      margin-bottom: 0.85rem;
+      display: flex; justify-content: space-between; gap: 1rem;
+      border-bottom: 1px solid #1f2937; padding-bottom: 0.8rem; margin-bottom: 0.85rem;
     }
-
-    .report-header-main {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .report-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .report-subtitle {
-      font-size: 0.82rem;
-      color: var(--text-sub);
-    }
-
-    .report-header-meta {
-      text-align: right;
-      font-size: 0.78rem;
-      color: var(--text-sub);
-    }
-
+    .report-header-main { display: flex; flex-direction: column; gap: 0.25rem; }
+    .report-title { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .report-subtitle { font-size: 0.82rem; color: var(--text-sub); }
+    .report-header-meta { text-align: right; font-size: 0.78rem; color: var(--text-sub); }
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      padding: 0.15rem 0.5rem; border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.75);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #e5e7eb;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: #e5e7eb;
     }
-
-    .pill.green {
-      border-color: var(--accent-border);
-      color: var(--accent-strong);
-      background: var(--accent-soft);
-    }
-
+    .pill.green { border-color: var(--accent-border); color: var(--accent-strong); background: var(--accent-soft); }
     @media (max-width: 768px) {
-      .report-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .report-header-meta {
-        text-align: left;
-      }
+      .report-header { flex-direction: column; align-items: flex-start; }
+      .report-header-meta { text-align: left; }
     }
 
-    /* 卡片 & layout */
-
-    .grid-two {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.05fr);
-      gap: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-      .grid-two {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
+    .grid-two { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.05fr); gap: 0.9rem; }
+    @media (max-width: 768px) { .grid-two { grid-template-columns: minmax(0, 1fr); } }
 
     .card {
       background: rgba(15, 23, 42, 0.96);
@@ -308,158 +131,43 @@
       border: 1px solid var(--border-soft);
       padding: 0.85rem 1rem;
     }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.4rem;
-    }
-
-    .card-title {
-      font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: #9ca3af;
-    }
-
-    .card-tag {
-      font-size: 0.78rem;
-      color: var(--text-sub);
-    }
+    .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
+    .card-title { font-size: 0.88rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #9ca3af; }
+    .card-tag { font-size: 0.78rem; color: var(--text-sub); }
 
     .info-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-size: 0.85rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 0.3rem 0.9rem;
+      list-style: none; margin: 0; padding: 0; font-size: 0.85rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.3rem 0.9rem;
     }
+    .info-list li span.label { color: var(--text-sub); margin-right: 0.2rem; }
 
-    .info-list li span.label {
-      color: var(--text-sub);
-      margin-right: 0.2rem;
-    }
+    .section-title { margin: 0.85rem 0 0.35rem; font-size: 0.86rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9ca3af; }
+    .note { font-size: 0.76rem; color: var(--text-sub); margin-top: 0.3rem; }
 
-    .section-title {
-      margin: 0.85rem 0 0.35rem;
-      font-size: 0.86rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #9ca3af;
-    }
-
-    .note {
-      font-size: 0.76rem;
-      color: var(--text-sub);
-      margin-top: 0.3rem;
-    }
-
-    /* 表格 */
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.78rem;
-      margin-top: 0.2rem;
-    }
-
-    thead {
-      background: rgba(15, 23, 42, 0.96);
-    }
-
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.2rem; }
+    thead { background: rgba(15, 23, 42, 0.96); }
     th, td {
-      padding: 0.28rem 0.3rem;
-      border-bottom: 1px solid #111827;
-      text-align: right;
-      white-space: nowrap;
+      padding: 0.28rem 0.3rem; border-bottom: 1px solid #111827;
+      text-align: right; white-space: nowrap;
     }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-weight: 600; color: #9ca3af; }
+    tr:last-child td { border-bottom: none; }
+    .trend-up { color: var(--good); font-weight: 600; }
+    .trend-down { color: var(--danger); font-weight: 600; }
 
-    th:first-child, td:first-child {
-      text-align: left;
-    }
+    .chip { display: inline-flex; align-items: center; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid transparent; font-size: 0.72rem; }
+    .chip.good { border-color: rgba(34, 197, 94, 0.85); background: rgba(22, 163, 74, 0.18); color: #bbf7d0; }
+    .chip.ok { border-color: rgba(250, 204, 21, 0.9); background: rgba(250, 204, 21, 0.12); color: #fef3c7; }
+    .chip.bad { border-color: rgba(239, 68, 68, 0.9); background: rgba(248, 113, 113, 0.16); color: #fee2e2; }
 
-    th {
-      font-weight: 600;
-      color: #9ca3af;
-    }
+    .radar-wrapper { position: relative; height: 260px; }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .trend-up {
-      color: var(--good);
-      font-weight: 600;
-    }
-
-    .trend-down {
-      color: var(--danger);
-      font-weight: 600;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.1rem 0.5rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 0.72rem;
-    }
-
-    .chip.good {
-      border-color: rgba(34, 197, 94, 0.85);
-      background: rgba(22, 163, 74, 0.18);
-      color: #bbf7d0;
-    }
-
-    .chip.ok {
-      border-color: rgba(250, 204, 21, 0.9);
-      background: rgba(250, 204, 21, 0.12);
-      color: #fef3c7;
-    }
-
-    .chip.bad {
-      border-color: rgba(239, 68, 68, 0.9);
-      background: rgba(248, 113, 113, 0.16);
-      color: #fee2e2;
-    }
-
-    /* 雷達圖 */
-
-    .radar-wrapper {
-      position: relative;
-      height: 260px;
-    }
-
-    /* 建議文字 */
-
-    .coach-notes {
-      font-size: 0.84rem;
-      line-height: 1.6;
-      color: var(--text-main);
-    }
-
-    .coach-notes ul {
-      margin: 0.25rem 0 0.15rem;
-      padding-left: 1.1rem;
-    }
-
-    .coach-notes li {
-      margin-bottom: 0.18rem;
-    }
-
-    .muted {
-      color: var(--text-sub);
-    }
-
-    .highlight {
-      color: var(--accent-strong);
-      font-weight: 600;
-    }
+    .coach-notes { font-size: 0.84rem; line-height: 1.6; color: var(--text-main); }
+    .coach-notes ul { margin: 0.25rem 0 0.15rem; padding-left: 1.1rem; }
+    .coach-notes li { margin-bottom: 0.18rem; }
+    .muted { color: var(--text-sub); }
+    .highlight { color: var(--accent-strong); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -475,7 +183,6 @@
     </p>
   </header>
 
-  <!-- 控制區 -->
   <section class="control-panel">
     <div class="field-group">
       <label class="field-label" for="playerSelect">選擇學員</label>
@@ -485,21 +192,17 @@
     </div>
     <div class="btn-row">
       <button class="btn secondary" id="reloadBtn">
-        <span class="btn-icon">🔄</span>
-        重新載入 Google Sheets
+        <span class="btn-icon">🔄</span> 重新載入 Google Sheets
       </button>
       <button class="btn" id="loadReportBtn" disabled>
-        <span class="btn-icon">📊</span>
-        產生報告
+        <span class="btn-icon">📊</span> 產生報告
       </button>
       <button class="btn secondary" id="pdfBtn" disabled>
-        <span class="btn-icon">📄</span>
-        匯出 PDF 給家長
+        <span class="btn-icon">📄</span> 匯出 PDF 給家長
       </button>
     </div>
   </section>
 
-  <!-- 報告區 -->
   <section class="report-shell">
     <div id="reportPage" class="report-page">
       <p class="muted" id="placeholder">
@@ -510,21 +213,17 @@
 </div>
 
 <script>
-  /******************************************************
-   * 1. 設定：三個 CSV 來源
-   * 目前先全部用你給的同一條 URL，
-   * 之後若有分開分頁的 CSV，再改這三條即可。
-   ******************************************************/
-
+  /********** 1. 這裡改成你「發布到網路 → CSV」的三條網址 **********/
   const CSV_URLS = {
-    players: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-    tests:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-    intl:    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
-  };
+    // 學員主資料表（有 姓名 / 性別 / 生日 / 傷勢 / 目標 / 聯絡方式 那一張）
+    players: "在這裡貼『學員主資料表』發佈出來的 CSV 連結",
 
-  /******************************************************
-   * 2. 共用工具函式
-   ******************************************************/
+    // 檢測成績（有 垂直跳、實心球、10米衝刺… 等實際測驗數據那一張）
+    tests:   "在這裡貼『檢測成績』發佈出來的 CSV 連結",
+
+    // 國際標準（有 分級 / 指標 / 平均值 / 標準差 那一張）
+    intl:    "在這裡貼『國際標準』發佈出來的 CSV 連結"
+  };
 
   async function fetchCsv(url) {
     const res = await fetch(url);
@@ -533,16 +232,13 @@
   }
 
   function parseCsv(text) {
-    // 很簡單的 parser，假設欄位不含逗點
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
     if (lines.length === 0) return [];
     const headers = lines[0].split(",").map(h => h.trim());
     return lines.slice(1).map(line => {
       const cols = line.split(",");
       const obj = {};
-      headers.forEach((h, idx) => {
-        obj[h] = (cols[idx] ?? "").trim();
-      });
+      headers.forEach((h, idx) => { obj[h] = (cols[idx] ?? "").trim(); });
       return obj;
     });
   }
@@ -553,35 +249,20 @@
     return isNaN(n) ? null : n;
   }
 
-  // 哪些指標是「數字越小越好」
-  const LOWER_IS_BETTER_KEYS = [
-    "10米衝刺", "10M衝刺", "20米衝刺", "20M衝刺",
-    "505", "敏捷跑", "蜘蛛跑", "反應"
-  ];
-
+  const LOWER_IS_BETTER_KEYS = ["10米衝刺", "10M衝刺", "20米衝刺", "20M衝刺", "505", "敏捷跑", "蜘蛛跑", "反應"];
   function isLowerBetter(metricName) {
     return LOWER_IS_BETTER_KEYS.some(k => metricName.includes(k));
   }
-
   function zToScore(z) {
-    // 50 為平均，一個 SD = 10 分
     const score = 50 + z * 10;
     return Math.max(0, Math.min(100, score));
   }
 
-  /******************************************************
-   * 3. 全域資料暫存
-   ******************************************************/
-
-  let playersByName = new Map();  // 姓名 -> profile row
-  let testsByName   = new Map();  // 姓名 -> [test rows]
-  let intlByGroup   = new Map();  // 分級 -> { metricName: {mean, sd} }
+  let playersByName = new Map();
+  let testsByName   = new Map();
+  let intlByGroup   = new Map();
   let lastLoadedAt  = null;
   let radarInstance = null;
-
-  /******************************************************
-   * 4. 載入資料：學員 / 檢測成績 / 國際標準
-   ******************************************************/
 
   async function reloadAll() {
     const placeholder = document.getElementById("placeholder");
@@ -608,14 +289,12 @@
       testsByName   = new Map();
       intlByGroup   = new Map();
 
-      // 學員主資料：用「姓名」當 key
       players.forEach(row => {
         const name = (row["姓名"] || "").trim();
         if (!name) return;
         playersByName.set(name, row);
       });
 
-      // 檢測成績：同一學生可能有多筆（前後測）
       tests.forEach(row => {
         const name = (row["姓名"] || "").trim();
         if (!name) return;
@@ -623,8 +302,6 @@
         testsByName.get(name).push(row);
       });
 
-      // 國際標準：假設每列是一個「分級」
-      // 欄位名稱是指標，含「標準差」字樣的欄位當 SD
       intl.forEach(row => {
         const group = (row["分級"] || "").trim();
         if (!group) return;
@@ -636,11 +313,7 @@
           if (val === null) return;
 
           if (header.includes("標準差")) {
-            // 例如「實心球過頂拋(標準差)」
-            let base = header;
-            base = base.replace(/[\(\（]標準差[\)\）]/g, "");
-            base = base.replace("標準差", "");
-            base = base.trim();
+            let base = header.replace(/[\(\（]標準差[\)\）]/g, "").replace("標準差", "").trim();
             if (!metrics[base]) metrics[base] = {};
             metrics[base].sd = val;
           } else {
@@ -652,7 +325,6 @@
         intlByGroup.set(group, metrics);
       });
 
-      // 建立學員下拉選單
       const allNames = Array.from(new Set([
         ...playersByName.keys(),
         ...testsByName.keys()
@@ -663,7 +335,6 @@
       optEmpty.value = "";
       optEmpty.textContent = "請選擇學員";
       playerSelect.appendChild(optEmpty);
-
       allNames.forEach(name => {
         const opt = document.createElement("option");
         opt.value = name;
@@ -673,19 +344,14 @@
 
       playerSelect.disabled = false;
       loadBtn.disabled = false;
-      placeholder.textContent = "資料載入完成，請從上方選擇學員並按「產生報告」。";
-
+      placeholder.textContent = "資料載入完成，請選擇學員並按「產生報告」。";
       lastLoadedAt = new Date();
 
     } catch (err) {
       console.error(err);
-      placeholder.textContent = "資料讀取失敗，請確認 Google Sheets 的發佈與權限設定。";
+      placeholder.textContent = "資料讀取失敗，請確認三條 CSV 連結都填對，且試算表有『發布到網路』。";
     }
   }
-
-  /******************************************************
-   * 5. 建立單一學員報告
-   ******************************************************/
 
   function buildReportFor(name) {
     const container = document.getElementById("reportPage");
@@ -695,19 +361,17 @@
     const tests = testsByName.get(name) || [];
 
     if (tests.length === 0) {
-      container.innerHTML = `<p class="muted">找不到「${name}」的檢測成績資料。</p>`;
+      container.innerHTML = `<p class="muted">找不到「${name}」的檢測成績資料（請確認『檢測成績』那張表也有這位學生）。</p>`;
       document.getElementById("pdfBtn").disabled = true;
       return;
     }
 
-    // 先用輸入順序當作時間順序（第一筆 = 前測，最後一筆 = 最新）
     const firstTest = tests[0];
     const lastTest  = tests[tests.length - 1];
 
     const group = lastTest["分級"] || playerInfo["分級"] || "";
     const intlMetrics = intlByGroup.get(group) || {};
 
-    // Header
     const headerEl = document.createElement("div");
     headerEl.className = "report-header";
     headerEl.innerHTML = `
@@ -723,7 +387,6 @@
     `;
     container.appendChild(headerEl);
 
-    // 上半部：基本資料 + AI 總結
     const gridTop = document.createElement("div");
     gridTop.className = "grid-two";
 
@@ -757,12 +420,9 @@
         <p class="muted">系統會依照與國際標準的差距、自身前後測進步量，自動產生重點說明。</p>
       </div>
     `;
-
     gridTop.appendChild(cardProfile);
     gridTop.appendChild(cardSummary);
     container.appendChild(gridTop);
-
-    /***** 指標分析：從最後一筆檢測成績抓出所有數值欄位 *****/
 
     const identityKeys = new Set([
       "姓名","性別","年齡","分級","生日",
@@ -781,11 +441,9 @@
 
     const trendRows = [];
     const intlCompare = [];
-
     const radarLabels = [];
     const radarPlayerScores = [];
     const radarIntlScores = [];
-
     const strengths = [];
     const weaknesses = [];
 
@@ -794,7 +452,6 @@
       const earliest = toNumber(firstTest[metric]);
       if (latest === null) return;
 
-      // 前後測
       if (earliest !== null) {
         const diff = latest - earliest;
         const lowerBetter = isLowerBetter(metric);
@@ -804,18 +461,9 @@
           ? (((latest - earliest) / earliest) * 100).toFixed(1) + "%"
           : "—";
 
-        trendRows.push({
-          metric,
-          earliest,
-          latest,
-          diff,
-          diffText,
-          pctText,
-          trendGood
-        });
+        trendRows.push({ metric, earliest, latest, diff, diffText, pctText, trendGood });
       }
 
-      // 國際標準比較
       const intl = intlMetrics[metric] || {};
       const mean = intl.mean ?? null;
       const sd   = intl.sd   ?? null;
@@ -831,38 +479,18 @@
 
           const scorePlayer = zToScore(z);
           const scoreIntl   = 50;
-
           radarLabels.push(metric);
           radarPlayerScores.push(scorePlayer);
           radarIntlScores.push(scoreIntl);
 
-          if (z >= 1) {
-            level = "優於國際樣本";
-            chipClass = "good";
-            strengths.push({ metric, z });
-          } else if (z <= -0.5) {
-            level = "低於國際樣本";
-            chipClass = "bad";
-            weaknesses.push({ metric, z });
-          } else {
-            level = "接近國際平均";
-            chipClass = "ok";
-          }
+          if (z >= 1)       { level = "優於國際樣本"; chipClass = "good"; strengths.push({ metric, z }); }
+          else if (z <= -0.5){ level = "低於國際樣本"; chipClass = "bad"; weaknesses.push({ metric, z }); }
+          else              { level = "接近國際平均"; chipClass = "ok"; }
         }
 
-        intlCompare.push({
-          metric,
-          latest,
-          mean,
-          sd,
-          z,
-          level,
-          chipClass
-        });
+        intlCompare.push({ metric, latest, mean, sd, z, level, chipClass });
       }
     });
-
-    /***** 雷達圖 *****/
 
     const radarCard = document.createElement("div");
     radarCard.className = "card";
@@ -872,11 +500,9 @@
         <div class="card-title">PERFORMANCE PROFILE</div>
         <div class="card-tag">學生與國際樣本的整體輪廓</div>
       </div>
-      <div class="radar-wrapper">
-        <canvas id="radarChart"></canvas>
-      </div>
+      <div class="radar-wrapper"><canvas id="radarChart"></canvas></div>
       <p class="note">
-        圖中數值經標準化處理（約 0–100分）。<span class="highlight">50 分</span>約略代表國際平均，
+        圖中數值經標準化處理（約 0–100 分）。<span class="highlight">50 分</span>約略代表國際平均，
         大於 60 分為明顯強項，小於 40 分為建議優先補強區。
       </p>
     `;
@@ -884,54 +510,29 @@
 
     if (radarInstance) radarInstance.destroy();
     const radarCtx = document.getElementById("radarChart").getContext("2d");
-
     radarInstance = new Chart(radarCtx, {
       type: "radar",
       data: {
         labels: radarLabels,
         datasets: [
-          {
-            label: "學生",
-            data: radarPlayerScores,
-            borderColor: "rgba(34,197,94,0.9)",
-            backgroundColor: "rgba(34,197,94,0.25)",
-            borderWidth: 2,
-            pointRadius: 3
-          },
-          {
-            label: "國際樣本",
-            data: radarIntlScores,
-            borderColor: "rgba(148,163,184,0.9)",
-            backgroundColor: "rgba(148,163,184,0.15)",
-            borderWidth: 1.5,
-            pointRadius: 0
-          }
+          { label: "學生", data: radarPlayerScores, borderColor: "rgba(34,197,94,0.9)", backgroundColor: "rgba(34,197,94,0.25)", borderWidth: 2, pointRadius: 3 },
+          { label: "國際樣本", data: radarIntlScores, borderColor: "rgba(148,163,184,0.9)", backgroundColor: "rgba(148,163,184,0.15)", borderWidth: 1.5, pointRadius: 0 }
         ]
       },
       options: {
         responsive: true,
         scales: {
           r: {
-            beginAtZero: true,
-            suggestedMax: 90,
+            beginAtZero: true, suggestedMax: 90,
             grid: { color: "rgba(55,65,81,0.85)" },
             angleLines: { color: "rgba(55,65,81,0.85)" },
             ticks: { display: false },
-            pointLabels: {
-              color: "#9ca3af",
-              font: { size: 10 }
-            }
+            pointLabels: { color: "#9ca3af", font: { size: 10 } }
           }
         },
-        plugins: {
-          legend: {
-            labels: { color: "#e5e7eb", font: { size: 10 } }
-          }
-        }
+        plugins: { legend: { labels: { color: "#e5e7eb", font: { size: 10 } } } }
       }
     });
-
-    /***** 前後測表格 *****/
 
     const section1Title = document.createElement("h3");
     section1Title.className = "section-title";
@@ -948,13 +549,7 @@
       <div class="table-wrapper">
         <table>
           <thead>
-            <tr>
-              <th>指標</th>
-              <th>前測</th>
-              <th>最新測驗</th>
-              <th>差異值</th>
-              <th>變化百分比</th>
-            </tr>
+            <tr><th>指標</th><th>前測</th><th>最新測驗</th><th>差異值</th><th>變化百分比</th></tr>
           </thead>
           <tbody id="tbodyTrend"></tbody>
         </table>
@@ -966,7 +561,6 @@
     trendRows.forEach(row => {
       const tr = document.createElement("tr");
       const diffClass = row.diff == null ? "" : (row.trendGood ? "trend-up" : "trend-down");
-
       tr.innerHTML = `
         <td>${row.metric}</td>
         <td>${row.earliest ?? "—"}</td>
@@ -976,8 +570,6 @@
       `;
       tbodyTrend.appendChild(tr);
     });
-
-    /***** 國際標準表格 *****/
 
     const section2Title = document.createElement("h3");
     section2Title.className = "section-title";
@@ -994,14 +586,7 @@
       <div class="table-wrapper">
         <table>
           <thead>
-            <tr>
-              <th>指標</th>
-              <th>學生</th>
-              <th>國際平均</th>
-              <th>SD</th>
-              <th>Z 分數</th>
-              <th>評估</th>
-            </tr>
+            <tr><th>指標</th><th>學生</th><th>國際平均</th><th>SD</th><th>Z 分數</th><th>評估</th></tr>
           </thead>
           <tbody id="tbodyIntl"></tbody>
         </table>
@@ -1022,10 +607,7 @@
     });
     intlCompare.forEach(row => {
       const zText = row.z == null ? "—" : row.z.toFixed(2);
-      const evalTd = row.level
-        ? `<span class="chip ${row.chipClass}">${row.level}</span>`
-        : "—";
-
+      const evalTd = row.level ? `<span class="chip ${row.chipClass}">${row.level}</span>` : "—";
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${row.metric}</td>
@@ -1038,9 +620,9 @@
       tbodyIntl.appendChild(tr);
     });
 
-    /***** 建議文字 *****/
-
     const summaryEl = document.getElementById("coachSummary");
+    const strengths = intlCompare.filter(r => r.z != null && r.z >= 1);
+    const weaknesses = intlCompare.filter(r => r.z != null && r.z <= -0.5);
     const topStrengths = strengths.sort((a, b) => b.z - a.z).slice(0, 3);
     const topWeaknesses = weaknesses.sort((a, b) => a.z - b.z).slice(0, 3);
 
@@ -1062,24 +644,17 @@
           <li><strong>加速與速度（10m、20m、505 等）：</strong>以短距離衝刺、起跑反覆練習與坡跑，提升啟動與加速能力。</li>
           <li><strong>敏捷與變向（505、蜘蛛跑等）：</strong>加入標記錐變向、反應腳步訓練與模擬實戰的多方向移動。</li>
         </ul>
-        <p class="muted">
-          ※ 上述建議為依數據自動生成，實際訓練規劃仍需教練依照孩子的傷病史、體能狀態與比賽行程做個別調整。
-        </p>
+        <p class="muted">※ 上述建議為依數據自動生成，實際訓練規劃仍需教練依照孩子的傷病史、體能狀態與比賽行程做個別調整。</p>
       </div>
     `;
 
     document.getElementById("pdfBtn").disabled = false;
   }
 
-  /******************************************************
-   * 6. 匯出 PDF
-   ******************************************************/
-
   function downloadPdf() {
     const select = document.getElementById("playerSelect");
     const name = select.value || "report";
     const element = document.getElementById("reportPage");
-
     const opt = {
       margin: [10, 10, 10, 10],
       filename: `${name}-體能檢測報告.pdf`,
@@ -1087,13 +662,8 @@
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     };
-
     html2pdf().from(element).set(opt).save();
   }
-
-  /******************************************************
-   * 7. 綁定按鈕
-   ******************************************************/
 
   document.getElementById("reloadBtn").addEventListener("click", reloadAll);
   document.getElementById("loadReportBtn").addEventListener("click", () => {
@@ -1102,9 +672,6 @@
     buildReportFor(name);
   });
   document.getElementById("pdfBtn").addEventListener("click", downloadPdf);
-
-  // 如果你想一進頁面就自動載入資料，可以解除下列註解：
-  // reloadAll();
 </script>
 </body>
 </html>
