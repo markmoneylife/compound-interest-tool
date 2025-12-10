@@ -5,9 +5,9 @@
   <title>體能檢測報告產生器｜教練用</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Chart.js 用來畫雷達圖 -->
+  <!-- Chart.js 雷達圖 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- html2pdf.js 用來把報告轉成 PDF -->
+  <!-- html2pdf.js 匯出 PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -15,20 +15,16 @@
       --bg-main: #0b1120;
       --bg-card: #111827;
       --accent: #1d4ed8;
-      --accent-soft: rgba(37, 99, 235, 0.12);
       --text-main: #e5e7eb;
       --text-sub: #9ca3af;
       --danger: #f97373;
-      --warning: #facc15;
       --success: #4ade80;
       --border-soft: #1f2937;
       --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
         sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -49,16 +45,10 @@
     }
 
     @media (min-width: 960px) {
-      .app-shell {
-        padding: 2.5rem 1.5rem;
-      }
+      .app-shell { padding: 2.5rem 1.5rem; }
     }
 
-    .app-header {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    .app-header { display: flex; flex-direction: column; gap: 0.5rem; }
 
     .app-title {
       font-size: clamp(1.5rem, 2.2vw, 1.9rem);
@@ -92,20 +82,15 @@
       padding: 1rem 1.25rem;
       border-radius: 0.9rem;
       background: linear-gradient(
-          135deg,
-          rgba(37, 99, 235, 0.16),
-          rgba(15, 23, 42, 0.96)
+        135deg,
+        rgba(37, 99, 235, 0.16),
+        rgba(15, 23, 42, 0.96)
       );
       border: 1px solid rgba(59, 130, 246, 0.4);
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
     }
 
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      min-width: 200px;
-    }
+    .field-group { display: flex; flex-direction: column; gap: 0.25rem; min-width: 200px; }
 
     .field-label {
       font-size: 0.8rem;
@@ -114,10 +99,7 @@
       color: var(--text-sub);
     }
 
-    select,
-    button {
-      font-family: inherit;
-    }
+    select, button { font-family: inherit; }
 
     select {
       padding: 0.55rem 0.75rem;
@@ -135,11 +117,7 @@
       box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.65);
     }
 
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
     .btn {
       padding: 0.55rem 1.15rem;
@@ -154,7 +132,7 @@
       background: var(--accent);
       color: #e5e7eb;
       box-shadow: 0 10px 25px rgba(37, 99, 235, 0.55);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
     }
 
     .btn:hover {
@@ -176,14 +154,8 @@
       box-shadow: 0 8px 25px rgba(15, 23, 42, 0.8);
     }
 
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-      transform: none;
-      box-shadow: none;
-    }
+    .btn:disabled { opacity: 0.4; cursor: default; transform: none; box-shadow: none; }
 
-    /* 報告本體容器（PDF 會抓這一塊） */
     .report-shell {
       margin-top: 0.5rem;
       padding: 1.25rem;
@@ -193,7 +165,6 @@
       box-shadow: 0 20px 50px rgba(15, 23, 42, 0.85);
     }
 
-    /* 為了讓 PDF 看起來像 A4，限制寬度 */
     .report-page {
       max-width: 900px;
       margin: 0 auto;
@@ -212,11 +183,7 @@
       padding-bottom: 0.75rem;
     }
 
-    .report-header-main {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
+    .report-header-main { display: flex; flex-direction: column; gap: 0.15rem; }
 
     .report-title {
       font-size: 1.25rem;
@@ -225,16 +192,9 @@
       text-transform: uppercase;
     }
 
-    .report-subtitle {
-      font-size: 0.8rem;
-      color: var(--text-sub);
-    }
+    .report-subtitle { font-size: 0.8rem; color: var(--text-sub); }
 
-    .report-header-meta {
-      text-align: right;
-      font-size: 0.8rem;
-      color: var(--text-sub);
-    }
+    .report-header-meta { text-align: right; font-size: 0.8rem; color: var(--text-sub); }
 
     .pill {
       display: inline-flex;
@@ -258,13 +218,8 @@
       .grid-two {
         grid-template-columns: minmax(0, 1fr);
       }
-      .report-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .report-header-meta {
-        text-align: left;
-      }
+      .report-header { flex-direction: column; align-items: flex-start; }
+      .report-header-meta { text-align: left; }
     }
 
     .card {
@@ -289,10 +244,7 @@
       color: #9ca3af;
     }
 
-    .card-tag {
-      font-size: 0.78rem;
-      color: var(--text-sub);
-    }
+    .card-tag { font-size: 0.78rem; color: var(--text-sub); }
 
     .info-list {
       list-style: none;
@@ -304,10 +256,7 @@
       gap: 0.25rem 0.75rem;
     }
 
-    .info-list li span.label {
-      color: var(--text-sub);
-      margin-right: 0.2rem;
-    }
+    .info-list li span.label { color: var(--text-sub); margin-right: 0.2rem; }
 
     table {
       width: 100%;
@@ -315,9 +264,7 @@
       font-size: 0.8rem;
     }
 
-    thead {
-      background: rgba(15, 23, 42, 0.9);
-    }
+    thead { background: rgba(15, 23, 42, 0.9); }
 
     th, td {
       padding: 0.28rem 0.3rem;
@@ -326,18 +273,11 @@
       white-space: nowrap;
     }
 
-    th:first-child, td:first-child {
-      text-align: left;
-    }
+    th:first-child, td:first-child { text-align: left; }
 
-    th {
-      font-weight: 600;
-      color: #9ca3af;
-    }
+    th { font-weight: 600; color: #9ca3af; }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+    tr:last-child td { border-bottom: none; }
 
     .chip {
       display: inline-flex;
@@ -353,38 +293,23 @@
       border-color: rgba(74, 222, 128, 0.8);
       background: rgba(22, 163, 74, 0.15);
     }
-
     .chip.ok {
       color: #fee2e2;
       border-color: rgba(250, 204, 21, 0.85);
       background: rgba(250, 204, 21, 0.12);
     }
-
     .chip.bad {
       color: #fecaca;
       border-color: rgba(248, 113, 113, 0.9);
       background: rgba(248, 113, 113, 0.14);
     }
 
-    .trend-up {
-      color: var(--success);
-      font-weight: 600;
-    }
-    .trend-down {
-      color: var(--danger);
-      font-weight: 600;
-    }
+    .trend-up { color: var(--success); font-weight: 600; }
+    .trend-down { color: var(--danger); font-weight: 600; }
 
-    .note {
-      font-size: 0.77rem;
-      color: var(--text-sub);
-      margin-top: 0.3rem;
-    }
+    .note { font-size: 0.77rem; color: var(--text-sub); margin-top: 0.3rem; }
 
-    .radar-wrapper {
-      position: relative;
-      height: 260px;
-    }
+    .radar-wrapper { position: relative; height: 260px; }
 
     .section-title {
       margin: 0.9rem 0 0.35rem;
@@ -394,24 +319,13 @@
       color: #9ca3af;
     }
 
-    .coach-notes {
-      font-size: 0.86rem;
-      line-height: 1.5;
-      color: #e5e7eb;
-    }
+    .coach-notes { font-size: 0.86rem; line-height: 1.5; color: #e5e7eb; }
 
-    .coach-notes ul {
-      margin: 0.15rem 0 0;
-      padding-left: 1.1rem;
-    }
+    .coach-notes ul { margin: 0.15rem 0 0; padding-left: 1.1rem; }
 
-    .coach-notes li {
-      margin-bottom: 0.15rem;
-    }
+    .coach-notes li { margin-bottom: 0.15rem; }
 
-    .muted {
-      color: var(--text-sub);
-    }
+    .muted { color: var(--text-sub); }
   </style>
 </head>
 <body>
@@ -442,7 +356,6 @@
 
   <section class="report-shell">
     <div id="reportPage" class="report-page">
-      <!-- 報告內容由 JS 動態塞入 -->
       <p class="muted" id="placeholder">
         👋 請先按「重新載入 Google Sheets」，選擇學員後再點「產生報告」。
       </p>
@@ -451,24 +364,15 @@
 </div>
 
 <script>
-  /********************************************************
-   * 1. 把這三個 CSV 網址改成你自己 Google Sheets 「發佈為網頁」的連結
-   ********************************************************/
+  /********** 1. 這三個改成你自己的 CSV 網址 **********/
 
   const CSV_URLS = {
-    // ✅ 檢測成績：你剛剛貼的這一個（或更新後的）
-    tests: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-
-    // ✅ 學員主資料表：請到「學員主資料表」分頁，發佈為 CSV，貼上網址
+    tests:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
     players: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
-
-    // ✅ 國際標準分頁：到「國際標準」分頁發佈，貼上網址
-    intl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
+    intl:    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
   };
 
-  /********************************************************
-   * 2. 共用小工具：抓 CSV、數字處理
-   ********************************************************/
+  /********** 2. 共用工具 **********/
 
   async function fetchCsv(url) {
     const res = await fetch(url);
@@ -477,7 +381,6 @@
   }
 
   function parseCsv(text) {
-    // 簡易版 parser：假設沒有逗號在欄位內
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
     if (lines.length === 0) return [];
     const headers = lines[0].split(",").map(h => h.trim());
@@ -497,27 +400,24 @@
     return isNaN(n) ? null : n;
   }
 
-  // 哪些指標是「數越小越好」（時間類）
+  // 哪些指標是「數越小越好」
   const LOWER_IS_BETTER = ["10米衝刺", "10M衝刺", "20米衝刺", "20M衝刺", "505敏捷跑", "蜘蛛跑", "反應測試"];
 
   function isLowerBetter(metricName) {
     return LOWER_IS_BETTER.some(k => metricName.includes(k));
   }
 
-  // 標準化成 0–100 的表現分數（50 = 正常，>60 好，<40 弱）
   function zToScore(z) {
     const score = 50 + z * 10;
     return Math.max(0, Math.min(100, score));
   }
 
-  /********************************************************
-   * 3. 讀取資料並整理成好用的結構
-   ********************************************************/
-
   let playersByName = new Map();
-  let testsByName = new Map();
-  let intlByGroup = new Map();
-  let lastLoadedAt = null;
+  let testsByName   = new Map();
+  let intlByGroup   = new Map();
+  let lastLoadedAt  = null;
+
+  /********** 3. 載入全部資料 **********/
 
   async function reloadAll() {
     document.getElementById("loadReportBtn").disabled = true;
@@ -532,21 +432,21 @@
       ]);
 
       const players = parseCsv(playersCsv);
-      const tests = parseCsv(testsCsv);
-      const intl = parseCsv(intlCsv);
+      const tests   = parseCsv(testsCsv);
+      const intl    = parseCsv(intlCsv);
 
       playersByName = new Map();
       testsByName   = new Map();
       intlByGroup   = new Map();
 
-      // 學員主資料：假設有欄位「姓名」「性別」「生日」「分級」「傷病／限制」「目標」「一週可上課時段」「聯絡方式」
+      // 學員主資料
       players.forEach(row => {
         const name = row["姓名"]?.trim();
         if (!name) return;
         playersByName.set(name, row);
       });
 
-      // 測驗成績：用姓名 group 起來，之後可擴充日期欄位
+      // 測驗成績
       tests.forEach(row => {
         const name = row["姓名"]?.trim();
         if (!name) return;
@@ -554,28 +454,37 @@
         testsByName.get(name).push(row);
       });
 
-      // 國際標準：每一列是一個「分級」，某些欄位是平均值，對應的「XXX(標準差)」是 SD
+      // 國際標準：每列一個分級，所有非空欄位先當「平均值」
       intl.forEach(row => {
         const group = row["分級"]?.trim();
         if (!group) return;
 
-        const metrics = {};
+        const metrics = intlByGroup.get(group) || {};
+
         Object.keys(row).forEach(header => {
-          if (!header) return;
+          if (!header || header === "分級") return;
+          const val = toNumber(row[header]);
+          if (val === null) return;
+
           if (header.includes("標準差")) {
-            const base = header.replace("(標準差)", "").trim();
-            const mean = toNumber(row[base]);
-            const sd   = toNumber(row[header]);
-            if (mean !== null && sd !== null) {
-              metrics[base] = { mean, sd };
-            }
+            // 例如「實心球過頂拋(標準差)」→ 實心球過頂拋
+            let base = header;
+            base = base.replace(/[\(\（]標準差[\)\）]/g, "");
+            base = base.replace("標準差", "");
+            base = base.trim();
+
+            if (!metrics[base]) metrics[base] = {};
+            metrics[base].sd = val;
+          } else {
+            if (!metrics[header]) metrics[header] = {};
+            metrics[header].mean = val;
           }
         });
 
         intlByGroup.set(group, metrics);
       });
 
-      // 更新下拉選單
+      // 下拉選單
       const selectEl = document.getElementById("playerSelect");
       selectEl.innerHTML = "";
       const optEmpty = document.createElement("option");
@@ -601,37 +510,34 @@
     } catch (err) {
       console.error(err);
       document.getElementById("placeholder").textContent =
-        "資料讀取失敗，請確認 CSV 網址是否正確，或稍後再試。";
+        "資料讀取失敗，請確認 CSV 網址是否正確。";
     }
   }
 
-  /********************************************************
-   * 4. 產生單一學員的報告內容
-   ********************************************************/
+  /********** 4. 產生單一學員報告 **********/
 
   let radarChartInstance = null;
 
   function buildReportFor(name) {
     const container = document.getElementById("reportPage");
-    container.innerHTML = ""; // 清空
+    container.innerHTML = "";
 
     const playerInfo = playersByName.get(name) || { "姓名": name };
     const testRows   = testsByName.get(name)   || [];
 
     if (testRows.length === 0) {
-      container.innerHTML = `<p class="muted">找不到「${name}」的測驗成績。</p>`;
+      container.innerHTML = `<p class="muted">找不到「${name}」的檢測成績。</p>`;
       document.getElementById("pdfBtn").disabled = true;
       return;
     }
 
-    // 目前策略：第一筆當「前測」、最後一筆當「後測」
     const firstTest = testRows[0];
     const lastTest  = testRows[testRows.length - 1];
 
-    const group        = lastTest["分級"] || playerInfo["分級"] || "";
-    const intlMetrics  = intlByGroup.get(group) || {};
+    const group       = lastTest["分級"] || playerInfo["分級"] || "";
+    const intlMetrics = intlByGroup.get(group) || {};
 
-    /* ====== 報告 Header ====== */
+    /* Header */
 
     const headerEl = document.createElement("div");
     headerEl.className = "report-header";
@@ -648,7 +554,7 @@
     `;
     container.appendChild(headerEl);
 
-    /* ====== 基本資料卡＋摘要卡 ====== */
+    /* 基本資料 + Summary */
 
     const gridTop = document.createElement("div");
     gridTop.className = "grid-two";
@@ -666,7 +572,7 @@
         <li><span class="label">年齡：</span>${playerInfo["年齡"] || lastTest["年齡"] || "—"}</li>
         <li><span class="label">分級：</span>${group || "—"}</li>
         <li><span class="label">生日：</span>${playerInfo["生日"] || "—"}</li>
-        <li><span class="label">傷病／限制：</span>${playerInfo["傷病／限制"] || "—"}</li>
+        <li><span class="label">傷病／限制：</span>${playerInfo["傷病／限制"] || playerInfo["傷勢／限制"] || "—"}</li>
         <li><span class="label">訓練目標：</span>${playerInfo["目標"] || "—"}</li>
         <li><span class="label">聯絡方式：</span>${playerInfo["聯絡方式"] || "—"}</li>
       </ul>
@@ -688,10 +594,22 @@
     gridTop.appendChild(cardSummary);
     container.appendChild(gridTop);
 
-    /* ====== 把測驗指標抓出來（只用「國際標準」有定義的項目） ====== */
+    /* 指標名稱：從「檢測成績」抓，排除身份欄位 */
 
-    // 只拿「國際標準分頁」裡有平均＋標準差的欄位名稱
-    const metricNames = Object.keys(intlMetrics);
+    const identityKeys = new Set([
+      "姓名","性別","年齡","分級","生日",
+      "傷勢/限制","傷病／限制","傷勢／限制",
+      "目標","一週可上課時段","聯絡方式",
+      "日期","測驗日期","備註"
+    ]);
+
+    const metricNames = [];
+    Object.keys(lastTest).forEach(key => {
+      if (!key || identityKeys.has(key)) return;
+      const val = toNumber(lastTest[key]);
+      if (val === null) return;
+      metricNames.push(key);
+    });
 
     const compareRows  = [];
     const trendRows    = [];
@@ -709,22 +627,19 @@
       const earliest = toNumber(firstTest[metric]);
       if (latest === null) return;
 
-      const intl = intlMetrics[metric] || null;
-      let mean   = intl ? intl.mean : null;
-      let sd     = intl ? intl.sd   : null;
+      const intl    = intlMetrics[metric] || {};
+      const mean    = intl.mean ?? null;
+      const sd      = intl.sd   ?? null;
 
-      // 前後測差異
-      let deltaAbs = null;
-      let deltaPct = null;
+      /* 前後測 */
+
       if (earliest !== null) {
         const diff       = latest - earliest;
-        const betterSign = isLowerBetter(metric) ? -1 : 1; // 小為佳 -> 下降是好
+        const betterSign = isLowerBetter(metric) ? -1 : 1;
         const trendGood  = diff * betterSign < 0;
         const trendText  = earliest === 0
           ? "—"
           : ((latest - earliest) / earliest * 100).toFixed(1) + "%";
-        deltaAbs = diff;
-        deltaPct = trendText;
 
         trendRows.push({
           metric,
@@ -736,29 +651,36 @@
         });
       }
 
-      // 國際比較
-      if (mean !== null && sd !== null && sd !== 0) {
-        const lowerBetter = isLowerBetter(metric);
-        const z           = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
-        const scorePlayer = zToScore(z);
-        const scoreIntl   = 50; // by definition
+      /* 國際比較（如果有平均） */
 
-        radarLabels.push(metric);
-        radarPlayerScores.push(scorePlayer);
-        radarIntlScores.push(scoreIntl);
+      if (mean !== null) {
+        let z = null;
+        let level = "";
+        let chipClass = "";
 
-        let level, chipClass;
-        if (z >= 1) {
-          level     = "優於國際樣本";
-          chipClass = "good";
-          strengths.push({ metric, z });
-        } else if (z <= -0.5) {
-          level     = "低於國際樣本";
-          chipClass = "bad";
-          weaknesses.push({ metric, z });
-        } else {
-          level     = "接近國際平均";
-          chipClass = "ok";
+        if (sd !== null && sd !== 0) {
+          const lowerBetter = isLowerBetter(metric);
+          z = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
+
+          const scorePlayer = zToScore(z);
+          const scoreIntl   = 50;
+
+          radarLabels.push(metric);
+          radarPlayerScores.push(scorePlayer);
+          radarIntlScores.push(scoreIntl);
+
+          if (z >= 1) {
+            level     = "優於國際樣本";
+            chipClass = "good";
+            strengths.push({ metric, z });
+          } else if (z <= -0.5) {
+            level     = "低於國際樣本";
+            chipClass = "bad";
+            weaknesses.push({ metric, z });
+          } else {
+            level     = "接近國際平均";
+            chipClass = "ok";
+          }
         }
 
         intlCompare.push({
@@ -772,14 +694,10 @@
         });
       }
 
-      compareRows.push({
-        metric,
-        latest,
-        earliest
-      });
+      compareRows.push({ metric, latest, earliest });
     });
 
-    /* ====== 雷達圖卡 ====== */
+    /* 雷達圖 */
 
     const radarCard = document.createElement("div");
     radarCard.className = "card";
@@ -796,7 +714,6 @@
     `;
     container.appendChild(radarCard);
 
-    // 建立雷達圖
     if (radarChartInstance) radarChartInstance.destroy();
     const radarCtx = document.getElementById("radarChart").getContext("2d");
     radarChartInstance = new Chart(radarCtx, {
@@ -828,35 +745,24 @@
           r: {
             beginAtZero: true,
             suggestedMax: 90,
-            grid: {
-              color: "rgba(55,65,81,0.8)"
-            },
-            angleLines: {
-              color: "rgba(55,65,81,0.8)"
-            },
-            ticks: {
-              display: false
-            },
+            grid: { color: "rgba(55,65,81,0.8)" },
+            angleLines: { color: "rgba(55,65,81,0.8)" },
+            ticks: { display: false },
             pointLabels: {
               color: "#9ca3af",
-              font: {
-                size: 10
-              }
+              font: { size: 10 }
             }
           }
         },
         plugins: {
           legend: {
-            labels: {
-              color: "#e5e7eb",
-              font: { size: 10 }
-            }
+            labels: { color: "#e5e7eb", font: { size: 10 } }
           }
         }
       }
     });
 
-    /* ====== 表格：前後測 ====== */
+    /* 前後測表 */
 
     const section1Title = document.createElement("h3");
     section1Title.className = "section-title";
@@ -890,8 +796,8 @@
     const tbodyTrend = table1Card.querySelector("#tbodyTrend");
     trendRows.forEach(row => {
       const tr = document.createElement("tr");
-      const diffClass = row.trendGood ? "trend-up" : "trend-down";
-      const diffLabel = row.diff === null
+      const diffClass = row.diff == null ? "" : (row.trendGood ? "trend-up" : "trend-down");
+      const diffLabel = row.diff == null
         ? "—"
         : (row.trendGood ? "↑ " : "↓ ") + Math.abs(row.diff).toFixed(2);
 
@@ -899,15 +805,13 @@
         <td>${row.metric}</td>
         <td>${row.earliest ?? "—"}</td>
         <td>${row.latest ?? "—"}</td>
-        <td class="${row.diff === null ? "" : diffClass}">
-          ${row.diff === null ? "—" : diffLabel}
-        </td>
+        <td class="${diffClass}">${diffLabel}</td>
         <td>${row.trendText}</td>
       `;
       tbodyTrend.appendChild(tr);
     });
 
-    /* ====== 表格：與國際標準比較 ====== */
+    /* 國際標準表 */
 
     const section2Title = document.createElement("h3");
     section2Title.className = "section-title";
@@ -919,7 +823,7 @@
     table2Card.innerHTML = `
       <div class="card-header">
         <div class="card-title">INTERNATIONAL BENCHMARK</div>
-        <div class="card-tag">同分級樣本 · Z 分數評估</div>
+        <div class="card-tag">同分級樣本 · 平均值與 Z 分數</div>
       </div>
       <div class="table-wrapper">
         <table>
@@ -937,35 +841,47 @@
         </table>
       </div>
       <p class="note">
-        Z 分數約在 -0.5 ~ +0.5 為接近國際平均；≥ +1 為明顯優於國際樣本；≤ -0.5 建議列入訓練重點。
+        如有 SD 方可計算 Z 分數；Z 約在 -0.5 ~ +0.5 為接近國際平均；≥ +1 為明顯優於國際樣本；≤ -0.5 建議列入訓練重點。
       </p>
     `;
     container.appendChild(table2Card);
 
     const tbodyIntl = table2Card.querySelector("#tbodyIntl");
-    intlCompare.sort((a, b) => b.z - a.z);
+    intlCompare.sort((a, b) => {
+      if (a.z == null && b.z == null) return 0;
+      if (a.z == null) return 1;
+      if (b.z == null) return -1;
+      return b.z - a.z;
+    });
+
     intlCompare.forEach(row => {
       const tr = document.createElement("tr");
+      const zText   = row.z == null ? "—" : row.z.toFixed(2);
+      const evalTd  = row.level
+        ? `<span class="chip ${row.chipClass}">${row.level}</span>`
+        : "—";
+
       tr.innerHTML = `
         <td>${row.metric}</td>
         <td>${row.latest ?? "—"}</td>
         <td>${row.mean ?? "—"}</td>
         <td>${row.sd ?? "—"}</td>
-        <td>${row.z.toFixed(2)}</td>
-        <td><span class="chip ${row.chipClass}">${row.level}</span></td>
+        <td>${zText}</td>
+        <td>${evalTd}</td>
       `;
       tbodyIntl.appendChild(tr);
     });
 
-    /* ====== 教練建議文案 ====== */
+    /* 建議文字 */
 
     const summaryEl     = document.getElementById("coachSummary");
     const topStrengths  = strengths.sort((a, b) => b.z - a.z).slice(0, 3);
     const topWeaknesses = weaknesses.sort((a, b) => a.z - b.z).slice(0, 3);
 
     const buildMetricList = arr =>
-      arr.map(item => `${item.metric}（Z = ${item.z.toFixed(2)}）`).join("、") ||
-      "目前沒有特別突出／明顯落後的單一項目。";
+      arr.length === 0
+        ? "目前沒有特別突出／明顯落後的單一項目。"
+        : arr.map(item => `${item.metric}（Z = ${item.z.toFixed(2)}）`).join("、");
 
     summaryEl.innerHTML = `
       <div class="coach-notes">
@@ -976,20 +892,18 @@
         </ul>
         <p>教練可依據弱項安排「每週 2～3 次」針對性訓練，例如：</p>
         <ul>
-          <li><strong>爆發力類（跳躍、實心球）偏弱：</strong>可加入箱跳、單腳跳、負重深蹲等。</li>
-          <li><strong>速度與加速度（10m、20m、505）偏弱：</strong>安排短距離衝刺、加速起跑、坡跑等。</li>
-          <li><strong>敏捷性與變向（505、蜘蛛跑）偏弱：</strong>增加多方向變向、反應腳步與標記錐訓練。</li>
+          <li><strong>爆發力類（跳躍、實心球）：</strong>箱跳、單腳跳、負重深蹲。</li>
+          <li><strong>速度與加速度（10m、20m、505）：</strong>短距離衝刺、加速起跑、坡跑。</li>
+          <li><strong>敏捷變向（505、蜘蛛跑）：</strong>多方向變向、反應腳步、標記錐訓練。</li>
         </ul>
-        <p class="muted">※ 以上建議為自動生成，實際訓練仍需由教練依球員狀況與傷病史調整。</p>
+        <p class="muted">※ 以上為自動生成說明，實際訓練仍需教練依球員狀況與傷病史調整。</p>
       </div>
     `;
 
     document.getElementById("pdfBtn").disabled = false;
   }
 
-  /********************************************************
-   * 5. 下載 PDF
-   ********************************************************/
+  /********** 5. 下載 PDF **********/
 
   function downloadPdf() {
     const selectEl = document.getElementById("playerSelect");
@@ -1007,22 +921,17 @@
     html2pdf().from(element).set(opt).save();
   }
 
-  /********************************************************
-   * 6. 綁定事件
-   ********************************************************/
+  /********** 6. 綁定事件 **********/
 
   document.getElementById("reloadBtn").addEventListener("click", reloadAll);
-
   document.getElementById("loadReportBtn").addEventListener("click", () => {
-    const selectEl = document.getElementById("playerSelect");
-    const name     = selectEl.value;
+    const name = document.getElementById("playerSelect").value;
     if (!name) return;
     buildReportFor(name);
   });
-
   document.getElementById("pdfBtn").addEventListener("click", downloadPdf);
 
-  // 如果一進頁面就想自動載入，可以打開這行：
+  // 如需一進頁面就自動載入，解除註解這行：
   // reloadAll();
 </script>
 </body>
