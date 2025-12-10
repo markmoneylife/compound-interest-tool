@@ -216,13 +216,13 @@
   /********** 1. 這裡改成你「發布到網路 → CSV」的三條網址 **********/
   const CSV_URLS = {
     // 學員主資料表（有 姓名 / 性別 / 生日 / 傷勢 / 目標 / 聯絡方式 那一張）
-    players: "在這裡貼『學員主資料表』發佈出來的 CSV 連結",
+    players: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
 
     // 檢測成績（有 垂直跳、實心球、10米衝刺… 等實際測驗數據那一張）
-    tests:   "在這裡貼『檢測成績』發佈出來的 CSV 連結",
+    tests:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv",
 
     // 國際標準（有 分級 / 指標 / 平均值 / 標準差 那一張）
-    intl:    "在這裡貼『國際標準』發佈出來的 CSV 連結"
+    intl:    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRf7j8dcLkA4mObkmT5fF1S7lrgm5f0PPtzda0Hzhwbzo1jOCgxe2oTmF53NK04kshuJJapUIy6SJEe/pub?output=csv"
   };
 
   async function fetchCsv(url) {
@@ -231,7 +231,7 @@
     return await res.text();
   }
 
-  function parseCsv(text) {
+  function parse(text) {
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
     if (lines.length === 0) return [];
     const headers = lines[0].split(",").map(h => h.trim());
