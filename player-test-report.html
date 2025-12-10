@@ -1,1 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>網球學院｜運動員訓練成效報告</title>
+
+  <!-- Chart.js & PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+  <!-- 產生 PDF 用：html2canvas + jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-card: #020617;
+      --bg-card-soft: #020617;
+      --accent: #22c55e;       /* 球場綠 */
+      --accent-soft: #bbf7d0;
+      --accent-alt: #38bdf8;   /* 球拍藍 */
+      --border-subtle: #1e293b;
+      --text-main: #e5e7eb;
+      --text-sub: #9ca3af;
+      --text-muted: #6b7280;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 10% 0, #0f172a 0, #020617 45%, #000 100%);
+      color: var(--text-main);
+      padding: 24px;
+      margin: 0;
+    }
+
+    .page-frame {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .container {
+      position: relative;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.16) 0, transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(34,197,94,0.18) 0, transparent 60%),
+        radial-gradient(circle at 50% 120%, #020617 0, #000 55%);
+      padding: 26px 26px 30px;
+      border-radius: 30px;
+      box-shadow:
+        0 24px 80px rgba(15,23,42,0.95),
+        0 0 0 1px rgba(148,163,184,0.25);
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.4);
+      right: -120px;
+      top: -80px;
+      opacity: 0.4;
+      box-shadow: 0 0 50px rgba(56,189,248,0.5);
+    }
+
+    .container::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      border: 2px solid rgba(34,197,94,0.8);
+      left: -70px;
+      bottom: -60px;
+      opacity: 0.35;
+      box-shadow: 0 0 40px rgba(34,197,94,0.6);
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f9fafb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 .logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 2px solid rgba(34,197,94,0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--accent-soft);
+      box-shadow: 0 0 20px rgba(34,197,94,0.9);
+      background: radial-gradient(circle at 30% 30%, #22c55e, #16a34a);
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .nav-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 11px;
+    }
+
+    .nav-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--text-sub);
+      opacity: 0.8;
+    }
+
+    .nav-chip.active {
+      background: linear-gradient(to right, #22c55e, #38bdf8);
+      color: #020617;
+      font-weight: 600;
+      opacity: 1;
+      box-shadow: 0 0 18px rgba(56,189,248,0.6);
+    }
+
+    .header-sub {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--text-sub);
+      font-size: 12px;
+    }
+
+    .pill-live {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-live span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    .header-sub-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .badge-small {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-sub);
+    }
+
+    .controls {
+      margin-top: 4px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    .controls label {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    select {
+      padding: 9px 12px;
+      font-size: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.65);
+      background: rgba(15,23,42,0.95);
+      color: var(--text-main);
+      min-width: 210px;
+      appearance: none;
+      outline: none;
+      padding-right: 30px;
+      background-image: linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+                        linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+      background-position: calc(100% - 15px) 50%, calc(100% - 11px) 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-sub);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      border-color: rgba(248,250,252,0.8);
+      color: #e5e7eb;
+      background: rgba(15,23,42,1);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .report-section {
+      display: none;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.3fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .info-card {
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.08) 0, transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(15,23,42,1) 0, #020617 70%);
+      padding: 17px 17px 15px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .info-card-title {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .info-pill {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--text-sub);
+    }
+
+    .info-items-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .info-item {
+      min-width: 110px;
+      flex: 1 1 0;
+    }
+
+    .info-item h3 {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .info-item p {
+      margin: 2px 0 0;
+      font-weight: 600;
+      font-size: 16px;
+      color: #f9fafb;
+    }
+
+    .summary-note {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    h2.section {
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+      margin-top: 22px;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2.section span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    h2.section.green { border-color: var(--accent-alt); }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .chart-wrapper {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top, #020617 0, #000 100%);
+      border: 1px solid rgba(148,163,184,0.35);
+      padding: 12px 12px 14px;
+    }
+
+    .chart-legend-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      padding: 0 4px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 18px;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .legend-swatch.player {
+      background: linear-gradient(to right, #22c55e, #4ade80);
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 360px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .coach-box {
+      background: rgba(15,23,42,0.95);
+      padding: 16px 17px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.35);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-sub);
+    }
+
+    .coach-box strong { color: var(--accent-soft); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.96);
+    }
+
+    th, td {
+      padding: 7px 9px;
+      border-bottom: 1px solid rgba(30,41,59,0.9);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    thead th {
+      background: radial-gradient(circle at top, #020617 0, #020617 70%);
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    tbody tr:nth-child(odd) td {
+      background: rgba(15,23,42,0.86);
+    }
+
+    tbody tr:nth-child(even) td {
+      background: rgba(15,23,42,1);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    .tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 11px;
+    }
+
+    .tag.good {
+      border-color: rgba(34,197,94,0.8);
+      background: rgba(22,163,74,0.15);
+      color: #bbf7d0;
+    }
+
+    .tag.mid {
+      border-color: rgba(250,204,21,0.7);
+      background: rgba(133,77,14,0.2);
+      color: #facc15;
+    }
+
+    .tag.bad {
+      border-color: rgba(248,113,113,0.85);
+      background: rgba(127,29,29,0.3);
+      color: #fecaca;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-pdf {
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #22c55e, #38bdf8);
+      color: #020617;
+      box-shadow: 0 14px 40px rgba(34,197,94,0.65);
+    }
+
+    .btn-pdf:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 18px 50px rgba(34,197,94,0.9);
+    }
+
+    .btn-pdf:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .note { font-size: 11px; color: var(--text-muted); }
+
+    #statusMsg { margin-top: 2px; }
+
+    @media (max-width: 900px) {
+      body { padding: 12px; }
+      .container {
+        padding: 18px 15px 20px;
+        border-radius: 24px;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .info-grid { grid-template-columns: minmax(0,1fr); }
+      .chart-container { height: 320px; }
+      .actions-row { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-frame" id="pdfArea">
+  <div class="container">
+    <header>
+      <div class="top-bar">
+        <div>
+          <h1>
+            <span class="logo-mark">🎾</span>
+            <span>ACADEMY PERFORMANCE REPORT</span>
+          </h1>
+          <div class="brand-sub">Match Point Lab｜網球學院體能檢測中心</div>
+        </div>
+        <div class="nav-chips">
+          <div class="nav-chip active">報告總覽</div>
+          <div class="nav-chip">體能雷達</div>
+          <div class="nav-chip">國際對照表</div>
+        </div>
+      </div>
+      <div class="header-sub">
+        <div class="pill-live">
+          <span class="dot"></span>
+          <span>連線試算表 · 自動更新學員檔案</span>
+        </div>
+        <div class="header-sub-right">
+          <span class="badge-small">教練內部工具</span>
+          <span id="statusMsg" class="note"></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 控制列 -->
+    <div class="controls">
+      <label for="studentSelect">選擇學員：</label>
+      <select id="studentSelect" disabled onchange="loadStudentData()">
+        <option value="">資料載入中...</option>
+      </select>
+      <button class="btn" id="reloadBtn" onclick="reloadSheets()">🔄 重新從 Google Sheets 載入</button>
+    </div>
+
+    <!-- 報告內容 -->
+    <section id="report" class="report-section">
+      <div class="info-grid">
+        <!-- 學員基本資料卡 -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-title">PLAYER PROFILE</div>
+            <div class="info-pill">學員基本資料</div>
+          </div>
+          <div class="info-items-row">
+            <div class="info-item">
+              <h3>姓名</h3>
+              <p id="dispName">—</p>
+            </div>
+            <div class="info-item">
+              <h3>分級</h3>
+              <p id="dispGroup">—</p>
+            </div>
+            <div class="info-item">
+              <h3>最近檢測日</h3>
+              <p id="dispDate">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 檢測說明卡 -->
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-title">SESSION SUMMARY</div>
+            <div class="info-pill">本次檢測說明</div>
+          </div>
+          <p class="summary-note">
+            本工具會整合「檢測成績」與「國際標準」兩個分頁，將學員體能指標轉成視覺化雷達圖與 Z 分數，
+            幫助教練快速判斷目前的<strong>優勢能力</strong>與<strong>優先補強項目</strong>，也方便輸出 PDF
+            報告回傳給家長。
+          </p>
+        </div>
+      </div>
+
+      <!-- 雷達圖 -->
+      <h2 class="section">
+        <span class="dot"></span>
+        能力雷達分析
+      </h2>
+      <p id="radarNote" class="section-subtitle">
+        雷達圖會把不同單位（cm、秒數等）統一轉成 0–100 分，只看「這次檢測裡」各項能力的相對強弱；
+        秒數類（越短越好）已自動反向處理。
+      </p>
+      <div class="chart-wrapper">
+        <div class="chart-legend-inline">
+          <span class="legend-item">
+            <span class="legend-swatch player"></span>
+            <span>學員目前表現（標準化 0–100 分）</span>
+          </span>
+        </div>
+        <div class="chart-container">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 教練短評 -->
+      <h2 class="section green">
+        <span class="dot"></span>
+        教練建議與短評
+      </h2>
+      <div class="coach-box">
+        <p id="coachComment">
+          請先選擇學員，系統會依照本次檢測與國際參考值的差距，自動整理強項與建議補強方向。
+        </p>
+      </div>
+
+      <!-- 對照表 -->
+      <h2 class="section" style="margin-top:26px;">
+        <span class="dot"></span>
+        本次檢測成績與國際標準對照
+      </h2>
+      <p class="section-subtitle">
+        下表列出所有體能指標原始成績，若「國際標準」分頁有提供對應的範圍與標準差，會計算 Z 分數：
+        約 -0.5 ～ +0.5 視為接近同齡樣本；≥ +1 為明顯優勢；≤ -0.5 則建議列為優先補強。
+      </p>
+      <table>
+        <thead>
+        <tr>
+          <th>指標</th>
+          <th>學生</th>
+          <th>國際參考值</th>
+          <th>SD</th>
+          <th>Z 分數</th>
+          <th>評估</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <!-- PDF 按鈕 -->
+      <div class="actions-row">
+        <button class="btn-pdf" id="pdfBtn" onclick="exportPDF()">📄 下載 PDF 報告</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  // ========= 試算表設定 =========
+  const FILE_ID = "1N-8HQZaxHYj4vE824raG1fWyNxt5w7B9_m8oHn8f4As";
+  const SHEETS = {
+    players: "學員主資料表",
+    tests:   "檢測成績",
+    intl:    "國際標準"
+  };
+
+  const IDENTITY_KEYS = new Set([
+    "姓名","性別","年齡","分級","生日","日期","測驗日期",
+    "傷病／限制","傷勢／限制","傷勢/限制","目標",
+    "一週可上課時段","聯絡方式","備註"
+  ]);
+
+  const LOWER_BETTER_KEYS = ["10","20","505","反應","敏捷","衝刺","s","S","秒"];
+
+  function isLowerBetter(metricName) {
+    return LOWER_BETTER_KEYS.some(k => metricName.includes(k));
+  }
+
+  function normalizeMetricName(name) {
+    if (!name) return "";
+    return String(name)
+      .replace(/（/g,"(").replace(/）/g,")")
+      .replace(/\s+/g,"")
+      .replace(/\(標準差\)/g,"")
+      .replace(/\(誤差\)/g,"")
+      .replace(/標準差/g,"")
+      .replace(/誤差/g,"")
+      .trim();
+  }
+
+  function csvUrlForSheet(sheetName) {
+    return `https://docs.google.com/spreadsheets/d/${FILE_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  }
+
+  function parseNumber(v) {
+    if (v == null || v === "") return null;
+    const n = Number(String(v).replace(/[^\d.\-]/g,""));
+    return isNaN(n) ? null : n;
+  }
+
+  // 國際標準欄位：如 "48–60 CM" 之類 → 取出數字的平均
+  function parseIntlMean(v) {
+    if (v == null || v === "") return null;
+    const matches = String(v).match(/[\d.]+/g);
+    if (!matches) return null;
+    const nums = matches.map(Number).filter(n => !isNaN(n));
+    if (!nums.length) return null;
+    if (nums.length === 1) return nums[0];
+    const firstTwo = nums.slice(0,2);
+    const sum = firstTwo.reduce((a,b)=>a+b,0);
+    return sum / firstTwo.length;
+  }
+
+  function zToScore(z) {
+    const s = 50 + z * 10;
+    return Math.max(0, Math.min(100, s));
+  }
+
+  let playersByName = new Map();
+  let testsByName   = new Map();
+  let intlByGroup   = new Map();
+  let radarChart    = null;
+
+  function loadSheet(sheetName) {
+    const url = csvUrlForSheet(sheetName);
+    return new Promise((resolve, reject) => {
+      Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: results => resolve(results.data),
+        error: err => reject(err)
+      });
+    });
+  }
+
+  async function reloadSheets() {
+    const status = document.getElementById("statusMsg");
+    const select = document.getElementById("studentSelect");
+    const report = document.getElementById("report");
+
+    status.textContent = "從 Google 試算表載入中…";
+    select.disabled = true;
+    select.innerHTML = '<option value="">資料載入中...</option>';
+    report.style.display = "none";
+
+    try {
+      const [players, tests, intl] = await Promise.all([
+        loadSheet(SHEETS.players),
+        loadSheet(SHEETS.tests),
+        loadSheet(SHEETS.intl)
+      ]);
+
+      playersByName = new Map();
+      testsByName   = new Map();
+      intlByGroup   = new Map();
+
+      players.forEach(row => {
+        const n = (row["姓名"] || "").trim();
+        if (!n) return;
+        playersByName.set(n, row);
+      });
+
+      tests.forEach(row => {
+        const n = (row["姓名"] || "").trim();
+        if (!n) return;
+        testsByName.set(n, row); // 目前一位學員一行
+      });
+
+      intl.forEach(row => {
+        const group = (row["分級"] || "").trim();
+        if (!group) return;
+        const metrics = intlByGroup.get(group) || {};
+
+        Object.keys(row).forEach(h => {
+          if (!h || h === "分級") return;
+          const rawHeader = h;
+          const isSD =
+            rawHeader.includes("標準差") ||
+            rawHeader.toUpperCase().includes("SD") ||
+            rawHeader.includes("誤差");
+
+          const keyNorm = normalizeMetricName(rawHeader);
+          metrics[keyNorm] = metrics[keyNorm] || {};
+
+          if (isSD) {
+            const vSD = parseNumber(row[rawHeader]);
+            if (vSD != null) metrics[keyNorm].sd = vSD;
+          } else {
+            const vMean = parseIntlMean(row[rawHeader]);
+            if (vMean != null) metrics[keyNorm].mean = vMean;
+          }
+        });
+
+        intlByGroup.set(group, metrics);
+      });
+
+      const names = Array.from(testsByName.keys()).sort((a,b) =>
+        a.localeCompare(b, "zh-Hant")
+      );
+      select.innerHTML = '<option value="">— 請選擇學員 —</option>';
+      names.forEach(n => {
+        const op = document.createElement("option");
+        op.value = n;
+        op.textContent = n;
+        select.appendChild(op);
+      });
+      select.disabled = false;
+
+      status.textContent = "載入完成，請從上方選擇學員。";
+    } catch (err) {
+      console.error(err);
+      status.textContent =
+        "載入失敗，請確認：試算表已公開，且分頁名稱為「學員主資料表 / 檢測成績 / 國際標準」。";
+    }
+  }
+
+  reloadSheets();
+
+  function loadStudentData() {
+    const name   = document.getElementById("studentSelect").value;
+    const report = document.getElementById("report");
+    const status = document.getElementById("statusMsg");
+    const radarNote = document.getElementById("radarNote");
+    const canvas = document.getElementById("radarChart");
+
+    if (!name) {
+      report.style.display = "none";
+      return;
+    }
+
+    const testRow   = testsByName.get(name);
+    const playerRow = playersByName.get(name) || {};
+    if (!testRow) {
+      status.textContent = `「${name}」找不到檢測成績。`;
+      report.style.display = "none";
+      return;
+    }
+
+    const group = playerRow["分級"] || testRow["分級"] || "-";
+    const intlMetrics = intlByGroup.get(group) || {};
+
+    document.getElementById("dispName").textContent  = name;
+    document.getElementById("dispGroup").textContent = group || "-";
+    const date =
+      playerRow["最新檢測日"] ||
+      testRow["日期"] ||
+      testRow["測驗日期"] ||
+      "";
+    document.getElementById("dispDate").textContent = date || "-";
+
+    const metricRows = [];
+    Object.keys(testRow).forEach(key => {
+      if (!key || IDENTITY_KEYS.has(key)) return;
+      if (key.includes("標準差") || key.toUpperCase().includes("SD") || key.includes("誤差")) return;
+
+      const latest = parseNumber(testRow[key]);
+      if (latest == null) return;
+
+      const normKey = normalizeMetricName(key);
+      const intl = intlMetrics[normKey] || {};
+      const mean = intl.mean ?? null;
+      const sd   = intl.sd   ?? null;
+
+      let z = null;
+      let score = null;
+
+      if (mean != null && sd != null && sd !== 0) {
+        const lowerBetter = isLowerBetter(key);
+        z = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
+        score = zToScore(z);
+      }
+
+      metricRows.push({
+        label: key,
+        normKey,
+        latest,
+        mean,
+        sd,
+        z,
+        score
+      });
+    });
+
+    if (!metricRows.length) {
+      status.textContent =
+        `「${name}」的檢測成績目前沒有可用的數值欄位，請檢查「檢測成績」分頁。`;
+      report.style.display = "none";
+      return;
+    }
+
+    const usable = metricRows.filter(r => r.latest != null);
+    let radarLabels = [];
+    let radarPlayer = [];
+
+    if (usable.length) {
+      const processed = usable.map(r => {
+        let v = r.latest;
+        if (isLowerBetter(r.label)) v = -v;  // 秒數類反向
+        return { label: r.label, normBase: v };
+      });
+
+      const values = processed.map(p => p.normBase);
+      const minVal = Math.min(...values);
+      const maxVal = Math.max(...values);
+
+      radarLabels = processed.map(p => p.label);
+      radarPlayer = processed.map(p => {
+        if (maxVal === minVal) return 50;
+        return ((p.normBase - minVal) / (maxVal - minVal)) * 100;
+      });
+
+      radarNote.textContent =
+        "雷達圖已將不同單位（cm、秒數等）轉成同一個 0–100 分標準，只比較這次檢測中各項能力的相對強弱；秒數類（越短越好）已自動反向處理。";
+    } else {
+      radarLabels = [];
+      radarPlayer = [];
+      radarNote.textContent = "找不到可用的體能指標，暫時無法繪製雷達圖。";
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (radarChart) radarChart.destroy();
+
+    if (radarLabels.length === 0) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } else {
+      radarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+          labels: radarLabels,
+          datasets: [
+            {
+              label: name,
+              data: radarPlayer,
+              backgroundColor: "rgba(34,197,94,0.22)",
+              borderColor: "rgba(34,197,94,1)",
+              pointBackgroundColor: "rgba(56,189,248,1)",
+              borderWidth: 2,
+              pointRadius: 3
+            }
+          ]
+        },
+        options: {
+          scales: {
+            r: {
+              beginAtZero: true,
+              suggestedMax: 100,
+              ticks: { display: false },
+              grid: { color: "#1f2937" },
+              angleLines: { color: "#1f2937" },
+              pointLabels: { font: { size: 11 }, color: "#e5e7eb" }
+            }
+          },
+          plugins: {
+            legend: { labels: { font: { size: 11 }, color: "#e5e7eb" } }
+          }
+        }
+      });
+    }
+
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+    metricRows
+      .slice()
+      .sort((a,b) => {
+        if (a.z == null && b.z == null) return 0;
+        if (a.z == null) return 1;
+        if (b.z == null) return -1;
+        return b.z - a.z;
+      })
+      .forEach(row => {
+        const tr = document.createElement("tr");
+        let tagHtml = "—";
+        if (row.z != null) {
+          if (row.z >= 1) tagHtml = '<span class="tag good">優於樣本</span>';
+          else if (row.z <= -0.5)
+            tagHtml = '<span class="tag bad">建議補強</span>';
+          else tagHtml = '<span class="tag mid">接近平均</span>';
+        }
+        tr.innerHTML = `
+          <td>${row.label}</td>
+          <td>${row.latest ?? "—"}</td>
+          <td>${row.mean ?? "—"}</td>
+          <td>${row.sd ?? "—"}</td>
+          <td>${row.z != null ? row.z.toFixed(2) : "—"}</td>
+          <td>${tagHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    const strengths = metricRows
+      .filter(r => r.z != null && r.z >= 1)
+      .sort((a,b) => b.z - a.z)
+      .slice(0,3);
+    const weaknesses = metricRows
+      .filter(r => r.z != null && r.z <= -0.5)
+      .sort((a,b) => a.z - b.z)
+      .slice(0,3);
+
+    const listText = arr =>
+      !arr.length
+        ? "目前各項指標大致接近國際樣本，沒有特別突出的強項或弱項。"
+        : arr.map(r => `${r.label}（Z = ${r.z.toFixed(2)}）`).join("、");
+
+    let comment = "";
+    if (metricRows.some(r => r.z != null)) {
+      comment = `
+        根據本次檢測數據，<strong>${name}</strong> 與 ${group || "目前分級"} 國際樣本相比：
+        <br><br>
+        ・主要<strong>優勢項目</strong>：${listText(strengths)}。<br>
+        ・建議優先<strong>補強項目</strong>：${listText(weaknesses)}。<br><br>
+        訓練規劃上，可將補強項目排入每週固定訓練內容（例如體能暖身後的專項訓練），
+        同時維持優勢項目的穩定度，讓選手在比賽中持續放大優勢。
+      `;
+    } else {
+      comment = `
+        目前「國際標準」分頁僅提供範圍或尚未填入標準差，暫時無法計算 Z 分數。
+        <br><br>
+        就本次檢測原始成績來看，<strong>${name}</strong> 在多數體能項目上的表現穩定，
+        建議教練先挑選 2～3 個希望明顯拉開差距的能力（例如爆發力、移動速度或變向反應），
+        作為下一階段訓練主軸，並持續記錄後續檢測結果以追蹤變化。
+      `;
+    }
+    document.getElementById("coachComment").innerHTML = comment;
+
+    status.textContent = "";
+    report.style.display = "block";
+  }
+
+  // ========= 產生 PDF =========
+  async function exportPDF() {
+    const report = document.getElementById("report");
+    if (report.style.display === "none" || !report.innerText.trim()) {
+      alert("請先選擇一位學員並產生報告，再下載 PDF。");
+      return;
+    }
+
+    const btn = document.getElementById("pdfBtn");
+    const name = document.getElementById("dispName").textContent || "report";
+    btn.disabled = true;
+    btn.textContent = "產生 PDF 中…";
+
+    try {
+      const pdfArea = document.getElementById("pdfArea");
+
+      const canvas = await html2canvas(pdfArea, {
+        scale: 2,
+        backgroundColor: "#020617",
+        useCORS: true
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pageWidth  = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth  = pageWidth;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+
+      let position   = 0;
+      let heightLeft = imgHeight;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, "", "FAST");
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, "", "FAST");
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`AthleteReport-${name}.pdf`);
+    } catch (err) {
+      console.error(err);
+      alert("產生 PDF 時發生錯誤，請稍後再試。");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "📄 下載 PDF 報告";
+    }
+  }
+</script>
+</body>
+</html>
 
