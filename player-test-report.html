@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>網球學院｜運動員訓練成效報告</title>
 
+  <!-- Chart.js：做柱狀圖 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- PapaParse：抓 Google Sheets CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
@@ -14,94 +17,100 @@
 
   <style>
     :root {
-      --bg-main: #020617;
+      --bg-page: #020617;
       --bg-card: #020617;
-      --accent: #22c55e;       /* 球場綠 */
+      --accent: #22c55e;
+      --accent-alt: #38bdf8;
       --accent-soft: #bbf7d0;
-      --accent-alt: #38bdf8;   /* 球拍藍 */
-      --border-subtle: #1e293b;
       --text-main: #e5e7eb;
       --text-sub: #9ca3af;
       --text-muted: #6b7280;
-      --radius-lg: 20px;
+      --border-subtle: #1e293b;
+      --radius-lg: 18px;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
       background:
         radial-gradient(circle at 10% 0, #0f172a 0, #020617 45%, #000 100%);
       color: var(--text-main);
-      margin: 0;
-      min-height: 100vh;
       display: flex;
       justify-content: center;
     }
 
+    /* A4 直式比例的報告容器：專門給 PDF 用 */
     .page-frame {
-      max-width: 1120px;
-      width: 100%;
-      margin: 40px auto;
-      padding: 0 16px;
+      width: 800px;             /* 接近 A4 寬度 */
+      margin: 32px auto;
+      padding: 0;
     }
 
-    .container {
-      position: relative;
+    .report-shell {
       background:
         radial-gradient(circle at 0 0, rgba(56,189,248,0.16) 0, transparent 55%),
         radial-gradient(circle at 100% 0, rgba(34,197,94,0.18) 0, transparent 60%),
         radial-gradient(circle at 50% 120%, #020617 0, #000 55%);
-      padding: 26px 26px 30px;
-      border-radius: 30px;
+      border-radius: 24px;
+      padding: 24px 26px 26px;
       box-shadow:
-        0 24px 80px rgba(15,23,42,0.95),
+        0 18px 60px rgba(15,23,42,0.95),
         0 0 0 1px rgba(148,163,184,0.25);
+      position: relative;
       overflow: hidden;
     }
 
-    .container::before {
+    .report-shell::before {
       content: "";
       position: absolute;
-      width: 260px;
-      height: 260px;
+      width: 220px;
+      height: 220px;
       border-radius: 999px;
       border: 1px solid rgba(56,189,248,0.4);
-      right: -120px;
-      top: -80px;
+      right: -110px;
+      top: -70px;
       opacity: 0.4;
-      box-shadow: 0 0 50px rgba(56,189,248,0.5);
+      box-shadow: 0 0 40px rgba(56,189,248,0.5);
     }
 
-    .container::after {
+    .report-shell::after {
       content: "";
       position: absolute;
-      width: 160px;
-      height: 160px;
+      width: 140px;
+      height: 140px;
       border-radius: 999px;
       border: 2px solid rgba(34,197,94,0.8);
-      left: -70px;
-      bottom: -60px;
+      left: -60px;
+      bottom: -50px;
       opacity: 0.35;
-      box-shadow: 0 0 40px rgba(34,197,94,0.6);
+      box-shadow: 0 0 32px rgba(34,197,94,0.6);
     }
 
     header {
       position: relative;
       z-index: 1;
+      margin-bottom: 14px;
     }
 
-    .top-bar {
+    .top-row {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 10px;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 20px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #f9fafb;
@@ -110,9 +119,9 @@
       gap: 10px;
     }
 
-    h1 .logo-mark {
-      width: 34px;
-      height: 34px;
+    .logo-mark {
+      width: 32px;
+      height: 32px;
       border-radius: 999px;
       border: 2px solid rgba(34,197,94,0.9);
       display: inline-flex;
@@ -120,7 +129,7 @@
       justify-content: center;
       font-size: 18px;
       color: var(--accent-soft);
-      box-shadow: 0 0 20px rgba(34,197,94,0.9);
+      box-shadow: 0 0 18px rgba(34,197,94,0.9);
       background: radial-gradient(circle at 30% 30%, #22c55e, #16a34a);
     }
 
@@ -129,53 +138,19 @@
       color: var(--text-sub);
     }
 
-    .nav-chips {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.4);
+    .pill-tag {
       font-size: 11px;
-    }
-
-    .nav-chip {
       padding: 4px 10px;
       border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
       color: var(--text-sub);
-      opacity: 0.8;
-    }
-
-    .nav-chip.active {
-      background: linear-gradient(to right, #22c55e, #38bdf8);
-      color: #020617;
-      font-weight: 600;
-      opacity: 1;
-      box-shadow: 0 0 18px rgba(56,189,248,0.6);
-    }
-
-    .header-sub {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      color: var(--text-sub);
-      font-size: 12px;
-    }
-
-    .pill-live {
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(148,163,184,0.4);
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .pill-live span.dot {
+    .pill-tag span.dot {
       width: 7px;
       height: 7px;
       border-radius: 999px;
@@ -183,48 +158,33 @@
       box-shadow: 0 0 10px #22c55e;
     }
 
-    .header-sub-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .badge-small {
-      padding: 3px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.4);
-      background: rgba(15,23,42,0.9);
-      color: var(--text-sub);
-    }
-
-    .controls {
-      margin-top: 4px;
-      margin-bottom: 18px;
+    .control-row {
+      margin-top: 10px;
+      margin-bottom: 14px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
-      z-index: 1;
+      font-size: 13px;
       position: relative;
+      z-index: 1;
     }
 
-    .controls label {
-      font-size: 13px;
+    .control-row label {
       color: var(--text-sub);
     }
 
     select {
-      padding: 9px 12px;
-      font-size: 14px;
+      padding: 7px 12px;
+      font-size: 13px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.65);
+      border: 1px solid rgba(148,163,184,0.7);
       background: rgba(15,23,42,0.95);
       color: var(--text-main);
-      min-width: 210px;
+      min-width: 180px;
       appearance: none;
       outline: none;
-      padding-right: 30px;
+      padding-right: 26px;
       background-image: linear-gradient(45deg, transparent 50%, #9ca3af 50%),
                         linear-gradient(135deg, #9ca3af 50%, transparent 50%);
       background-position: calc(100% - 15px) 50%, calc(100% - 11px) 50%;
@@ -233,7 +193,7 @@
     }
 
     .btn {
-      padding: 8px 12px;
+      padding: 7px 11px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.6);
       background: rgba(15,23,42,0.95);
@@ -246,7 +206,7 @@
     }
 
     .btn:hover {
-      border-color: rgba(248,250,252,0.8);
+      border-color: rgba(248,250,252,0.9);
       color: #e5e7eb;
       background: rgba(15,23,42,1);
     }
@@ -256,154 +216,188 @@
       cursor: default;
     }
 
-    .report-section {
-      display: none;
-      margin-top: 4px;
+    .status-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    /* 報告內容區（給 PDF 用，寬度固定） */
+    .report-body {
       position: relative;
       z-index: 1;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.3fr);
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .info-card {
-      background: radial-gradient(circle at top left, rgba(34,197,94,0.08) 0, transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(15,23,42,1) 0, #020617 70%);
-      padding: 17px 17px 15px;
-      border-radius: var(--radius-lg);
+      background: rgba(15,23,42,0.95);
+      border-radius: 18px;
+      padding: 16px 18px 18px;
       border: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 6px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 6px;
+      color: #e5e7eb;
     }
 
-    .info-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+    .section-title span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
     }
 
-    .info-card-title {
+    .section-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 0 0 10px;
+    }
+
+    .profile-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .profile-card {
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.1) 0, transparent 60%),
+                  radial-gradient(circle at bottom right, rgba(15,23,42,1) 0, #020617 80%);
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.3);
+      padding: 10px 12px;
       font-size: 12px;
+    }
+
+    .profile-card h3 {
+      margin: 0 0 6px;
+      font-size: 11px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
     }
 
-    .info-pill {
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .profile-item-title {
       font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.4);
-      color: var(--text-sub);
-    }
-
-    .info-items-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 6px;
-    }
-
-    .info-item {
-      min-width: 110px;
-      flex: 1 1 0;
-    }
-
-    .info-item h3 {
-      margin: 0;
       color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 500;
     }
 
-    .info-item p {
-      margin: 2px 0 0;
+    .profile-item-value {
+      font-size: 14px;
       font-weight: 600;
-      font-size: 16px;
       color: #f9fafb;
     }
 
     .summary-note {
-      margin: 0;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-sub);
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    h2.section {
-      border-left: 4px solid var(--accent);
-      padding-left: 10px;
-      margin-top: 22px;
-      margin-bottom: 8px;
-      font-size: 16px;
-      color: #e5e7eb;
+    /* 關鍵指標 + 柱狀圖 */
+    .key-metrics-section {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chart-wrapper {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at top, #020617 0, #000 100%);
+      padding: 10px 12px 12px;
+    }
+
+    .chart-legend {
       display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    h2.section span.dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
-    }
-
-    h2.section.green { border-color: var(--accent-alt); }
-
-    .section-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .placeholder-box {
-      border-radius: var(--radius-lg);
-      border: 1px dashed rgba(148,163,184,0.6);
-      padding: 14px 16px;
-      font-size: 12px;
+      gap: 12px;
+      font-size: 11px;
       color: var(--text-sub);
-      background: rgba(15,23,42,0.95);
+      margin-bottom: 6px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 6px;
+      border-radius: 999px;
+    }
+
+    .swatch-player {
+      background: linear-gradient(to right, #22c55e, #4ade80);
+      box-shadow: 0 0 8px rgba(34,197,94,0.9);
+    }
+
+    .swatch-group {
+      background: linear-gradient(to right, #38bdf8, #0ea5e9);
+      box-shadow: 0 0 8px rgba(56,189,248,0.9);
+    }
+
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 220px;
+    }
+
+    /* 教練短評 */
+    .coach-section {
+      margin-top: 10px;
     }
 
     .coach-box {
-      background: rgba(15,23,42,0.95);
-      padding: 16px 17px;
-      border-radius: var(--radius-lg);
+      background: rgba(15,23,42,0.98);
+      border-radius: 14px;
       border: 1px solid rgba(148,163,184,0.35);
-      font-size: 13px;
-      line-height: 1.7;
+      padding: 10px 12px;
+      font-size: 12px;
       color: var(--text-sub);
+      line-height: 1.7;
     }
 
-    .coach-box strong { color: var(--accent-soft); }
+    .coach-box strong {
+      color: var(--accent-soft);
+    }
+
+    /* 完整檢測表 */
+    .table-section {
+      margin-top: 12px;
+    }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 12px;
-      border-radius: var(--radius-lg);
+      font-size: 11px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(148,163,184,0.4);
-      background: rgba(15,23,42,0.96);
+      background: rgba(15,23,42,0.98);
     }
 
     th, td {
-      padding: 7px 9px;
+      padding: 6px 8px;
       border-bottom: 1px solid rgba(30,41,59,0.9);
       text-align: right;
       white-space: nowrap;
     }
 
-    th:first-child, td:first-child { text-align: left; }
+    th:first-child, td:first-child {
+      text-align: left;
+      max-width: 140px;
+      white-space: normal;
+    }
 
     thead th {
       background: radial-gradient(circle at top, #020617 0, #020617 70%);
@@ -412,64 +406,69 @@
     }
 
     tbody tr:nth-child(odd) td {
-      background: rgba(15,23,42,0.86);
+      background: rgba(15,23,42,0.9);
     }
 
     tbody tr:nth-child(even) td {
       background: rgba(15,23,42,1);
     }
 
-    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
 
     .tag {
-      padding: 2px 7px;
+      padding: 2px 6px;
       border-radius: 999px;
       border: 1px solid transparent;
-      font-size: 11px;
+      font-size: 10px;
+      white-space: nowrap;
     }
 
     .tag.good {
-      border-color: rgba(34,197,94,0.8);
-      background: rgba(22,163,74,0.15);
+      border-color: rgba(34,197,94,0.85);
+      background: rgba(22,163,74,0.2);
       color: #bbf7d0;
     }
 
     .tag.mid {
-      border-color: rgba(250,204,21,0.7);
-      background: rgba(133,77,14,0.2);
+      border-color: rgba(250,204,21,0.8);
+      background: rgba(133,77,14,0.28);
       color: #facc15;
     }
 
     .tag.bad {
-      border-color: rgba(248,113,113,0.85);
-      background: rgba(127,29,29,0.3);
+      border-color: rgba(248,113,113,0.9);
+      background: rgba(127,29,29,0.4);
       color: #fecaca;
     }
 
-    .actions-row {
+    .tag.key {
+      border-color: rgba(59,130,246,0.9);
+      background: rgba(30,64,175,0.4);
+      color: #bfdbfe;
+    }
+
+    .footer-row {
+      margin-top: 10px;
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 18px;
+      align-items: center;
     }
 
     .btn-pdf {
-      padding: 11px 18px;
+      padding: 9px 16px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       background: linear-gradient(to right, #22c55e, #38bdf8);
       color: #020617;
-      box-shadow: 0 14px 40px rgba(34,197,94,0.65);
-    }
-
-    .btn-pdf:hover {
-      filter: brightness(1.05);
-      box-shadow: 0 18px 50px rgba(34,197,94,0.9);
+      box-shadow: 0 10px 30px rgba(34,197,94,0.7);
     }
 
     .btn-pdf:disabled {
@@ -478,152 +477,154 @@
       box-shadow: none;
     }
 
-    .note { font-size: 11px; color: var(--text-muted); }
-    #statusMsg { margin-top: 2px; }
+    .small-note {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
 
-    @media (max-width: 900px) {
+    #reportSection { display: none; }
+
+    @media (max-width: 820px) {
       body { padding: 0; }
-      .page-frame { margin: 16px auto; padding: 0 8px; }
-      .container {
-        padding: 18px 15px 20px;
-        border-radius: 24px;
+      .page-frame {
+        width: 100%;
+        margin: 16px auto;
+        padding: 0 8px;
       }
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
+      .report-shell {
+        padding: 18px 14px 20px;
+        border-radius: 20px;
       }
-      .info-grid { grid-template-columns: minmax(0,1fr); }
-      .actions-row { justify-content: center; }
+      .profile-row {
+        grid-template-columns: minmax(0,1fr);
+      }
     }
   </style>
 </head>
 <body>
 <div class="page-frame" id="pdfArea">
-  <div class="container">
+  <div class="report-shell">
     <header>
-      <div class="top-bar">
-        <div>
+      <div class="top-row">
+        <div class="title-block">
           <h1>
             <span class="logo-mark">🎾</span>
             <span>ACADEMY PERFORMANCE REPORT</span>
           </h1>
           <div class="brand-sub">Match Point Lab｜網球學院體能檢測中心</div>
         </div>
-        <div class="nav-chips">
-          <div class="nav-chip active">同級對照報告</div>
-          <div class="nav-chip">雷達圖（之後開發）</div>
-        </div>
-      </div>
-      <div class="header-sub">
-        <div class="pill-live">
+        <div class="pill-tag">
           <span class="dot"></span>
           <span>連線試算表 · 自動更新學員檔案</span>
         </div>
-        <div class="header-sub-right">
-          <span class="badge-small">教練內部工具</span>
-          <span id="statusMsg" class="note"></span>
-        </div>
+      </div>
+
+      <div class="control-row">
+        <label for="studentSelect">選擇學員：</label>
+        <select id="studentSelect" disabled onchange="loadStudentData()">
+          <option value="">資料載入中...</option>
+        </select>
+        <button class="btn" id="reloadBtn" onclick="reloadSheets()">🔄 重新從 Google Sheets 載入</button>
+        <span id="statusMsg" class="status-note"></span>
       </div>
     </header>
 
-    <!-- 控制列 -->
-    <div class="controls">
-      <label for="studentSelect">選擇學員：</label>
-      <select id="studentSelect" disabled onchange="loadStudentData()">
-        <option value="">資料載入中...</option>
-      </select>
-      <button class="btn" id="reloadBtn" onclick="reloadSheets()">🔄 重新從 Google Sheets 載入</button>
-    </div>
+    <!-- 報告本體：這一塊會被輸出成 PDF -->
+    <section id="reportSection" class="report-body">
+      <!-- 基本資料 -->
+      <h2 class="section-title">
+        <span class="dot"></span> 運動員基本資料
+      </h2>
+      <p class="section-sub">
+        本報告根據最新一次「體能檢測成績」與同一分級的學員資料，自動計算平均、標準差與 Z 分數，協助教練快速掌握學員目前的位置。
+      </p>
 
-    <!-- 報告內容 -->
-    <section id="report" class="report-section">
-      <div class="info-grid">
-        <!-- 學員基本資料卡 -->
-        <div class="info-card">
-          <div class="info-card-header">
-            <div class="info-card-title">PLAYER PROFILE</div>
-            <div class="info-pill">學員基本資料</div>
-          </div>
-          <div class="info-items-row">
-            <div class="info-item">
-              <h3>姓名</h3>
-              <p id="dispName">—</p>
+      <div class="profile-row">
+        <div class="profile-card">
+          <h3>PLAYER PROFILE</h3>
+          <div class="profile-grid">
+            <div>
+              <div class="profile-item-title">姓名</div>
+              <div class="profile-item-value" id="dispName">—</div>
             </div>
-            <div class="info-item">
-              <h3>分級</h3>
-              <p id="dispGroup">—</p>
+            <div>
+              <div class="profile-item-title">分級</div>
+              <div class="profile-item-value" id="dispGroup">—</div>
             </div>
-            <div class="info-item">
-              <h3>最近檢測日</h3>
-              <p id="dispDate">—</p>
+            <div>
+              <div class="profile-item-title">最近檢測日</div>
+              <div class="profile-item-value" id="dispDate">—</div>
             </div>
           </div>
         </div>
 
-        <!-- 檢測說明卡 -->
-        <div class="info-card">
-          <div class="info-card-header">
-            <div class="info-card-title">SESSION SUMMARY</div>
-            <div class="info-pill">本次檢測說明</div>
-          </div>
+        <div class="profile-card">
+          <h3>SESSION SUMMARY</h3>
           <p class="summary-note">
-            這份報告會把「檢測成績」分頁中，同一分級的學員抓在一起，
-            幫你算出<strong>同級平均</strong>與<strong>標準差</strong>，再換算成 Z 分數。
-            你可以快速看到這位選手在哪些測驗明顯領先，哪些則是需要補強的地方。
+            數據只和<strong>同一分級</strong>的學員做比較。Z 分數約介於 -0.5 ～ +0.5 視為接近組內平均；
+            ≥ +1 為明顯優勢；≤ -0.5 建議列為優先補強項目。
           </p>
         </div>
       </div>
 
-      <!-- 雷達圖預留位（目前僅文字說明） -->
-      <h2 class="section">
-        <span class="dot"></span>
-        視覺化雷達圖（之後再開）
-      </h2>
-      <p class="section-subtitle">
-        未來會把各測驗整理成訓練類別的雷達圖，讓你一眼看出「力量、速度、敏捷、反應」等面向的強弱分佈。
-        目前先專心用下面的同級對照表。
-      </p>
-      <div class="placeholder-box">
-        目前版本先專注在「數據對照表＋教練短評」。<br>
-        等你覺得數據邏輯穩定，我們再一起把雷達圖接上來。
+      <!-- 關鍵指標 + 柱狀圖（最多 10 項） -->
+      <div class="key-metrics-section">
+        <h2 class="section-title">
+          <span class="dot"></span> 關鍵指標：與同級平均的差距（最多 10 項）
+        </h2>
+        <p class="section-sub">
+          從所有測驗中挑出「Z 分數絕對值最高」的前 10 項，柱狀圖顯示學員與同級平均的差距，方便教練一眼鎖定最關鍵的優勢與弱項。
+        </p>
+        <div class="chart-wrapper">
+          <div class="chart-legend">
+            <span class="legend-item">
+              <span class="swatch swatch-player"></span> 學員本次成績
+            </span>
+            <span class="legend-item">
+              <span class="swatch swatch-group"></span> 同級平均
+            </span>
+          </div>
+          <div class="chart-box">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
       </div>
 
       <!-- 教練短評 -->
-      <h2 class="section green">
-        <span class="dot"></span>
-        教練建議與短評
-      </h2>
-      <div class="coach-box">
-        <p id="coachComment">
-          請先選擇學員，系統會依照同一分級的平均與標準差，自動整理強項與建議補強方向。
-        </p>
+      <div class="coach-section">
+        <h2 class="section-title">
+          <span class="dot"></span> 教練建議與短評
+        </h2>
+        <div class="coach-box" id="coachComment">
+          請先從上方選擇學員，系統會依同級平均與 Z 分數自動整理強項與建議補強方向。
+        </div>
       </div>
 
-      <!-- 對照表 -->
-      <h2 class="section" style="margin-top:26px;">
-        <span class="dot"></span>
-        本次檢測成績與同分級平均對照
-      </h2>
-      <p class="section-subtitle">
-        下表列出所有體能指標原始成績，並與<strong>同一分級學員的平均</strong>比較。<br>
-        Z 分數約介於 -0.5 ～ +0.5 視為接近組內平均；≥ +1 為明顯優勢；≤ -0.5 則建議列為優先補強。
-      </p>
-      <table>
-        <thead>
-        <tr>
-          <th>指標</th>
-          <th>學生</th>
-          <th>同級平均</th>
-          <th>SD</th>
-          <th>Z 分數</th>
-          <th>評估</th>
-        </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+      <!-- 完整檢測表 -->
+      <div class="table-section">
+        <h2 class="section-title">
+          <span class="dot"></span> 本次檢測成績與同分級平均對照
+        </h2>
+        <p class="section-sub">
+          下表列出所有體能指標原始成績，並與同一分級學員的平均做比較。標記為「關鍵指標」者，代表在本次檢測中離同級平均的差距最大（前十名）。
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>指標</th>
+              <th>學生</th>
+              <th>同級平均</th>
+              <th>SD</th>
+              <th>Z 分數</th>
+              <th>評估</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
 
-      <!-- PDF 按鈕 -->
-      <div class="actions-row">
+      <div class="footer-row">
+        <span class="small-note">※ 本報告僅供教練與學員溝通訓練方向之用，非正式醫學檢測。</span>
         <button class="btn-pdf" id="pdfBtn" onclick="exportPDF()">📄 下載 PDF 報告</button>
       </div>
     </section>
@@ -631,21 +632,21 @@
 </div>
 
 <script>
-  // ========= 試算表設定 =========
+  // ============ 試算表設定 ============
   const FILE_ID = "1N-8HQZaxHYj4vE824raG1fWyNxt5w7B9_m8oHn8f4As";
   const SHEETS = {
     players: "學員主資料表",
     tests:   "檢測成績"
   };
 
-  // 視為身分／備註欄位，不拿來計算
+  // 不拿來算平均 / SD 的欄位
   const IDENTITY_KEYS = new Set([
     "姓名","性別","年齡","年級","分級","生日","日期","測驗日期",
     "傷病／限制","傷勢／限制","傷勢/限制","目標",
     "一週可上課時段","聯絡方式","備註"
   ]);
 
-  // 這幾個關鍵字：數值越小越好（秒數、反應時間等）
+  // 這些關鍵字視為「數值越小越好」（秒數、反應時間）
   const LOWER_BETTER_KEYS = ["10","20","505","反應","敏捷","衝刺","s","S","秒"];
 
   function isLowerBetter(metricName) {
@@ -662,6 +663,7 @@
   let testsArray       = [];
   let testsByName      = new Map();
   let groupMetricStats = new Map(); // 分級 → {欄位名: {mean, sd}}
+  let barChart         = null;
 
   function csvUrlForSheet(sheetName) {
     return `https://docs.google.com/spreadsheets/d/${FILE_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
@@ -698,13 +700,12 @@
 
       Object.keys(row).forEach(key => {
         if (!key || IDENTITY_KEYS.has(key)) return;
-
         const val = parseNumber(row[key]);
         if (val == null) return;
 
         let metric = metricMap.get(key);
         if (!metric) {
-          metric = {values: []};
+          metric = { values: [] };
           metricMap.set(key, metric);
         }
         metric.values.push(val);
@@ -721,7 +722,7 @@
         const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
         const variance = vals.reduce((a,b)=>a+Math.pow(b-mean,2),0) / vals.length;
         const sd = Math.sqrt(variance);
-        statMap[metricName] = {mean, sd};
+        statMap[metricName] = { mean, sd };
       });
       groupMetricStats.set(group, statMap);
     });
@@ -730,7 +731,7 @@
   async function reloadSheets() {
     const status = document.getElementById("statusMsg");
     const select = document.getElementById("studentSelect");
-    const report = document.getElementById("report");
+    const report = document.getElementById("reportSection");
 
     status.textContent = "從 Google 試算表載入中…";
     select.disabled = true;
@@ -760,7 +761,7 @@
         testsByName.set(n, row);
       });
 
-      // 預先算好各「分級 × 指標」的平均與 SD
+      // 算好 各分級 × 指標 的平均與 SD
       buildGroupMetricStats();
 
       // 下拉選單
@@ -780,7 +781,7 @@
     } catch (err) {
       console.error(err);
       status.textContent =
-        "載入失敗，請確認：試算表已公開，且分頁名稱為「學員主資料表 / 檢測成績」。";
+        "載入失敗，請確認試算表已公開，且分頁名稱為「學員主資料表 / 檢測成績」。";
     }
   }
 
@@ -788,7 +789,7 @@
 
   function loadStudentData() {
     const name   = document.getElementById("studentSelect").value;
-    const report = document.getElementById("report");
+    const report = document.getElementById("reportSection");
     const status = document.getElementById("statusMsg");
 
     if (!name) {
@@ -807,6 +808,7 @@
     const group = (playerRow["分級"] || testRow["分級"] || "").trim() || "-";
     const groupStats = groupMetricStats.get(group) || {};
 
+    // 基本資料
     document.getElementById("dispName").textContent  = name;
     document.getElementById("dispGroup").textContent = group || "-";
     const date =
@@ -816,11 +818,10 @@
       "";
     document.getElementById("dispDate").textContent = date || "-";
 
-    // 整理每一個測驗指標
+    // 整理每個測驗指標
     const metricRows = [];
     Object.keys(testRow).forEach(key => {
       if (!key || IDENTITY_KEYS.has(key)) return;
-
       const latest = parseNumber(testRow[key]);
       if (latest == null) return;
 
@@ -845,49 +846,118 @@
 
     if (!metricRows.length) {
       status.textContent =
-        `「${name}」的檢測成績目前沒有可用的數值欄位，請檢查「檢測成績」分頁。`;
+        `「${name}」目前沒有可用的數值欄位，請檢查「檢測成績」分頁。`;
       report.style.display = "none";
       return;
     }
 
-    // ====== 表格：依 Z 分數排序 ======
+    // ========= 關鍵指標：取 |Z| 最大的前 10 項 =========
+    const withZ = metricRows.filter(r => r.z != null);
+    withZ.sort((a,b) => Math.abs(b.z) - Math.abs(a.z));
+    const keyMetrics = withZ.slice(0,10);
+
+    // ========= 柱狀圖：學生 vs 同級平均 =========
+    const barCtx = document.getElementById("barChart").getContext("2d");
+    if (barChart) barChart.destroy();
+
+    if (keyMetrics.length) {
+      barChart = new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels: keyMetrics.map(r => r.label),
+          datasets: [
+            {
+              label: "學生",
+              data: keyMetrics.map(r => r.latest),
+              backgroundColor: "rgba(34,197,94,0.8)"
+            },
+            {
+              label: "同級平均",
+              data: keyMetrics.map(r => r.mean ?? null),
+              backgroundColor: "rgba(56,189,248,0.8)"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { size: 10 },
+                color: "#e5e7eb"
+              },
+              grid: { display: false }
+            },
+            y: {
+              ticks: {
+                font: { size: 10 },
+                color: "#9ca3af"
+              },
+              grid: { color: "#1f2937" }
+            }
+          }
+        }
+      });
+    } else {
+      // 沒有 Z 的話就清空畫布
+      barCtx.clearRect(0,0,barCtx.canvas.width,barCtx.canvas.height);
+    }
+
+    // ========= 完整表格 =========
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = "";
+
+    // 給表格標記哪些是「關鍵指標」
+    const keySet = new Set(keyMetrics.map(r => r.label));
+
     metricRows
       .slice()
       .sort((a,b) => {
-        if (a.z == null && b.z == null) return 0;
+        if (a.z == null && b.z == null) return a.label.localeCompare(b.label,"zh-Hant");
         if (a.z == null) return 1;
         if (b.z == null) return -1;
-        return b.z - a.z;
+        return Math.abs(b.z) - Math.abs(a.z); // 先看關鍵
       })
       .forEach(row => {
         const tr = document.createElement("tr");
-        let tagHtml = "—";
+
+        let evalTag = "—";
         if (row.z != null) {
-          if (row.z >= 1) tagHtml = '<span class="tag good">優於同級</span>';
+          if (row.z >= 1) evalTag = '<span class="tag good">優於同級</span>';
           else if (row.z <= -0.5)
-            tagHtml = '<span class="tag bad">建議補強</span>';
-          else tagHtml = '<span class="tag mid">接近同級</span>';
+            evalTag = '<span class="tag bad">建議補強</span>';
+          else evalTag = '<span class="tag mid">接近同級</span>';
+
+          if (keySet.has(row.label)) {
+            evalTag += ' <span class="tag key">關鍵指標</span>';
+          }
         }
+
         tr.innerHTML = `
           <td>${row.label}</td>
           <td>${row.latest ?? "—"}</td>
           <td>${row.mean != null ? row.mean.toFixed(2) : "—"}</td>
-          <td>${row.sd != null ? row.sd.toFixed(2) : "—"}</td>
-          <td>${row.z != null ? row.z.toFixed(2) : "—"}</td>
-          <td>${tagHtml}</td>
+          <td>${row.sd   != null ? row.sd.toFixed(2)   : "—"}</td>
+          <td>${row.z    != null ? row.z.toFixed(2)    : "—"}</td>
+          <td>${evalTag}</td>
         `;
         tbody.appendChild(tr);
       });
 
-    // ====== 教練短評 ======
-    const strengths = metricRows
-      .filter(r => r.z != null && r.z >= 1)
+    // ========= 教練短評 =========
+    const strengths = withZ
+      .filter(r => r.z >= 1)
       .sort((a,b) => b.z - a.z)
       .slice(0,3);
-    const weaknesses = metricRows
-      .filter(r => r.z != null && r.z <= -0.5)
+
+    const weaknesses = withZ
+      .filter(r => r.z <= -0.5)
       .sort((a,b) => a.z - b.z)
       .slice(0,3);
 
@@ -896,39 +966,39 @@
         ? "目前各指標大致接近同級平均，沒有特別突出的強項或弱項。"
         : arr.map(r => `${r.label}（Z = ${r.z.toFixed(2)}）`).join("、");
 
-    let comment = "";
-    if (metricRows.some(r => r.z != null)) {
-      comment = `
+    let commentHtml = "";
+    if (withZ.length) {
+      commentHtml = `
         根據本次檢測數據，<strong>${name}</strong> 與「${group || "目前分級"}」同級學員相比：
         <br><br>
         ・主要<strong>優勢指標</strong>：${listText(strengths)}。<br>
         ・建議優先<strong>補強指標</strong>：${listText(weaknesses)}。<br><br>
-        訓練規劃上，可以把補強指標排進每週固定課表，
+        訓練安排上，可以把補強指標排進每週固定課表（例如熱身後的專項體能段落），
         同時維持優勢指標的穩定度，讓選手在比賽中更容易把優勢能力打出來。
       `;
     } else {
-      comment = `
-        目前同級樣本數較少，暫時無法計算 Z 分數。<br><br>
+      commentHtml = `
+        同級樣本數較少，暫時無法計算 Z 分數。<br><br>
         就本次檢測原始成績來看，<strong>${name}</strong> 在多數項目上的表現穩定，
         建議教練先選 2～3 個希望明顯拉開差距的測驗項目，
-        作為下一階段訓練主軸，並持續記錄後續檢測結果以追蹤變化。
+        作為下一階段訓練主軸，並持續追蹤後續檢測結果的變化。
       `;
     }
-    document.getElementById("coachComment").innerHTML = comment;
+    document.getElementById("coachComment").innerHTML = commentHtml;
 
     status.textContent = "";
     report.style.display = "block";
   }
 
-  // ========= 產生 PDF =========
+  // ============ 產生 PDF：專門抓 A4 直式報告 ============
   async function exportPDF() {
-    const report = document.getElementById("report");
+    const report = document.getElementById("reportSection");
     if (report.style.display === "none" || !report.innerText.trim()) {
       alert("請先選擇一位學員並產生報告，再下載 PDF。");
       return;
     }
 
-    const btn = document.getElementById("pdfBtn");
+    const btn  = document.getElementById("pdfBtn");
     const name = document.getElementById("dispName").textContent || "report";
     btn.disabled = true;
     btn.textContent = "產生 PDF 中…";
@@ -944,8 +1014,9 @@
 
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p", "mm", "a4");
 
+      // A4 直式
+      const pdf = new jsPDF("p", "mm", "a4");
       const pageWidth  = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
