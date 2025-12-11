@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>網球學院｜運動員訓練成效報告</title>
 
-  <!-- Chart.js & PapaParse -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse：抓 Google Sheets CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
   <!-- 產生 PDF 用：html2canvas + jsPDF -->
@@ -17,7 +16,6 @@
     :root {
       --bg-main: #020617;
       --bg-card: #020617;
-      --bg-card-soft: #020617;
       --accent: #22c55e;       /* 球場綠 */
       --accent-soft: #bbf7d0;
       --accent-alt: #38bdf8;   /* 球拍藍 */
@@ -366,51 +364,13 @@
       margin-bottom: 8px;
     }
 
-    .chart-wrapper {
+    .placeholder-box {
       border-radius: var(--radius-lg);
-      background: radial-gradient(circle at top, #020617 0, #000 100%);
-      border: 1px solid rgba(148,163,184,0.35);
-      padding: 12px 12px 14px;
-    }
-
-    .chart-legend-inline {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      padding: 14px 16px;
       font-size: 12px;
       color: var(--text-sub);
-      margin-bottom: 6px;
-      padding: 0 4px;
-      flex-wrap: wrap;
-    }
-
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .legend-swatch {
-      width: 18px;
-      height: 4px;
-      border-radius: 999px;
-    }
-
-    .legend-swatch.player {
-      background: linear-gradient(to right, #22c55e, #4ade80);
-      box-shadow: 0 0 8px rgba(34,197,94,0.8);
-    }
-
-    .legend-swatch.group {
-      background: linear-gradient(to right, #9ca3af, #6b7280);
-      box-shadow: 0 0 6px rgba(148,163,184,0.7);
-    }
-
-    .chart-container {
-      position: relative;
-      height: 360px;
-      width: 100%;
-      margin-top: 4px;
+      background: rgba(15,23,42,0.95);
     }
 
     .coach-box {
@@ -519,7 +479,6 @@
     }
 
     .note { font-size: 11px; color: var(--text-muted); }
-
     #statusMsg { margin-top: 2px; }
 
     @media (max-width: 900px) {
@@ -534,7 +493,6 @@
         align-items: flex-start;
       }
       .info-grid { grid-template-columns: minmax(0,1fr); }
-      .chart-container { height: 320px; }
       .actions-row { justify-content: center; }
     }
   </style>
@@ -552,9 +510,8 @@
           <div class="brand-sub">Match Point Lab｜網球學院體能檢測中心</div>
         </div>
         <div class="nav-chips">
-          <div class="nav-chip active">報告總覽</div>
-          <div class="nav-chip">訓練類別雷達</div>
-          <div class="nav-chip">同級對照表</div>
+          <div class="nav-chip active">同級對照報告</div>
+          <div class="nav-chip">雷達圖（之後開發）</div>
         </div>
       </div>
       <div class="header-sub">
@@ -610,36 +567,25 @@
             <div class="info-pill">本次檢測說明</div>
           </div>
           <p class="summary-note">
-            本工具會整合「學員主資料表」、「檢測成績」與「課程表」三個分頁，
-            依照<strong>訓練類別</strong>把體能指標整理在一起，並用同一分級學員的平均當基準，
-            幫助教練一眼看出：哪幾個類別已經明顯領先、哪幾個需要拉一把。
+            這份報告會把「檢測成績」分頁中，同一分級的學員抓在一起，
+            幫你算出<strong>同級平均</strong>與<strong>標準差</strong>，再換算成 Z 分數。
+            你可以快速看到這位選手在哪些測驗明顯領先，哪些則是需要補強的地方。
           </p>
         </div>
       </div>
 
-      <!-- 雷達圖 -->
+      <!-- 雷達圖預留位（目前僅文字說明） -->
       <h2 class="section">
         <span class="dot"></span>
-        訓練類別雷達分析
+        視覺化雷達圖（之後再開）
       </h2>
-      <p id="radarNote" class="section-subtitle">
-        雷達圖以「課程表的訓練類別」為一格，同一分級的平均固定視為 50 分；
-        每高一個標準差約 +10 分（反之 -10 分），可以快速看出這位學員在哪些類別特別突出。
+      <p class="section-subtitle">
+        未來會把各測驗整理成訓練類別的雷達圖，讓你一眼看出「力量、速度、敏捷、反應」等面向的強弱分佈。
+        目前先專心用下面的同級對照表。
       </p>
-      <div class="chart-wrapper">
-        <div class="chart-legend-inline">
-          <span class="legend-item">
-            <span class="legend-swatch player"></span>
-            <span>學員在各訓練類別的分數（0–100）</span>
-          </span>
-          <span class="legend-item">
-            <span class="legend-swatch group"></span>
-            <span>同一分級平均（基準 50 分）</span>
-          </span>
-        </div>
-        <div class="chart-container">
-          <canvas id="radarChart"></canvas>
-        </div>
+      <div class="placeholder-box">
+        目前版本先專注在「數據對照表＋教練短評」。<br>
+        等你覺得數據邏輯穩定，我們再一起把雷達圖接上來。
       </div>
 
       <!-- 教練短評 -->
@@ -649,7 +595,7 @@
       </h2>
       <div class="coach-box">
         <p id="coachComment">
-          請先選擇學員，系統會依照「訓練類別」與「同分級平均」的差距，自動整理強項與建議補強方向。
+          請先選擇學員，系統會依照同一分級的平均與標準差，自動整理強項與建議補強方向。
         </p>
       </div>
 
@@ -659,7 +605,7 @@
         本次檢測成績與同分級平均對照
       </h2>
       <p class="section-subtitle">
-        下表列出所有體能指標原始成績，並與<strong>同一分級學員的平均</strong>比較。
+        下表列出所有體能指標原始成績，並與<strong>同一分級學員的平均</strong>比較。<br>
         Z 分數約介於 -0.5 ～ +0.5 視為接近組內平均；≥ +1 為明顯優勢；≤ -0.5 則建議列為優先補強。
       </p>
       <table>
@@ -689,34 +635,21 @@
   const FILE_ID = "1N-8HQZaxHYj4vE824raG1fWyNxt5w7B9_m8oHn8f4As";
   const SHEETS = {
     players: "學員主資料表",
-    tests:   "檢測成績",
-    courses: "課程表"       // ✅ 從課程表抓訓練類別
+    tests:   "檢測成績"
   };
 
-  // 視為「身份／備註」欄位，不拿來算成績
+  // 視為身分／備註欄位，不拿來計算
   const IDENTITY_KEYS = new Set([
-    "姓名","性別","年齡","分級","生日","日期","測驗日期",
+    "姓名","性別","年齡","年級","分級","生日","日期","測驗日期",
     "傷病／限制","傷勢／限制","傷勢/限制","目標",
     "一週可上課時段","聯絡方式","備註"
   ]);
 
-  // 這幾種關鍵字：數值越小越好（例如秒數、反應時間）
+  // 這幾個關鍵字：數值越小越好（秒數、反應時間等）
   const LOWER_BETTER_KEYS = ["10","20","505","反應","敏捷","衝刺","s","S","秒"];
 
   function isLowerBetter(metricName) {
     return LOWER_BETTER_KEYS.some(k => metricName.includes(k));
-  }
-
-  function normalizeMetricName(name) {
-    if (!name) return "";
-    return String(name)
-      .replace(/（/g,"(").replace(/）/g,")")
-      .replace(/\s+/g,"")
-      .trim();
-  }
-
-  function csvUrlForSheet(sheetName) {
-    return `https://docs.google.com/spreadsheets/d/${FILE_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
   }
 
   function parseNumber(v) {
@@ -725,17 +658,14 @@
     return isNaN(n) ? null : n;
   }
 
-  function zToScore(z) {
-    const s = 50 + z * 10;
-    return Math.max(0, Math.min(100, s));
-  }
+  let playersByName    = new Map();
+  let testsArray       = [];
+  let testsByName      = new Map();
+  let groupMetricStats = new Map(); // 分級 → {欄位名: {mean, sd}}
 
-  let playersByName      = new Map();
-  let testsArray         = [];
-  let testsByName        = new Map();
-  let metricCategoryMap  = new Map(); // 標準化後指標名 → 訓練類別
-  let groupMetricStats   = new Map(); // 分級 → { normMetricName: {mean, sd, label, category} }
-  let radarChart         = null;
+  function csvUrlForSheet(sheetName) {
+    return `https://docs.google.com/spreadsheets/d/${FILE_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  }
 
   function loadSheet(sheetName) {
     const url = csvUrlForSheet(sheetName);
@@ -749,9 +679,9 @@
     });
   }
 
-  // 依分級 + 指標，計算平均與 SD（同一分級內）
+  // 依「分級 × 欄位」計算平均與 SD
   function buildGroupMetricStats() {
-    const groupMetricValues = new Map(); // group → Map(normMetricName → {values:[], label, category})
+    const groupMetricValues = new Map(); // group → Map(metricName → {values:[]})
 
     testsArray.forEach(row => {
       const name = (row["姓名"] || "").trim();
@@ -769,20 +699,13 @@
       Object.keys(row).forEach(key => {
         if (!key || IDENTITY_KEYS.has(key)) return;
 
-        const normKey = normalizeMetricName(key);
-        if (!metricCategoryMap.has(normKey)) return; // 只吃課程表裡有設定的指標
-
         const val = parseNumber(row[key]);
         if (val == null) return;
 
-        let metric = metricMap.get(normKey);
+        let metric = metricMap.get(key);
         if (!metric) {
-          metric = {
-            values: [],
-            label: key,
-            category: metricCategoryMap.get(normKey)
-          };
-          metricMap.set(normKey, metric);
+          metric = {values: []};
+          metricMap.set(key, metric);
         }
         metric.values.push(val);
       });
@@ -792,19 +715,13 @@
 
     groupMetricValues.forEach((metricMap, group) => {
       const statMap = {};
-      metricMap.forEach((m, normKey) => {
+      metricMap.forEach((m, metricName) => {
         const vals = m.values;
         if (!vals.length) return;
         const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
         const variance = vals.reduce((a,b)=>a+Math.pow(b-mean,2),0) / vals.length;
         const sd = Math.sqrt(variance);
-
-        statMap[normKey] = {
-          mean,
-          sd,
-          label: m.label,
-          category: m.category
-        };
+        statMap[metricName] = {mean, sd};
       });
       groupMetricStats.set(group, statMap);
     });
@@ -821,13 +738,12 @@
     report.style.display = "none";
 
     try {
-      const [players, tests, courses] = await Promise.all([
+      const [players, tests] = await Promise.all([
         loadSheet(SHEETS.players),
-        loadSheet(SHEETS.tests),
-        loadSheet(SHEETS.courses)
+        loadSheet(SHEETS.tests)
       ]);
 
-      // 1) 學員表
+      // 學員主資料
       playersByName = new Map();
       players.forEach(row => {
         const n = (row["姓名"] || "").trim();
@@ -835,26 +751,16 @@
         playersByName.set(n, row);
       });
 
-      // 2) 檢測成績
+      // 檢測成績
       testsArray = tests;
       testsByName = new Map();
       testsArray.forEach(row => {
         const n = (row["姓名"] || "").trim();
         if (!n) return;
-        testsByName.set(n, row); // 目前一位學員一行
+        testsByName.set(n, row);
       });
 
-      // 3) 課程表：建立「標準化指標名 → 訓練類別」對照
-      metricCategoryMap = new Map();
-      courses.forEach(row => {
-        const metricName = (row["訓練名稱"] || "").trim();
-        const category   = (row["訓練類別"] || "").trim();
-        if (!metricName || !category) return;
-        const normName = normalizeMetricName(metricName);
-        metricCategoryMap.set(normName, category);
-      });
-
-      // 4) 預先算好各分級 + 指標 的平均與 SD
+      // 預先算好各「分級 × 指標」的平均與 SD
       buildGroupMetricStats();
 
       // 下拉選單
@@ -874,7 +780,7 @@
     } catch (err) {
       console.error(err);
       status.textContent =
-        "載入失敗，請確認：試算表已公開，且分頁名稱為「學員主資料表 / 檢測成績 / 課程表」。";
+        "載入失敗，請確認：試算表已公開，且分頁名稱為「學員主資料表 / 檢測成績」。";
     }
   }
 
@@ -884,8 +790,6 @@
     const name   = document.getElementById("studentSelect").value;
     const report = document.getElementById("report");
     const status = document.getElementById("statusMsg");
-    const radarNote = document.getElementById("radarNote");
-    const canvas = document.getElementById("radarChart");
 
     if (!name) {
       report.style.display = "none";
@@ -912,170 +816,41 @@
       "";
     document.getElementById("dispDate").textContent = date || "-";
 
-    // 每一個「檢測指標」的資料 & Z 分數
+    // 整理每一個測驗指標
     const metricRows = [];
     Object.keys(testRow).forEach(key => {
       if (!key || IDENTITY_KEYS.has(key)) return;
 
-      const normKey = normalizeMetricName(key);
-      if (!metricCategoryMap.has(normKey)) return; // 只吃課程表裡有設定的指標
-      if (key.includes("標準差") || key.toUpperCase().includes("SD") || key.includes("誤差")) return;
-
       const latest = parseNumber(testRow[key]);
       if (latest == null) return;
 
-      const category = metricCategoryMap.get(normKey) || "其他訓練";
-      const stat     = groupStats[normKey] || {};
-
+      const stat = groupStats[key] || {};
       const mean = stat.mean ?? null;
       const sd   = stat.sd   ?? null;
 
       let z = null;
-      let score = null;
-
       if (mean != null && sd != null && sd !== 0) {
         const lowerBetter = isLowerBetter(key);
-        // 同一分級內：平均 Z = 0；秒數類用 mean - val 讓「越小越好」變成正向
         z = lowerBetter ? (mean - latest) / sd : (latest - mean) / sd;
-        score = zToScore(z);
       }
 
       metricRows.push({
         label: key,
-        category,
         latest,
         mean,
         sd,
-        z,
-        score
+        z
       });
     });
 
     if (!metricRows.length) {
       status.textContent =
-        `「${name}」的檢測成績目前沒有對應到課程表的指標，請檢查「課程表」與「檢測成績」欄位名稱是否一致。`;
+        `「${name}」的檢測成績目前沒有可用的數值欄位，請檢查「檢測成績」分頁。`;
       report.style.display = "none";
       return;
     }
 
-    // ====== 雷達圖資料：以「訓練類別」為維度 ======
-    let radarLabels = [];
-    let radarPlayer = [];
-    let radarGroup  = [];
-
-    const scoredRows = metricRows.filter(r => r.score != null);
-
-    if (scoredRows.length) {
-      // 有同級平均 & SD，可正式用 Z → 0–100 分
-      const catMap = new Map(); // category → {sumScore, count}
-      scoredRows.forEach(r => {
-        const cat = r.category;
-        let agg = catMap.get(cat);
-        if (!agg) {
-          agg = {sumScore: 0, count: 0};
-          catMap.set(cat, agg);
-        }
-        agg.sumScore += r.score;
-        agg.count++;
-      });
-
-      radarLabels = Array.from(catMap.keys());
-      radarPlayer = radarLabels.map(cat => {
-        const agg = catMap.get(cat);
-        return Math.round(agg.sumScore / agg.count);
-      });
-      // 同級平均 = 50 分基準
-      radarGroup = radarLabels.map(() => 50);
-
-      radarNote.textContent =
-        "雷達圖以「訓練類別」為單位，同分級學員的平均視為 50 分，每多一個標準差約 +10 分。分數高的類別代表在同分級裡相對更突出。";
-    } else {
-      // 同分級樣本太少，算不出 SD：退回「這批數據中的相對表現」做 0–100 分
-      const processed = metricRows.map(r => {
-        let v = r.latest;
-        if (isLowerBetter(r.label)) v = -v;
-        return { category: r.category, value: v };
-      });
-      const values = processed.map(p => p.value);
-      const minVal = Math.min(...values);
-      const maxVal = Math.max(...values);
-
-      const catMap = new Map(); // category → {sumScore, count}
-      processed.forEach(p => {
-        let normScore;
-        if (maxVal === minVal) normScore = 50;
-        else normScore = ((p.value - minVal) / (maxVal - minVal)) * 100;
-
-        let agg = catMap.get(p.category);
-        if (!agg) {
-          agg = {sumScore: 0, count: 0};
-          catMap.set(p.category, agg);
-        }
-        agg.sumScore += normScore;
-        agg.count++;
-      });
-
-      radarLabels = Array.from(catMap.keys());
-      radarPlayer = radarLabels.map(cat => {
-        const agg = catMap.get(cat);
-        return Math.round(agg.sumScore / agg.count);
-      });
-      radarGroup = radarLabels.map(() => 50);
-
-      radarNote.textContent =
-        "目前同分級樣本數較少，暫時用這次所有指標的相對表現換算成 0–100 分；同級平均依然以 50 分做基準圈。";
-    }
-
-    const ctx = canvas.getContext("2d");
-    if (radarChart) radarChart.destroy();
-
-    if (radarLabels.length === 0) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    } else {
-      radarChart = new Chart(ctx, {
-        type: "radar",
-        data: {
-          labels: radarLabels,
-          datasets: [
-            {
-              label: name,
-              data: radarPlayer,
-              backgroundColor: "rgba(34,197,94,0.22)",
-              borderColor: "rgba(34,197,94,1)",
-              pointBackgroundColor: "rgba(56,189,248,1)",
-              borderWidth: 2,
-              pointRadius: 3
-            },
-            {
-              label: `${group} 同級平均`,
-              data: radarGroup,
-              backgroundColor: "rgba(148,163,184,0.10)",
-              borderColor: "rgba(148,163,184,0.9)",
-              pointBackgroundColor: "rgba(148,163,184,1)",
-              borderWidth: 1.5,
-              pointRadius: 2
-            }
-          ]
-        },
-        options: {
-          scales: {
-            r: {
-              beginAtZero: true,
-              suggestedMax: 100,
-              ticks: { display: false },
-              grid: { color: "#1f2937" },
-              angleLines: { color: "#1f2937" },
-              pointLabels: { font: { size: 11 }, color: "#e5e7eb" }
-            }
-          },
-          plugins: {
-            legend: { labels: { font: { size: 11 }, color: "#e5e7eb" } }
-          }
-        }
-      });
-    }
-
-    // ====== 下方表格：每一個指標 vs 同級平均 ======
+    // ====== 表格：依 Z 分數排序 ======
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = "";
     metricRows
@@ -1128,15 +903,14 @@
         <br><br>
         ・主要<strong>優勢指標</strong>：${listText(strengths)}。<br>
         ・建議優先<strong>補強指標</strong>：${listText(weaknesses)}。<br><br>
-        訓練規劃上，可以把補強指標所在的訓練類別排入每週固定課表，
-        例如在暖身之後安排 1～2 個專項體能組合，同時維持優勢指標的穩定度，
-        讓選手在比賽中更容易把優勢能力打出來。
+        訓練規劃上，可以把補強指標排進每週固定課表，
+        同時維持優勢指標的穩定度，讓選手在比賽中更容易把優勢能力打出來。
       `;
     } else {
       comment = `
         目前同級樣本數較少，暫時無法計算 Z 分數。<br><br>
         就本次檢測原始成績來看，<strong>${name}</strong> 在多數項目上的表現穩定，
-        建議教練先從「課程表」中挑出 2～3 個想要明顯拉開差距的訓練類別，
+        建議教練先選 2～3 個希望明顯拉開差距的測驗項目，
         作為下一階段訓練主軸，並持續記錄後續檢測結果以追蹤變化。
       `;
     }
