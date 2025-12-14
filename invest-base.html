@@ -1,0 +1,582 @@
+<section class="mml-hub" id="mmlHub" aria-label="投資星球基地">
+  <div class="mml-bg" aria-hidden="true"></div>
+
+  <nav class="mml-nav" aria-label="工具導覽">
+    <div class="mml-nav-left">
+      <span class="mml-brand">Mark Money Life｜投資星球基地</span>
+      <span class="mml-dot">•</span>
+      <span class="mml-nav-user" id="navUser">未登入使用者</span>
+    </div>
+    <div class="mml-nav-right">
+      <a class="mml-link" href="/etf-tracker/" data-pass="u">ETF 追蹤牆</a>
+      <a class="mml-link" href="/etf-dividend-wall/" data-pass="u">配息瀑布牆</a>
+      <a class="mml-link" href="/etf-compound/" data-pass="u">複利試算</a>
+      <a class="mml-link" href="/newbie-village/" data-pass="u">新手投資村</a>
+      <button class="mml-mini-btn" id="refreshBtn" type="button">重新同步</button>
+    </div>
+  </nav>
+
+  <div class="mml-card">
+    <header class="mml-head">
+      <div>
+        <h1 class="mml-title">使用者投資儀表板（星球基地）</h1>
+        <p class="mml-sub">
+          這裡不是「工具」，是你每次回來會看到進度的基地。<br/>
+          <span class="mml-warn">提醒：配息是現金流，不等於獲利；但它是你「紀律」的里程碑。</span>
+        </p>
+      </div>
+      <div class="mml-badge">Hub v0.3 | Record</div>
+    </header>
+
+    <div class="mml-grid">
+      <section class="mml-panel">
+        <h2 class="mml-h2">第一次來：設定；之後每月：新增紀錄</h2>
+        <p class="mml-tip">
+          會記在你的瀏覽器（LocalStorage），下次回來不用重填。<br/>
+          也支援從其他工具帶回：<code>?u=</code> 或 <code>?user=</code>
+        </p>
+
+        <div class="mml-form">
+          <label class="mml-label">
+            user_key（Email / 暱稱 / UID）
+            <input class="mml-input" id="userKeyInput" type="text" placeholder="例如：rengary0301@gmail.com 或 馬濕克001" />
+          </label>
+
+          <div class="mml-row">
+            <label class="mml-label">
+              年度配息目標（元）
+              <input class="mml-input" id="goalInput" type="number" inputmode="numeric" placeholder="例如：300000" />
+            </label>
+            <label class="mml-label">
+              紀錄月份（YYYY-MM）
+              <input class="mml-input" id="monthInput" type="month" />
+            </label>
+          </div>
+
+          <div class="mml-row">
+            <label class="mml-label">
+              本月配息（元）
+              <input class="mml-input" id="thisMonthInput" type="number" inputmode="numeric" placeholder="例如：18000" />
+            </label>
+            <label class="mml-label">
+              年度配息累積 YTD（元）
+              <input class="mml-input" id="ytdInput" type="number" inputmode="numeric" placeholder="例如：120000" />
+            </label>
+          </div>
+
+          <div class="mml-actions">
+            <button class="mml-btn primary" id="saveConfigBtn" type="button">儲存設定</button>
+            <button class="mml-btn" id="addRecordBtn" type="button">新增本月紀錄</button>
+            <button class="mml-btn" id="demoBtn" type="button">示範資料</button>
+            <button class="mml-btn danger" id="clearBtn" type="button">清除本機資料</button>
+          </div>
+
+          <div class="mml-status" id="statusBox">狀態：尚未設定</div>
+
+          <details class="mml-details">
+            <summary>備份 / 還原（匯出 / 匯入 JSON）</summary>
+            <div class="mml-json">
+              <button class="mml-btn" id="exportBtn" type="button">匯出 JSON</button>
+              <button class="mml-btn" id="importBtn" type="button">匯入 JSON</button>
+              <textarea class="mml-textarea" id="jsonBox" placeholder="這裡會顯示匯出的 JSON，也可貼上匯入"></textarea>
+              <div class="mml-tip">就算 Google Sheet 掛了，你也不會失去紀錄（本機還在）。</div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="mml-panel">
+        <div class="mml-kpi-head">
+          <h2 class="mml-h2">本月與年度 KPI</h2>
+          <span class="mml-mini" id="helloText">👋 你好！</span>
+        </div>
+
+        <div class="mml-kpis">
+          <div class="mml-kpi">
+            <div class="mml-kpi-label">本月配息</div>
+            <div class="mml-kpi-value" id="kpiThisMonth">—</div>
+          </div>
+          <div class="mml-kpi">
+            <div class="mml-kpi-label">年度配息累積（YTD）</div>
+            <div class="mml-kpi-value" id="kpiYTD">—</div>
+          </div>
+          <div class="mml-kpi">
+            <div class="mml-kpi-label">距離目標差距</div>
+            <div class="mml-kpi-value" id="kpiGapPct">—</div>
+          </div>
+        </div>
+
+        <div class="mml-progress">
+          <div class="mml-progress-top">
+            <div class="mml-progress-label">目標達成率</div>
+            <div class="mml-progress-pct" id="kpiPct">—</div>
+          </div>
+          <div class="mml-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="mml-bar-fill" id="barFill" style="width:0%"></div>
+          </div>
+          <div class="mml-progress-foot" id="kpiHint">先儲存設定，再新增一筆紀錄。</div>
+        </div>
+
+        <div class="mml-history">
+          <div class="mml-history-head">
+            <h3 class="mml-h3">🧾 記錄牆（最近 10 筆）</h3>
+            <button class="mml-mini-btn" id="deleteLastBtn" type="button">刪除最後一筆</button>
+          </div>
+
+          <div class="mml-table">
+            <div class="mml-tr mml-th">
+              <div>月份</div><div>本月</div><div>YTD</div><div>差異</div><div>達成</div>
+            </div>
+            <div id="historyBody"></div>
+          </div>
+
+          <div class="mml-cta">
+            <div>
+              <div class="mml-cta-title">→ 回訪理由：不是「工具好用」，是「我想看我的進度」</div>
+              <div class="mml-cta-sub">每新增一筆紀錄，你的基地就更像「自己的投資星球」。</div>
+            </div>
+            <a class="mml-btn primary" href="/etf-tracker/" data-pass="u">去追蹤牆繼續</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="mml-noscript">此頁需要啟用 JavaScript 才能運作。</div>
+  </noscript>
+</section>
+
+<style>
+  .mml-hub{position:relative;max-width:1120px;margin:18px auto 28px;padding:14px}
+  .mml-bg{position:absolute;inset:0;border-radius:24px;background:
+    radial-gradient(900px 520px at 12% 8%, rgba(18,74,53,.55), rgba(2,9,21,0) 62%),
+    radial-gradient(900px 520px at 88% 12%, rgba(24,46,79,.55), rgba(2,9,21,0) 62%),
+    linear-gradient(180deg, rgba(2,9,21,.92), rgba(0,3,9,.98));
+    z-index:0}
+  .mml-nav{position:sticky;top:10px;z-index:10;display:flex;justify-content:space-between;align-items:center;
+    gap:10px;padding:10px 12px;border-radius:16px;margin-bottom:12px;
+    background:rgba(2,9,21,.72);border:1px solid rgba(148,163,184,.22);backdrop-filter:blur(10px)}
+  .mml-nav-left{display:flex;align-items:center;gap:10px;min-width:260px}
+  .mml-brand{font-weight:900;color:#F5F2E9}
+  .mml-dot{opacity:.45}
+  .mml-nav-user{font-size:12px;color:rgba(245,242,233,.78)}
+  .mml-nav-right{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .mml-link{font-weight:800;font-size:12px;text-decoration:none;color:rgba(245,242,233,.86);
+    padding:8px 10px;border-radius:12px;background:rgba(245,242,233,.06);border:1px solid rgba(245,242,233,.12)}
+  .mml-link:hover{transform:translateY(-1px)}
+  .mml-mini-btn{cursor:pointer;border-radius:12px;padding:8px 10px;font-weight:900;font-size:12px;
+    background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.35);color:#F5F2E9}
+  .mml-card{position:relative;z-index:1;border-radius:22px;padding:18px;
+    border:1px solid rgba(148,163,184,.25);box-shadow:0 18px 50px rgba(0,0,0,.35);
+    color:#F5F2E9;backdrop-filter: blur(8px)}
+  .mml-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
+  .mml-title{margin:0;font-size:26px;letter-spacing:.2px}
+  .mml-sub{margin:8px 0 0;color:rgba(245,242,233,.78);line-height:1.6}
+  .mml-warn{color:rgba(245,242,233,.70)}
+  .mml-badge{font-weight:900;font-size:12px;padding:8px 10px;border-radius:999px;
+    background:rgba(245,242,233,.10);border:1px solid rgba(245,242,233,.18)}
+  .mml-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}
+  @media (max-width: 960px){.mml-grid{grid-template-columns:1fr}}
+  .mml-panel{border-radius:18px;padding:16px 14px;background:rgba(245,242,233,.06);
+    border:1px solid rgba(148,163,184,.20)}
+  .mml-h2{margin:0 0 10px;font-size:16px}
+  .mml-h3{margin:0;font-size:15px}
+  .mml-tip{margin:0 0 12px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.55}
+  .mml-form{display:grid;gap:10px}
+  .mml-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width: 720px){.mml-row{grid-template-columns:1fr}}
+  .mml-label{display:grid;gap:6px;font-size:13px;color:rgba(245,242,233,.82)}
+  .mml-input{width:100%;border-radius:12px;padding:10px 12px;
+    border:1px solid rgba(148,163,184,.25);background:rgba(2,9,21,.55);color:#F5F2E9;outline:none}
+  .mml-input:focus{border-color:rgba(245,242,233,.55);box-shadow:0 0 0 3px rgba(245,242,233,.08)}
+  .mml-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .mml-btn{appearance:none;border:none;cursor:pointer;text-decoration:none;
+    border-radius:12px;padding:10px 12px;font-weight:900;
+    background:rgba(245,242,233,.10);color:#F5F2E9;border:1px solid rgba(245,242,233,.16)}
+  .mml-btn:hover{transform:translateY(-1px)}
+  .mml-btn.primary{background:rgba(34,197,94,.22);border-color:rgba(34,197,94,.35)}
+  .mml-btn.danger{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
+  .mml-status{font-size:12px;line-height:1.5;padding:10px 12px;border-radius:14px;
+    background:rgba(2,9,21,.42);border:1px solid rgba(148,163,184,.18);color:rgba(245,242,233,.78)}
+  .mml-details summary{cursor:pointer;font-weight:900}
+  .mml-json{margin-top:10px;display:grid;gap:8px}
+  .mml-textarea{min-height:110px;border-radius:14px;padding:10px 12px;
+    border:1px solid rgba(148,163,184,.22);background:rgba(2,9,21,.45);color:#F5F2E9;outline:none}
+  .mml-kpi-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .mml-mini{font-size:12px;color:rgba(245,242,233,.72);padding:6px 10px;border-radius:999px;
+    background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.14)}
+  .mml-kpis{display:grid;gap:10px}
+  .mml-kpi{border-radius:16px;padding:12px;background:rgba(2,9,21,.45);
+    border:1px solid rgba(148,163,184,.18)}
+  .mml-kpi-label{font-size:12px;color:rgba(245,242,233,.72)}
+  .mml-kpi-value{font-size:22px;font-weight:950;margin-top:4px}
+  .mml-progress{margin-top:12px;border-radius:16px;padding:12px;background:rgba(2,9,21,.38);
+    border:1px solid rgba(148,163,184,.16)}
+  .mml-progress-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+  .mml-progress-label{font-size:12px;color:rgba(245,242,233,.72)}
+  .mml-progress-pct{font-weight:950}
+  .mml-bar{height:12px;border-radius:999px;overflow:hidden;background:rgba(245,242,233,.12)}
+  .mml-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg, rgba(34,197,94,.95), rgba(59,130,246,.95))}
+  .mml-progress-foot{margin-top:8px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.5}
+  .mml-history{margin-top:12px}
+  .mml-history-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+  .mml-table{border-radius:16px;overflow:hidden;border:1px solid rgba(148,163,184,.16);background:rgba(2,9,21,.28)}
+  .mml-tr{display:grid;grid-template-columns:1.1fr .9fr .9fr .7fr .6fr;gap:10px;padding:10px 12px;
+    border-top:1px solid rgba(148,163,184,.12);font-size:12px;color:rgba(245,242,233,.78)}
+  .mml-th{border-top:none;background:rgba(245,242,233,.06);font-weight:900;color:rgba(245,242,233,.86)}
+  .mml-cta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    border-radius:16px;padding:12px;background:rgba(245,242,233,.06);border:1px dashed rgba(245,242,233,.20)}
+  .mml-cta-title{font-weight:950}
+  .mml-cta-sub{margin-top:3px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.45}
+  .mml-noscript{margin-top:12px;padding:12px;border-radius:14px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.22);color:#F5F2E9}
+</style>
+
+<script>
+(() => {
+  /** ✅ 已替你填好 Web App URL */
+  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxRmQJuLaKzmp76nIHS6upbokDZY-8eIDdtYvx_2SX2ivgx51sIVPP9zjf_YEPXQWbe/exec";
+
+  /** ⚠️ 這個 token 必須跟你 Apps Script 裡的一樣 */
+  const API_TOKEN  = "MML_SECRET_123";
+
+  const LS_CONFIG  = "mml_invest_base_config_v1";
+  const LS_HISTORY = "mml_invest_base_history_v1";
+  const LS_USERKEY = "mml_user_key";
+
+  const $ = (id) => document.getElementById(id);
+  const userKeyInput  = $("userKeyInput");
+  const goalInput     = $("goalInput");
+  const monthInput    = $("monthInput");
+  const thisMonthInput= $("thisMonthInput");
+  const ytdInput      = $("ytdInput");
+
+  const saveConfigBtn = $("saveConfigBtn");
+  const addRecordBtn  = $("addRecordBtn");
+  const demoBtn       = $("demoBtn");
+  const clearBtn      = $("clearBtn");
+  const refreshBtn    = $("refreshBtn");
+  const exportBtn     = $("exportBtn");
+  const importBtn     = $("importBtn");
+  const jsonBox       = $("jsonBox");
+  const deleteLastBtn = $("deleteLastBtn");
+
+  const statusBox = $("statusBox");
+  const navUser   = $("navUser");
+  const helloText = $("helloText");
+
+  const kpiThisMonth = $("kpiThisMonth");
+  const kpiYTD       = $("kpiYTD");
+  const kpiGapPct    = $("kpiGapPct");
+  const kpiPct       = $("kpiPct");
+  const barFill      = $("barFill");
+  const kpiHint      = $("kpiHint");
+  const historyBody  = $("historyBody");
+
+  const fmt = (n) => {
+    const x = Number(n);
+    if (!isFinite(x)) return "—";
+    return Math.max(0, Math.round(x)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  const toNum = (v) => {
+    const n = Number(String(v ?? "").replace(/[,\s]/g, ""));
+    return isFinite(n) ? n : 0;
+  };
+  const setStatus = (t) => statusBox.textContent = `狀態：${t}`;
+
+  const todayMonth = () => {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    return `${d.getFullYear()}-${m}`;
+  };
+
+  function getQueryUser() {
+    const q = new URLSearchParams(location.search);
+    return (q.get("u") || q.get("user") || "").trim();
+  }
+
+  const loadConfig = () => {
+    try { return JSON.parse(localStorage.getItem(LS_CONFIG) || "{}"); }
+    catch { return {}; }
+  };
+  const saveConfig = (cfg) => localStorage.setItem(LS_CONFIG, JSON.stringify(cfg || {}));
+
+  const loadHistory = () => {
+    try { return JSON.parse(localStorage.getItem(LS_HISTORY) || "[]"); }
+    catch { return []; }
+  };
+  const saveHistory = (arr) => localStorage.setItem(LS_HISTORY, JSON.stringify(arr || []));
+
+  function renderHeader(cfg) {
+    const userKey = (cfg.user_key || "").trim();
+    const nick = (cfg.nickname || "").trim();
+
+    localStorage.setItem(LS_USERKEY, userKey);
+
+    navUser.textContent = userKey ? (nick ? `${nick}（${userKey}）` : userKey) : "未登入使用者";
+    helloText.textContent = nick ? `👋 ${nick}，你好！` : "👋 你好！";
+  }
+
+  function renderKPI(cfg, latest) {
+    const goal = toNum(cfg.goal_annual_div);
+    const m    = toNum(latest?.this_month_div);
+    const y    = toNum(latest?.ytd_div);
+
+    kpiThisMonth.textContent = isFinite(m) ? `${fmt(m)} 元` : "—";
+    kpiYTD.textContent       = isFinite(y) ? `${fmt(y)} 元` : "—";
+
+    if (goal > 0) {
+      const pct = Math.min(100, Math.max(0, (y / goal) * 100));
+      const gap = Math.max(0, 100 - pct);
+      const remain = Math.max(0, goal - y);
+
+      kpiPct.textContent = `${pct.toFixed(1)}%`;
+      kpiGapPct.textContent = `${gap.toFixed(1)}%`;
+      barFill.style.width = `${pct.toFixed(2)}%`;
+      document.querySelector(".mml-bar").setAttribute("aria-valuenow", pct.toFixed(0));
+
+      kpiHint.textContent = remain > 0
+        ? `距離年度目標還差 ${fmt(remain)} 元。`
+        : `你已達成年度目標。下一關：穩住節奏、不要亂加槓桿。`;
+    } else {
+      kpiPct.textContent = "—";
+      kpiGapPct.textContent = "—";
+      barFill.style.width = "0%";
+      document.querySelector(".mml-bar").setAttribute("aria-valuenow", "0");
+      kpiHint.textContent = "你還沒填年度目標（goal_annual_div），我沒辦法算達成率 😄";
+    }
+  }
+
+  function renderHistory(cfg, arr) {
+    const goal = toNum(cfg.goal_annual_div);
+    const rows = (arr || []).slice(0, 10);
+
+    historyBody.innerHTML = "";
+    if (!rows.length) {
+      historyBody.innerHTML = `<div class="mml-tr"><div>尚無紀錄</div><div>—</div><div>—</div><div>—</div><div>—</div></div>`;
+      return;
+    }
+
+    rows.forEach((r, idx) => {
+      const m = toNum(r.this_month_div);
+      const y = toNum(r.ytd_div);
+      const prev = rows[idx + 1];
+      const diff = prev ? (m - toNum(prev.this_month_div)) : 0;
+      const pct  = goal > 0 ? Math.min(100, Math.max(0, (y / goal) * 100)) : null;
+
+      const sign = diff === 0 ? "" : (diff > 0 ? "+" : "");
+      historyBody.insertAdjacentHTML("beforeend", `
+        <div class="mml-tr">
+          <div>${r.month || "—"}</div>
+          <div>${fmt(m)}</div>
+          <div>${fmt(y)}</div>
+          <div>${diff ? `${sign}${fmt(Math.abs(diff))}` : "—"}</div>
+          <div>${pct == null ? "—" : `${pct.toFixed(0)}%`}</div>
+        </div>
+      `);
+    });
+  }
+
+  function updateToolLinks() {
+    const u = (localStorage.getItem(LS_USERKEY) || "").trim();
+    document.querySelectorAll('[data-pass="u"]').forEach(a => {
+      try {
+        const url = new URL(a.getAttribute("href"), location.origin);
+        if (u) url.searchParams.set("u", u);
+        a.setAttribute("href", url.pathname + url.search);
+      } catch {}
+    });
+  }
+
+  async function pushToSheet(payload) {
+    const res = await fetch(WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ token: API_TOKEN, ...payload })
+    });
+    const txt = await res.text();
+    try { return JSON.parse(txt); } catch { return { ok: res.ok, raw: txt }; }
+  }
+
+  function applyConfigToForm(cfg) {
+    userKeyInput.value = cfg.user_key || "";
+    goalInput.value    = cfg.goal_annual_div || "";
+    monthInput.value   = todayMonth();
+    cfg.nickname = cfg.nickname || cfg.user_key || "";
+    renderHeader(cfg);
+    updateToolLinks();
+  }
+
+  function getFormConfig() {
+    const user_key = (userKeyInput.value || "").trim();
+    const goal_annual_div = toNum(goalInput.value);
+    if (!user_key) throw new Error("請先填 user_key");
+    return { user_key, nickname: user_key, goal_annual_div };
+  }
+
+  function getFormRecord() {
+    const month = (monthInput.value || "").trim() || todayMonth();
+    return {
+      month,
+      this_month_div: toNum(thisMonthInput.value),
+      ytd_div: toNum(ytdInput.value)
+    };
+  }
+
+  function recomputeLatest(cfg, history) {
+    const latest = history[0] || { this_month_div: 0, ytd_div: 0 };
+    renderKPI(cfg, latest);
+    renderHistory(cfg, history);
+  }
+
+  saveConfigBtn.addEventListener("click", async () => {
+    try {
+      const cfg = getFormConfig();
+      saveConfig(cfg);
+      renderHeader(cfg);
+      updateToolLinks();
+
+      // 你想要「填完就送 Sheet」：存設定時也同步一次（不填本月/YTD 也沒關係）
+      setStatus("正在同步到 Google Sheet…");
+      const apiRes = await pushToSheet({
+        user_key: cfg.user_key,
+        nickname: cfg.nickname,
+        goal_annual_div: cfg.goal_annual_div,
+        this_month_div: toNum(thisMonthInput.value),
+        ytd_div: toNum(ytdInput.value)
+      });
+
+      const history = loadHistory();
+      recomputeLatest(cfg, history);
+
+      if (apiRes && apiRes.ok) setStatus("✅ 已儲存設定並同步到 Google Sheet");
+      else setStatus("⚠️ 設定已存本機，但同步 Google Sheet 失敗（檢查 token/部署權限）");
+    } catch (e) {
+      setStatus(`⚠️ ${e.message}`);
+    }
+  });
+
+  addRecordBtn.addEventListener("click", async () => {
+    try {
+      const cfg = loadConfig();
+      if (!cfg.user_key) {
+        const newCfg = getFormConfig();
+        saveConfig(newCfg);
+      }
+      const cfg2 = loadConfig();
+      const rec = getFormRecord();
+
+      const history = loadHistory();
+      const next = [rec, ...history].slice(0, 30);
+      saveHistory(next);
+
+      setStatus("正在寫入 Google Sheet…（本機已存）");
+      const apiRes = await pushToSheet({
+        user_key: cfg2.user_key,
+        nickname: cfg2.nickname || cfg2.user_key,
+        goal_annual_div: toNum(cfg2.goal_annual_div),
+        this_month_div: rec.this_month_div,
+        ytd_div: rec.ytd_div
+      });
+
+      renderHeader(cfg2);
+      recomputeLatest(cfg2, next);
+
+      if (apiRes && apiRes.ok) setStatus("✅ 已新增並寫入 Google Sheet");
+      else setStatus("⚠️ 本機已存，但寫入 Google Sheet 失敗（檢查 token/部署權限）");
+    } catch (e) {
+      setStatus(`⚠️ ${e.message}`);
+    }
+  });
+
+  demoBtn.addEventListener("click", () => {
+    userKeyInput.value = "mark_test";
+    goalInput.value = 300000;
+    monthInput.value = todayMonth();
+    thisMonthInput.value = 18000;
+    ytdInput.value = 120000;
+    setStatus("已填入示範資料（直接按：儲存設定 / 新增本月紀錄）");
+  });
+
+  clearBtn.addEventListener("click", () => {
+    localStorage.removeItem(LS_CONFIG);
+    localStorage.removeItem(LS_HISTORY);
+    localStorage.removeItem(LS_USERKEY);
+    userKeyInput.value = "";
+    goalInput.value = "";
+    thisMonthInput.value = "";
+    ytdInput.value = "";
+    monthInput.value = todayMonth();
+    navUser.textContent = "未登入使用者";
+    helloText.textContent = "👋 你好！";
+    kpiThisMonth.textContent = "—";
+    kpiYTD.textContent = "—";
+    kpiGapPct.textContent = "—";
+    kpiPct.textContent = "—";
+    barFill.style.width = "0%";
+    historyBody.innerHTML = `<div class="mml-tr"><div>尚無紀錄</div><div>—</div><div>—</div><div>—</div><div>—</div></div>`;
+    setStatus("已清除本機資料");
+    updateToolLinks();
+  });
+
+  refreshBtn.addEventListener("click", () => {
+    const cfg = loadConfig();
+    const hist = loadHistory();
+    renderHeader(cfg);
+    recomputeLatest(cfg, hist);
+    setStatus("已重新同步（本機）");
+  });
+
+  exportBtn.addEventListener("click", () => {
+    const cfg = loadConfig();
+    const hist = loadHistory();
+    jsonBox.value = JSON.stringify({ cfg, hist }, null, 2);
+    setStatus("已匯出 JSON（可備份）");
+  });
+
+  importBtn.addEventListener("click", () => {
+    try {
+      const obj = JSON.parse(jsonBox.value || "{}");
+      if (obj.cfg) saveConfig(obj.cfg);
+      if (obj.hist) saveHistory(obj.hist);
+      const cfg = loadConfig();
+      const hist = loadHistory();
+      applyConfigToForm(cfg);
+      recomputeLatest(cfg, hist);
+      setStatus("✅ 已匯入 JSON");
+    } catch {
+      setStatus("⚠️ JSON 格式錯誤，無法匯入");
+    }
+  });
+
+  deleteLastBtn.addEventListener("click", () => {
+    const hist = loadHistory();
+    if (!hist.length) { setStatus("沒有可刪的紀錄"); return; }
+    hist.shift();
+    saveHistory(hist);
+    const cfg = loadConfig();
+    recomputeLatest(cfg, hist);
+    setStatus("已刪除最後一筆");
+  });
+
+  (function init(){
+    const u = getQueryUser();
+    if (u) {
+      const cfg = loadConfig();
+      cfg.user_key = u;
+      cfg.nickname = cfg.nickname || u;
+      saveConfig(cfg);
+      localStorage.setItem(LS_USERKEY, u);
+    }
+
+    const cfg = loadConfig();
+    applyConfigToForm(cfg);
+    if (!monthInput.value) monthInput.value = todayMonth();
+
+    const hist = loadHistory();
+    recomputeLatest(cfg, hist);
+
+    setStatus(cfg.user_key ? "已載入本機設定（基地待命）" : "請先填 user_key 並儲存設定");
+  })();
+})();
+</script>
