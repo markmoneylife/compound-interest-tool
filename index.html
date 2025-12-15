@@ -51,547 +51,761 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- ✅ 共用樣式 -->
   <style>
-    :root {
-      --green: #1D4A35;
-      --yellow: #FFD54F;
-      --bg: #F5F2E9;
-      --text: #1A1A1A;
+    :root{
+      /* ✅ 頻道網站：深綠＋深藍＋暖黃 */
+      --bg: #020911;
+      --bg2:#071623;
+      --card:#06252c;
+      --card2:#052b34;
+      --text:#EAF2F7;
+      --muted:#A8C0D4;
+
+      --green:#1D4A35;
+      --blue:#0B3D91;
+      --accent:#FFD54F;
+      --accent2:#FFE082;
+
+      --border: rgba(148, 163, 184, .22);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --shadow2: 0 10px 24px rgba(0,0,0,.35);
+      --radius: 18px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
+    *{ box-sizing:border-box; }
+    body{
       font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", system-ui, sans-serif;
-      background-color: var(--bg);
+      margin:0;
       color: var(--text);
-      margin: 0;
-      padding: 0 1.25rem 3rem;
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(11,61,145,.35), transparent 55%),
+        radial-gradient(900px 700px at 85% 25%, rgba(29,74,53,.40), transparent 55%),
+        radial-gradient(700px 500px at 40% 85%, rgba(255,213,79,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 70%, #04121a 100%);
+      min-height:100vh;
     }
 
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
+    /* ✨ 微星星點（低調，不吵） */
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      background-image:
+        radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.55) 40%, transparent 42%),
+        radial-gradient(2px 2px at 72% 22%, rgba(255,255,255,.45) 40%, transparent 42%),
+        radial-gradient(1.5px 1.5px at 44% 36%, rgba(255,255,255,.35) 40%, transparent 42%),
+        radial-gradient(1.5px 1.5px at 18% 62%, rgba(255,255,255,.28) 40%, transparent 42%),
+        radial-gradient(2px 2px at 83% 78%, rgba(255,255,255,.32) 40%, transparent 42%),
+        radial-gradient(1.5px 1.5px at 62% 64%, rgba(255,255,255,.25) 40%, transparent 42%);
+      filter: blur(.2px);
     }
 
-    h1 {
-      color: #2D3C2F;
-      text-align: center;
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
+    a{ color:inherit; }
+    main{
+      max-width:1200px;
+      margin:0 auto;
+      padding: 1.2rem 1rem 3.5rem;
+      position:relative;
+      z-index:1;
     }
 
-    .tagline {
-      text-align: center;
-      font-size: 1rem;
-      color: #666;
-      margin-bottom: 2rem;
+    /* ✅ Top Bar（像首頁那種基地感） */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(2,9,17,.55);
+      border-bottom: 1px solid rgba(148,163,184,.16);
+    }
+    .topbar-inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding: .85rem 1rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+      min-width: 260px;
+    }
+    .brand img{
+      width:38px; height:38px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid rgba(255,213,79,.35);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+    .brand .title{
+      line-height:1.1;
+    }
+    .brand .title strong{
+      display:block;
+      font-size:1rem;
+      letter-spacing:.2px;
+    }
+    .brand .title span{
+      display:block;
+      font-size:.82rem;
+      color: var(--muted);
+      margin-top:.25rem;
     }
 
-    /* 🔝 頂部工具導覽列 */
-    .nav-bar-wrapper {
-      background-color: var(--green);
-      padding: 1.2rem 0;
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      justify-content:flex-end;
     }
-
-    .nav-bar {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .nav a{
+      text-decoration:none;
+      padding:.55rem .85rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(6,37,44,.55);
+      color: var(--text);
+      font-weight:700;
+      font-size:.92rem;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      white-space:nowrap;
     }
-
-    .nav-bar a {
-      background-color: var(--yellow);
-      color: #1A1A1A;
-      font-weight: bold;
-      text-decoration: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: 0.75rem;
-      font-size: 1rem;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
-    }
-
-    .nav-bar a:hover {
-      background-color: #FFE082;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 0 0.75rem 2.5rem;
-      }
-      .nav-bar {
-        flex-direction: column;
-        align-items: center;
-      }
-      .nav-bar a {
-        width: 90%;
-        text-align: center;
-      }
-    }
-
-    /* 🧮 工具本體區塊 */
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .form-section,
-    .table-section {
-      flex: 1 1 400px;
-      background-color: #FDFBF5;
-      padding: 1.25rem 1.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    }
-
-    .form-section label {
-      display: block;
-      margin-top: 0.85rem;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    .form-section input,
-    .form-section select {
-      width: 100%;
-      margin-top: 0.35rem;
-      padding: 0.5rem 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 0.95rem;
-    }
-
-    .form-section button {
-      margin-top: 1.5rem;
-      background-color: var(--yellow);
-      color: #2D3C2F;
-      font-size: 1.05rem;
-      font-weight: bold;
-      border: none;
-      padding: 0.75rem 1.4rem;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .form-section button:hover {
-      background-color: #FFE082;
+    .nav a:hover{
       transform: translateY(-1px);
-      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
+      border-color: rgba(255,213,79,.45);
+      background: rgba(11,61,145,.25);
+    }
+    .nav a.primary{
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));
+      color:#101418;
+      border-color: rgba(255,213,79,.5);
+      box-shadow: 0 12px 24px rgba(255,213,79,.12);
     }
 
-    .checkbox-tip {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 0.2rem;
-      line-height: 1.5;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0.75rem;
-      font-size: 0.9rem;
-    }
-
-    th,
-    td {
-      padding: 0.5rem;
-      border-bottom: 1px solid #ddd;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    th {
-      background-color: var(--yellow);
-      color: #1A1A1A;
-      text-align: center;
-    }
-
-    td:first-child,
-    td:nth-child(2) {
-      text-align: center;
-    }
-
-    canvas {
-      margin-top: 3rem;
-      background-color: #FFFFFF;
-      border-radius: 0.75rem;
-      padding: 0.75rem;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    }
-
-    .achievement-box {
-      margin-top: 2rem;
-      background-color: #fffbea;
-      border-left: 6px solid var(--yellow);
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      font-size: 0.98rem;
-      line-height: 1.8;
-    }
-
-    .achievement-box span {
-      font-weight: bold;
-      color: #2D3C2F;
-    }
-
-    /* 🔻 底部區塊共用 */
-    section {
-      max-width: 900px;
-      margin: 2.5rem auto;
-    }
-
-    section h2 {
-      color: #2D3C2F;
-      text-align: center;
-    }
-
-    section h3 {
-      color: var(--green);
-      text-align: center;
-    }
-
-    /* ☕ 支持我區塊 & 連結櫃 */
-    .support-links a {
-      display: inline-block;
-      background-color: var(--green);
-      color: #FFFFFF;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      margin: 6px;
-    }
-
-    .support-links a:hover {
-      opacity: 0.9;
-    }
-
-    .link-list {
-      max-width: 460px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .link-list a {
-      padding: 0.9rem 1rem;
-      background: #FFE082;
-      color: #1A1A1A;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .link-list a:hover {
-      background: #FFECB3;
-    }
-
-    /* 📚 書櫃 */
-    .books-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-    }
-
-    .book-card {
-      max-width: 160px;
-      text-align: center;
-    }
-
-    .book-card img {
-      width: 100%;
-      border-radius: 8px;
-      display: block;
-    }
-
-    .book-card p {
-      margin-top: 0.8rem;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    /* ⚠️ 提示區塊 */
-    .risk-box,
-    .affiliate-box {
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-
-    .risk-box {
-      padding: 1rem 1.5rem;
-      color: #666;
-      background-color: #fefefe;
-      border-top: 1px solid #ccc;
-    }
-
-    .affiliate-box {
+    /* ✅ Hero */
+    .hero{
       margin-top: 1.2rem;
-      padding: 1rem 1.5rem;
-      background-color: #FFF8E1;
-      border-left: 4px solid var(--yellow);
-      border-radius: 0.5rem;
-      color: #5D4037;
+      background: linear-gradient(135deg, rgba(6,37,44,.78), rgba(5,43,52,.72));
+      border: 1px solid rgba(148,163,184,.20);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.6rem 1.5rem;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:after{
+      content:"";
+      position:absolute;
+      right:-120px; top:-120px;
+      width:320px; height:320px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,213,79,.28), rgba(255,213,79,0) 60%);
+      filter: blur(1px);
+    }
+    .hero h1{
+      margin:0;
+      font-size:1.9rem;
+      letter-spacing:.4px;
+    }
+    .hero p{
+      margin:.55rem 0 0;
+      color: var(--muted);
+      line-height:1.75;
+      max-width: 780px;
+      font-size:1.02rem;
+    }
+    .hero .chips{
+      margin-top: 1rem;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+    }
+    .chip{
+      font-size:.88rem;
+      color: #DCEAF5;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.35);
+      padding:.45rem .7rem;
+      border-radius:999px;
+    }
+    .chip b{ color: var(--accent); }
+
+    /* ✅ 工具區 */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+      .nav{ justify-content:flex-start; }
     }
 
-    /* 💰 浮動支持按鈕 */
-    #supportButton {
+    .card{
+      background: linear-gradient(180deg, rgba(6,37,44,.85), rgba(5,43,52,.75));
+      border: 1px solid rgba(148,163,184,.18);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 1.15rem 1.15rem 1.25rem;
+    }
+    .card h2{
+      margin:0 0 .75rem;
+      font-size:1.15rem;
+      letter-spacing:.2px;
+      display:flex;
+      gap:.55rem;
+      align-items:center;
+    }
+    .card h2 .dot{
+      width:10px; height:10px;
+      border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(255,213,79,.10);
+    }
+
+    /* ✅ 表單 */
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem .9rem;
+    }
+    @media (max-width: 560px){
+      .form{ grid-template-columns: 1fr; }
+    }
+
+    label{
+      display:block;
+      font-weight:800;
+      font-size:.92rem;
+      color:#EAF2F7;
+      margin-bottom:.35rem;
+    }
+    input, select{
+      width:100%;
+      padding:.7rem .75rem;
+      border-radius: 14px;
+      border:1px solid rgba(148,163,184,.22);
+      background: rgba(2,9,17,.35);
+      color: var(--text);
+      outline:none;
+      transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    }
+    input:focus, select:focus{
+      border-color: rgba(255,213,79,.55);
+      background: rgba(2,9,17,.48);
+      transform: translateY(-1px);
+    }
+    select option{ color:#111; }
+
+    .full{ grid-column: 1 / -1; }
+
+    .checkline{
+      display:flex;
+      gap:.65rem;
+      align-items:flex-start;
+      padding:.8rem .85rem;
+      border-radius: 16px;
+      border:1px dashed rgba(148,163,184,.25);
+      background: rgba(2,9,17,.25);
+    }
+    .checkline input{ width:auto; margin-top:.15rem; }
+    .checkline .hint{
+      color: var(--muted);
+      font-size:.86rem;
+      line-height:1.55;
+      margin-top:.15rem;
+    }
+
+    .btn{
+      display:inline-flex;
+      gap:.55rem;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      border:0;
+      cursor:pointer;
+      padding: .85rem 1rem;
+      border-radius: 999px;
+      font-weight:900;
+      font-size:1.02rem;
+      color:#111;
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));
+      box-shadow: 0 14px 28px rgba(255,213,79,.12), 0 10px 24px rgba(0,0,0,.30);
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+
+    /* ✅ 表格（可橫滑，避免手機爆版） */
+    .tableWrap{
+      width:100%;
+      overflow:auto;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.25);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width: 680px;
+      font-size:.92rem;
+    }
+    thead th{
+      position: sticky;
+      top: 0;
+      background: rgba(255,213,79,.92);
+      color:#101418;
+      text-align:center;
+      padding:.75rem .6rem;
+      font-weight:900;
+      z-index:1;
+    }
+    tbody td{
+      padding:.65rem .6rem;
+      border-bottom: 1px solid rgba(148,163,184,.12);
+      text-align:right;
+      color:#EAF2F7;
+      white-space:nowrap;
+    }
+    tbody tr:hover td{
+      background: rgba(11,61,145,.12);
+    }
+    tbody td:first-child,
+    tbody td:nth-child(2){ text-align:center; }
+    tbody tr:last-child td{
+      border-bottom:0;
+      background: rgba(255,213,79,.08);
+      font-weight:900;
+    }
+
+    /* ✅ 圖表容器 */
+    .chartCard{
+      margin-top: 1.2rem;
+      padding: 1.15rem 1.15rem 1.25rem;
+    }
+    .chartShell{
+      border-radius: var(--radius);
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.25);
+      padding: .9rem;
+      overflow:hidden;
+    }
+    canvas{
+      width:100% !important;
+      height:auto !important;
+      display:block;
+    }
+
+    /* ✅ 成就卡片 */
+    .achievement{
+      margin-top: 1.2rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,213,79,.22);
+      background: linear-gradient(135deg, rgba(255,213,79,.10), rgba(11,61,145,.10));
+      padding: 1.05rem 1.15rem;
+      line-height: 1.85;
+      color:#EAF2F7;
+      box-shadow: 0 14px 34px rgba(0,0,0,.35);
+    }
+    .achievement span{
+      color: var(--accent);
+      font-weight:900;
+    }
+
+    /* ✅ 下面區塊統一成「基地卡」 */
+    .sectionCard{
+      margin-top: 1.2rem;
+      padding: 1.25rem 1.2rem;
+    }
+    .sectionCard h3, .sectionCard h2{
+      margin:.1rem 0 .6rem;
+      text-align:center;
+    }
+    .sectionCard p{
+      margin:.45rem 0;
+      color: var(--muted);
+      text-align:center;
+      line-height:1.75;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      justify-content:center;
+      margin-top: 1rem;
+    }
+    .actionLink{
+      text-decoration:none;
+      font-weight:900;
+      padding:.8rem 1rem;
+      border-radius: 14px;
+      background: rgba(6,37,44,.65);
+      border: 1px solid rgba(148,163,184,.18);
+      color:#EAF2F7;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .actionLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,213,79,.35);
+    }
+    .actionLink.primary{
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));
+      color:#101418;
+      border-color: rgba(255,213,79,.45);
+    }
+
+    .linkList{
+      max-width: 520px;
+      margin: 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:.7rem;
+      margin-top: 1rem;
+    }
+    .linkList a{
+      text-decoration:none;
+      font-weight:900;
+      padding: .95rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.28);
+      color: #EAF2F7;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      text-align:center;
+    }
+    .linkList a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,213,79,.35);
+      background: rgba(11,61,145,.18);
+    }
+
+    .books{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap: 1.1rem;
+      margin-top: 1rem;
+    }
+    .book{
+      width: 170px;
+      border-radius: 16px;
+      overflow:hidden;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.25);
+      box-shadow: 0 12px 24px rgba(0,0,0,.35);
+      transition: transform .18s ease, border-color .18s ease;
+      text-align:center;
+    }
+    .book:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,213,79,.35);
+    }
+    .book img{ width:100%; display:block; }
+    .book p{
+      margin:.75rem .6rem .9rem;
+      color:#EAF2F7;
+      font-weight:900;
+      font-size:.92rem;
+      line-height:1.35;
+    }
+
+    .fineprint{
+      margin-top: 1.2rem;
+      color: rgba(168,192,212,.92);
+      font-size:.88rem;
+      line-height:1.75;
+      border-top: 1px solid rgba(148,163,184,.14);
+      padding-top: 1rem;
+    }
+    .fineprint .box{
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,.18);
+      background: rgba(2,9,17,.25);
+      padding: 1rem 1rem;
+      margin-top: .85rem;
+    }
+    .fineprint b{ color: var(--accent); }
+
+    /* ✅ 浮動支持按鈕 / 浮窗 */
+    #supportButton{
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 26px;
+      right: 22px;
       z-index: 999;
     }
-
-    #supportButton button {
-      background-color: var(--yellow);
-      color: #1A1A1A;
-      font-weight: bold;
-      border: none;
-      padding: 0.7rem 1.2rem;
-      border-radius: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      animation: pulse 1.5s infinite;
+    #supportButton button{
+      border:0;
+      cursor:pointer;
+      font-weight: 900;
+      padding: .8rem 1rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));
+      color:#111;
+      box-shadow: 0 18px 40px rgba(0,0,0,.45);
+      animation: pulse 1.6s infinite;
     }
-
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.06); }
       100% { transform: scale(1); }
     }
-
-    #supportOverlay {
-      display: none;
+    #supportOverlay{
+      display:none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0,0,0,.45);
       z-index: 998;
+      backdrop-filter: blur(2px);
     }
-
-    #supportBox {
-      display: none;
+    #supportBox{
+      display:none;
       position: fixed;
-      bottom: 90px;
-      right: 30px;
-      width: 300px;
-      background-color: #2D3C2F;
-      color: var(--yellow);
-      border-radius: 1rem;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      bottom: 92px;
+      right: 22px;
+      width: 320px;
+      max-width: calc(100vw - 44px);
+      background: linear-gradient(180deg, rgba(6,37,44,.92), rgba(5,43,52,.92));
+      color: var(--text);
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,.18);
+      box-shadow: 0 22px 60px rgba(0,0,0,.55);
       z-index: 9999;
-      padding: 1.2rem;
+      padding: 1.1rem 1.1rem;
       opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s ease;
-      font-weight: 500;
+      transform: translateY(18px);
+      transition: all .28s ease;
     }
+    #supportBox a{ color: var(--accent); font-weight:900; text-decoration:none; }
+    #supportBox a:hover{ text-decoration:underline; }
 
-    /* 👀 瀏覽次數 */
-    #viewCounter {
-      margin-top: 2rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #888;
+    /* 👀 本機瀏覽次數 */
+    #viewCounter{
+      margin-top: 1.2rem;
+      text-align:center;
+      font-size: .9rem;
+      color: rgba(168,192,212,.88);
     }
   </style>
 </head>
 
 <body>
- 
-  <main>
-    <h1>複利試算工具</h1>
-    <p class="tagline">馬克理財頻道 × 長期投資 × 股息累積試算</p>
-
-    <!-- 🧮 試算工具主體 -->
-    <div class="container">
-      <div class="form-section">
-        <label>目前年齡</label>
-        <input type="number" id="startAge" placeholder="請輸入目前年齡" />
-
-        <label>開始年份</label>
-        <input type="number" id="startYear" placeholder="例如 2025" />
-
-        <label>開始月份</label>
-        <select id="startMonth">
-          <option value="" disabled selected>請選擇月份</option>
-          <option value="0">1 月</option>
-          <option value="1">2 月</option>
-          <option value="2">3 月</option>
-          <option value="3">4 月</option>
-          <option value="4">5 月</option>
-          <option value="5">6 月</option>
-          <option value="6">7 月</option>
-          <option value="7">8 月</option>
-          <option value="8">9 月</option>
-          <option value="9">10 月</option>
-          <option value="10">11 月</option>
-          <option value="11">12 月</option>
-        </select>
-
-        <label>初始金額</label>
-        <input type="number" id="startAmount" placeholder="例如 0" />
-
-        <label>每月投入金額</label>
-        <input type="number" id="monthly" placeholder="例如 10000" />
-
-        <label>年報酬率 (%)</label>
-        <input type="number" id="rate" placeholder="例如 6" />
-
-        <label>預估退休年齡</label>
-        <input type="number" id="retireAge" placeholder="例如 45" />
-
-        <label>
-          <input type="checkbox" id="reinvestDividend" checked />
-          是否配息再投入
-        </label>
-        <div class="checkbox-tip">
-          若勾選，代表每年領到的股息會再投入本金中滾利；若不勾選，則股息僅計算、不滾入本金。
+  <!-- ✅ Sticky Topbar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" alt="馬克理財" />
+        <div class="title">
+          <strong>馬克理財｜工具基地</strong>
+          <span>深綠＋深藍的夜盤感，但不焦慮</span>
         </div>
-
-        <button onclick="calculateGrowth()">📊 開始計算</button>
       </div>
 
-      <div class="table-section">
-        <table id="resultTable">
-          <thead>
-            <tr>
-              <th>年齡</th>
-              <th>年份</th>
-              <th>投入金額</th>
-              <th>累積金額</th>
-              <th>預估配息</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div class="nav">
+        <a class="primary" href="https://markmoneylife.com/etf-compound/" target="_blank">🧮 複利試算</a>
+        <a href="https://markmoneylife.com/etf-tracker/" target="_blank">📊 ETF 追蹤牆</a>
+        <a href="https://markmoneylife.com/etf-dividend-wall/" target="_blank">🌊 配息瀑布牆</a>
+        <a href="https://markmoneylife.com/newbie-village/" target="_blank">🏡 新手投資村</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- ✅ Hero -->
+    <div class="hero">
+      <h1>複利試算工具</h1>
+      <p>
+        你要的不是「看起來很爽」的報酬率，而是「長期能做到」的紀律。
+        這裡用最直覺的方式，模擬：定期定額＋（可選）配息再投入，讓你把退休藍圖算清楚。
+      </p>
+      <div class="chips">
+        <div class="chip">✅ 關鍵字：<b>ETF</b> × <b>定期定額</b> × <b>配息再投入</b></div>
+        <div class="chip">⚠️ 提醒：<b>配息≠獲利</b>，報酬率也不是保證</div>
+        <div class="chip">🎯 目標：讓你的資產「在軌道上穩穩繞行」</div>
       </div>
     </div>
 
-    <!-- 📈 複利圖表 -->
-    <canvas id="stackedChart" height="120"></canvas>
+    <!-- ✅ 工具主體 -->
+    <div class="grid">
+      <!-- Form -->
+      <div class="card">
+        <h2><span class="dot"></span>輸入參數</h2>
 
-    <!-- 🎯 成就解鎖文字 -->
-    <div id="achievementResult" class="achievement-box"></div>
+        <div class="form">
+          <div>
+            <label>目前年齡</label>
+            <input type="number" id="startAge" placeholder="請輸入目前年齡" />
+          </div>
 
-    <!-- ☕ 支持我區塊 -->
-    <section style="text-align:center;max-width:700px;">
-      <h3>☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
-      <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
-      <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
+          <div>
+            <label>預估退休年齡</label>
+            <input type="number" id="retireAge" placeholder="例如 45" />
+          </div>
 
-      <div class="support-links" style="margin-top:1rem;">
-        <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">
-          🪐 加入會員星球
-        </a>
-        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">
-          🛍️ 選購週邊
-        </a>
-        <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank">
-          📱 貼圖支持
-        </a>
+          <div>
+            <label>開始年份</label>
+            <input type="number" id="startYear" placeholder="例如 2025" />
+          </div>
+
+          <div>
+            <label>開始月份</label>
+            <select id="startMonth">
+              <option value="" disabled selected>請選擇月份</option>
+              <option value="0">1 月</option><option value="1">2 月</option><option value="2">3 月</option>
+              <option value="3">4 月</option><option value="4">5 月</option><option value="5">6 月</option>
+              <option value="6">7 月</option><option value="7">8 月</option><option value="8">9 月</option>
+              <option value="9">10 月</option><option value="10">11 月</option><option value="11">12 月</option>
+            </select>
+          </div>
+
+          <div>
+            <label>初始金額</label>
+            <input type="number" id="startAmount" placeholder="例如 0" />
+          </div>
+
+          <div>
+            <label>每月投入金額</label>
+            <input type="number" id="monthly" placeholder="例如 10000" />
+          </div>
+
+          <div class="full">
+            <label>年報酬率 (%)</label>
+            <input type="number" id="rate" placeholder="例如 6" />
+          </div>
+
+          <div class="full">
+            <div class="checkline">
+              <input type="checkbox" id="reinvestDividend" checked />
+              <div>
+                <label style="margin:0;">是否配息再投入</label>
+                <div class="hint">
+                  勾選＝每年股息滾回本金；不勾選＝只計算股息，不滾入本金。<br/>
+                  （先問一句：你真的打算把股息拿去買手機嗎？😏）
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="full">
+            <button class="btn" onclick="calculateGrowth()">📊 開始計算</button>
+          </div>
+        </div>
       </div>
 
-      <!-- 📺 YouTube CTA 按鈕 -->
-      <div style="text-align:center; margin-top: 2rem;">
-        <a href="https://www.youtube.com/user/rengary" target="_blank"
-          style="display:inline-block;padding:0.8rem 1.8rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:999px;font-weight:bold;font-size:1.1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-          ▶️ 點我看最新影片
-        </a>
+      <!-- Table -->
+      <div class="card">
+        <h2><span class="dot"></span>年度明細</h2>
+        <div class="tableWrap">
+          <table id="resultTable">
+            <thead>
+              <tr>
+                <th>年齡</th>
+                <th>年份</th>
+                <th>投入金額</th>
+                <th>累積金額</th>
+                <th>預估配息</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div style="margin-top:.75rem;color:rgba(168,192,212,.85);font-size:.86rem;line-height:1.6;">
+          📌 小提醒：表格可左右滑（手機不會爆版），你不用再對著跑版吐血。
+        </div>
       </div>
-    </section>
+    </div>
 
-    <!-- 🌐 社群 / GTA 個人連結入口 -->
-    <section style="background-color:#FAFAFA;padding:3rem 1rem;text-align:center;border-top: 1px solid #ddd;">
-      <h2 style="font-size:1.6rem;margin-bottom:0.5rem;">📍 找到馬克的所有地方</h2>
-      <p style="font-size:1rem;color:#555;margin-bottom:2rem;">社群、Podcast、網站一次整理，持續更新中 🚀</p>
+    <!-- Chart -->
+    <div class="card chartCard">
+      <h2><span class="dot"></span>資產成長圖</h2>
+      <div class="chartShell">
+        <canvas id="stackedChart" height="120"></canvas>
+      </div>
+      <div style="margin-top:.75rem;color:rgba(168,192,212,.85);font-size:.86rem;line-height:1.6;">
+        🔎 你要看的重點不是「哪一年最猛」，而是「能不能一路穩穩做到退休」。
+      </div>
+    </div>
 
-      <div class="link-list">
+    <!-- Achievement -->
+    <div id="achievementResult" class="achievement"></div>
+
+    <!-- Support -->
+    <div class="card sectionCard">
+      <h2>☕ 喜歡這些理財工具？</h2>
+      <p>這些工具我是一個一個慢慢寫出來的。你如果覺得有用，支持一下，我就更有動力把星球基地做大。</p>
+
+      <div class="actions">
+        <a class="actionLink primary" href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">🪐 加入會員星球</a>
+        <a class="actionLink" href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">🛍️ 選購週邊</a>
+        <a class="actionLink" href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank">📱 貼圖支持</a>
+        <a class="actionLink" href="https://www.youtube.com/user/rengary" target="_blank">▶️ 看最新影片</a>
+      </div>
+    </div>
+
+    <!-- Links -->
+    <div class="card sectionCard">
+      <h2>📍 找到馬克的所有地方</h2>
+      <p>社群、Podcast、網站入口一次整理，讓你把這裡當成理財首頁。</p>
+
+      <div class="linkList">
         <a href="https://www.youtube.com/user/rengary" target="_blank">▶️ YouTube 頻道</a>
         <a href="https://open.firstory.me/user/investwithmark/platforms" target="_blank">🎧 Podcast 平台</a>
         <a href="https://www.instagram.com/rengary0301/" target="_blank">📸 Instagram</a>
         <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank">👥 LINE 社群報名</a>
-        <a href="https://markmoney738404280.wordpress.com/" target="_blank">🌐 部落格／理財筆記</a>
+        <a href="https://markmoneylife.com/" target="_blank">🌐 官方網站（主站）</a>
       </div>
+    </div>
 
-      <p style="margin-top:2rem;font-size:0.85rem;color:#777;">更新中：歡迎加入，一起學投資、聊生活 🧃</p>
-    </section>
+    <!-- Books -->
+    <div class="card sectionCard">
+      <h2>📚 馬克推薦書櫃</h2>
+      <p>投資不只看財報，也要看心理。把心穩住，長期才做得下去。</p>
 
-    <!-- 📚 好書推薦書櫃 -->
-    <section style="background-color:#FDFBF5;padding:3rem 1rem;text-align:center;">
-      <h2 style="font-size:1.8rem;margin-bottom:0.5rem;">📚 馬克推薦書櫃：<br>一個投機者的告白四部曲</h2>
-      <p style="font-size:1rem;color:#444;margin-bottom:2rem;">
-        投資不只看財報，更要看心理與市場規律。這四本書陪你走過熊市牛市，修煉內心與眼光！
-      </p>
-
-      <div class="books-wrapper">
-        <div class="book-card">
-          <a href="https://tinyurl.com/26jqfakv" target="_blank">
-            <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="一個投機者的告白四部曲">
-          </a>
+      <div class="books">
+        <a class="book" href="https://tinyurl.com/26jqfakv" target="_blank">
+          <img src="https://images.plurk.com/5XVOjgrbWvM5qoDGKJJDZ6.png" alt="一個投機者的告白四部曲">
           <p>一個投機者的告白四部曲</p>
-        </div>
-        <div class="book-card">
-          <a href="https://tinyurl.com/276jnh6h" target="_blank">
-            <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="一個投資者的告白">
-          </a>
+        </a>
+        <a class="book" href="https://tinyurl.com/276jnh6h" target="_blank">
+          <img src="https://images.plurk.com/2hwKYekgZprHwXMnM47kKm.png" alt="一個投資者的告白">
           <p>一個投資者的告白</p>
-        </div>
-        <div class="book-card">
-          <a href="https://tinyurl.com/27ls9d98" target="_blank">
-            <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="金錢遊戲">
-          </a>
+        </a>
+        <a class="book" href="https://tinyurl.com/27ls9d98" target="_blank">
+          <img src="https://images.plurk.com/6QmgFUBk8A999SMQqVZrA2.png" alt="金錢遊戲">
           <p>金錢遊戲（新修典藏版）</p>
-        </div>
-        <div class="book-card">
-          <a href="https://tinyurl.com/26tntcxs" target="_blank">
-            <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="證券心理學">
-          </a>
+        </a>
+        <a class="book" href="https://tinyurl.com/26tntcxs" target="_blank">
+          <img src="https://images.plurk.com/30PoC5ZkdTDTCFJo30n9av.png" alt="證券心理學">
           <p>證券心理學</p>
-        </div>
-      </div>
-
-      <div style="margin-top:2.5rem;">
-        <a href="https://tinyurl.com/23sak7ha" target="_blank"
-          style="display:inline-block;padding:0.8rem 1.5rem;background-color:#FFD54F;color:#1A1A1A;text-decoration:none;border-radius:8px;font-weight:bold;font-size:1rem;">
-          🔗 查看書籍總覽 / 購買
         </a>
       </div>
-    </section>
 
-    <!-- ⚠️ 投資風險提示 & 聯盟行銷說明 -->
-    <section>
-      <div class="risk-box">
-        📢 <strong>投資風險提示：</strong><br />
-        本網站提供之試算與內容，僅供理財教育與參考，非為個別化投資建議。<br />
-        投資一定有風險，ETF 等金融商品可能因市場波動而損失本金。<br />
-        建議您投資前詳閱公開說明書，並依自身風險承受度評估。
+      <div class="actions" style="margin-top:1rem;">
+        <a class="actionLink primary" href="https://tinyurl.com/23sak7ha" target="_blank">🔗 查看書籍總覽 / 購買</a>
       </div>
 
-      <div class="affiliate-box">
-        🔗 本站部分連結為聯盟行銷連結（Affiliate Link），若您透過這些連結購買商品，站主可能會獲得少量回饋。<br />
-        感謝您用實際行動支持內容創作 ❤️
+      <div class="fineprint">
+        <div class="box">
+          📢 <b>投資風險提示：</b><br/>
+          本網站試算與內容僅供教育與參考，非個別化投資建議。ETF 等金融商品可能因市場波動而損失本金。<br/>
+          投資前請詳閱公開說明書，並依自身風險承受度評估。
+        </div>
+        <div class="box">
+          🔗 <b>聯盟行銷說明：</b><br/>
+          本站部分連結為聯盟行銷連結（Affiliate Link），若您透過連結購買商品，站主可能獲得少量回饋。感謝支持 ❤️
+        </div>
       </div>
-    </section>
 
-    <!-- 👀 本機瀏覽次數 -->
-    <div id="viewCounter">
-      👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次（此數字僅記錄在你的裝置）
+      <div id="viewCounter">
+        👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次（此數字僅記錄在你的裝置）
+      </div>
     </div>
   </main>
 
@@ -605,30 +819,30 @@
 
   <!-- CTA 卡片 -->
   <div id="supportBox">
-    <div style="text-align: center;">
+    <div style="text-align:center;">
       <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
-        style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem;" />
-      <p style="margin: 0; font-weight: bold; font-size: 1rem;">我是吳馬克</p>
-      <p style="font-size: 0.85rem; color: #F5F2E9; margin: 0.4rem 0 1rem;">一起打造安心的財務自由生活 💡</p>
+        style="width:72px;height:72px;border-radius:18px;object-fit:cover;border:1px solid rgba(255,213,79,.35);box-shadow:0 12px 24px rgba(0,0,0,.35);margin-bottom:.7rem;" />
+      <div style="font-weight:900;font-size:1.02rem;">我是吳馬克</div>
+      <div style="color:rgba(168,192,212,.92);font-size:.88rem;margin:.35rem 0 .8rem;line-height:1.5;">
+        一起打造安心的財務自由生活 💡
+      </div>
 
       <a href="https://open.firstory.me/join/investwithmark" target="_blank"
-        style="display: inline-block; padding: 0.5rem 1rem; background: #FFD54F; color: #1A1A1A; border-radius: 1.5rem; font-weight: bold; text-decoration: none; margin-bottom: 1rem;">
+        style="display:inline-block;padding:.65rem 1rem;border-radius:999px;background:linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));color:#111;font-weight:900;text-decoration:none;box-shadow:0 14px 28px rgba(0,0,0,.35);">
         💰 單筆贊助我
       </a>
 
-      <p style="margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold;">📲 社群連結</p>
-      <div style="font-size: 0.9rem; line-height: 1.8; text-align: left;">
-        📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F; font-weight:bold;">IG：@rengary0301</a><br />
-        👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F; font-weight:bold;">FB 粉專</a><br />
-        🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F; font-weight:bold;">Podcast 平台</a><br />
-        🌐 <a href="https://markmoney738404280.wordpress.com/" target="_blank" style="color:#FFD54F; font-weight:bold;">個人網站</a><br />
-        👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F; font-weight:bold;">LINE 社群</a>
+      <div style="margin-top:1rem;text-align:left;font-size:.92rem;line-height:1.85;color:#EAF2F7;">
+        📸 <a href="https://www.instagram.com/rengary0301/" target="_blank">IG：@rengary0301</a><br/>
+        👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank">FB 粉專</a><br/>
+        🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank">Podcast 平台</a><br/>
+        🌐 <a href="https://markmoneylife.com/" target="_blank">個人網站</a><br/>
+        👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank">LINE 社群</a>
       </div>
 
-      <p style="font-size: 0.75rem; color: #F5F2E9; margin-top: 1rem;">
-        📩 聯絡信箱：<br />
-        <a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a>
-      </p>
+      <div style="margin-top:.85rem;font-size:.8rem;color:rgba(168,192,212,.92);">
+        📩 聯絡信箱：<a href="mailto:rengary0301@gmail.com">rengary0301@gmail.com</a>
+      </div>
     </div>
   </div>
 
@@ -727,21 +941,21 @@
         data: {
           labels: chartLabels,
           datasets: [
-            { type: 'bar', label: '投入資金', data: investedList, backgroundColor: '#B2D7E7', stack: 'stack1' },
-            { type: 'bar', label: reinvest ? '資本增值＋滾入配息' : '資本增值', data: growthList, backgroundColor: '#FFD54F', stack: 'stack1' },
+            { type: 'bar', label: '投入資金', data: investedList, backgroundColor: 'rgba(11,61,145,.35)', stack: 'stack1' },
+            { type: 'bar', label: reinvest ? '資本增值＋滾入配息' : '資本增值', data: growthList, backgroundColor: 'rgba(255,213,79,.85)', stack: 'stack1' },
             ...(!reinvest ? [{
               type: 'bar',
               label: '累積已領配息',
               data: dividendList,
-              backgroundColor: '#FFB74D',
+              backgroundColor: 'rgba(255,183,77,.65)',
               stack: 'stack1'
             }] : []),
             {
               type: 'line',
               label: '年配息',
               data: dividendList,
-              backgroundColor: '#FF8C00',
-              borderColor: '#FF8C00',
+              backgroundColor: 'rgba(255,213,79,.95)',
+              borderColor: 'rgba(255,213,79,.95)',
               yAxisID: 'y2',
               tension: 0.3,
               fill: false,
@@ -754,22 +968,23 @@
         options: {
           responsive: true,
           plugins: {
-            legend: { position: 'top' },
+            legend: { position: 'top', labels: { color: 'rgba(234,242,247,.92)' } },
             tooltip: { mode: 'index', intersect: false },
             animation: { duration: 800, easing: 'easeOutCubic' }
           },
           scales: {
-            x: { stacked: true },
+            x: { stacked: true, ticks: { color: 'rgba(168,192,212,.92)' }, grid: { color: 'rgba(148,163,184,.10)' } },
             y: {
               stacked: true,
               beginAtZero: true,
-              ticks: { callback: (v) => "$" + v.toLocaleString() }
+              ticks: { color: 'rgba(168,192,212,.92)', callback: (v) => "$" + v.toLocaleString() },
+              grid: { color: 'rgba(148,163,184,.10)' }
             },
             y2: {
               position: 'right',
               beginAtZero: true,
               grid: { drawOnChartArea: false },
-              ticks: { callback: (v) => "$" + v.toLocaleString() }
+              ticks: { color: 'rgba(168,192,212,.92)', callback: (v) => "$" + v.toLocaleString() }
             }
           }
         }
@@ -778,12 +993,12 @@
       const monthlyCash = Math.round((totalValue * rate) / 12);
       const resultBox = document.getElementById("achievementResult");
       resultBox.innerHTML = `
-        🎉 <strong>恭喜達成！你在 ${startYear + years - 1} 年退休時解鎖以下成就：</strong><br/><br/>
+        🎉 <strong>你在 ${startYear + years - 1} 年退休時，解鎖成就如下：</strong><br/><br/>
         🔹 累積資產：<span>$${Math.round(totalValue).toLocaleString()}</span><br/>
         🔹 投入本金總額：<span>$${totalInvested.toLocaleString()}</span><br/>
         🔹 年股息收益（依年報酬率 ${(rate * 100).toFixed(0)}% 推算）：<span>$${Math.round(totalValue * rate).toLocaleString()}</span><br/>
         🔹 平均每月可運用金額：<span>$${monthlyCash.toLocaleString()}</span>（不含稅）<br/><br/>
-        💡 這筆金額可以每月支應基本生活開銷，也可能成為提早退休的穩定現金流來源。你的投資已經幫你打造出一台會印鈔的機器了！
+        💡 重點不是「算得很爽」，而是你能不能照這個節奏一直做下去。做得到，這條軌道就會越來越穩。
       `;
     }
 
@@ -801,11 +1016,11 @@
         }, 30);
       } else {
         box.style.opacity = '0';
-        box.style.transform = 'translateY(20px)';
+        box.style.transform = 'translateY(18px)';
         setTimeout(() => {
           box.style.display = 'none';
           overlay.style.display = 'none';
-        }, 250);
+        }, 240);
       }
     }
 
