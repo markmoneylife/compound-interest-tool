@@ -1,582 +1,898 @@
-<section class="mml-hub" id="mmlHub" aria-label="投資星球基地">
-  <div class="mml-bg" aria-hidden="true"></div>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <nav class="mml-nav" aria-label="工具導覽">
-    <div class="mml-nav-left">
-      <span class="mml-brand">Mark Money Life｜投資星球基地</span>
-      <span class="mml-dot">•</span>
-      <span class="mml-nav-user" id="navUser">未登入使用者</span>
-    </div>
-    <div class="mml-nav-right">
-      <a class="mml-link" href="/etf-tracker/" data-pass="u">ETF 追蹤牆</a>
-      <a class="mml-link" href="/etf-dividend-wall/" data-pass="u">配息瀑布牆</a>
-      <a class="mml-link" href="/etf-compound/" data-pass="u">複利試算</a>
-      <a class="mml-link" href="/newbie-village/" data-pass="u">新手投資村</a>
-      <button class="mml-mini-btn" id="refreshBtn" type="button">重新同步</button>
-    </div>
-  </nav>
+  <!-- ✅ Page / SEO -->
+  <title>投資星球基地｜配息紀錄儀表板（v1）｜Mark Money Life</title>
+  <meta name="description" content="投資星球基地：把每月配息變成可追蹤的進度。自動記住你的年度目標與紀錄，顯示本月配息、年度累積、距離目標差距與達成率。支援雲端備份到 Google Sheet（失敗不影響使用）。" />
+  <link rel="canonical" href="https://markmoneylife.com/invest-base/" />
+  <!-- slug 建議：invest-base 或 dividend-base 或 starbase -->
 
-  <div class="mml-card">
-    <header class="mml-head">
-      <div>
-        <h1 class="mml-title">使用者投資儀表板（星球基地）</h1>
-        <p class="mml-sub">
-          這裡不是「工具」，是你每次回來會看到進度的基地。<br/>
-          <span class="mml-warn">提醒：配息是現金流，不等於獲利；但它是你「紀律」的里程碑。</span>
-        </p>
+  <style>
+    :root{
+      --bg0:#050A12;
+      --bg1:#071023;
+      --card:#0C1628;
+      --card2:#0A1220;
+      --line:rgba(255,255,255,.10);
+      --text:#F2F6FF;
+      --muted:rgba(242,246,255,.70);
+      --muted2:rgba(242,246,255,.55);
+      --good:#1ed760;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --accentA:#22c55e;
+      --accentB:#3b82f6;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+      --radius2: 16px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 8%, rgba(56,189,248,.12), transparent 55%),
+        radial-gradient(900px 600px at 70% 10%, rgba(34,197,94,.12), transparent 60%),
+        radial-gradient(900px 700px at 60% 85%, rgba(59,130,246,.10), transparent 60%),
+        linear-gradient(180deg, #030611 0%, #020513 65%, #01030A 100%);
+      min-height:100vh;
+      padding:34px 18px 48px;
+    }
+
+    .shell{max-width:1150px;margin:0 auto;}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 18px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px;
+    }
+    .brand b{font-weight:900}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:9px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--muted);
+      font-size:12.5px;
+      white-space:nowrap;
+    }
+    .nav{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+    }
+    .nav a{
+      text-decoration:none;color:var(--muted);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      padding:8px 12px;border-radius:999px;
+      font-size:13px;
+    }
+    .nav a:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+
+    .hero{
+      margin-top:18px;
+      padding:22px 22px 18px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background:
+        radial-gradient(800px 400px at 25% 0%, rgba(34,197,94,.13), transparent 55%),
+        radial-gradient(700px 380px at 85% 10%, rgba(59,130,246,.13), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .hero > *{position:relative;z-index:1}
+    .h1{
+      font-size:34px;line-height:1.08;margin:4px 0 10px;font-weight:900;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:0;color:var(--muted);line-height:1.7;font-size:15.5px;
+      max-width:850px;
+    }
+    .note{
+      margin-top:10px;color:var(--muted2);font-size:13.5px;line-height:1.6;
+    }
+
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+      .h1{font-size:28px}
+    }
+
+    .card{
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.16));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:18px 18px 10px;
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    }
+    .card .hd h2{
+      margin:0;font-size:18px;font-weight:900;letter-spacing:.2px;
+    }
+    .card .hd p{margin:8px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6}
+    .card .bd{padding:0 18px 18px}
+
+    .formgrid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .formgrid .full{grid-column: 1 / -1;}
+    @media (max-width: 700px){
+      .formgrid{grid-template-columns:1fr;}
+    }
+    label{display:block;margin:0 0 6px;color:var(--muted);font-size:12.5px}
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(4,10,20,.55);
+      color:var(--text);
+      outline:none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    input:focus, textarea:focus, select:focus{border-color:rgba(59,130,246,.35)}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      padding:10px 14px;border-radius: 999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:13.5px;
+    }
+    .btn:hover{border-color:rgba(255,255,255,.18)}
+    .btn.good{background: rgba(34,197,94,.14);border-color: rgba(34,197,94,.22)}
+    .btn.bad{background: rgba(251,113,133,.14);border-color: rgba(251,113,133,.22)}
+    .btn.blue{background: rgba(59,130,246,.14);border-color: rgba(59,130,246,.22)}
+    .status{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px dashed rgba(255,255,255,.16);
+      color:var(--muted);
+      background: rgba(0,0,0,.20);
+      font-size:13px;
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .status b{color:var(--text)}
+    .status .dot{
+      margin-top:3px;width:9px;height:9px;border-radius:50%;
+      background: rgba(255,255,255,.20);
+      flex:0 0 9px;
+    }
+    .status.ok .dot{background: var(--good)}
+    .status.warn .dot{background: var(--warn)}
+    .status.bad .dot{background: var(--bad)}
+
+    /* KPI */
+    .kpiGrid{display:grid;gap:12px;margin-top:8px}
+    .kpi{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding:14px 14px;
+    }
+    .kpi .t{color:var(--muted);font-size:12.5px;margin:0 0 8px}
+    .kpi .v{font-size:26px;font-weight:950;letter-spacing:.2px;margin:0}
+    .kpi .s{margin:6px 0 0;color:var(--muted2);font-size:12.5px;line-height:1.45}
+    .helloPill{
+      align-self:flex-end;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color:var(--muted);
+      font-weight:800;font-size:13px;
+      display:inline-flex;gap:8px;align-items:center;
+      white-space:nowrap;
+    }
+
+    .barWrap{
+      margin-top:10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      overflow:hidden;
+      height:12px;
+    }
+    .barFill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+      border-radius: 999px;
+      transition: width .35s ease;
+    }
+
+    /* History */
+    table{width:100%;border-collapse:separate;border-spacing:0 10px;margin-top:6px}
+    th{
+      text-align:left;font-size:12px;color:var(--muted);
+      font-weight:800;padding:0 10px;
+    }
+    td{
+      padding:12px 10px;
+      background: rgba(0,0,0,.18);
+      border-top:1px solid rgba(255,255,255,.10);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      font-size:13.5px;
+    }
+    tr td:first-child{
+      border-left:1px solid rgba(255,255,255,.10);
+      border-top-left-radius:14px;border-bottom-left-radius:14px;
+    }
+    tr td:last-child{
+      border-right:1px solid rgba(255,255,255,.10);
+      border-top-right-radius:14px;border-bottom-right-radius:14px;
+    }
+
+    .tiny{font-size:12px;color:var(--muted2);line-height:1.6}
+    .cta{
+      margin-top:12px;
+      padding:14px;
+      border-radius: 16px;
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .cta b{font-size:14px}
+    .cta .mini{color:var(--muted);font-size:12.5px;line-height:1.6}
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <span style="filter:drop-shadow(0 10px 24px rgba(0,0,0,.35))">🪐</span>
+        <span><b>Mark Money Life</b>｜投資星球基地</span>
+        <span class="pill" id="buildTag">Hub v1 | Stable</span>
       </div>
-      <div class="mml-badge">Hub v0.3 | Record</div>
-    </header>
-
-    <div class="mml-grid">
-      <section class="mml-panel">
-        <h2 class="mml-h2">第一次來：設定；之後每月：新增紀錄</h2>
-        <p class="mml-tip">
-          會記在你的瀏覽器（LocalStorage），下次回來不用重填。<br/>
-          也支援從其他工具帶回：<code>?u=</code> 或 <code>?user=</code>
-        </p>
-
-        <div class="mml-form">
-          <label class="mml-label">
-            user_key（Email / 暱稱 / UID）
-            <input class="mml-input" id="userKeyInput" type="text" placeholder="例如：rengary0301@gmail.com 或 馬濕克001" />
-          </label>
-
-          <div class="mml-row">
-            <label class="mml-label">
-              年度配息目標（元）
-              <input class="mml-input" id="goalInput" type="number" inputmode="numeric" placeholder="例如：300000" />
-            </label>
-            <label class="mml-label">
-              紀錄月份（YYYY-MM）
-              <input class="mml-input" id="monthInput" type="month" />
-            </label>
-          </div>
-
-          <div class="mml-row">
-            <label class="mml-label">
-              本月配息（元）
-              <input class="mml-input" id="thisMonthInput" type="number" inputmode="numeric" placeholder="例如：18000" />
-            </label>
-            <label class="mml-label">
-              年度配息累積 YTD（元）
-              <input class="mml-input" id="ytdInput" type="number" inputmode="numeric" placeholder="例如：120000" />
-            </label>
-          </div>
-
-          <div class="mml-actions">
-            <button class="mml-btn primary" id="saveConfigBtn" type="button">儲存設定</button>
-            <button class="mml-btn" id="addRecordBtn" type="button">新增本月紀錄</button>
-            <button class="mml-btn" id="demoBtn" type="button">示範資料</button>
-            <button class="mml-btn danger" id="clearBtn" type="button">清除本機資料</button>
-          </div>
-
-          <div class="mml-status" id="statusBox">狀態：尚未設定</div>
-
-          <details class="mml-details">
-            <summary>備份 / 還原（匯出 / 匯入 JSON）</summary>
-            <div class="mml-json">
-              <button class="mml-btn" id="exportBtn" type="button">匯出 JSON</button>
-              <button class="mml-btn" id="importBtn" type="button">匯入 JSON</button>
-              <textarea class="mml-textarea" id="jsonBox" placeholder="這裡會顯示匯出的 JSON，也可貼上匯入"></textarea>
-              <div class="mml-tip">就算 Google Sheet 掛了，你也不會失去紀錄（本機還在）。</div>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      <section class="mml-panel">
-        <div class="mml-kpi-head">
-          <h2 class="mml-h2">本月與年度 KPI</h2>
-          <span class="mml-mini" id="helloText">👋 你好！</span>
-        </div>
-
-        <div class="mml-kpis">
-          <div class="mml-kpi">
-            <div class="mml-kpi-label">本月配息</div>
-            <div class="mml-kpi-value" id="kpiThisMonth">—</div>
-          </div>
-          <div class="mml-kpi">
-            <div class="mml-kpi-label">年度配息累積（YTD）</div>
-            <div class="mml-kpi-value" id="kpiYTD">—</div>
-          </div>
-          <div class="mml-kpi">
-            <div class="mml-kpi-label">距離目標差距</div>
-            <div class="mml-kpi-value" id="kpiGapPct">—</div>
-          </div>
-        </div>
-
-        <div class="mml-progress">
-          <div class="mml-progress-top">
-            <div class="mml-progress-label">目標達成率</div>
-            <div class="mml-progress-pct" id="kpiPct">—</div>
-          </div>
-          <div class="mml-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="mml-bar-fill" id="barFill" style="width:0%"></div>
-          </div>
-          <div class="mml-progress-foot" id="kpiHint">先儲存設定，再新增一筆紀錄。</div>
-        </div>
-
-        <div class="mml-history">
-          <div class="mml-history-head">
-            <h3 class="mml-h3">🧾 記錄牆（最近 10 筆）</h3>
-            <button class="mml-mini-btn" id="deleteLastBtn" type="button">刪除最後一筆</button>
-          </div>
-
-          <div class="mml-table">
-            <div class="mml-tr mml-th">
-              <div>月份</div><div>本月</div><div>YTD</div><div>差異</div><div>達成</div>
-            </div>
-            <div id="historyBody"></div>
-          </div>
-
-          <div class="mml-cta">
-            <div>
-              <div class="mml-cta-title">→ 回訪理由：不是「工具好用」，是「我想看我的進度」</div>
-              <div class="mml-cta-sub">每新增一筆紀錄，你的基地就更像「自己的投資星球」。</div>
-            </div>
-            <a class="mml-btn primary" href="/etf-tracker/" data-pass="u">去追蹤牆繼續</a>
-          </div>
-        </div>
-      </section>
+      <div class="nav">
+        <a href="https://markmoneylife.com/etf-tracker/" target="_blank" rel="noopener">ETF 追蹤牆</a>
+        <a href="https://markmoneylife.com/etf-dividend-wall/" target="_blank" rel="noopener">配息瀑布牆</a>
+        <a href="https://markmoneylife.com/etf-compound/" target="_blank" rel="noopener">複利試算</a>
+        <a href="https://markmoneylife.com/newbie-village/" target="_blank" rel="noopener">新手投資村</a>
+      </div>
     </div>
+
+    <section class="hero">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+        <div>
+          <div class="h1">投資星球基地（配息紀錄儀表板）</div>
+          <p class="sub">
+            這裡不是「工具」，是你的回訪基地。<br/>
+            你每次記一筆，就多一個理由回來看進度：<b>本月配息 / 年度累積 / 距離目標還差多少</b>。
+          </p>
+          <p class="note">提醒：v1 以「穩定」為主。資料會先保存在你的裝置（LocalStorage），Google Sheet 同步只是雲端備份，失敗也不影響你使用。</p>
+        </div>
+        <span class="pill">推薦 slug：<b>invest-base</b> / dividend-base / starbase</span>
+      </div>
+    </section>
+
+    <section class="grid">
+
+      <!-- LEFT -->
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>第一次來：設定；之後每月：新增紀錄</h2>
+            <p>會記在你的瀏覽器（LocalStorage）。同一台裝置回來就不用重填。</p>
+          </div>
+          <span class="pill">備份：Google Sheet（選配）</span>
+        </div>
+
+        <div class="bd">
+          <div class="formgrid">
+            <div class="full">
+              <label for="userKey">user_key（Email / 暱稱 / UID）</label>
+              <input id="userKey" autocomplete="off" placeholder="例如：mark_test 或 513 或 email" />
+            </div>
+
+            <div>
+              <label for="goal">年度配息目標（元）</label>
+              <input id="goal" inputmode="numeric" placeholder="例如：300000" />
+            </div>
+
+            <div>
+              <label for="monthKey">記錄月份（YYYY-MM）</label>
+              <input id="monthKey" type="month" />
+            </div>
+
+            <div>
+              <label for="thisMonth">本月配息（元）</label>
+              <input id="thisMonth" inputmode="numeric" placeholder="例如：18000" />
+            </div>
+
+            <div>
+              <label for="ytd">年度配息累積 YTD（元）</label>
+              <input id="ytd" inputmode="numeric" placeholder="例如：120000" />
+            </div>
+          </div>
+
+          <div class="btnrow">
+            <button class="btn good" id="btnSave">儲存設定</button>
+            <button class="btn blue" id="btnAdd">新增本月紀錄</button>
+            <button class="btn" id="btnDemo">示範資料</button>
+            <button class="btn bad" id="btnReset">清除本機資料</button>
+          </div>
+
+          <div class="status warn" id="statusBox">
+            <span class="dot"></span>
+            <div>
+              <b>狀態：</b><span id="statusText">尚未設定</span><br/>
+              <span class="tiny" id="statusSub">先輸入 user_key + 年度目標，再按「儲存設定」。</span>
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <h2 style="margin:0 0 8px;font-size:16px;font-weight:950">▶ 備份 / 還原（匯出 / 匯入 JSON）</h2>
+            <div class="btnrow">
+              <button class="btn" id="btnExport">匯出 JSON</button>
+              <button class="btn" id="btnImport">匯入 JSON</button>
+              <button class="btn" id="btnSync">手動同步到 Google Sheet</button>
+            </div>
+            <textarea id="jsonBox" rows="7" placeholder="這裡會顯示匯出的 JSON，也可以貼上 JSON 進來匯入。"></textarea>
+            <div class="tiny" style="margin-top:8px">
+              就算 Google Sheet 掛了，你也不會丟紀錄（本機會在）。<br/>
+              如果同步一直失敗，通常是：部署不是「所有人」、或 token 不一致、或 Apps Script 沒綁到正確的 Sheet。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>本月與年度 KPI</h2>
+            <p>一眼看懂：本月配息、年度累積、差距與達成率。</p>
+          </div>
+          <div class="helloPill" id="helloPill">👋 尚未登入</div>
+        </div>
+
+        <div class="bd">
+          <div class="kpiGrid">
+            <div class="kpi">
+              <p class="t">本月配息</p>
+              <p class="v" id="kpiThisMonth">—</p>
+              <p class="s" id="kpiHint">先新增一筆紀錄，你的基地就開始成形。</p>
+            </div>
+
+            <div class="kpi">
+              <p class="t">年度配息累積（YTD）</p>
+              <p class="v" id="kpiYTD">—</p>
+              <p class="s" id="kpiForecast">—</p>
+            </div>
+
+            <div class="kpi">
+              <p class="t">距離目標差距</p>
+              <p class="v" id="kpiGap">—</p>
+              <p class="s" id="kpiGapPct">—</p>
+            </div>
+
+            <div class="kpi">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+                <p class="t" style="margin:0">目標達成率</p>
+                <p class="t" style="margin:0;font-weight:950" id="kpiPct">—</p>
+              </div>
+              <div class="barWrap"><div class="barFill" id="barFill"></div></div>
+              <p class="s" id="kpiMsg" style="margin-top:10px">—</p>
+            </div>
+          </div>
+
+          <div style="margin-top:14px" class="kpi">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <h2 style="margin:0;font-size:16px;font-weight:950">🧾 記錄牆（最近 10 筆）</h2>
+              <button class="btn bad" id="btnPop">刪除最後一筆</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>月份</th>
+                  <th>本月</th>
+                  <th>YTD</th>
+                  <th>差距</th>
+                  <th>達成</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody">
+                <tr>
+                  <td colspan="5" style="border-radius:14px;border:1px dashed rgba(255,255,255,.14);background:rgba(0,0,0,.10);color:var(--muted)">
+                    尚無紀錄。新增一筆後，這裡會變成你的時間線。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="cta">
+              <div>
+                <b>→ 回訪理由：不是「工具好用」，是「我想看我的進度」</b>
+                <div class="mini">每新增一筆紀錄，你的基地就更像「自己的投資星球」。</div>
+              </div>
+              <a class="btn good" href="https://markmoneylife.com/etf-tracker/" target="_blank" rel="noopener">去追蹤牆繼續</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
   </div>
 
-  <noscript>
-    <div class="mml-noscript">此頁需要啟用 JavaScript 才能運作。</div>
-  </noscript>
-</section>
-
-<style>
-  .mml-hub{position:relative;max-width:1120px;margin:18px auto 28px;padding:14px}
-  .mml-bg{position:absolute;inset:0;border-radius:24px;background:
-    radial-gradient(900px 520px at 12% 8%, rgba(18,74,53,.55), rgba(2,9,21,0) 62%),
-    radial-gradient(900px 520px at 88% 12%, rgba(24,46,79,.55), rgba(2,9,21,0) 62%),
-    linear-gradient(180deg, rgba(2,9,21,.92), rgba(0,3,9,.98));
-    z-index:0}
-  .mml-nav{position:sticky;top:10px;z-index:10;display:flex;justify-content:space-between;align-items:center;
-    gap:10px;padding:10px 12px;border-radius:16px;margin-bottom:12px;
-    background:rgba(2,9,21,.72);border:1px solid rgba(148,163,184,.22);backdrop-filter:blur(10px)}
-  .mml-nav-left{display:flex;align-items:center;gap:10px;min-width:260px}
-  .mml-brand{font-weight:900;color:#F5F2E9}
-  .mml-dot{opacity:.45}
-  .mml-nav-user{font-size:12px;color:rgba(245,242,233,.78)}
-  .mml-nav-right{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-  .mml-link{font-weight:800;font-size:12px;text-decoration:none;color:rgba(245,242,233,.86);
-    padding:8px 10px;border-radius:12px;background:rgba(245,242,233,.06);border:1px solid rgba(245,242,233,.12)}
-  .mml-link:hover{transform:translateY(-1px)}
-  .mml-mini-btn{cursor:pointer;border-radius:12px;padding:8px 10px;font-weight:900;font-size:12px;
-    background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.35);color:#F5F2E9}
-  .mml-card{position:relative;z-index:1;border-radius:22px;padding:18px;
-    border:1px solid rgba(148,163,184,.25);box-shadow:0 18px 50px rgba(0,0,0,.35);
-    color:#F5F2E9;backdrop-filter: blur(8px)}
-  .mml-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
-  .mml-title{margin:0;font-size:26px;letter-spacing:.2px}
-  .mml-sub{margin:8px 0 0;color:rgba(245,242,233,.78);line-height:1.6}
-  .mml-warn{color:rgba(245,242,233,.70)}
-  .mml-badge{font-weight:900;font-size:12px;padding:8px 10px;border-radius:999px;
-    background:rgba(245,242,233,.10);border:1px solid rgba(245,242,233,.18)}
-  .mml-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}
-  @media (max-width: 960px){.mml-grid{grid-template-columns:1fr}}
-  .mml-panel{border-radius:18px;padding:16px 14px;background:rgba(245,242,233,.06);
-    border:1px solid rgba(148,163,184,.20)}
-  .mml-h2{margin:0 0 10px;font-size:16px}
-  .mml-h3{margin:0;font-size:15px}
-  .mml-tip{margin:0 0 12px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.55}
-  .mml-form{display:grid;gap:10px}
-  .mml-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media (max-width: 720px){.mml-row{grid-template-columns:1fr}}
-  .mml-label{display:grid;gap:6px;font-size:13px;color:rgba(245,242,233,.82)}
-  .mml-input{width:100%;border-radius:12px;padding:10px 12px;
-    border:1px solid rgba(148,163,184,.25);background:rgba(2,9,21,.55);color:#F5F2E9;outline:none}
-  .mml-input:focus{border-color:rgba(245,242,233,.55);box-shadow:0 0 0 3px rgba(245,242,233,.08)}
-  .mml-actions{display:flex;flex-wrap:wrap;gap:8px}
-  .mml-btn{appearance:none;border:none;cursor:pointer;text-decoration:none;
-    border-radius:12px;padding:10px 12px;font-weight:900;
-    background:rgba(245,242,233,.10);color:#F5F2E9;border:1px solid rgba(245,242,233,.16)}
-  .mml-btn:hover{transform:translateY(-1px)}
-  .mml-btn.primary{background:rgba(34,197,94,.22);border-color:rgba(34,197,94,.35)}
-  .mml-btn.danger{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
-  .mml-status{font-size:12px;line-height:1.5;padding:10px 12px;border-radius:14px;
-    background:rgba(2,9,21,.42);border:1px solid rgba(148,163,184,.18);color:rgba(245,242,233,.78)}
-  .mml-details summary{cursor:pointer;font-weight:900}
-  .mml-json{margin-top:10px;display:grid;gap:8px}
-  .mml-textarea{min-height:110px;border-radius:14px;padding:10px 12px;
-    border:1px solid rgba(148,163,184,.22);background:rgba(2,9,21,.45);color:#F5F2E9;outline:none}
-  .mml-kpi-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-  .mml-mini{font-size:12px;color:rgba(245,242,233,.72);padding:6px 10px;border-radius:999px;
-    background:rgba(245,242,233,.08);border:1px solid rgba(245,242,233,.14)}
-  .mml-kpis{display:grid;gap:10px}
-  .mml-kpi{border-radius:16px;padding:12px;background:rgba(2,9,21,.45);
-    border:1px solid rgba(148,163,184,.18)}
-  .mml-kpi-label{font-size:12px;color:rgba(245,242,233,.72)}
-  .mml-kpi-value{font-size:22px;font-weight:950;margin-top:4px}
-  .mml-progress{margin-top:12px;border-radius:16px;padding:12px;background:rgba(2,9,21,.38);
-    border:1px solid rgba(148,163,184,.16)}
-  .mml-progress-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
-  .mml-progress-label{font-size:12px;color:rgba(245,242,233,.72)}
-  .mml-progress-pct{font-weight:950}
-  .mml-bar{height:12px;border-radius:999px;overflow:hidden;background:rgba(245,242,233,.12)}
-  .mml-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg, rgba(34,197,94,.95), rgba(59,130,246,.95))}
-  .mml-progress-foot{margin-top:8px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.5}
-  .mml-history{margin-top:12px}
-  .mml-history-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-  .mml-table{border-radius:16px;overflow:hidden;border:1px solid rgba(148,163,184,.16);background:rgba(2,9,21,.28)}
-  .mml-tr{display:grid;grid-template-columns:1.1fr .9fr .9fr .7fr .6fr;gap:10px;padding:10px 12px;
-    border-top:1px solid rgba(148,163,184,.12);font-size:12px;color:rgba(245,242,233,.78)}
-  .mml-th{border-top:none;background:rgba(245,242,233,.06);font-weight:900;color:rgba(245,242,233,.86)}
-  .mml-cta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-    border-radius:16px;padding:12px;background:rgba(245,242,233,.06);border:1px dashed rgba(245,242,233,.20)}
-  .mml-cta-title{font-weight:950}
-  .mml-cta-sub{margin-top:3px;font-size:12px;color:rgba(245,242,233,.72);line-height:1.45}
-  .mml-noscript{margin-top:12px;padding:12px;border-radius:14px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.22);color:#F5F2E9}
-</style>
-
 <script>
-(() => {
-  /** ✅ 已替你填好 Web App URL */
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxRmQJuLaKzmp76nIHS6upbokDZY-8eIDdtYvx_2SX2ivgx51sIVPP9zjf_YEPXQWbe/exec";
+/** =========================
+ *  投資星球基地 v1（穩定版）
+ *  - 主資料：localStorage
+ *  - 雲端備份：Google Apps Script（可失敗不影響使用）
+ * ========================= */
 
-  /** ⚠️ 這個 token 必須跟你 Apps Script 裡的一樣 */
-  const API_TOKEN  = "MML_SECRET_123";
+  // ✅ 你的 GAS Web App（你已提供）
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmQJuLaKzmp76nIHS6upbokDZY-8eIDdtYvx_2SX2ivgx51sIVPP9zjf_YEPXQWbe/exec";
 
-  const LS_CONFIG  = "mml_invest_base_config_v1";
-  const LS_HISTORY = "mml_invest_base_history_v1";
-  const LS_USERKEY = "mml_user_key";
+  // ✅ 必須跟 Apps Script 內的 API_TOKEN 一致
+  //    你 Apps Script 看起來是 "MML_SECRET_123" 之類
+  const API_TOKEN = "MML_SECRET_123"; // ← 改成你 Apps Script 的 token（兩邊要一樣）
+
+  // localStorage keys
+  const LS_PREFIX = "mml_invest_base_v1";
+  const LS_KEY = (userKey) => `${LS_PREFIX}:${String(userKey||"").trim().toLowerCase()}`;
+  const LS_LAST_USER = `${LS_PREFIX}:last_user`;
 
   const $ = (id) => document.getElementById(id);
-  const userKeyInput  = $("userKeyInput");
-  const goalInput     = $("goalInput");
-  const monthInput    = $("monthInput");
-  const thisMonthInput= $("thisMonthInput");
-  const ytdInput      = $("ytdInput");
 
-  const saveConfigBtn = $("saveConfigBtn");
-  const addRecordBtn  = $("addRecordBtn");
-  const demoBtn       = $("demoBtn");
-  const clearBtn      = $("clearBtn");
-  const refreshBtn    = $("refreshBtn");
-  const exportBtn     = $("exportBtn");
-  const importBtn     = $("importBtn");
-  const jsonBox       = $("jsonBox");
-  const deleteLastBtn = $("deleteLastBtn");
+  const userKeyInput = $("userKey");
+  const goalInput = $("goal");
+  const monthKeyInput = $("monthKey");
+  const thisMonthInput = $("thisMonth");
+  const ytdInput = $("ytd");
 
   const statusBox = $("statusBox");
-  const navUser   = $("navUser");
-  const helloText = $("helloText");
+  const statusText = $("statusText");
+  const statusSub = $("statusSub");
 
+  const helloPill = $("helloPill");
   const kpiThisMonth = $("kpiThisMonth");
-  const kpiYTD       = $("kpiYTD");
-  const kpiGapPct    = $("kpiGapPct");
-  const kpiPct       = $("kpiPct");
-  const barFill      = $("barFill");
-  const kpiHint      = $("kpiHint");
-  const historyBody  = $("historyBody");
+  const kpiYTD = $("kpiYTD");
+  const kpiGap = $("kpiGap");
+  const kpiGapPct = $("kpiGapPct");
+  const kpiPct = $("kpiPct");
+  const barFill = $("barFill");
+  const kpiHint = $("kpiHint");
+  const kpiForecast = $("kpiForecast");
+  const kpiMsg = $("kpiMsg");
+  const historyBody = $("historyBody");
+  const jsonBox = $("jsonBox");
 
   const fmt = (n) => {
-    const x = Number(n);
-    if (!isFinite(x)) return "—";
-    return Math.max(0, Math.round(x)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (!isFinite(n)) return "—";
+    const x = Math.max(0, Math.round(n));
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
   const toNum = (v) => {
     const n = Number(String(v ?? "").replace(/[,\s]/g, ""));
     return isFinite(n) ? n : 0;
   };
-  const setStatus = (t) => statusBox.textContent = `狀態：${t}`;
-
+  const toMonthKey = (v) => {
+    // accept input[type=month] -> "YYYY-MM"
+    if (!v) return "";
+    const s = String(v);
+    if (/^\d{4}-\d{2}$/.test(s)) return s;
+    return "";
+  };
   const todayMonth = () => {
     const d = new Date();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    return `${d.getFullYear()}-${m}`;
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    return `${y}-${m}`;
   };
 
-  function getQueryUser() {
-    const q = new URLSearchParams(location.search);
-    return (q.get("u") || q.get("user") || "").trim();
+  function setStatus(kind, main, sub){
+    statusBox.classList.remove("ok","warn","bad");
+    statusBox.classList.add(kind);
+    statusText.textContent = main || "";
+    statusSub.textContent = sub || "";
   }
 
-  const loadConfig = () => {
-    try { return JSON.parse(localStorage.getItem(LS_CONFIG) || "{}"); }
-    catch { return {}; }
-  };
-  const saveConfig = (cfg) => localStorage.setItem(LS_CONFIG, JSON.stringify(cfg || {}));
-
-  const loadHistory = () => {
-    try { return JSON.parse(localStorage.getItem(LS_HISTORY) || "[]"); }
-    catch { return []; }
-  };
-  const saveHistory = (arr) => localStorage.setItem(LS_HISTORY, JSON.stringify(arr || []));
-
-  function renderHeader(cfg) {
-    const userKey = (cfg.user_key || "").trim();
-    const nick = (cfg.nickname || "").trim();
-
-    localStorage.setItem(LS_USERKEY, userKey);
-
-    navUser.textContent = userKey ? (nick ? `${nick}（${userKey}）` : userKey) : "未登入使用者";
-    helloText.textContent = nick ? `👋 ${nick}，你好！` : "👋 你好！";
+  function loadState(userKey){
+    const key = LS_KEY(userKey);
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch(e){ return null; }
   }
 
-  function renderKPI(cfg, latest) {
-    const goal = toNum(cfg.goal_annual_div);
-    const m    = toNum(latest?.this_month_div);
-    const y    = toNum(latest?.ytd_div);
+  function saveState(userKey, state){
+    localStorage.setItem(LS_KEY(userKey), JSON.stringify(state));
+    localStorage.setItem(LS_LAST_USER, String(userKey).trim());
+  }
 
-    kpiThisMonth.textContent = isFinite(m) ? `${fmt(m)} 元` : "—";
-    kpiYTD.textContent       = isFinite(y) ? `${fmt(y)} 元` : "—";
-
-    if (goal > 0) {
-      const pct = Math.min(100, Math.max(0, (y / goal) * 100));
-      const gap = Math.max(0, 100 - pct);
-      const remain = Math.max(0, goal - y);
-
-      kpiPct.textContent = `${pct.toFixed(1)}%`;
-      kpiGapPct.textContent = `${gap.toFixed(1)}%`;
-      barFill.style.width = `${pct.toFixed(2)}%`;
-      document.querySelector(".mml-bar").setAttribute("aria-valuenow", pct.toFixed(0));
-
-      kpiHint.textContent = remain > 0
-        ? `距離年度目標還差 ${fmt(remain)} 元。`
-        : `你已達成年度目標。下一關：穩住節奏、不要亂加槓桿。`;
-    } else {
-      kpiPct.textContent = "—";
-      kpiGapPct.textContent = "—";
-      barFill.style.width = "0%";
-      document.querySelector(".mml-bar").setAttribute("aria-valuenow", "0");
-      kpiHint.textContent = "你還沒填年度目標（goal_annual_div），我沒辦法算達成率 😄";
+  function ensureState(userKey){
+    let st = loadState(userKey);
+    if (!st){
+      st = {
+        v: 1,
+        user_key: String(userKey).trim(),
+        goal_annual_div: 0,
+        records: [], // [{month, this_month, ytd, ts}]
+        updated_at: Date.now()
+      };
+      saveState(userKey, st);
     }
+    return st;
   }
 
-  function renderHistory(cfg, arr) {
-    const goal = toNum(cfg.goal_annual_div);
-    const rows = (arr || []).slice(0, 10);
+  function computeLatest(st){
+    const recs = Array.isArray(st.records) ? st.records.slice() : [];
+    recs.sort((a,b)=> String(a.month).localeCompare(String(b.month)));
+    const last = recs.length ? recs[recs.length-1] : null;
 
-    historyBody.innerHTML = "";
-    if (!rows.length) {
-      historyBody.innerHTML = `<div class="mml-tr"><div>尚無紀錄</div><div>—</div><div>—</div><div>—</div><div>—</div></div>`;
+    const goal = toNum(st.goal_annual_div);
+    const lastYTD = last ? toNum(last.ytd) : 0;
+    const lastThis = last ? toNum(last.this_month) : 0;
+
+    const pct = goal > 0 ? Math.min(1, lastYTD / goal) : 0;
+    const gap = Math.max(0, goal - lastYTD);
+    const gapPct = goal > 0 ? (gap / goal) : 0;
+
+    // 簡單 forecast：用目前月份推估年化（只是提示，不當成真理）
+    const monthNow = (last && last.month) ? Number(String(last.month).split("-")[1]) : (new Date().getMonth()+1);
+    const forecast = (monthNow >= 1 && monthNow <= 12) ? Math.round(lastYTD / monthNow * 12) : 0;
+
+    return {last, goal, lastYTD, lastThis, pct, gap, gapPct, forecast, monthNow, recs};
+  }
+
+  function render(){
+    const userKey = String(userKeyInput.value || "").trim();
+    if (!userKey){
+      helloPill.textContent = "👋 尚未登入";
+      kpiThisMonth.textContent = "—";
+      kpiYTD.textContent = "—";
+      kpiGap.textContent = "—";
+      kpiGapPct.textContent = "—";
+      kpiPct.textContent = "—";
+      barFill.style.width = "0%";
+      kpiHint.textContent = "先輸入 user_key，這會是你回來的入口。";
+      kpiForecast.textContent = "—";
+      kpiMsg.textContent = "—";
+      historyBody.innerHTML = `<tr><td colspan="5" style="border-radius:14px;border:1px dashed rgba(255,255,255,.14);background:rgba(0,0,0,.10);color:rgba(242,246,255,.70)">尚無紀錄。新增一筆後，這裡會變成你的時間線。</td></tr>`;
       return;
     }
 
-    rows.forEach((r, idx) => {
-      const m = toNum(r.this_month_div);
-      const y = toNum(r.ytd_div);
-      const prev = rows[idx + 1];
-      const diff = prev ? (m - toNum(prev.this_month_div)) : 0;
-      const pct  = goal > 0 ? Math.min(100, Math.max(0, (y / goal) * 100)) : null;
+    const st = ensureState(userKey);
+    const c = computeLatest(st);
 
-      const sign = diff === 0 ? "" : (diff > 0 ? "+" : "");
-      historyBody.insertAdjacentHTML("beforeend", `
-        <div class="mml-tr">
-          <div>${r.month || "—"}</div>
-          <div>${fmt(m)}</div>
-          <div>${fmt(y)}</div>
-          <div>${diff ? `${sign}${fmt(Math.abs(diff))}` : "—"}</div>
-          <div>${pct == null ? "—" : `${pct.toFixed(0)}%`}</div>
-        </div>
-      `);
-    });
-  }
+    helloPill.textContent = `👋 ${st.user_key}，你好！`;
 
-  function updateToolLinks() {
-    const u = (localStorage.getItem(LS_USERKEY) || "").trim();
-    document.querySelectorAll('[data-pass="u"]').forEach(a => {
-      try {
-        const url = new URL(a.getAttribute("href"), location.origin);
-        if (u) url.searchParams.set("u", u);
-        a.setAttribute("href", url.pathname + url.search);
-      } catch {}
-    });
-  }
+    kpiThisMonth.textContent = c.last ? `${fmt(c.lastThis)} 元` : "—";
+    kpiYTD.textContent = c.last ? `${fmt(c.lastYTD)} 元` : "—";
+    kpiGap.textContent = (st.goal_annual_div > 0) ? `${fmt(c.gap)} 元` : "—";
+    kpiGapPct.textContent = (st.goal_annual_div > 0) ? `差距 ${(c.gapPct*100).toFixed(1)}%（越低越好）` : "先設定年度目標";
+    kpiPct.textContent = (st.goal_annual_div > 0) ? `${(c.pct*100).toFixed(1)}%` : "—";
+    barFill.style.width = (st.goal_annual_div > 0) ? `${(c.pct*100).toFixed(1)}%` : "0%";
 
-  async function pushToSheet(payload) {
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: API_TOKEN, ...payload })
-    });
-    const txt = await res.text();
-    try { return JSON.parse(txt); } catch { return { ok: res.ok, raw: txt }; }
-  }
-
-  function applyConfigToForm(cfg) {
-    userKeyInput.value = cfg.user_key || "";
-    goalInput.value    = cfg.goal_annual_div || "";
-    monthInput.value   = todayMonth();
-    cfg.nickname = cfg.nickname || cfg.user_key || "";
-    renderHeader(cfg);
-    updateToolLinks();
-  }
-
-  function getFormConfig() {
-    const user_key = (userKeyInput.value || "").trim();
-    const goal_annual_div = toNum(goalInput.value);
-    if (!user_key) throw new Error("請先填 user_key");
-    return { user_key, nickname: user_key, goal_annual_div };
-  }
-
-  function getFormRecord() {
-    const month = (monthInput.value || "").trim() || todayMonth();
-    return {
-      month,
-      this_month_div: toNum(thisMonthInput.value),
-      ytd_div: toNum(ytdInput.value)
-    };
-  }
-
-  function recomputeLatest(cfg, history) {
-    const latest = history[0] || { this_month_div: 0, ytd_div: 0 };
-    renderKPI(cfg, latest);
-    renderHistory(cfg, history);
-  }
-
-  saveConfigBtn.addEventListener("click", async () => {
-    try {
-      const cfg = getFormConfig();
-      saveConfig(cfg);
-      renderHeader(cfg);
-      updateToolLinks();
-
-      // 你想要「填完就送 Sheet」：存設定時也同步一次（不填本月/YTD 也沒關係）
-      setStatus("正在同步到 Google Sheet…");
-      const apiRes = await pushToSheet({
-        user_key: cfg.user_key,
-        nickname: cfg.nickname,
-        goal_annual_div: cfg.goal_annual_div,
-        this_month_div: toNum(thisMonthInput.value),
-        ytd_div: toNum(ytdInput.value)
-      });
-
-      const history = loadHistory();
-      recomputeLatest(cfg, history);
-
-      if (apiRes && apiRes.ok) setStatus("✅ 已儲存設定並同步到 Google Sheet");
-      else setStatus("⚠️ 設定已存本機，但同步 Google Sheet 失敗（檢查 token/部署權限）");
-    } catch (e) {
-      setStatus(`⚠️ ${e.message}`);
-    }
-  });
-
-  addRecordBtn.addEventListener("click", async () => {
-    try {
-      const cfg = loadConfig();
-      if (!cfg.user_key) {
-        const newCfg = getFormConfig();
-        saveConfig(newCfg);
+    if (!c.last){
+      kpiHint.textContent = "先新增一筆紀錄，你的基地就開始成形。";
+      kpiForecast.textContent = "—";
+      kpiMsg.textContent = "先儲存設定 → 再新增本月紀錄。";
+    }else{
+      kpiHint.textContent = `紀錄月份：${c.last.month}`;
+      if (c.forecast && st.goal_annual_div > 0){
+        kpiForecast.textContent = `（推估年化：約 ${fmt(c.forecast)} 元 / 年）`;
+      }else{
+        kpiForecast.textContent = "—";
       }
-      const cfg2 = loadConfig();
-      const rec = getFormRecord();
 
-      const history = loadHistory();
-      const next = [rec, ...history].slice(0, 30);
-      saveHistory(next);
+      if (st.goal_annual_div > 0){
+        if (c.pct >= 1) kpiMsg.textContent = "你已達成年目標。下一關：穩住節奏，不要亂加槓桿。";
+        else if (c.pct >= 0.7) kpiMsg.textContent = "快到了。接下來比的是紀律，不是衝動。";
+        else if (c.pct >= 0.35) kpiMsg.textContent = "進度正常。繼續記錄，你會看到自己在變強。";
+        else kpiMsg.textContent = "現在最重要：把「記錄」變習慣。";
+      }else{
+        kpiMsg.textContent = "補上年度目標，你的進度條才會開始跑。";
+      }
+    }
 
-      setStatus("正在寫入 Google Sheet…（本機已存）");
-      const apiRes = await pushToSheet({
-        user_key: cfg2.user_key,
-        nickname: cfg2.nickname || cfg2.user_key,
-        goal_annual_div: toNum(cfg2.goal_annual_div),
-        this_month_div: rec.this_month_div,
-        ytd_div: rec.ytd_div
+    // History last 10 (descending)
+    const last10 = c.recs.slice().sort((a,b)=> String(b.month).localeCompare(String(a.month))).slice(0,10);
+    if (!last10.length){
+      historyBody.innerHTML = `<tr><td colspan="5" style="border-radius:14px;border:1px dashed rgba(255,255,255,.14);background:rgba(0,0,0,.10);color:rgba(242,246,255,.70)">尚無紀錄。新增一筆後，這裡會變成你的時間線。</td></tr>`;
+    }else{
+      historyBody.innerHTML = last10.map(r=>{
+        const ytdv = toNum(r.ytd);
+        const thisv = toNum(r.this_month);
+        const gap = (c.goal>0) ? Math.max(0, c.goal - ytdv) : 0;
+        const pct = (c.goal>0) ? Math.min(1, ytdv/c.goal) : 0;
+        return `
+          <tr>
+            <td>${r.month}</td>
+            <td>${fmt(thisv)}</td>
+            <td>${fmt(ytdv)}</td>
+            <td>${c.goal>0 ? fmt(gap) : "—"}</td>
+            <td>${c.goal>0 ? Math.round(pct*100) + "%" : "—"}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+  }
+
+  function normalizeMonthLabel(v){
+    // type=month returns YYYY-MM; keep it
+    const mk = toMonthKey(v);
+    return mk || todayMonth();
+  }
+
+  function upsertRecord(st, month, thisMonth, ytd){
+    const recs = Array.isArray(st.records) ? st.records : [];
+    const idx = recs.findIndex(r => String(r.month) === String(month));
+    const rec = { month, this_month: thisMonth, ytd: ytd, ts: Date.now() };
+    if (idx >= 0) recs[idx] = rec; else recs.push(rec);
+    st.records = recs;
+    st.updated_at = Date.now();
+    return st;
+  }
+
+  async function syncToGoogleSheet(state, latestRecord){
+    // 最小 payload（後端只要 append / upsert 都可以）
+    const payload = {
+      token: API_TOKEN,
+      user_key: state.user_key,
+      nickname: state.user_key,
+      goal_annual_div: toNum(state.goal_annual_div),
+      this_month_div: latestRecord ? toNum(latestRecord.this_month) : 0,
+      ytd_div: latestRecord ? toNum(latestRecord.ytd) : 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    let res, text, ct;
+    try{
+      res = await fetch(GAS_URL, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
       });
+      ct = (res.headers.get("content-type") || "").toLowerCase();
+      text = await res.text();
+    }catch(err){
+      return { ok:false, reason:"network", detail:String(err) };
+    }
 
-      renderHeader(cfg2);
-      recomputeLatest(cfg2, next);
+    // 常見：部署權限/登入頁 → 回傳 HTML（以 < 開頭）
+    const trimmed = (text||"").trim();
+    if (trimmed.startsWith("<") || !ct.includes("application/json")){
+      return {
+        ok:false,
+        reason:"not_json",
+        detail:"回傳不是 JSON（多半是部署不是『所有人』、或需要登入授權、或 URL 不是 /exec）"
+      };
+    }
 
-      if (apiRes && apiRes.ok) setStatus("✅ 已新增並寫入 Google Sheet");
-      else setStatus("⚠️ 本機已存，但寫入 Google Sheet 失敗（檢查 token/部署權限）");
-    } catch (e) {
-      setStatus(`⚠️ ${e.message}`);
+    try{
+      const data = JSON.parse(text);
+      if (data && data.ok) return { ok:true, data };
+      return { ok:false, reason:"api", detail: JSON.stringify(data) };
+    }catch(e){
+      return { ok:false, reason:"json_parse", detail:"JSON 解析失敗：" + String(e) };
+    }
+  }
+
+  // Events
+  $("btnSave").addEventListener("click", async () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey){
+      setStatus("bad","請先輸入 user_key","user_key 是你回來的入口（Email/暱稱/UID 都可）。");
+      return;
+    }
+
+    const st = ensureState(userKey);
+    st.goal_annual_div = toNum(goalInput.value);
+    saveState(userKey, st);
+
+    setStatus("ok","設定已存本機（目標已記住）","你可以直接新增本月紀錄。Google Sheet 同步是備份，失敗不影響使用。");
+    render();
+
+    // 可選：儲存設定後也嘗試同步（但不阻斷）
+    const c = computeLatest(st);
+    const r = await syncToGoogleSheet(st, c.last);
+    if (r.ok){
+      setStatus("ok","設定已存本機，並已備份到 Google Sheet","同步成功 ✅");
+    }else{
+      setStatus("warn","設定已存本機，但同步 Google Sheet 失敗","雲端備份暫時未連線（不影響使用）。請檢查：token / 部署『所有人』/ 是否為 /exec。");
     }
   });
 
-  demoBtn.addEventListener("click", () => {
-    userKeyInput.value = "mark_test";
-    goalInput.value = 300000;
-    monthInput.value = todayMonth();
-    thisMonthInput.value = 18000;
-    ytdInput.value = 120000;
-    setStatus("已填入示範資料（直接按：儲存設定 / 新增本月紀錄）");
-  });
+  $("btnAdd").addEventListener("click", async () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey){
+      setStatus("bad","請先輸入 user_key","先有入口，才有基地。");
+      return;
+    }
 
-  clearBtn.addEventListener("click", () => {
-    localStorage.removeItem(LS_CONFIG);
-    localStorage.removeItem(LS_HISTORY);
-    localStorage.removeItem(LS_USERKEY);
-    userKeyInput.value = "";
-    goalInput.value = "";
-    thisMonthInput.value = "";
-    ytdInput.value = "";
-    monthInput.value = todayMonth();
-    navUser.textContent = "未登入使用者";
-    helloText.textContent = "👋 你好！";
-    kpiThisMonth.textContent = "—";
-    kpiYTD.textContent = "—";
-    kpiGapPct.textContent = "—";
-    kpiPct.textContent = "—";
-    barFill.style.width = "0%";
-    historyBody.innerHTML = `<div class="mml-tr"><div>尚無紀錄</div><div>—</div><div>—</div><div>—</div><div>—</div></div>`;
-    setStatus("已清除本機資料");
-    updateToolLinks();
-  });
+    const st = ensureState(userKey);
+    const month = normalizeMonthLabel(monthKeyInput.value);
+    const thisMonth = toNum(thisMonthInput.value);
+    let ytd = toNum(ytdInput.value);
 
-  refreshBtn.addEventListener("click", () => {
-    const cfg = loadConfig();
-    const hist = loadHistory();
-    renderHeader(cfg);
-    recomputeLatest(cfg, hist);
-    setStatus("已重新同步（本機）");
-  });
+    // 若使用者沒填 ytd，就用「上一筆 ytd + 本月」推進（v1 方便）
+    const c = computeLatest(st);
+    if (!ytd){
+      const prev = c.last ? toNum(c.last.ytd) : 0;
+      ytd = prev + thisMonth;
+    }
 
-  exportBtn.addEventListener("click", () => {
-    const cfg = loadConfig();
-    const hist = loadHistory();
-    jsonBox.value = JSON.stringify({ cfg, hist }, null, 2);
-    setStatus("已匯出 JSON（可備份）");
-  });
+    st.goal_annual_div = toNum(goalInput.value) || toNum(st.goal_annual_div);
+    upsertRecord(st, month, thisMonth, ytd);
+    saveState(userKey, st);
 
-  importBtn.addEventListener("click", () => {
-    try {
-      const obj = JSON.parse(jsonBox.value || "{}");
-      if (obj.cfg) saveConfig(obj.cfg);
-      if (obj.hist) saveHistory(obj.hist);
-      const cfg = loadConfig();
-      const hist = loadHistory();
-      applyConfigToForm(cfg);
-      recomputeLatest(cfg, hist);
-      setStatus("✅ 已匯入 JSON");
-    } catch {
-      setStatus("⚠️ JSON 格式錯誤，無法匯入");
+    setStatus("ok","已新增紀錄並存本機","右側 KPI 已更新。接著嘗試雲端備份中…");
+    render();
+
+    const latest = computeLatest(st).last;
+    const r = await syncToGoogleSheet(st, latest);
+    if (r.ok){
+      setStatus("ok","已存本機，並已備份到 Google Sheet","同步成功 ✅（就算之後換裝置，也能找回）");
+    }else{
+      setStatus("warn","已存本機，但同步 Google Sheet 失敗","不影響使用。請檢查：token 是否一致／部署是否『所有人』／URL 是否 /exec。");
     }
   });
 
-  deleteLastBtn.addEventListener("click", () => {
-    const hist = loadHistory();
-    if (!hist.length) { setStatus("沒有可刪的紀錄"); return; }
-    hist.shift();
-    saveHistory(hist);
-    const cfg = loadConfig();
-    recomputeLatest(cfg, hist);
-    setStatus("已刪除最後一筆");
+  $("btnDemo").addEventListener("click", () => {
+    userKeyInput.value = userKeyInput.value || "mark_test";
+    goalInput.value = goalInput.value || "300000";
+    monthKeyInput.value = todayMonth();
+    thisMonthInput.value = "54000";
+    ytdInput.value = "340000";
+    setStatus("warn","已填入示範資料","你可以按『儲存設定』或『新增本月紀錄』。");
+    render();
   });
 
-  (function init(){
-    const u = getQueryUser();
-    if (u) {
-      const cfg = loadConfig();
-      cfg.user_key = u;
-      cfg.nickname = cfg.nickname || u;
-      saveConfig(cfg);
-      localStorage.setItem(LS_USERKEY, u);
+  $("btnReset").addEventListener("click", () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey){
+      // 若沒 userKey，就清 last_user
+      localStorage.removeItem(LS_LAST_USER);
+      setStatus("ok","已清除最後使用者記錄","（不會影響其他 user_key 的資料）");
+      render();
+      return;
     }
+    localStorage.removeItem(LS_KEY(userKey));
+    localStorage.removeItem(LS_LAST_USER);
+    setStatus("ok","已清除本機資料","你可以重新設定新的基地。");
+    render();
+  });
 
-    const cfg = loadConfig();
-    applyConfigToForm(cfg);
-    if (!monthInput.value) monthInput.value = todayMonth();
+  $("btnPop").addEventListener("click", () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey) return;
 
-    const hist = loadHistory();
-    recomputeLatest(cfg, hist);
+    const st = loadState(userKey);
+    if (!st || !Array.isArray(st.records) || !st.records.length){
+      setStatus("warn","沒有可刪除的紀錄","先新增一筆再說。");
+      return;
+    }
+    // 刪除最後一筆（按月份排序的最後）
+    st.records.sort((a,b)=> String(a.month).localeCompare(String(b.month)));
+    st.records.pop();
+    st.updated_at = Date.now();
+    saveState(userKey, st);
+    setStatus("ok","已刪除最後一筆（本機）","需要的話再手動同步一次。");
+    render();
+  });
 
-    setStatus(cfg.user_key ? "已載入本機設定（基地待命）" : "請先填 user_key 並儲存設定");
+  $("btnExport").addEventListener("click", () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey){
+      setStatus("bad","請先輸入 user_key","匯出也需要知道要匯出哪個基地。");
+      return;
+    }
+    const st = loadState(userKey) || ensureState(userKey);
+    jsonBox.value = JSON.stringify(st, null, 2);
+    setStatus("ok","已匯出 JSON","你可以複製這段做備份。");
+  });
+
+  $("btnImport").addEventListener("click", () => {
+    const raw = String(jsonBox.value||"").trim();
+    if (!raw){
+      setStatus("bad","請先貼上 JSON","沒有內容我怎麼幫你還原 😂");
+      return;
+    }
+    let st;
+    try{ st = JSON.parse(raw); }catch(e){
+      setStatus("bad","JSON 格式錯誤","請確認你貼的是完整 JSON。");
+      return;
+    }
+    if (!st || !st.user_key){
+      setStatus("bad","JSON 缺少 user_key","這不是投資星球基地的備份格式。");
+      return;
+    }
+    userKeyInput.value = st.user_key;
+    goalInput.value = st.goal_annual_div || "";
+    saveState(st.user_key, st);
+    setStatus("ok","已匯入並存本機","右側 KPI 已更新。");
+    render();
+  });
+
+  $("btnSync").addEventListener("click", async () => {
+    const userKey = String(userKeyInput.value||"").trim();
+    if (!userKey){
+      setStatus("bad","請先輸入 user_key","你要同步哪位星球居民？");
+      return;
+    }
+    const st = loadState(userKey) || ensureState(userKey);
+    const latest = computeLatest(st).last;
+    setStatus("warn","正在嘗試同步到 Google Sheet…","如果部署權限或 token 不對，會回傳 HTML 導致解析失敗。");
+    const r = await syncToGoogleSheet(st, latest);
+    if (r.ok){
+      setStatus("ok","同步成功 ✅","雲端備份已更新。");
+    }else{
+      setStatus("warn","同步失敗（但本機安全）","請檢查：Apps Script 部署『所有人』/ URL 是 /exec / token 一致 / 綁定正確試算表。");
+    }
+  });
+
+  // Auto load last user
+  (function boot(){
+    const lastUser = localStorage.getItem(LS_LAST_USER);
+    if (lastUser){
+      userKeyInput.value = lastUser;
+      const st = loadState(lastUser);
+      if (st){
+        goalInput.value = st.goal_annual_div || "";
+        // 預設帶入本月
+        monthKeyInput.value = todayMonth();
+        // 預填 ytd = last ytd
+        const c = computeLatest(st);
+        if (c.last){
+          ytdInput.value = c.last.ytd ?? "";
+          thisMonthInput.value = "";
+        }
+        setStatus("ok","已載入上次的基地（本機）","直接新增本月紀錄就行。");
+      }
+    }else{
+      monthKeyInput.value = todayMonth();
+    }
+    render();
   })();
-})();
+
+  // Live render
+  ["input","change"].forEach(evt=>{
+    userKeyInput.addEventListener(evt, ()=>{ render(); });
+    goalInput.addEventListener(evt, ()=>{ render(); });
+    monthKeyInput.addEventListener(evt, ()=>{ render(); });
+    thisMonthInput.addEventListener(evt, ()=>{ render(); });
+    ytdInput.addEventListener(evt, ()=>{ render(); });
+  });
 </script>
+</body>
+</html>
