@@ -36,621 +36,779 @@
   <!-- 外部資源 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
-  <!-- 內部樣式 -->
+  <!-- 內部樣式：頻道網站 UI（深綠＋深藍＋少量暖黃） -->
   <style>
-    :root {
-      --green: #1D4A35;
-      --yellow: #FFD54F;
-      --bg: #F5F2E9;
-      --card: #FFFFFF;
-      --text: #1A1A1A;
-      --muted: #777777;
+    :root{
+      --bg:#020911;
+      --bg2:#071623;
+      --card:#0B2234;
+      --card2:#0A2A3B;
+      --line:rgba(148,163,184,.22);
+      --text:#EAF2FF;
+      --muted:rgba(234,242,255,.72);
+
+      --green:#1E6B4E;         /* 深綠 */
+      --blue:#133B6B;          /* 深藍 */
+      --accent:#FFD54F;        /* 暖黃 */
+      --accent2:rgba(255,213,79,.18);
+
+      --shadow: 0 18px 42px rgba(0,0,0,.35);
+      --radius: 18px;
     }
 
-    * {
-      box-sizing: border-box;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC",-apple-system,BlinkMacSystemFont,"Microsoft JhengHei",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 12% 8%, rgba(30,107,78,.35), transparent 55%),
+        radial-gradient(900px 700px at 88% 14%, rgba(19,59,107,.38), transparent 55%),
+        radial-gradient(700px 520px at 20% 92%, rgba(255,213,79,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      line-height:1.85;
     }
 
-    body {
-      font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", system-ui, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      line-height: 1.8;
+    /* 星點背景（微量，不搶戲） */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.22) 0, transparent 60%),
+        radial-gradient(1px 1px at 72% 22%, rgba(255,255,255,.18) 0, transparent 60%),
+        radial-gradient(1px 1px at 38% 62%, rgba(255,255,255,.14) 0, transparent 60%),
+        radial-gradient(1px 1px at 86% 74%, rgba(255,255,255,.16) 0, transparent 60%),
+        radial-gradient(1px 1px at 22% 84%, rgba(255,255,255,.12) 0, transparent 60%);
+      opacity:.9;
     }
 
-    .page {
-      max-width: 960px;
-      margin: 0 auto 3rem;
-      padding: 0 1.25rem 2rem;
+    .page{
+      max-width:1020px;
+      margin:0 auto 3.2rem;
+      padding:0 1.1rem 2rem;
     }
 
-    /* Hero 區 */
-    .hero {
-      background: var(--green);
-      color: #FFF;
-      padding: 1.8rem 1.25rem 1.6rem;
-      text-align: center;
-      margin-bottom: 0.5rem;
+    /* Hero */
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding:2.2rem 0 1.2rem;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(900px 380px at 20% 0%, rgba(30,107,78,.32), transparent 60%),
+        radial-gradient(900px 420px at 80% 0%, rgba(19,59,107,.38), transparent 62%);
     }
 
-    .hero h1 {
-      margin: 0 0 0.5rem;
-      font-size: 1.9rem;
+    .hero .shell{
+      max-width:1020px;
+      margin:0 auto;
+      padding:0 1.1rem 1.2rem;
     }
 
-    .hero p {
-      margin: 0.2rem 0;
-      font-size: 0.95rem;
+    .hero-card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(11,34,52,.9) 0%, rgba(10,42,59,.86) 100%);
+      border-radius:24px;
+      padding:1.6rem 1.3rem 1.25rem;
+      box-shadow:var(--shadow);
+      position:relative;
     }
 
-    .hero-highlight {
-      color: var(--yellow);
-      font-weight: 600;
+    .hero-topline{
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:.4rem;
     }
 
-    .hero-steps {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
+    .hero-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.25rem .7rem;
+      border-radius:999px;
+      background:rgba(255,213,79,.10);
+      border:1px solid rgba(255,213,79,.30);
+      color:#fff;
+      font-weight:600;
+      white-space:nowrap;
     }
 
-    .hero-step-tag {
-      border-radius: 999px;
-      border: 1px solid rgba(255, 213, 79, 0.8);
-      padding: 0.25rem 0.8rem;
-      background: rgba(0,0,0,0.14);
+    .hero h1{
+      margin:.1rem 0 .45rem;
+      font-size:2.05rem;
+      letter-spacing:.5px;
     }
 
-    .hero-cta {
-      margin-top: 1rem;
+    .hero p{
+      margin:.25rem 0;
+      color:var(--muted);
+      font-size:.98rem;
     }
 
-    .hero-cta a {
-      display: inline-block;
-      background: var(--yellow);
-      color: var(--green);
-      padding: 0.55rem 1.4rem;
-      border-radius: 999px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 0.9rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    .hero-highlight{
+      color:var(--accent);
+      font-weight:800;
     }
 
-    .hero-cta a:hover {
-      filter: brightness(1.05);
+    .hero-steps{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-top:1rem;
     }
+
+    .hero-step-tag{
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      padding:.35rem .85rem;
+      background:rgba(3,10,18,.35);
+      color:rgba(234,242,255,.92);
+      font-size:.88rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero-cta{
+      margin-top:1.1rem;
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.55rem;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:.2px;
+      padding:.72rem 1.15rem;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      transition: transform .12s ease, filter .12s ease, background .12s ease;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn-primary{
+      background: linear-gradient(135deg, var(--accent) 0%, rgba(255,213,79,.86) 55%, rgba(255,213,79,.75) 100%);
+      color:#08131f;
+      border-color: rgba(255,213,79,.45);
+    }
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-ghost{
+      background: rgba(234,242,255,.06);
+      color: rgba(234,242,255,.92);
+      border-color: rgba(234,242,255,.16);
+    }
+    .btn-ghost:hover{background: rgba(234,242,255,.10)}
 
     /* 導覽列 */
-    .top-nav-wrap {
-      background: rgba(255,255,255,0.4);
-      backdrop-filter: blur(4px);
+    .top-nav-wrap{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(2,9,17,.55);
+      border-bottom:1px solid rgba(148,163,184,.14);
     }
 
-    .nav-bar {
-      max-width: 960px;
-      margin: 0.8rem auto 0;
-      padding: 0.6rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: center;
-      background: #ffffff;
-      border-radius: 999px;
-      border: 1px solid #E3E7E0;
-      font-size: 0.9rem;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    .nav-bar{
+      max-width:1020px;
+      margin:0 auto;
+      padding:.7rem 1.1rem;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      justify-content:center;
     }
 
-    .nav-bar a {
-      text-decoration: none;
-      color: var(--green);
-      padding: 0.25rem 0.9rem;
-      border-radius: 999px;
-      background: #F7FAF8;
-      border: 1px solid #E5ECE7;
-      white-space: nowrap;
-    }
-
-    .nav-bar a:hover {
-      background: #E3F2E9;
-    }
-
-    h2 {
-      text-align: left;
-      color: var(--green);
-      margin-top: 0;
-    }
-
-    .section {
-      background: var(--card);
-      border-radius: 0.9rem;
-      padding: 1.5rem 1.4rem;
-      margin: 1.8rem 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      border: 1px solid #E7EBE5;
-    }
-
-    .section p {
-      margin: 0.3rem 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: white;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      border: 1px solid #ECECEC;
-    }
-
-    th, td {
-      padding: 0.75rem;
-      border-bottom: 1px solid #eee;
-      text-align: center;
-      font-size: 0.95rem;
-    }
-
-    th {
-      background: var(--yellow);
-      color: #333;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #FFFDF5;
-    }
-
-    .mission-tag {
-      display: inline-block;
-      font-size: 0.78rem;
-      padding: 0.1rem 0.5rem;
-      border-radius: 999px;
-      background: #E3F2E9;
-      color: var(--green);
-      margin-left: 0.25rem;
-    }
-
-    .mission-tag-adv {
-      background: #FFF3CD;
-      color: #8A6D00;
-    }
-
-    .cta a {
-      display: inline-block;
-      background: var(--green);
-      color: #ffffff;
-      font-weight: bold;
-      padding: 0.8rem 1.6rem;
-      border-radius: 999px;
-      text-decoration: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      font-size: 0.95rem;
-    }
-
-    .cta a:hover {
-      filter: brightness(1.05);
-    }
-
-    .video-list a {
-      display: block;
-      margin: 0.4rem 0;
-      color: var(--green);
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-
-    .video-list small {
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-
-    .video-list a:hover {
-      text-decoration: underline;
-    }
-
-    .badge-board {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .badge {
-      background-color: #fff;
-      border: 2px dashed var(--yellow);
-      border-radius: 1rem;
-      padding: 1rem;
-      text-align: center;
-      width: 160px;
-      font-size: 0.95rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-
-    .badge.earned {
-      background-color: #FFF3CD;
-      border-style: solid;
-      font-weight: bold;
-      color: #4E3B00;
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--yellow);
-      color: var(--text);
-      padding: 0.8rem 1.2rem;
-      border-radius: 999px;
-      font-weight: bold;
-      display: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 1000;
-    }
-
-    .progress-box {
-      margin-top: 1rem;
-      background: #FFFDE7;
-      border-radius: 0.75rem;
-      padding: 0.75rem 1rem;
-      font-size: 0.9rem;
-      border: 1px solid #F0E6B5;
-    }
-
-    .progress-text {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.4rem;
-      color: #555;
-      gap: 0.5rem;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: #E0E0E0;
-      overflow: hidden;
-    }
-
-    .progress-inner {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: var(--green);
-      transition: width 0.3s ease;
-    }
-
-    .reset-btn {
-      border: none;
-      background: none;
-      color: #888;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-decoration: underline;
-      padding: 0;
-      white-space: nowrap;
-    }
-
-    .hint-box {
-      margin-top: 1.2rem;
-      padding: 0.9rem 1rem;
-      background:#FFFDE7;
-      border-radius:0.75rem;
-      font-size:0.9rem;
-      border: 1px dashed #F2D46B;
-    }
-
-    .hint-box ol {
-      margin:0.4rem 0 0.2rem 1.2rem;
-      padding-left:0;
-    }
-
-    .hint-box p {
-      margin-top: 0.3rem;
-    }
-
-    /* 工具包卡片 */
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .tool-card {
-      background: #FFFFFF;
-      border-radius: 0.9rem;
-      padding: 1rem;
-      border: 1px solid #E5EBE4;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-
-    .tool-card h3 {
-      margin: 0 0 0.4rem;
-      font-size: 1rem;
-      color: var(--green);
-    }
-
-    .tool-card p {
-      font-size: 0.85rem;
-      color: #555;
-      margin: 0.2rem 0;
-    }
-
-    .tool-card a {
-      display: inline-block;
-      margin-top: 0.4rem;
-      font-size: 0.85rem;
-      text-decoration: none;
-      color: var(--green);
-      padding: 0.25rem 0.75rem;
-      border-radius: 999px;
-      background: #E3F2E9;
-    }
-
-    .tool-card a:hover {
-      background: #D2E7DD;
-    }
-
-    /* FAQ */
-    .faq-item {
-      margin-top: 0.8rem;
-      padding-top: 0.4rem;
-      border-top: 1px dashed #D7DDD6;
-    }
-
-    .faq-q {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .faq-a {
-      font-size: 0.9rem;
-      color: #555;
-      margin-top: 0.2rem;
-    }
-
-    #viewCounter {
-      margin-top:1.5rem;
-      text-align:center;
-      font-size:0.85rem;
-      color:#888;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px dashed #D0D6CF;
-      margin-top: 2.2rem;
-    }
-
-    .support-section {
-      text-align:center;
-      max-width:700px;
-      margin:2rem auto 0;
-    }
-
-    .support-buttons a {
-      display:inline-block;
-      background-color:var(--green);
-      color:white;
-      padding:10px 20px;
+    .nav-bar a{
       text-decoration:none;
-      border-radius:8px;
-      font-weight:bold;
-      margin:6px;
-      font-size:0.95rem;
+      color: rgba(234,242,255,.88);
+      padding:.42rem .9rem;
+      border-radius:999px;
+      background: rgba(234,242,255,.06);
+      border:1px solid rgba(234,242,255,.12);
+      font-size:.92rem;
+      transition: background .12s ease, transform .12s ease, border-color .12s ease;
+      white-space:nowrap;
+    }
+    .nav-bar a:hover{
+      background: rgba(30,107,78,.18);
+      border-color: rgba(30,107,78,.45);
+      transform: translateY(-1px);
+    }
+    .nav-bar a.active{
+      background: rgba(255,213,79,.10);
+      border-color: rgba(255,213,79,.30);
+      color:#fff;
+      font-weight:700;
     }
 
-    .support-buttons a:hover {
-      filter: brightness(1.05);
+    /* Sections */
+    .section{
+      background: linear-gradient(180deg, rgba(11,34,52,.90) 0%, rgba(10,42,59,.86) 100%);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:1.35rem 1.25rem;
+      margin:1.2rem 0;
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
     }
 
-    @media (max-width: 720px) {
-      .tool-grid {
-        grid-template-columns: 1fr;
-      }
+    h2{
+      margin:.15rem 0 .75rem;
+      color: rgba(255,255,255,.96);
+      font-size:1.28rem;
+      letter-spacing:.2px;
     }
 
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-      .page {
-        padding: 0 1rem 1.6rem;
-      }
-      table {
-        font-size: 0.85rem;
-      }
-      th, td {
-        font-size: 0.85rem;
-        padding: 0.55rem;
-      }
-      .nav-bar {
-        border-radius: 1rem;
-        padding-inline: 0.7rem;
-      }
-      .hero-steps {
-        flex-direction: column;
-      }
+    .section p{margin:.35rem 0; color: rgba(234,242,255,.82)}
+    .section strong{color:#fff}
+
+    .note{
+      margin-top:.6rem;
+      padding:.9rem 1rem;
+      background: rgba(255,213,79,.08);
+      border: 1px dashed rgba(255,213,79,.28);
+      border-radius:14px;
+      color: rgba(234,242,255,.86);
+      font-size:.92rem;
+    }
+
+    /* 任務表 */
+    .table-wrap{
+      margin-top:1rem;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.18);
+      overflow:auto;
+      background: rgba(2,9,17,.28);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width: 720px; /* 讓手機可橫向捲動，不爆版 */
+    }
+    th,td{
+      padding:.8rem .75rem;
+      border-bottom:1px solid rgba(148,163,184,.16);
+      text-align:center;
+      font-size:.96rem;
+      color: rgba(234,242,255,.86);
+    }
+    th{
+      position:sticky;
+      top:0;
+      background: linear-gradient(135deg, rgba(30,107,78,.55), rgba(19,59,107,.55));
+      color:#fff;
+      font-weight:800;
+      z-index:1;
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    tbody tr:nth-child(even){
+      background: rgba(234,242,255,.03);
+    }
+
+    .mission-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      font-size:.78rem;
+      padding:.14rem .55rem;
+      border-radius:999px;
+      background: rgba(30,107,78,.18);
+      border:1px solid rgba(30,107,78,.35);
+      color: rgba(234,242,255,.92);
+      margin-left:.35rem;
+      white-space:nowrap;
+    }
+    .mission-tag-adv{
+      background: rgba(255,213,79,.10);
+      border-color: rgba(255,213,79,.28);
+      color: rgba(234,242,255,.92);
+    }
+
+    a{color: rgba(255,213,79,.95)}
+    a:hover{filter:brightness(1.05)}
+    .video-list a{
+      display:block;
+      margin:.45rem 0;
+      color: rgba(234,242,255,.92);
+      text-decoration:none;
+      padding:.55rem .75rem;
+      border-radius:12px;
+      background: rgba(234,242,255,.05);
+      border:1px solid rgba(234,242,255,.10);
+    }
+    .video-list a:hover{
+      background: rgba(30,107,78,.16);
+      border-color: rgba(30,107,78,.40);
+    }
+    .video-list small{color: rgba(234,242,255,.62)}
+
+    /* checkbox 美化（不破壞原本 input） */
+    input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      accent-color: var(--accent);
+      transform: translateY(2px);
+    }
+
+    /* 進度 */
+    .progress-box{
+      margin-top:1rem;
+      background: rgba(255,213,79,.08);
+      border-radius:14px;
+      padding:.85rem 1rem;
+      border:1px solid rgba(255,213,79,.22);
+    }
+    .progress-text{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.6rem;
+      color: rgba(234,242,255,.80);
+      margin-bottom:.55rem;
+      font-size:.92rem;
+    }
+    .progress-bar{
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      background: rgba(234,242,255,.14);
+      overflow:hidden;
+    }
+    .progress-inner{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(30,107,78,1) 0%, rgba(255,213,79,1) 100%);
+      transition: width .28s ease;
+    }
+    .reset-btn{
+      border:none;
+      background:none;
+      color: rgba(234,242,255,.62);
+      font-size:.82rem;
+      cursor:pointer;
+      text-decoration: underline;
+      padding:0;
+      white-space:nowrap;
+    }
+    .reset-btn:hover{color:#fff}
+
+    /* hint box */
+    .hint-box{
+      margin-top:1.2rem;
+      padding:1rem 1rem;
+      background: rgba(19,59,107,.22);
+      border-radius:14px;
+      border: 1px dashed rgba(148,163,184,.26);
+      color: rgba(234,242,255,.84);
+      font-size:.92rem;
+    }
+    .hint-box ol{
+      margin:.55rem 0 .2rem 1.2rem;
+    }
+    .hint-box li{margin:.35rem 0}
+
+    /* 工具包 */
+    .tool-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:1rem;
+      margin-top:1rem;
+    }
+    .tool-card{
+      background: rgba(2,9,17,.32);
+      border-radius: 16px;
+      padding:1rem 1rem .95rem;
+      border:1px solid rgba(148,163,184,.20);
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+    .tool-card h3{
+      margin:0 0 .35rem;
+      color:#fff;
+      font-size:1.02rem;
+    }
+    .tool-card p{
+      margin:.25rem 0;
+      color: rgba(234,242,255,.76);
+      font-size:.9rem;
+    }
+    .tool-card a{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      margin-top:.55rem;
+      font-size:.88rem;
+      text-decoration:none;
+      color:#08131f;
+      padding:.42rem .8rem;
+      border-radius:999px;
+      background: rgba(255,213,79,.95);
+      border:1px solid rgba(255,213,79,.40);
+      font-weight:800;
+    }
+    .tool-card a:hover{filter:brightness(1.05)}
+
+    /* 勳章牆 */
+    .badge-board{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:.9rem;
+      margin-top:1rem;
+    }
+    .badge{
+      width:170px;
+      text-align:center;
+      border-radius:16px;
+      padding:1rem .9rem;
+      background: rgba(2,9,17,.28);
+      border:1px dashed rgba(255,213,79,.35);
+      color: rgba(234,242,255,.86);
+      box-shadow: 0 10px 22px rgba(0,0,0,.20);
+    }
+    .badge.earned{
+      background: rgba(255,213,79,.12);
+      border-style: solid;
+      border-color: rgba(255,213,79,.55);
+      color:#fff;
+      font-weight:900;
+    }
+
+    /* CTA */
+    .cta a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.55rem;
+      background: linear-gradient(135deg, rgba(30,107,78,.96) 0%, rgba(19,59,107,.92) 60%);
+      color:#fff;
+      font-weight:900;
+      padding:.85rem 1.4rem;
+      border-radius:999px;
+      text-decoration:none;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 14px 30px rgba(0,0,0,.28);
+    }
+    .cta a:hover{filter:brightness(1.05)}
+
+    /* Toast */
+    #toast{
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform: translateX(-50%);
+      background: rgba(255,213,79,.95);
+      color:#08131f;
+      padding:.85rem 1.2rem;
+      border-radius:999px;
+      font-weight:900;
+      display:none;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      z-index:1000;
+      max-width:min(92vw, 860px);
+      text-align:center;
+    }
+
+    #viewCounter{
+      margin-top:1.4rem;
+      text-align:center;
+      font-size:.88rem;
+      color: rgba(234,242,255,.60);
+    }
+
+    hr{
+      border:none;
+      border-top:1px solid rgba(148,163,184,.18);
+      margin:2.2rem 0 1.6rem;
+    }
+
+    /* 支持區 */
+    .support-section{
+      text-align:center;
+      max-width:760px;
+      margin:0 auto 1rem;
+    }
+    .support-section h3{
+      margin:.2rem 0 .4rem;
+      color:#fff;
+    }
+    .support-section p{color: rgba(234,242,255,.78)}
+    .support-buttons a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.5rem;
+      text-decoration:none;
+      margin:.35rem;
+      padding:.78rem 1.05rem;
+      border-radius:14px;
+      font-weight:900;
+      color: rgba(234,242,255,.92);
+      background: rgba(234,242,255,.06);
+      border:1px solid rgba(234,242,255,.14);
+      box-shadow: 0 12px 26px rgba(0,0,0,.22);
+    }
+    .support-buttons a:hover{
+      background: rgba(30,107,78,.18);
+      border-color: rgba(30,107,78,.45);
+    }
+
+    /* 開戶推薦：卡片風格同步 */
+    .broker-wrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:1rem;
+      justify-content:center;
+      margin-top:1rem;
+    }
+    .broker-card{
+      background: rgba(2,9,17,.28);
+      border-radius: 18px;
+      border:1px solid rgba(148,163,184,.20);
+      box-shadow: 0 12px 28px rgba(0,0,0,.24);
+      padding:1rem;
+      max-width:300px;
+      text-align:center;
+    }
+    .broker-card h3{margin:.25rem 0;color:#fff}
+    .broker-card p{color: rgba(234,242,255,.74)}
+    .broker-card img{
+      width:140px;height:140px;object-fit:contain;
+      margin:.55rem auto .4rem;
+      display:block;
+      border-radius:14px;
+      background: rgba(234,242,255,.04);
+      border:1px solid rgba(234,242,255,.10);
+      padding:.35rem;
+    }
+    .broker-card .mini-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.45rem;
+      padding:.55rem .95rem;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:900;
+      background: rgba(255,213,79,.95);
+      color:#08131f;
+      border:1px solid rgba(255,213,79,.40);
+      margin-top:.35rem;
+    }
+    .broker-card .mini-btn:hover{filter:brightness(1.05)}
+
+    /* RWD */
+    @media (max-width: 860px){
+      .hero h1{font-size:1.85rem}
+    }
+    @media (max-width: 720px){
+      .tool-grid{grid-template-columns:1fr}
+      .hero-steps{flex-direction:column}
+      .hero-card{padding:1.25rem 1.05rem}
+    }
+    @media (max-width: 520px){
+      .hero h1{font-size:1.6rem}
+      .nav-bar{padding:.65rem .9rem}
+      .section{padding:1.15rem 1.0rem}
+      .badge{width: 46%;}
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 頂部 Hero + 導覽 -->
+  <!-- 頂部 Hero -->
   <header class="hero">
-    <div class="page">
-      <h1>🏡 新手投資村計畫</h1>
-      <p>每週解一個任務，一步步打造你的 ETF 投資地圖。</p>
-      <p style="font-size:0.9rem;">
-        建議節奏：<span class="hero-highlight">每週 1 個任務</span>，前 5 個任務打好基礎，<br>
-        任務 06、07 則幫你搞定「怎麼選」和「遇到大跌怎麼辦」。
-      </p>
-      <div class="hero-steps">
-        <div class="hero-step-tag">STEP 1：弄懂 ETF 是什麼</div>
-        <div class="hero-step-tag">STEP 2：開戶＋定期定額啟動</div>
-        <div class="hero-step-tag">STEP 3：用工具追蹤＆看懂回檔</div>
-      </div>
-      <div class="hero-cta">
-        <a href="#mission-map">從 01 任務開始破關 ▶</a>
+    <div class="shell">
+      <div class="hero-card">
+        <div class="hero-topline">
+          <span class="hero-chip">ETF 新手任務地圖</span>
+          <span>深綠＋深藍的底，像夜晚看股價，但不焦慮。</span>
+        </div>
+        <h1>🏡 新手投資村計畫</h1>
+        <p>每週解一個任務，一步步打造你的 ETF 投資地圖。</p>
+        <p style="font-size:.95rem;">
+          建議節奏：<span class="hero-highlight">每週 1 個任務</span>，前 5 個任務打好基礎，<br>
+          任務 06、07 則幫你搞定「怎麼選」和「遇到大跌怎麼辦」。
+        </p>
+        <div class="hero-steps">
+          <div class="hero-step-tag">STEP 1：弄懂 ETF 是什麼</div>
+          <div class="hero-step-tag">STEP 2：開戶＋定期定額啟動</div>
+          <div class="hero-step-tag">STEP 3：用工具追蹤＆看懂回檔</div>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#mission-map">從 01 任務開始破關 ▶</a>
+          <a class="btn btn-ghost" href="https://markmoneylife.com/" target="_blank" rel="noopener">回馬克理財網站 ←</a>
+        </div>
       </div>
     </div>
   </header>
 
+  <!-- 導覽列 -->
   <div class="top-nav-wrap">
     <nav class="nav-bar">
-      <a href="https://markmoneylife.com/" target="_blank">← 回馬克理財網站</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">ETF配息圖卡瀑布牆</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool" target="_blank">複利試算工具</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">退休倒推</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">ETF追蹤牆</a>
-      <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank">加入 LINE 社群</a>
+      <a href="https://markmoneylife.com/" target="_blank" rel="noopener">🏠 回主站</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">💧 ETF配息瀑布牆</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool" target="_blank" rel="noopener">🧮 複利試算工具</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">🎯 退休倒推</a>
+      <a class="active" href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">🏡 新手投資村</a>
+      <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">📌 ETF追蹤牆</a>
+      <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank" rel="noopener">👥 加入LINE社群</a>
     </nav>
   </div>
 
   <main class="page">
 
     <!-- 任務地圖 -->
-    <div class="section" id="mission-map">
+    <section class="section" id="mission-map">
       <h2>🗺️ 任務地圖：從 0 開始的 ETF 路線</h2>
-      <p><strong>怎麼用？</strong></p>
-      <p>1️⃣ 從 01 任務開始，一路往下做，不用跳關。</p>
-      <p>2️⃣ 每完成一個任務就打勾，會自動幫你點亮對應的「任務勳章」。</p>
-      <p>3️⃣ 這個頁面會記住你在這台裝置上的勾選紀錄，下次回來可以接著破關。</p>
 
-      <table id="mission-table">
-        <thead>
-          <tr>
-            <th>任務編號</th>
-            <th>任務名稱</th>
-            <th>教學資源</th>
-            <th>進度</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>01</td>
-            <td>
-              什麼是 ETF？跟股票有什麼不同？
-              <span class="mission-tag">基礎</span>
-            </td>
-            <td>
-              <a href="https://youtu.be/lXZMPNxH-T4" target="_blank">📺 新手投資村 第 1 集</a>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="0"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>02</td>
-            <td>
-              準備資料開證券戶＆設定第一個定期定額
-              <span class="mission-tag">基礎</span>
-            </td>
-            <td>
-              <a href="https://youtu.be/S3SaVYtBXJY" target="_blank">📺 新手投資村 第 2 集</a><br>
-              <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">🧮 複利試算工具</a><br>
-              <small style="color:#777;">步驟：選券商 → 線上開戶 → 綁定銀行 → 設定第一個定期定額</small>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="1"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>03</td>
-            <td>
-              建立自己的 ETF 追蹤表（不是看盤，是看人生）
-              <span class="mission-tag">基礎</span>
-            </td>
-            <td>
-              <a href="https://docs.google.com/spreadsheets/d/1wGTL7QmNVxmf-SJsUVmjD-uMx5lTLBRia9A9mQaOb-4/edit?usp=sharing" target="_blank">📊 Google Sheet 範本</a><br>
-              <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">📌 ETF 追蹤牆</a>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="2"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>04</td>
-            <td>
-              加入 LINE 社群，找到一起走路的人
-              <span class="mission-tag">基礎</span>
-            </td>
-            <td>
-              <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">👥 填表加入「馬濕克村民」</a>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="3"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>05</td>
-            <td>
-              弄懂紅漲綠跌、殖利率 &「配息 ≠ 獲利」
-              <span class="mission-tag">基礎</span>
-            </td>
-            <td>
-              <a href="#" target="_blank">📸 IG 圖卡教學（更新中）</a><br>
-              <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">💧 ETF 配息瀑布牆</a>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="4"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>06</td>
-            <td>
-              挑出你的第一檔 ETF（配息派 vs 指數派）
-              <span class="mission-tag mission-tag-adv">進階</span>
-            </td>
-            <td>
-              <a href="#" target="_blank">🎬 新手投資村 第 3 集（規劃中）</a><br>
-              <small style="color:#777;">先釐清：你是想要「現金流感受」還是「資本利得成長」？</small>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="5"> 完成
-              </label>
-            </td>
-          </tr>
-          <tr>
-            <td>07</td>
-            <td>
-              第一次遇到大回檔，寫下你的「停看聽 SOP」
-              <span class="mission-tag mission-tag-adv">進階</span>
-            </td>
-            <td>
-              <a href="#" target="_blank">🎧 心態特輯影片 / Podcast（規劃中）</a><br>
-              <small style="color:#777;">先想好跌 10% / 20% 時，你要看什麼指標、對自己說什麼。</small>
-            </td>
-            <td>
-              <label>
-                <input type="checkbox" data-badge="6"> 完成
-              </label>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="note">
+        <div><strong>怎麼用？</strong></div>
+        <div>1️⃣ 從 01 任務開始，一路往下做，不用跳關。</div>
+        <div>2️⃣ 每完成一個任務就打勾，會自動幫你點亮對應的「任務勳章」。</div>
+        <div>3️⃣ 這個頁面會記住你在這台裝置上的勾選紀錄，下次回來可以接著破關。</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="mission-table">
+          <thead>
+            <tr>
+              <th>任務編號</th>
+              <th>任務名稱</th>
+              <th>教學資源</th>
+              <th>進度</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01</td>
+              <td>
+                什麼是 ETF？跟股票有什麼不同？
+                <span class="mission-tag">基礎</span>
+              </td>
+              <td>
+                <a href="https://youtu.be/lXZMPNxH-T4" target="_blank" rel="noopener">📺 新手投資村 第 1 集</a>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="0"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>02</td>
+              <td>
+                準備資料開證券戶＆設定第一個定期定額
+                <span class="mission-tag">基礎</span>
+              </td>
+              <td>
+                <a href="https://youtu.be/S3SaVYtBXJY" target="_blank" rel="noopener">📺 新手投資村 第 2 集</a><br>
+                <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">🧮 複利試算工具</a><br>
+                <small style="color: rgba(234,242,255,.60);">步驟：選券商 → 線上開戶 → 綁定銀行 → 設定第一個定期定額</small>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="1"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>03</td>
+              <td>
+                建立自己的 ETF 追蹤表（不是看盤，是看人生）
+                <span class="mission-tag">基礎</span>
+              </td>
+              <td>
+                <a href="https://docs.google.com/spreadsheets/d/1wGTL7QmNVxmf-SJsUVmjD-uMx5lTLBRia9A9mQaOb-4/edit?usp=sharing" target="_blank" rel="noopener">📊 Google Sheet 範本</a><br>
+                <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">📌 ETF 追蹤牆</a>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="2"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>04</td>
+              <td>
+                加入 LINE 社群，找到一起走路的人
+                <span class="mission-tag">基礎</span>
+              </td>
+              <td>
+                <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank" rel="noopener">👥 填表加入「馬濕克村民」</a>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="3"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>05</td>
+              <td>
+                弄懂紅漲綠跌、殖利率 &「配息 ≠ 獲利」
+                <span class="mission-tag">基礎</span>
+              </td>
+              <td>
+                <a href="#" target="_blank" rel="noopener">📸 IG 圖卡教學（更新中）</a><br>
+                <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">💧 ETF 配息瀑布牆</a>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="4"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>06</td>
+              <td>
+                挑出你的第一檔 ETF（配息派 vs 指數派）
+                <span class="mission-tag mission-tag-adv">進階</span>
+              </td>
+              <td>
+                <a href="#" target="_blank" rel="noopener">🎬 新手投資村 第 3 集（規劃中）</a><br>
+                <small style="color: rgba(234,242,255,.60);">先釐清：你是想要「現金流感受」還是「資本利得成長」？</small>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="5"> 完成
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>07</td>
+              <td>
+                第一次遇到大回檔，寫下你的「停看聽 SOP」
+                <span class="mission-tag mission-tag-adv">進階</span>
+              </td>
+              <td>
+                <a href="#" target="_blank" rel="noopener">🎧 心態特輯影片 / Podcast（規劃中）</a><br>
+                <small style="color: rgba(234,242,255,.60);">先想好跌 10% / 20% 時，你要看什麼指標、對自己說什麼。</small>
+              </td>
+              <td>
+                <label>
+                  <input type="checkbox" data-badge="6"> 完成
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- 開戶快速指南 -->
       <div class="hint-box">
@@ -662,7 +820,7 @@
           <li>等審核通過後，綁定你的銀行帳戶，測試匯一小筆錢進券商。</li>
           <li>帳戶可以正常出入金後，就可以依照第 2 任務，在券商裡設定「定期定額」買 ETF。</li>
         </ol>
-        <p style="color:#777;">
+        <p style="color: rgba(234,242,255,.65); margin-top:.45rem;">
           先不用急著選「最完美」、「手續費最低」的券商，<strong>有穩定出入金、你願意打開來看的那一間，就是適合你起步的券商。</strong>
         </p>
       </div>
@@ -678,13 +836,13 @@
         </div>
       </div>
 
-      <p style="margin-top:0.6rem; font-size:0.85rem; color:#777;">
-        小提醒：如果你現在資金不多也沒關係，<strong>先把任務做完，觀念建立好，比急著進場更重要。</strong>
+      <p style="margin-top:.7rem; font-size:.9rem; color: rgba(234,242,255,.65);">
+        小提醒：如果你現在資金不多也沒關係，<strong>先把任務做完、觀念建立好，比急著進場更重要。</strong>
       </p>
-    </div>
+    </section>
 
     <!-- 🔧 新手投資工具包 -->
-    <div class="section">
+    <section class="section">
       <h2>🔧 新手投資工具包：4 大免費工具一次搞定</h2>
       <p>搭配上面的任務一起用，效果最好。這 4 個工具就是你影片裡那套「投資變簡單」工具箱：</p>
 
@@ -693,82 +851,70 @@
           <h3>1️⃣ 複利試算工具</h3>
           <p>幫你試算「每月存多少＋報酬率大概多少」未來可能長成什麼樣子。</p>
           <p>適合用在：任務 02 決定定期定額金額時，先看一眼未來的可能範圍。</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank">開啟複利試算工具 ▶</a>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/" target="_blank" rel="noopener">開啟複利試算 ▶</a>
         </div>
 
         <div class="tool-card">
           <h3>2️⃣ 退休倒推試算</h3>
           <p>從「想要的退休生活」倒推回來，推算現在大概要存多少、報酬率要抓多少比較合理。</p>
           <p>適合用在：完成 01–03 任務後，開始思考中長期目標。</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank">開啟退休倒推 ▶</a>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html" target="_blank" rel="noopener">開啟退休倒推 ▶</a>
         </div>
 
         <div class="tool-card">
           <h3>3️⃣ ETF 追蹤牆</h3>
           <p>把你實際持有或關注的 ETF 放在一起，看長期績效與紀律，而不是每天盯 K 線。</p>
           <p>適合用在：任務 03「建立自己的 ETF 追蹤表」時，一起搭配。</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank">開啟 ETF 追蹤牆 ▶</a>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html" target="_blank" rel="noopener">開啟 ETF 追蹤牆 ▶</a>
         </div>
 
         <div class="tool-card">
           <h3>4️⃣ ETF 配息瀑布牆</h3>
           <p>用圖卡方式看配息時間、殖利率，不再只看單一次公告的「數字爽度」。</p>
           <p>適合用在：任務 05「配息 ≠ 獲利」時，練習看懂入帳節奏與風險。</p>
-          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank">開啟配息瀑布牆 ▶</a>
+          <a href="https://markmoneylife.github.io/compound-interest-tool/etf-dividend-wall.html" target="_blank" rel="noopener">開啟配息瀑布牆 ▶</a>
         </div>
       </div>
 
-      <p style="font-size:0.85rem;color:#777;margin-top:0.7rem;">
+      <p style="font-size:.9rem;color: rgba(234,242,255,.65);margin-top:.85rem;">
         小建議：你可以把這一區加入書籤，或直接在手機主畫面建立捷徑，讓自己「滑 IG 之前，先滑一下工具」。😆
       </p>
-    </div>
+    </section>
 
     <!-- 開戶推薦區：永豐 & 國泰 -->
-    <div class="section" style="border-left:4px solid #8BC34A;">
+    <section class="section" style="border-left:4px solid rgba(255,213,79,.55);">
       <h2>🔓 開戶推薦：用你習慣的銀行就能開始</h2>
       <p>以下兩家是馬克本人實際使用中、介面友善、適合新手 ETF 定期定額起步的券商：</p>
 
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:1rem;">
-
+      <div class="broker-wrap">
         <!-- 永豐大戶投 -->
-        <div style="background:white;border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:1rem;max-width:280px;text-align:center;border:1px solid #E6EBE4;">
-          <img src="https://markmoneylife.github.io/compound-interest-tool/broker-yf.png" alt="永豐大戶投 QR" style="width:140px;height:140px;object-fit:contain;margin:0.5rem auto;display:block;">
-          <h3 style="margin:0.2rem 0;color:#1A1A1A;">永豐大戶投</h3>
-          <p style="font-size:0.9rem;color:#555;margin:0.5rem 0;">線上開戶快速、介面乾淨，適合第一次投資 ETF 的新手</p>
-          <p style="font-size:0.85rem;color:#444;">開戶邀請碼：<strong style="font-size:1rem;color:#1D4A35;">CE4Q6</strong></p>
-          <p>
-            <a href="https://apps.apple.com/tw/app/%E5%A4%A7%E6%88%B6%E6%8A%95/id1526228803" target="_blank"
-               style="background:#1D4A35;color:white;padding:8px 16px;border-radius:999px;text-decoration:none;font-weight:bold;font-size:0.9rem;">
-              📱 立即開戶
-            </a>
-          </p>
+        <div class="broker-card">
+          <img src="https://markmoneylife.github.io/compound-interest-tool/broker-yf.png" alt="永豐大戶投 QR">
+          <h3>永豐大戶投</h3>
+          <p style="font-size:.92rem;">線上開戶快速、介面乾淨，適合第一次投資 ETF 的新手</p>
+          <p style="font-size:.9rem;">開戶邀請碼：<strong style="color: var(--accent); font-size:1.05rem;">CE4Q6</strong></p>
+          <a class="mini-btn" href="https://apps.apple.com/tw/app/%E5%A4%A7%E6%88%B6%E6%8A%95/id1526228803" target="_blank" rel="noopener">📱 立即開戶</a>
         </div>
 
         <!-- 國泰 CUBE -->
-        <div style="background:white;border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:1rem;max-width:280px;text-align:center;border:1px solid #E6EBE4;">
-          <img src="https://markmoneylife.github.io/compound-interest-tool/broker-cathay.png" alt="國泰 CUBE QR" style="width:140px;height:140px;object-fit:contain;margin:0.5rem auto;display:block;">
-          <h3 style="margin:0.2rem 0;color:#1A1A1A;">國泰 CUBE App</h3>
-          <p style="font-size:0.9rem;color:#555;margin:0.5rem 0;">國泰世華與國泰證券整合 App，一鍵開戶＋定期定額設定簡單</p>
-          <p style="font-size:0.85rem;color:#444;">邀請碼：<strong style="font-size:1rem;color:#1D4A35;">7X5LN</strong></p>
-          <p>
-            <a href="https://apps.apple.com/tw/app/cube-%E5%9C%8B%E6%B3%B0%E4%B8%96%E8%8F%AF%E9%8A%80%E8%A1%8C/id1521197484" target="_blank"
-               style="background:#1D4A35;color:white;padding:8px 16px;border-radius:999px;text-decoration:none;font-weight:bold;font-size:0.9rem;">
-              📱 下載 CUBE App
-            </a>
-          </p>
+        <div class="broker-card">
+          <img src="https://markmoneylife.github.io/compound-interest-tool/broker-cathay.png" alt="國泰 CUBE QR">
+          <h3>國泰 CUBE App</h3>
+          <p style="font-size:.92rem;">國泰世華與國泰證券整合 App，一鍵開戶＋定期定額設定簡單</p>
+          <p style="font-size:.9rem;">邀請碼：<strong style="color: var(--accent); font-size:1.05rem;">7X5LN</strong></p>
+          <a class="mini-btn" href="https://apps.apple.com/tw/app/cube-%E5%9C%8B%E6%B3%B0%E4%B8%96%E8%8F%AF%E9%8A%80%E8%A1%8C/id1521197484" target="_blank" rel="noopener">📱 下載 CUBE App</a>
         </div>
-
       </div>
 
-      <p style="text-align:center;color:#777;margin-top:1rem;font-size:0.85rem;">
+      <p style="text-align:center;color: rgba(234,242,255,.62);margin-top:1rem;font-size:.9rem;">
         （邀請碼可幫助你享有開戶優惠，也讓馬克知道有多少新村民從這裡起步 ✨）
       </p>
-    </div>
+    </section>
 
     <!-- 任務勳章牆 -->
-    <div class="section">
+    <section class="section">
       <h2>🏅 任務勳章牆</h2>
-      <p style="font-size:0.9rem; color:#555;">
+      <p style="font-size:.95rem; color: rgba(234,242,255,.74);">
         每完成一個任務，就會點亮一個勳章。<br>
         全部亮起來時，你就不再是「新手」，而是<strong>會思考、會選標的、扛得住回檔的 ETF 投資人</strong>。
       </p>
@@ -781,54 +927,42 @@
         <div class="badge">🧩 ETF 挑選決策徽章</div>
         <div class="badge">🧠 市場心態穩定徽章</div>
       </div>
-    </div>
+    </section>
 
     <!-- 影片學習路線 -->
-    <div class="section">
+    <section class="section">
       <h2>📺 影片學習路線</h2>
       <p><strong>主線任務：</strong>建議按照順序觀看，搭配上面的任務一起做。</p>
       <div class="video-list" style="margin-bottom:1rem;">
-        <a href="https://youtu.be/lXZMPNxH-T4" target="_blank">
-          🔰 新手投資村 第 1 集：什麼是 ETF？適合誰？
-        </a>
-        <a href="https://youtu.be/S3SaVYtBXJY" target="_blank">
-          🧭 新手投資村 第 2 集：目標、風險邊界與定期定額帳戶
-        </a>
+        <a href="https://youtu.be/lXZMPNxH-T4" target="_blank" rel="noopener">🔰 新手投資村 第 1 集：什麼是 ETF？適合誰？</a>
+        <a href="https://youtu.be/S3SaVYtBXJY" target="_blank" rel="noopener">🧭 新手投資村 第 2 集：目標、風險邊界與定期定額帳戶</a>
         <small>（影片標題之後你可以自行微調成實際上架名稱）</small>
       </div>
 
       <p><strong>進階延伸（等你任務都亮一半以上再來）：</strong></p>
       <div class="video-list">
-        <a href="https://youtu.be/nI7DW7Fyhq8" target="_blank">
-          🛠 用對工具，投資變簡單！4 大免費理財工具一次整理
-        </a>
-        <a href="https://youtu.be/Xw_DgUU7w5w" target="_blank">
-          🚀 ETF 新手起步：這方法你也能學！
-        </a>
-        <a href="https://www.youtube.com/watch?v=eb1zqgGrsJY" target="_blank">
-          📉 我不是買貴，是壓錯時機！00919 與 00713 調整經驗
-        </a>
-        <a href="https://www.youtube.com/watch?v=1Amo-nkHMeA" target="_blank">
-          📈 高股息 ETF 00713 深入解析
-        </a>
+        <a href="https://youtu.be/nI7DW7Fyhq8" target="_blank" rel="noopener">🛠 用對工具，投資變簡單！4 大免費理財工具一次整理</a>
+        <a href="https://youtu.be/Xw_DgUU7w5w" target="_blank" rel="noopener">🚀 ETF 新手起步：這方法你也能學！</a>
+        <a href="https://www.youtube.com/watch?v=eb1zqgGrsJY" target="_blank" rel="noopener">📉 我不是買貴，是壓錯時機！00919 與 00713 調整經驗</a>
+        <a href="https://www.youtube.com/watch?v=1Amo-nkHMeA" target="_blank" rel="noopener">📈 高股息 ETF 00713 深入解析</a>
       </div>
-    </div>
+    </section>
 
     <!-- 常見卡關 Q&A -->
-    <div class="section">
+    <section class="section">
       <h2>❓ 新手常見卡關：你可能也在想這些</h2>
 
-      <div class="faq-item">
-        <div class="faq-q">Q1. 我現在錢很少，真的有必要現在就開始嗎？</div>
-        <div class="faq-a">
+      <div class="note" style="background: rgba(234,242,255,.04); border: 1px solid rgba(148,163,184,.18);">
+        <div style="font-weight:900; margin-bottom:.35rem; color:#fff;">Q1. 我現在錢很少，真的有必要現在就開始嗎？</div>
+        <div style="color: rgba(234,242,255,.78);">
           有。你一開始存的不是「錢」，而是「習慣」和「紀錄」。<br>
           就算每月只定期定額 1,000 元，先完成 01～03 任務，<strong>讓自己習慣看追蹤表、用工具思考</strong>，之後收入變多，你只要把數字放大就好。
         </div>
       </div>
 
-      <div class="faq-item">
-        <div class="faq-q">Q2. 我很怕買在高點，一直猶豫不敢按下去…</div>
-        <div class="faq-a">
+      <div class="note" style="background: rgba(234,242,255,.04); border: 1px solid rgba(148,163,184,.18);">
+        <div style="font-weight:900; margin-bottom:.35rem; color:#fff;">Q2. 我很怕買在高點，一直猶豫不敢按下去…</div>
+        <div style="color: rgba(234,242,255,.78);">
           這就是為什麼有「任務 02：定期定額」跟「任務 07：回檔 SOP」。<br>
           <strong>你不用猜高低點</strong>，你只要決定：<br>
           （1）這筆錢是要放多久？<br>
@@ -837,29 +971,29 @@
         </div>
       </div>
 
-      <div class="faq-item">
-        <div class="faq-q">Q3. 這麼多 ETF，我到底要選哪一檔？</div>
-        <div class="faq-a">
+      <div class="note" style="background: rgba(234,242,255,.04); border: 1px solid rgba(148,163,184,.18);">
+        <div style="font-weight:900; margin-bottom:.35rem; color:#fff;">Q3. 這麼多 ETF，我到底要選哪一檔？</div>
+        <div style="color: rgba(234,242,255,.78);">
           先不要一次研究十檔。<br>
           任務 06 就是要你<strong>先決定自己是偏「配息派」還是「指數成長派」</strong>，再從每個族群挑 1 檔當起點。<br>
           你也可以把自己的想法打在紀錄表裡，之後回頭看，會發現自己的眼光也在進化。
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- 社群 CTA -->
-    <div class="section">
+    <section class="section">
       <h2>📬 成為馬濕克村民！</h2>
       <p style="text-align:center">
         不用一個人悶著研究，<strong>把問題帶到社群裡一起討論</strong>，會走得比較久也比較穩。
       </p>
-      <p style="text-align:center; font-size:0.9rem; color:#555;">
+      <p style="text-align:center; font-size:.95rem; color: rgba(234,242,255,.70);">
         建議完成任務 01～03 之後，再加入 LINE 社群，這樣你會更知道自己在問什麼，也比較不容易被市場情緒帶著跑。
       </p>
       <div class="cta" style="text-align:center; margin-top:1rem;">
-        <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank">🚪 我要加入 LINE 社群</a>
+        <a href="https://forms.gle/FPPETVwMTvEuD56d7" target="_blank" rel="noopener">🚪 我要加入 LINE 社群</a>
       </div>
-    </div>
+    </section>
 
     <div id="toast"></div>
 
@@ -870,25 +1004,17 @@
     <hr>
 
     <section class="support-section">
-      <h3 style="color:#1D4A35;">☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
+      <h3>☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
       <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
-      <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
+      <p><strong style="color:#fff;">如果你覺得實用，也許可以選一個方式支持我：</strong></p>
 
       <div class="support-buttons">
-        <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank">
-          🪐 加入會員星球
-        </a>
-
-        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank">
-          🛍️ 選購週邊
-        </a>
-
-        <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank">
-          📱 貼圖支持
-        </a>
+        <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank" rel="noopener">🪐 加入會員星球</a>
+        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank" rel="noopener">🛍️ 選購週邊</a>
+        <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank" rel="noopener">📱 貼圖支持</a>
       </div>
 
-      <p style="font-size:0.9rem;color:#555;margin-top:0.5rem;">
+      <p style="font-size:.95rem;color: rgba(234,242,255,.70);margin-top:.7rem;">
         感謝你願意支持，讓這些工具陪你一起走得更長遠 💛
       </p>
     </section>
@@ -922,9 +1048,7 @@
             }
           });
           const completed = saved.filter(Boolean).length;
-          if (completed === checkboxes.length) {
-            completionShown = true; // 避免重複彈出
-          }
+          if (completed === checkboxes.length) completionShown = true;
         }
       } catch (e) {
         console.warn('無法讀取新手投資村進度：', e);
@@ -942,9 +1066,7 @@
             showToast(`🎉 已獲得 ${badges[index].textContent}`);
           }
         } else {
-          if (badges[index]) {
-            badges[index].classList.remove('earned');
-          }
+          if (badges[index]) badges[index].classList.remove('earned');
         }
         saveProgress();
         updateProgress();
@@ -982,7 +1104,8 @@
       if (!toast) return;
       toast.textContent = msg;
       toast.style.display = 'block';
-      setTimeout(() => {
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
         toast.style.display = 'none';
       }, 2500);
     }
@@ -994,15 +1117,17 @@
       toastFinal.style.bottom = '20px';
       toastFinal.style.left = '50%';
       toastFinal.style.transform = 'translateX(-50%)';
-      toastFinal.style.background = '#FFD54F';
-      toastFinal.style.color = '#1A1A1A';
-      toastFinal.style.padding = '1rem 1.5rem';
+      toastFinal.style.background = 'rgba(255,213,79,.95)';
+      toastFinal.style.color = '#08131f';
+      toastFinal.style.padding = '1rem 1.2rem';
       toastFinal.style.borderRadius = '999px';
-      toastFinal.style.fontWeight = 'bold';
-      toastFinal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+      toastFinal.style.fontWeight = '900';
+      toastFinal.style.boxShadow = '0 18px 40px rgba(0,0,0,.35)';
       toastFinal.style.zIndex = '1000';
+      toastFinal.style.maxWidth = 'min(92vw, 920px)';
+      toastFinal.style.textAlign = 'center';
       document.body.appendChild(toastFinal);
-      setTimeout(() => toastFinal.remove(), 5000);
+      setTimeout(() => toastFinal.remove(), 5200);
     }
 
     // 重設進度
@@ -1022,13 +1147,9 @@
     (function initViewCounter() {
       const viewKey = 'newbieVillageViewCount_v1';
       let count = 0;
-      try {
-        count = parseInt(localStorage.getItem(viewKey) || '0', 10);
-      } catch(e) {}
+      try { count = parseInt(localStorage.getItem(viewKey) || '0', 10); } catch(e) {}
       count += 1;
-      try {
-        localStorage.setItem(viewKey, String(count));
-      } catch(e) {}
+      try { localStorage.setItem(viewKey, String(count)); } catch(e) {}
       const span = document.getElementById('viewCount');
       if (span) span.textContent = `約 ${count} 次`;
     })();
