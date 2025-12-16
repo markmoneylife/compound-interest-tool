@@ -14,7 +14,6 @@
       --sub:#94a3b8;
       --good:#22c55e;
       --bad:#f87171;
-      --warn:#facc15;
       --radius:18px;
       --shadow: 0 24px 70px rgba(0,0,0,.55);
     }
@@ -29,11 +28,7 @@
         radial-gradient(circle at 50% 120%, #020617 0, #000 62%);
       min-height:100vh;
     }
-    .wrap{
-      max-width: 1050px;
-      margin: 20px auto 60px;
-      padding: 0 14px;
-    }
+    .wrap{max-width:1050px;margin:20px auto 60px;padding:0 14px;}
     .top{
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(10,18,38,.92), rgba(6,10,20,.92));
@@ -41,335 +36,204 @@
       box-shadow: var(--shadow);
       overflow:hidden;
       padding: 16px 16px 14px;
-      position:relative;
     }
-    .top h1{
-      margin:0 0 6px;
-      font-size: 16px;
-      letter-spacing:.12em;
-    }
-    .top p{
-      margin:0;
-      color:var(--sub);
-      font-size: 12px;
-      line-height:1.6;
-    }
+    .top h1{margin:0 0 6px;font-size:16px;letter-spacing:.12em;}
+    .top p{margin:0;color:var(--sub);font-size:12px;line-height:1.6;}
     .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,.35);
-      background: rgba(2,6,23,.55);
-      color: var(--sub);
-      font-size: 12px;
-      white-space: nowrap;
-      margin-top: 10px;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.35);
+      background:rgba(2,6,23,.55);
+      color:var(--sub);font-size:12px;white-space:nowrap;margin-top:10px;
     }
-    .pill .dot{
-      width:8px; height:8px; border-radius:999px;
-      background: var(--good);
-      box-shadow: 0 0 12px var(--good);
-    }
+    .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--good);box-shadow:0 0 12px var(--good);}
 
     .card{
-      margin-top: 14px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
+      margin-top:14px;border-radius:var(--radius);
+      border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(11,18,38,.92), rgba(6,10,20,.92));
-      box-shadow: 0 18px 52px rgba(0,0,0,.35);
+      box-shadow:0 18px 52px rgba(0,0,0,.35);
       overflow:hidden;
     }
     .card-h{
-      padding: 14px 16px 10px;
-      border-bottom: 1px solid rgba(148,163,184,.16);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px 16px 10px;
+      border-bottom:1px solid rgba(148,163,184,.16);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-    .card-h b{
-      font-size: 13px;
-      letter-spacing:.16em;
-      color: rgba(226,232,240,.92);
-      text-transform: uppercase;
-    }
-    .card-h span{ color: var(--sub); font-size: 12px; }
-    .card-b{ padding: 14px 16px 16px; }
+    .card-h b{font-size:13px;letter-spacing:.16em;color:rgba(226,232,240,.92);text-transform:uppercase;}
+    .card-h span{color:var(--sub);font-size:12px;}
+    .card-b{padding:14px 16px 16px;}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .row{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    label{ color: var(--sub); font-size: 12px; }
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .row{display:flex;flex-direction:column;gap:6px;}
+    label{color:var(--sub);font-size:12px;}
     input, select{
-      width:100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,.30);
-      background: rgba(2,6,23,.45);
-      color: var(--text);
-      outline:none;
-      font-size: 14px;
+      width:100%;padding:11px 12px;border-radius:12px;
+      border:1px solid rgba(148,163,184,.30);
+      background:rgba(2,6,23,.45);color:var(--text);
+      outline:none;font-size:14px;
     }
-    input::placeholder{ color: rgba(148,163,184,.55); }
+    input::placeholder{color:rgba(148,163,184,.55);}
 
-    .help{
-      color: rgba(148,163,184,.75);
-      font-size: 12px;
-      line-height:1.6;
-      margin-top: 6px;
-    }
+    .help{color:rgba(148,163,184,.75);font-size:12px;line-height:1.6;margin-top:6px;}
 
     .section{
-      margin-top: 12px;
-      border: 1px solid rgba(148,163,184,.16);
-      background: rgba(2,6,23,.22);
-      border-radius: 14px;
-      padding: 12px;
+      margin-top:12px;border:1px solid rgba(148,163,184,.16);
+      background:rgba(2,6,23,.22);border-radius:14px;padding:12px;
     }
-    .section h3{
-      margin: 0 0 10px;
-      font-size: 13px;
-      letter-spacing:.08em;
-      color: rgba(226,232,240,.92);
-    }
+    .section h3{margin:0 0 10px;font-size:13px;letter-spacing:.08em;color:rgba(226,232,240,.92);}
 
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 12px;
-      align-items:center;
-    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center;}
     .btn{
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,.35);
-      background: rgba(2,6,23,.45);
-      color: var(--sub);
-      cursor:pointer;
-      font-size: 13px;
-      user-select:none;
-      white-space:nowrap;
+      padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(148,163,184,.35);
+      background:rgba(2,6,23,.45);
+      color:var(--sub);cursor:pointer;font-size:13px;user-select:none;white-space:nowrap;
     }
-    .btn:hover{ border-color: rgba(248,250,252,.65); color: var(--text); }
+    .btn:hover{border-color:rgba(248,250,252,.65);color:var(--text);}
     .btn-primary{
-      border: none;
+      border:none;
       background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(56,189,248,.95));
-      color:#021018;
-      font-weight: 800;
-      box-shadow: 0 14px 40px rgba(34,197,94,.25);
+      color:#021018;font-weight:800;
+      box-shadow:0 14px 40px rgba(34,197,94,.25);
     }
-    .status{
-      margin-left:auto;
-      font-size: 12px;
-      color: var(--sub);
-    }
-    .status.ok{ color: #bbf7d0; }
-    .status.err{ color: #fecaca; }
+    .status{margin-left:auto;font-size:12px;color:var(--sub);white-space:pre-wrap;}
+    .status.ok{color:#bbf7d0;}
+    .status.err{color:#fecaca;}
 
     @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-      .status{ width:100%; margin-left:0; }
+      .grid{grid-template-columns:1fr;}
+      .status{width:100%;margin-left:0;}
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="top">
-      <h1>MATCH POINT LAB｜檢測成績快速填寫（教練用）</h1>
-      <p>目標：<b>少打字、少出錯、送出就寫進 Google Sheets「檢測成績」</b>。只需填一次就完成紀錄。</p>
-      <div class="pill"><span class="dot"></span><span>提交後自動寫入 Sheet（append row）</span></div>
+<div class="wrap">
+  <div class="top">
+    <h1>MATCH POINT LAB｜檢測成績快速填寫（教練用）</h1>
+    <p>你要的就是這件事：<b>填完 → 送出 → 寫入 Google Sheets「檢測成績」</b>。本頁不記錄「教練 3 點建議」。</p>
+    <div class="pill"><span class="dot"></span><span id="apiState">API：尚未連線</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <b>基本資料</b>
+      <span>必填：姓名 / 檢測日期</span>
     </div>
+    <div class="card-b">
+      <div class="grid">
+        <div class="row">
+          <label>姓名（必填｜可搜尋）</label>
+          <input id="姓名" list="studentList" placeholder="點一下或輸入關鍵字搜尋…" />
+          <datalist id="studentList"></datalist>
+          <div class="help" id="studentHint">學員名單載入中…</div>
+        </div>
 
-    <div class="card">
-      <div class="card-h">
-        <b>基本資料</b>
-        <span>必填：姓名 / 檢測日期</span>
+        <div class="row">
+          <label>檢測日期（必填）</label>
+          <input id="檢測日期" type="date" />
+        </div>
+
+        <div class="row">
+          <label>性別</label>
+          <select id="性別">
+            <option value="">—</option>
+            <option value="男">男</option>
+            <option value="女">女</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label>年齡</label>
+          <input id="年齡" type="number" inputmode="numeric" placeholder="例如：16" />
+        </div>
       </div>
-      <div class="card-b">
-        <div class="grid">
-          <div class="row">
-            <label>姓名（必填）</label>
-            <input id="姓名" placeholder="例如：王柏雨" />
-          </div>
-          <div class="row">
-            <label>檢測日期（必填）</label>
-            <input id="檢測日期" type="date" />
-          </div>
-          <div class="row">
-            <label>性別</label>
-            <select id="性別">
-              <option value="">—</option>
-              <option value="男">男</option>
-              <option value="女">女</option>
-            </select>
-          </div>
-          <div class="row">
-            <label>年齡</label>
-            <input id="年齡" type="number" inputmode="numeric" placeholder="例如：16" />
-          </div>
-        </div>
 
-        <div class="help">小提示：如果只是要快速紀錄，「性別 / 年齡」可不填（但你未來做同組分析會更準）。</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-h">
-        <b>23 個檢測項目</b>
-        <span>依你 Sheet 欄位順序排列</span>
-      </div>
-      <div class="card-b">
-
-        <div class="section">
-          <h3>爆發 / 跳躍</h3>
-          <div class="grid">
-            <div class="row">
-              <label>CMJ(cm)</label>
-              <input id="CMJ(cm)" type="number" step="0.01" inputmode="decimal" placeholder="例如：42.5" />
-            </div>
-            <div class="row">
-              <label>Hop test 10/5(m/s)</label>
-              <input id="Hop test 10/5(m/s)" type="number" step="0.01" inputmode="decimal" placeholder="例如：1.98" />
-            </div>
-            <div class="row">
-              <label>側跳(左)(m)</label>
-              <input id="側跳(左)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：2.05" />
-            </div>
-            <div class="row">
-              <label>側跳(右)(m)</label>
-              <input id="側跳(右)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：1.90" />
-            </div>
-            <div class="row">
-              <label>Broad jump(m)</label>
-              <input id="Broad jump(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：2.40" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>力量</h3>
-          <div class="grid">
-            <div class="row">
-              <label>IMTP(N)</label>
-              <input id="IMTP(N)" type="number" step="1" inputmode="numeric" placeholder="例如：1358" />
-            </div>
-            <div class="row">
-              <label>硬拉(kg)</label>
-              <input id="硬拉(kg)" type="number" step="0.1" inputmode="decimal" placeholder="例如：145" />
-            </div>
-            <div class="row">
-              <label>Grip strength</label>
-              <input id="Grip strength" type="number" step="0.1" inputmode="decimal" placeholder="例如：61.9" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>藥球（拋擲）</h3>
-          <div class="grid">
-            <div class="row">
-              <label>跪姿過頭拋(m)</label>
-              <input id="跪姿過頭拋(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：8.6" />
-            </div>
-            <div class="row">
-              <label>過頂拋(m)</label>
-              <input id="過頂拋(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：9" />
-            </div>
-            <div class="row">
-              <label>跪姿水平拋(左)(m)</label>
-              <input id="跪姿水平拋(左)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：10.65" />
-            </div>
-            <div class="row">
-              <label>跪姿水平拋(右)(m)</label>
-              <input id="跪姿水平拋(右)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：9.6" />
-            </div>
-            <div class="row">
-              <label>水平拋(左)(m)</label>
-              <input id="水平拋(左)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：12.2" />
-            </div>
-            <div class="row">
-              <label>水平拋(右)(m)</label>
-              <input id="水平拋(右)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：12.15" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>肌耐力</h3>
-          <div class="grid">
-            <div class="row">
-              <label>Push up(次數)</label>
-              <input id="Push up(次數)" type="number" step="1" inputmode="numeric" placeholder="例如：43" />
-            </div>
-            <div class="row">
-              <label>Inverted row(次數)</label>
-              <input id="Inverted row(次數)" type="number" step="1" inputmode="numeric" placeholder="例如：36" />
-            </div>
-            <div class="row">
-              <label>Plank(秒)</label>
-              <input id="Plank(秒)" type="number" step="1" inputmode="numeric" placeholder="例如：100" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>速度 / 敏捷 / 反應（秒數越小越好）</h3>
-          <div class="grid">
-            <div class="row">
-              <label>10米衝刺(秒)</label>
-              <input id="10米衝刺(秒)" type="number" step="0.01" inputmode="decimal" placeholder="例如：1.75" />
-            </div>
-            <div class="row">
-              <label>20米衝刺(秒)</label>
-              <input id="20米衝刺(秒)" type="number" step="0.01" inputmode="decimal" placeholder="例如：2.93" />
-            </div>
-            <div class="row">
-              <label>505敏捷跑(右)(秒)</label>
-              <input id="505敏捷跑(右)(秒)" type="number" step="0.01" inputmode="decimal" placeholder="例如：5.13" />
-            </div>
-            <div class="row">
-              <label>505敏捷跑(左)(秒)</label>
-              <input id="505敏捷跑(左)(秒)" type="number" step="0.01" inputmode="decimal" placeholder="例如：5.06" />
-            </div>
-            <div class="row">
-              <label>蜘蛛跑(秒)</label>
-              <input id="蜘蛛跑(秒)" type="number" step="0.01" inputmode="decimal" placeholder="例如：16.96" />
-            </div>
-            <div class="row">
-              <label>反應燈測試(次數)</label>
-              <input id="反應燈測試(次數)" type="number" step="1" inputmode="numeric" placeholder="例如：47" />
-            </div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="clearBtn" type="button">清空全部</button>
-          <button class="btn btn-primary" id="submitBtn" type="button">送出並寫入 Sheet</button>
-          <span class="status" id="status">—</span>
-        </div>
-
-        <div class="help">
-          ⚠️ 注意：本頁不會記錄「教練 3 點建議」。它只做一件事：把檢測數據寫進 Google Sheets。<br/>
-          ✅ 建議流程：檢測完 → 30 秒填完 → 回到報告頁看結果。
-        </div>
-
-      </div>
+      <div class="help">若你之後要做同組平均與 Z 分數，性別/年齡越完整越好；但今天要「快填」也可以先留空。</div>
     </div>
   </div>
 
+  <div class="card">
+    <div class="card-h">
+      <b>23 個檢測項目</b>
+      <span>依你 Sheet 欄位順序</span>
+    </div>
+    <div class="card-b">
+
+      <div class="section">
+        <h3>爆發 / 跳躍</h3>
+        <div class="grid">
+          <div class="row"><label>CMJ(cm)</label><input id="CMJ(cm)" type="number" step="0.01" inputmode="decimal" placeholder="例如：42.5"/></div>
+          <div class="row"><label>Hop test 10/5(m/s)</label><input id="Hop test 10/5(m/s)" type="number" step="0.01" inputmode="decimal" placeholder="例如：1.98"/></div>
+          <div class="row"><label>側跳(左)(m)</label><input id="側跳(左)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：2.05"/></div>
+          <div class="row"><label>側跳(右)(m)</label><input id="側跳(右)(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：1.90"/></div>
+          <div class="row"><label>Broad jump(m)</label><input id="Broad jump(m)" type="number" step="0.01" inputmode="decimal" placeholder="例如：2.40"/></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>力量</h3>
+        <div class="grid">
+          <div class="row"><label>IMTP(N)</label><input id="IMTP(N)" type="number" step="1" inputmode="numeric" placeholder="例如：1358"/></div>
+          <div class="row"><label>硬拉(kg)</label><input id="硬拉(kg)" type="number" step="0.1" inputmode="decimal" placeholder="例如：145"/></div>
+          <div class="row"><label>Grip strength</label><input id="Grip strength" type="number" step="0.1" inputmode="decimal" placeholder="例如：61.9"/></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>藥球（拋擲）</h3>
+        <div class="grid">
+          <div class="row"><label>跪姿過頭拋(m)</label><input id="跪姿過頭拋(m)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>過頂拋(m)</label><input id="過頂拋(m)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>跪姿水平拋(左)(m)</label><input id="跪姿水平拋(左)(m)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>跪姿水平拋(右)(m)</label><input id="跪姿水平拋(右)(m)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>水平拋(左)(m)</label><input id="水平拋(左)(m)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>水平拋(右)(m)</label><input id="水平拋(右)(m)" type="number" step="0.01" inputmode="decimal"/></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>肌耐力</h3>
+        <div class="grid">
+          <div class="row"><label>Push up(次數)</label><input id="Push up(次數)" type="number" step="1" inputmode="numeric"/></div>
+          <div class="row"><label>Inverted row(次數)</label><input id="Inverted row(次數)" type="number" step="1" inputmode="numeric"/></div>
+          <div class="row"><label>Plank(秒)</label><input id="Plank(秒)" type="number" step="1" inputmode="numeric"/></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>速度 / 敏捷 / 反應（秒數越小越好）</h3>
+        <div class="grid">
+          <div class="row"><label>10米衝刺(秒)</label><input id="10米衝刺(秒)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>20米衝刺(秒)</label><input id="20米衝刺(秒)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>505敏捷跑(右)(秒)</label><input id="505敏捷跑(右)(秒)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>505敏捷跑(左)(秒)</label><input id="505敏捷跑(左)(秒)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>蜘蛛跑(秒)</label><input id="蜘蛛跑(秒)" type="number" step="0.01" inputmode="decimal"/></div>
+          <div class="row"><label>反應燈測試(次數)</label><input id="反應燈測試(次數)" type="number" step="1" inputmode="numeric"/></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="clearBtn" type="button">清空全部</button>
+        <button class="btn btn-primary" id="submitBtn" type="button">送出並寫入 Sheet</button>
+        <span class="status" id="status">—</span>
+      </div>
+
+      <div class="help">
+        ✅ 若你按「送出」沒反應：本頁會直接顯示 HTTP 狀態碼與後端回應，讓你不用猜。<br/>
+        ✅ 建議教練使用 https 網址開啟（GitHub Pages / WordPress 頁面），不要用 file:// 開。
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ✅ 1) 改成你部署的 Web App URL（Apps Script → 部署 → 網頁應用程式）
+  // ✅ 你只要改這裡：換成你 Apps Script 部署的 Web App URL
   const WEB_APP_URL = "請貼上你的Web App URL";
 
-  // ✅ 2) 這份 keys 就是你的 Sheet 欄位（照截圖順序）
   const FIELDS = [
     "姓名","性別","年齡","檢測日期",
-
     "CMJ(cm)","Hop test 10/5(m/s)","側跳(左)(m)","側跳(右)(m)","Broad jump(m)",
     "IMTP(N)","硬拉(kg)","Grip strength",
     "跪姿過頭拋(m)","過頂拋(m)",
@@ -378,19 +242,9 @@
     "10米衝刺(秒)","20米衝刺(秒)","505敏捷跑(右)(秒)","505敏捷跑(左)(秒)","蜘蛛跑(秒)",
     "反應燈測試(次數)"
   ];
-
   const REQUIRED = ["姓名","檢測日期"];
 
   const $ = (id)=>document.getElementById(id);
-
-  // 預設日期 = 今天（台灣時區）
-  (function initDate(){
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    $("檢測日期").value = `${yyyy}-${mm}-${dd}`;
-  })();
 
   function setStatus(msg, type){
     const el = $("status");
@@ -400,5 +254,129 @@
     if(type==="err") el.classList.add("err");
   }
 
+  // 預設日期=今天
+  (function initDate(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    $("檢測日期").value = `${yyyy}-${mm}-${dd}`;
+  })();
+
   function readPayload(){
-    const pa
+    const payload = {};
+    FIELDS.forEach(k=>{
+      const node = $(k);
+      if(!node) return;
+      const raw = node.value;
+      if(raw == null || String(raw).trim()==="") return;
+
+      if(node.type === "number"){
+        const n = Number(raw);
+        if(!Number.isNaN(n)) payload[k] = n;
+        return;
+      }
+      payload[k] = String(raw).trim();
+    });
+    return payload;
+  }
+
+  function validate(payload){
+    for(const k of REQUIRED){
+      if(payload[k] == null || String(payload[k]).trim()==="") return `缺少必填：${k}`;
+    }
+    return null;
+  }
+
+  function clearAll({ keepProfile=false }={}){
+    FIELDS.forEach(k=>{
+      const node = $(k);
+      if(!node) return;
+      if(keepProfile && (k==="姓名" || k==="性別" || k==="年齡")) return;
+      if(k==="檢測日期") return;
+      node.value = "";
+    });
+  }
+
+  async function pingApiAndLoadStudents(){
+    try{
+      if(!WEB_APP_URL || WEB_APP_URL.includes("請貼上")){
+        $("apiState").textContent = "API：請先設定 WEB_APP_URL";
+        $("studentHint").textContent = "請先把 WEB_APP_URL 換成 Apps Script Web App URL";
+        return;
+      }
+
+      $("apiState").textContent = "API：連線中…";
+
+      const url = WEB_APP_URL + (WEB_APP_URL.includes("?") ? "&" : "?") + "action=students";
+      const res = await fetch(url, { method:"GET" });
+      const text = await res.text();
+
+      let data = null;
+      try { data = JSON.parse(text); } catch(e){}
+
+      if(!res.ok || !data || data.ok !== true){
+        $("apiState").textContent = "API：連線失敗";
+        $("studentHint").textContent = `名單載入失敗（HTTP ${res.status}）\n${text}`;
+        return;
+      }
+
+      $("apiState").textContent = "API：已連線";
+      const names = Array.isArray(data.names) ? data.names : [];
+      const dl = $("studentList");
+      dl.innerHTML = names.map(n => `<option value="${escapeHtml(n)}"></option>`).join("");
+      $("studentHint").textContent = names.length ? `已載入 ${names.length} 位學員（可直接搜尋）` : "名單是空的（請確認「學員主資料表」有姓名欄）";
+
+    } catch (e){
+      $("apiState").textContent = "API：連線失敗";
+      $("studentHint").textContent = "名單載入失敗：請確認 Web App 部署權限/網址是否正確";
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  async function submit(){
+    try{
+      setStatus("送出中…", "");
+      const payload = readPayload();
+      const err = validate(payload);
+      if(err){ setStatus(err, "err"); return; }
+
+      const res = await fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      let data = null;
+      try { data = JSON.parse(text); } catch(e){}
+
+      if(!res.ok || (data && data.ok===false)){
+        setStatus(`❌ 送出失敗（HTTP ${res.status}）\n${text}`, "err");
+        return;
+      }
+
+      setStatus("✅ 已寫入 Sheet（完成）", "ok");
+      clearAll({ keepProfile:true });
+
+    } catch (e){
+      setStatus("❌ 送出失敗：請確認 WEB_APP_URL / 部署權限 / 網路（或不要用 file:// 開）", "err");
+    }
+  }
+
+  $("clearBtn").addEventListener("click", ()=>{ clearAll({keepProfile:false}); setStatus("已清空", ""); });
+  $("submitBtn").addEventListener("click", submit);
+
+  // ✅ 一載入就抓名單
+  pingApiAndLoadStudents();
+</script>
+</body>
+</html>
