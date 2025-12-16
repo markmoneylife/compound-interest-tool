@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<!-- 網站小圖示 -->
-  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
-  <link rel="shortcut icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
-  <!-- 網站圖示 (favicon) -->
-  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
-  <link rel="shortcut icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
-  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克">
-  <link rel="canonical" href="https://markmoneylife.com/etf-performance-wall/">
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://markmoneylife.com/etf-performance-wall/">
-  <meta property="og:title" content="台股ETF績效卡片牆｜吳馬克理財">
-  <meta property="og:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
-  <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@markmoneylife">
-  <meta name="twitter:title" content="台股ETF績效卡片牆｜吳馬克理財">
-  <meta name="twitter:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。">
-  <meta name="twitter:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png">
-  <!-- Structured Data -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ SEO -->
+  <title>台股ETF績效卡片牆｜吳馬克理財</title>
+  <meta name="description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。" />
+  <meta name="keywords" content="ETF, 台股ETF, 配息, 投資, 理財, 績效, 吳馬克" />
+  <link rel="canonical" href="https://markmoneylife.com/etf-performance-wall/" />
+
+  <!-- ✅ Favicon -->
+  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png" />
+  <link rel="shortcut icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png" />
+
+  <!-- ✅ Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://markmoneylife.com/etf-performance-wall/" />
+  <meta property="og:title" content="台股ETF績效卡片牆｜吳馬克理財" />
+  <meta property="og:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。" />
+  <meta property="og:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" />
+
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@markmoneylife" />
+  <meta name="twitter:title" content="台股ETF績效卡片牆｜吳馬克理財" />
+  <meta name="twitter:description" content="馬克理財｜台股前十大ETF績效卡片牆，顯示多期報酬並結合歷史價格走勢圖，助你快速掌握ETF表現。" />
+  <meta name="twitter:image" content="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" />
+
+  <!-- ✅ Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -34,148 +38,717 @@
     "url": "https://markmoneylife.com/etf-performance-wall/"
   }
   </script>
-  <title>台股ETF績效卡片牆｜吳馬克理財</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <style>
-    /* 全局樣式 */
-    body { background: #F5F2E9; font-family: 'Segoe UI', sans-serif; color: #333; margin: 0; padding: 2rem; }
 
-    /* 手機選單 */
-    .nav-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 9999; background: #FFD54F; border: none; padding: .6rem 1rem; border-radius: .5rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
-    .nav-bar-wrapper { background: #1D4A35; padding: 1rem 0; }
-    nav[aria-label] .nav-bar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
-    .nav-bar a { background: #FFD54F; color: #1A1A1A; font-weight: bold; padding: .65rem 1.2rem; border-radius: .75rem; transition: all .2s; }
-    .nav-bar a:hover { background: #FFE082; transform: translateY(-2px); }
-    @media (max-width: 768px) {
-      .nav-toggle { display: block; }
-      .nav-bar { display: none; flex-direction: column; align-items: center; }
-      .nav-bar.active { display: flex; }
-      .nav-bar a { width: 90%; text-align: center; margin-bottom: .5rem; }
+  <style>
+    :root{
+      /* ✅ 頻道網站：深綠＋深藍（信任＋理性） */
+      --bg: #020911;
+      --bg2:#071623;
+      --panel:#071a2a;
+      --card:#072534;
+      --card2:#06202d;
+      --stroke: rgba(255,255,255,.10);
+
+      --green:#0ea57a;
+      --blue:#2b7cff;
+      --accent:#ffd54f;
+      --text:#eaf3ff;
+      --muted:rgba(234,243,255,.72);
+      --muted2:rgba(234,243,255,.52);
+
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --shadow2: 0 10px 28px rgba(0,0,0,.28);
+
+      --radius: 18px;
+      --radius2: 14px;
     }
 
-    /* 卡片牆 */
-    h1 { text-align: center; color: #1a3c34; margin-bottom: 0.5rem; }
-    .dialog { background: #fff7e6; border: 1px solid #ffd27f; border-left: 4px solid #f0a500; padding: 0.75rem 1rem; margin: 0 auto 1rem; max-width: 1200px; font-size: 0.9rem; line-height: 1.4; }
-    .dialog p { margin: 0.25rem 0; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; }
-    .card-header { background: #1a3c34; color: #fff; padding: 0.75rem; font-weight: bold; font-size: 1rem; }
-    .card-body { padding: 1.5rem 0.75rem 0.75rem; display: flex; flex-direction: column; flex: 1; }
-    .price { font-size: 1.6rem; color: #1a3c34; margin: 0.5rem 0; }
-    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
-    .metric { background: #f0f0f0; border-radius: 4px; padding: 0.5rem; text-align: center; }
-    .metric .label { font-size: 0.8rem; color: #666; }
-    .metric .value { font-size: 1rem; font-weight: bold; margin-top: 0.2rem; }
-    .positive { color: #dc3545; }
-    .negative { color: #28a945; }
-    .chart-container { position: relative; height: 120px; margin-top: auto; }
-    .card-footer { background: #fafafa; padding: 0.5rem; font-size: 0.75rem; text-align: right; color: #999; }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 16% -10%, rgba(14,165,122,.20), transparent 55%),
+        radial-gradient(780px 520px at 90% 0%, rgba(43,124,255,.20), transparent 60%),
+        radial-gradient(900px 560px at 45% 110%, rgba(255,213,79,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, #04101a 100%);
+    }
 
-    /* 支持方式區塊 */
-    .section-support { background: #eef6f4; padding: 2rem 1rem; margin: 2rem 0; border-radius: 1rem; }
-    .section-support h2 { text-align: center; font-size: 1.75rem; color: #1a3c34; margin-bottom: 1rem; }
-    .support-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
-    .method-card { background: #fff; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; }
-    .method-card h3 { margin-bottom: 0.5rem; font-size: 1.25rem; }
-    .method-card p { margin-bottom: 1rem; color: #555; }
-    .method-card .btn { background: #1d4a35; color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: background .2s; }
-    .method-card .btn:hover { background: #163a2a; }
+    a{ color:inherit; text-decoration:none; }
+    .container{ max-width:1180px; margin:0 auto; padding: 22px 16px 64px; }
+
+    /* ===== 顶部工具列 / 导览 ===== */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      backdrop-filter: blur(10px);
+      background: rgba(2,9,17,.72);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .topbar-inner{
+      max-width:1180px;
+      margin:0 auto;
+      padding: 10px 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 220px;
+    }
+    .brand-badge{
+      width:38px;height:38px;border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,213,79,.25), transparent 55%),
+                  linear-gradient(135deg, rgba(14,165,122,.95), rgba(43,124,255,.95));
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(255,255,255,.15);
+      overflow:hidden;
+    }
+    .brand-badge img{ width:26px; height:26px; object-fit:contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+
+    .brand-text{ line-height:1.1; }
+    .brand-text .t1{ font-weight:900; letter-spacing:.3px; }
+    .brand-text .t2{ font-size:.82rem; color:var(--muted2); margin-top:2px; }
+
+    .nav-toggle{
+      display:none;
+      margin-left:auto;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(7,26,42,.65);
+      color: var(--text);
+      padding: .55rem .85rem;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor:pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+
+    .nav{
+      margin-left:auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .nav a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: .55rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(7,26,42,.55);
+      color: var(--text);
+      font-weight: 800;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      white-space:nowrap;
+    }
+    .nav a:hover{
+      transform: translateY(-2px);
+      background: rgba(7,26,42,.72);
+      border-color: rgba(255,255,255,.18);
+    }
+    .nav a.primary{
+      border:none;
+      background: linear-gradient(135deg, rgba(14,165,122,.95), rgba(43,124,255,.95));
+      box-shadow: 0 12px 26px rgba(0,0,0,.32);
+    }
+    .nav a.primary:hover{ filter: brightness(1.04); }
+
+    @media (max-width: 860px){
+      .nav-toggle{ display:block; }
+      .nav{
+        display:none;
+        width:100%;
+        margin-left:0;
+        padding: 10px 0 2px;
+      }
+      .nav.active{ display:flex; }
+      .nav a{ width:100%; justify-content:center; }
+      .brand{ min-width:auto; }
+    }
+
+    /* ===== 头部 Hero ===== */
+    .hero{
+      margin-top: 18px;
+      border-radius: var(--radius);
+      padding: 18px 18px 14px;
+      background:
+        radial-gradient(700px 240px at 20% 10%, rgba(14,165,122,.22), transparent 60%),
+        radial-gradient(640px 240px at 85% 20%, rgba(43,124,255,.22), transparent 60%),
+        linear-gradient(180deg, rgba(7,26,42,.70), rgba(6,32,45,.55));
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(200px 140px at 12% 25%, rgba(255,213,79,.10), transparent 60%),
+        radial-gradient(260px 180px at 92% 35%, rgba(255,213,79,.08), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero-top{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+    .hero h1{
+      margin:0;
+      font-size: 1.55rem;
+      letter-spacing:.4px;
+      font-weight: 950;
+    }
+    .hero p{
+      margin:8px 0 0;
+      color: var(--muted);
+      line-height:1.6;
+      max-width: 820px;
+      position:relative;
+      z-index:1;
+    }
+    .hero-cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+      position:relative;
+      z-index:1;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: .62rem .95rem;
+      border-radius: 14px;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(7,26,42,.55);
+      color: var(--text);
+      box-shadow: 0 10px 22px rgba(0,0,0,.24);
+      transition: transform .15s ease, filter .15s ease, background .15s ease;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-2px); }
+    .btn.accent{
+      border:none;
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(43,124,255,.78));
+      color:#0b1320;
+    }
+    .btn.green{
+      border:none;
+      background: linear-gradient(135deg, rgba(14,165,122,.95), rgba(255,213,79,.70));
+      color:#031318;
+    }
+
+    @media (max-width: 860px){
+      .hero-top{ flex-direction:column; align-items:flex-start; }
+      .hero-cta{ width:100%; justify-content:flex-start; }
+      .btn{ width:100%; }
+    }
+
+    /* ===== 说明提示卡 ===== */
+    .note{
+      margin-top: 14px;
+      border-radius: var(--radius2);
+      background: rgba(255,213,79,.08);
+      border: 1px solid rgba(255,213,79,.25);
+      padding: 12px 14px;
+      line-height: 1.55;
+      color: rgba(234,243,255,.88);
+      box-shadow: var(--shadow2);
+    }
+    .note strong{ color: #ffe08a; }
+    .note .small{ color: rgba(234,243,255,.74); font-size:.92rem; }
+
+    /* ===== 卡片墙 ===== */
+    #loading{
+      margin: 22px auto 0;
+      text-align:center;
+      color: var(--muted);
+      padding: 14px 0;
+    }
+
+    .grid{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    .card{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(7,37,52,.85), rgba(6,32,45,.70));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(260px 160px at 14% 6%, rgba(14,165,122,.18), transparent 60%),
+        radial-gradient(280px 160px at 92% 12%, rgba(43,124,255,.18), transparent 60%);
+      pointer-events:none;
+    }
+
+    .card-header{
+      position:relative;
+      z-index:1;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .etf-title{
+      font-weight: 950;
+      letter-spacing:.4px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: .28rem .6rem;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(2,9,17,.35);
+      color: rgba(234,243,255,.86);
+      font-weight: 900;
+      font-size: .82rem;
+      white-space:nowrap;
+    }
+
+    .card-body{
+      position:relative;
+      z-index:1;
+      padding: 12px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      flex:1;
+    }
+
+    .price-row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .price{
+      font-size: 1.85rem;
+      font-weight: 950;
+      letter-spacing:.2px;
+      margin: 0;
+    }
+    .price-sub{
+      color: var(--muted2);
+      font-size:.9rem;
+      text-align:right;
+      line-height:1.25;
+    }
+
+    .metrics{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 2px;
+    }
+    .metric{
+      border-radius: 14px;
+      padding: 10px 10px 9px;
+      background: rgba(2,9,17,.35);
+      border: 1px solid rgba(255,255,255,.10);
+      min-height: 62px;
+    }
+    .metric .label{
+      font-size: .82rem;
+      color: rgba(234,243,255,.72);
+      letter-spacing:.2px;
+    }
+    .metric .value{
+      margin-top: 6px;
+      font-size: 1.02rem;
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+
+    /* ✅ 台股习惯：红涨绿跌 */
+    .positive{ color: #ff5a6b; }  /* 上涨 */
+    .negative{ color: #35d07f; }  /* 下跌 */
+
+    .chart-wrap{
+      margin-top: 4px;
+      border-radius: 16px;
+      background: rgba(2,9,17,.28);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 10px;
+    }
+    .chart-container{ position:relative; height: 120px; }
+
+    .card-footer{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: rgba(234,243,255,.55);
+      font-size: .82rem;
+      background: rgba(2,9,17,.18);
+    }
+    .card-footer .hint{
+      color: rgba(234,243,255,.68);
+    }
+
+    @media (max-width: 420px){
+      .metrics{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ===== 支持区块（频道网站版） ===== */
+    .section-support{
+      margin-top: 22px;
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      background:
+        radial-gradient(600px 220px at 25% 0%, rgba(14,165,122,.18), transparent 60%),
+        radial-gradient(600px 220px at 85% 10%, rgba(43,124,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(7,26,42,.70), rgba(6,32,45,.55));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+    }
+    .section-support h2{
+      margin: 2px 0 10px;
+      text-align:center;
+      font-size: 1.35rem;
+      font-weight: 950;
+      letter-spacing:.3px;
+    }
+    .section-support .sub{
+      text-align:center;
+      margin: 0 auto 14px;
+      color: var(--muted);
+      line-height:1.6;
+      max-width: 860px;
+    }
+
+    .support-methods{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .method-card{
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      background: linear-gradient(180deg, rgba(7,37,52,.78), rgba(6,32,45,.64));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      text-align:left;
+      position:relative;
+      overflow:hidden;
+    }
+    .method-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(260px 160px at 12% 10%, rgba(255,213,79,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .method-card h3{
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 950;
+      position:relative;
+      z-index:1;
+    }
+    .method-card p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height:1.6;
+      position:relative;
+      z-index:1;
+      font-size: .96rem;
+    }
+    .method-card .btn{
+      width:100%;
+      position:relative;
+      z-index:1;
+    }
+
+    /* 细节：选取反白 */
+    ::selection{ background: rgba(255,213,79,.25); }
   </style>
 </head>
+
 <body>
-  <!-- 手機選單 -->
-  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
-  <div class="nav-bar-wrapper">
-    <nav aria-label="主導覽">
-      <div id="navBar" class="nav-bar">
-        <a href="#wall">ETF配息圖卡瀑布牆</a>
-        <a href="#timeline">ETF配息入帳時間表</a>
-        <a href="https://markmoneylife.github.io/compound-interest-tool">複利試算工具</a>
-        <a href="https://markmoneylife.github.io/compound-interest-tool/reverse.html">退休倒推</a>
-        <a href="https://markmoneylife.github.io/compound-interest-tool/newbie-village.html">新手投資村</a>
-        <a href="https://markmoneylife.github.io/compound-interest-tool/etf-tracker.html">ETF追蹤牆</a>
-        <a href="https://forms.gle/DKRoQizqLVBCe7Dj6" target="_blank">加入LINE社群</a>
-      </div>
-    </nav>
-  </div>
+  <!-- ✅ 顶部导览（频道网站风格） -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="https://markmoneylife.com/" aria-label="返回首頁">
+        <span class="brand-badge" aria-hidden="true">
+          <img src="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" alt="">
+        </span>
+        <span class="brand-text">
+          <div class="t1">吳馬克｜馬克理財</div>
+          <div class="t2">ETF × 定期定額 × 配息再投入</div>
+        </span>
+      </a>
 
-  <h1>💎 台股前十大ETF績效卡片牆</h1>
-  <div class="dialog">
-    <p>• 0050已於 <strong>2025/06/18</strong> 完成 <strong>1拆4</strong> 拆股，投資門檻由約20萬元降至約4.7萬元。</p>
-    <p>• 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，目前正持續優化技術呈現，敬請見諒。</p>
-    <p><strong>注意事項：</strong><br>
-       1. 本資料僅供參考，實際績優仍以ETF發行單位或證券商公告為準。<br>
-       2. 資料更新頻率為每月月底，請留意更新時間。<br>
-       3. 投資有風險，入市需謹慎評估，自行承擔盈虧。
-    </p>
-  </div>
+      <button class="nav-toggle" type="button" onclick="toggleNav()">☰ 選單</button>
 
-  <div id="loading" style="text-align:center;color:#666;">載入中，請稍候…</div>
-  <div id="card-grid" class="grid" style="display:none"></div>
-
-  <!-- 支持方式區塊（放在最底部） -->
-  <section id="support-methods" class="section-support">
-    <h2>支持馬克</h2>
-    <p style="text-align:center; margin-bottom:1.5rem;">感謝你的支持！你可以透過以下方式加入，讓我持續創作更優質內容：</p>
-    <div class="support-methods">
-      <div class="method-card">
-        <h3>LINE貼圖</h3>
-        <p>下載專屬「吳馬克」LINE貼圖，聊天更有趣。</p>
-        <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" class="btn">前往購買</a>
-      </div>
-      <div class="method-card">
-        <h3>周邊商品</h3>
-        <p>購買限量衣服與周邊，穿上理財風格。</p>
-        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" class="btn">逛逛商城</a>
-      </div>
-      <div class="method-card">
-        <h3>頻道會員</h3>
-        <p>成為YouTube頻道會員，獨享專屬福利與互動。</p>
-        <a href="https://www.youtube.com/user/rengary/join" class="btn" target="_blank">加入會員</a>
-      </div>
+      <nav id="navBar" class="nav" aria-label="主導覽">
+        <a href="https://markmoneylife.com/etf-dividend-wall/" class="primary">ETF 配息瀑布牆</a>
+        <a href="https://markmoneylife.com/etf-tracker/">ETF 追蹤牆</a>
+        <a href="https://markmoneylife.com/etf-compound/">複利試算</a>
+        <a href="https://markmoneylife.com/etf-compound/reverse.html">退休倒推</a>
+        <a href="https://markmoneylife.com/newbie-village/">新手投資村</a>
+        <a href="https://forms.gle/DKRoQizqLVBCe7Dj6" target="_blank" rel="noopener">加入 LINE 社群</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <!-- 引入必要腳本：jQuery、PapaParse、Chart.js -->
+  <main class="container">
+    <!-- ✅ Hero -->
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h1>💎 台股前十大 ETF 績效卡片牆</h1>
+          <p>
+            你可以把這頁當成「ETF 的月度體檢表」：看 1M / 3M / 1Y / 3Y / 5Y / 10Y 報酬，再用小走勢線確認它是不是「靠一兩天硬拉」。
+            <br />（提醒：配息≠獲利，報酬也不保證未來會照抄。）
+          </p>
+        </div>
+        <div class="hero-cta">
+          <a class="btn accent" href="https://markmoneylife.com/etf-dividend-wall/">→ 看配息瀑布牆（現金流）</a>
+          <a class="btn green" href="https://markmoneylife.com/etf-tracker/">→ 開啟 ETF 追蹤牆（你自己的）</a>
+        </div>
+      </div>
+
+      <div class="note" style="position:relative; z-index:1;">
+        <div class="small">
+          • 0050 已於 <strong>2025/06/18</strong> 完成 <strong>1 拆 4</strong> 拆股，投資門檻下降（但別把「更便宜」誤會成「更划算」）。
+          <br />
+          • 本頁資料由馬克手動整理，更新頻率為 <strong>每月月底</strong>，技術呈現持續優化中。
+          <br /><br />
+          <strong>注意事項：</strong>
+          1) 本資料僅供參考，實際仍以 ETF 發行單位／券商公告為準。<br />
+          2) 更新頻率為每月月底，請留意更新日期。<br />
+          3) 投資有風險，入市需謹慎評估，自行承擔盈虧。
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ 卡片墙 -->
+    <div id="loading">載入中，請稍候…</div>
+    <div id="card-grid" class="grid" style="display:none;"></div>
+
+    <!-- ✅ 支持方式（频道网站版） -->
+    <section id="support-methods" class="section-support" aria-label="支持馬克">
+      <h2>支持馬克</h2>
+      <p class="sub">如果這頁讓你少踩一點雷、少花一點冤枉時間，就算是功德一件。你也可以用下面這些方式，讓我繼續把工具做得更好用。</p>
+
+      <div class="support-methods">
+        <div class="method-card">
+          <h3>🟩 LINE 貼圖</h3>
+          <p>下載專屬「吳馬克」LINE貼圖，聊天更有趣，也順便讓我多一點燃料繼續更。</p>
+          <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" class="btn">→ 前往購買</a>
+        </div>
+
+        <div class="method-card">
+          <h3>🟦 周邊商品</h3>
+          <p>購買限量衣服與周邊，穿上理財風格（不保證績效，但保證會被朋友問「欸你買啥？」）。</p>
+          <a href="https://www.fandorashop.com/zh-TW/collections/%E5%90%B3%E9%A6%AC%E5%85%8B%E5%B9%B8%E7%A6%8F%E7%90%86%E8%B2%A1%E5%AE%B6%E5%91%A8%E9%82%8A?utm_medium=product_shelf&utm_source=youtube" class="btn">→ 逛逛商城</a>
+        </div>
+
+        <div class="method-card">
+          <h3>🟨 頻道會員</h3>
+          <p>加入 YouTube 頻道會員，獨享專屬福利與互動。一起把投資變成「可以走很久」的日常。</p>
+          <a href="https://www.youtube.com/user/rengary/join" class="btn" target="_blank" rel="noopener">→ 加入會員</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ✅ 必要脚本：jQuery / PapaParse / Chart.js -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
-    function toggleNav() { document.getElementById('navBar').classList.toggle('active'); }
+    function toggleNav() {
+      document.getElementById('navBar').classList.toggle('active');
+    }
+
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2044574772&single=true&output=csv";
+
     Papa.parse(csvUrl, {
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data.filter(r => r['ETF代碼']).slice(0,10);
+        const data = results.data.filter(r => r['ETF代碼']).slice(0, 10);
+
         $('#loading').hide();
         $('#card-grid').show();
+
         data.forEach((row, idx) => {
-          const labels = [row['10Y前日期'], row['5Y前日期'], row['3Y前日期'], row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'];
-          const prices = [row['10Y前價格'], row['5Y前價格'], row['3Y前價格'], row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']].map(v => parseFloat(v) || 0);
+          const labels = [
+            row['10Y前日期'], row['5Y前日期'], row['3Y前日期'],
+            row['1Y前日期'], row['3M前日期'], row['1M前日期'], '最新'
+          ];
+
+          const prices = [
+            row['10Y前價格'], row['5Y前價格'], row['3Y前價格'],
+            row['1Y前價格'], row['3M前價格'], row['1M前價格'], row['最新股價']
+          ].map(v => parseFloat(v) || 0);
+
+          const v1m = (row['1M報酬率'] || '').toString();
+          const v3m = (row['3M報酬率'] || '').toString();
+          const v1y = (row['1Y報酬率'] || '').toString();
+          const v3y = (row['3Y報酬率'] || '').toString();
+          const v5y = (row['5Y報酬率'] || '').toString();
+          const v10y = (row['10Y報酬率'] || '').toString();
+
+          const cls = (val) => (val.includes('-') ? 'negative' : 'positive');
+
           const card = $(`
-            <div class="card">
-              <div class="card-header">${row['ETF代碼']} ${row['ETF名稱']}</div>
-              <div class="card-body">` +
-              `<div class="price">${row['最新股價']}</div>
-                <div class="metrics">` +
-                `<div class="metric"><div class="label">1M報酬</div><div class="value ${row['1M報酬率'].includes('-')?'negative':'positive'}">${row['1M報酬率']}</div></div>` +
-                `<div class="metric"><div class="label">3M報酬</div><div class="value ${row['3M報酬率'].includes('-')?'negative':'positive'}">${row['3M報酬率']}</div></div>` +
-                `<div class="metric"><div class="label">1Y報酬</div><div class="value ${row['1Y報酬率'].includes('-')?'negative':'positive'}">${row['1Y報酬率']}</div></div>` +
-                `<div class="metric"><div class="label">3Y報酬</div><div class="value ${row['3Y報酬率'].includes('-')?'negative':'positive'}">${row['3Y報酬率']}</div></div>` +
-                `<div class="metric"><div class="label">5Y報酬</div><div class="value ${row['5Y報酬率'].includes('-')?'negative':'positive'}">${row['5Y報酬率']}</div></div>` +
-                `<div class="metric"><div class="label">10Y報酬</div><div class="value ${row['10Y報酬率'].includes('-')?'negative':'positive'}">${row['10Y報酬率']}</div></div>` +
-                `</div>
-                <div class="chart-container"><canvas id="chart-${idx}"></canvas></div>
+            <article class="card">
+              <header class="card-header">
+                <div class="etf-title">
+                  <span class="chip">${row['ETF代碼']}</span>
+                  <span>${row['ETF名稱'] || ''}</span>
+                </div>
+                <span class="chip" title="資料更新日期">更新：${row['更新日期'] || '-'}</span>
+              </header>
+
+              <div class="card-body">
+                <div class="price-row">
+                  <div>
+                    <div style="color: rgba(234,243,255,.72); font-weight:800; font-size:.92rem;">最新股價</div>
+                    <div class="price">${row['最新股價'] || '-'}</div>
+                  </div>
+                  <div class="price-sub">
+                    <div>紅漲綠跌</div>
+                    <div style="color: rgba(234,243,255,.62);">報酬含價格變動</div>
+                  </div>
+                </div>
+
+                <div class="metrics">
+                  <div class="metric">
+                    <div class="label">1M 報酬</div>
+                    <div class="value ${cls(v1m)}">${v1m || '-'}</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">3M 報酬</div>
+                    <div class="value ${cls(v3m)}">${v3m || '-'}</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">1Y 報酬</div>
+                    <div class="value ${cls(v1y)}">${v1y || '-'}</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">3Y 報酬</div>
+                    <div class="value ${cls(v3y)}">${v3y || '-'}</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">5Y 報酬</div>
+                    <div class="value ${cls(v5y)}">${v5y || '-'}</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">10Y 報酬</div>
+                    <div class="value ${cls(v10y)}">${v10y || '-'}</div>
+                  </div>
+                </div>
+
+                <div class="chart-wrap">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px;">
+                    <div style="font-weight:900; color: rgba(234,243,255,.82); font-size:.92rem;">歷史價格走勢（縮圖）</div>
+                    <div style="font-size:.82rem; color: rgba(234,243,255,.55);">10Y → 最新</div>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="chart-${idx}"></canvas>
+                  </div>
+                </div>
               </div>
-              <div class="card-footer">更新：${row['更新日期']}</div>
-            </div>
+
+              <footer class="card-footer">
+                <div class="hint">小提醒：別只看單期報酬，記得搭配波動與你的持有周期。</div>
+                <div>${row['ETF代碼'] || ''}</div>
+              </footer>
+            </article>
           `);
+
           $('#card-grid').append(card);
+
           const ctx = document.getElementById(`chart-${idx}`).getContext('2d');
-          new Chart(ctx, { type: 'line', data: { labels, datasets:[{ data:prices, borderColor:'#1a3c34', backgroundColor:'rgba(26,60,52,0.1)', tension:0.3, pointRadius:2 }] }, options:{ scales:{ x:{ display:false }, y:{ display:false } }, plugins:{ legend:{display:false}, tooltip:{enabled:true} }, elements:{ line:{borderWidth:2} }, maintainAspectRatio:false } });
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                data: prices,
+                borderColor: '#2b7cff',
+                backgroundColor: 'rgba(43,124,255,0.10)',
+                tension: 0.32,
+                pointRadius: 2,
+                pointHoverRadius: 3,
+                borderWidth: 2
+              }]
+            },
+            options: {
+              scales: {
+                x: { display: false },
+                y: { display: false }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+              },
+              elements: { line: { borderWidth: 2 } },
+              maintainAspectRatio: false
+            }
+          });
         });
-      }, error: function() { $('#loading').text('讀取資料失敗，請確認CSV已公開'); }
+      },
+      error: function() {
+        $('#loading').text('讀取資料失敗，請確認 CSV 已公開');
+      }
     });
   </script>
 </body>
