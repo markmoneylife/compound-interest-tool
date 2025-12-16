@@ -11,25 +11,25 @@
   <meta name="keywords" content="退休試算,退休目標,退休金規劃,ETF退休,定期定額,理財工具,吳馬克" />
   <link rel="canonical" href="https://markmoneylife.com/retirement-calculator/" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png" />
-  
+  <!-- ✅ Logo / Favicon（你給的網址） -->
+  <link rel="icon" href="https://github.com/markmoneylife/compound-interest-tool/blob/main/icon-512.png?raw=true" type="image/png" />
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="退休目標倒推｜每月該存多少？立即試算" />
   <meta property="og:description" content="輸入年齡與目標金額，即可快速得出每月應投入金額。由吳馬克專為ETF投資人打造的退休規劃工具。" />
   <meta property="og:url" content="https://markmoneylife.com/retirement-calculator/" />
   <meta property="og:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
-  
+
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="退休目標倒推｜每月該存多少？立即試算" />
   <meta name="twitter:description" content="輸入年齡與目標金額，即可快速得出每月應投入金額。由吳馬克專為ETF投資人打造的退休規劃工具。" />
   <meta name="twitter:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
-  
+
   <!-- Mobile Web App -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#1D4A35" />
+  <meta name="theme-color" content="#071623" />
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XF61M6KL30"></script>
@@ -40,417 +40,664 @@
     gtag('config', 'G-XF61M6KL30');
   </script>
 
-  <!-- CSS: 導覽列 & 頁面風格 -->
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    /* 漢堡選單樣式 */
-    .nav-toggle {
-      display: none;
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 9999;
-      background: #FFD54F;
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .nav-bar-wrapper {
-      background-color: #1D4A35;
-      padding: 1rem 0;
-    }
-    .nav-bar {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .nav-bar a {
-      background-color: #FFD54F;
-      color: #1A1A1A;
-      font-weight: bold;
-      text-decoration: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: 0.75rem;
-      font-size: 1rem;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
-    }
-    .nav-bar a:hover {
-      background-color: #FFE082;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-    @media (max-width: 768px) {
-      .nav-bar-wrapper { padding-top: 4rem; }
-      .nav-toggle { display: block; }
-      .nav-bar { display: none; flex-direction: column; align-items: center; }
-      .nav-bar.active { display: flex; }
-      .nav-bar a {
-        width: 90%;
-        text-align: center;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-      }
+    /* ========= Mark UI：深綠＋深藍＋重點黃 ========= */
+    :root{
+      --bg:#020911;
+      --bg2:#071623;
+      --card:rgba(6,37,44,.86);
+      --card2:rgba(5,43,52,.72);
+      --text:#EAF2F4;
+      --muted:rgba(234,242,244,.72);
+      --line:rgba(255,255,255,.10);
+      --accent:#FFD54F;
+      --accent2:#FFE082;
+      --shadow:0 18px 44px rgba(0,0,0,.45);
+      --r-xl:26px;
+      --r-lg:18px;
+      --r-md:14px;
     }
 
-    /* 退休試算工具風格 */
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #FFFDF8;
-      color: #2D3C2F;
-      margin: 0;
-      padding: 2rem;
-      max-width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.8;
+    /* 背景星點 */
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,"PingFang TC","Noto Sans TC","Helvetica Neue",sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% 10%, rgba(255,213,79,.20), transparent 55%),
+        radial-gradient(900px 520px at 85% 18%, rgba(11,58,90,.45), transparent 55%),
+        radial-gradient(900px 520px at 30% 85%, rgba(29,74,53,.45), transparent 55%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      min-height: 100vh;
+      padding: 18px 14px 120px;
     }
-    h1, h2 { text-align: center; color: #1D4A35; margin-bottom: 1rem; }
-    .flow-steps {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 2rem;
-      gap: 0.5rem;
-      font-size: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
+    body:before{
+      content:"";
+      position: fixed; inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(rgba(255,255,255,.13) 1px, transparent 1px),
+        radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 120px 120px, 220px 220px;
+      background-position: 0 0, 60px 80px;
+      opacity:.55;
+      mix-blend-mode: screen;
     }
-    .flow-steps span {
-      background: #FFD54F;
-      padding: 0.4rem 1rem;
+    .shell{
+      max-width: 1180px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ===== 導覽列（維持你原本結構，但視覺統一頻道網站） ===== */
+    .nav-wrap{
+      position: sticky;
+      top: 10px;
+      z-index: 999;
+      background: linear-gradient(90deg, rgba(7,22,35,.78), rgba(2,9,17,.58));
+      border: 1px solid var(--line);
+      backdrop-filter: blur(10px);
       border-radius: 999px;
-      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      padding: 10px;
+      margin-bottom: 18px;
     }
-    .flow-steps .arrow { font-weight: bold; font-size: 1.2rem; }
-    .section {
-      background: #FFFFFF;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-    }
-    .step-title {
-      background: #FFF8E1;
-      display: inline-block;
-      padding: 0.6rem 1.5rem;
-      border-radius: 999px;
-      color: #1D4A35;
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-    }
-    label, input { display: block; width: 100%; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 1rem; }
-    button {
-      background-color: #FFD54F;
-      border: none;
-      padding: 0.9rem;
-      width: 100%;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
-    }
-    button:hover {
-      background-color: #FFE082;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    .option {
-      flex: 1 1 calc(45% - 1rem);
-      background: #FFF8E1;
-      padding: 1rem;
-      border-radius: 12px;
-      text-align: center;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: 0.3s;
-    }
-    .option.selected { border-color: #FFD54F; }
-    .option img {
-      width: 100%;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-    .option:hover img {
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .result-container {
-      display: flex;
-      flex-wrap: wrap;
+    .nav-row{
+      display:flex;
+      align-items:center;
       justify-content: space-between;
-      gap: 2rem;
-      align-items: flex-start;
-      margin-top: 2rem;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    #result, #chart-container {
-      flex: 1 1 45%;
-      background: #FFFFFF;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      white-space: nowrap;
+      flex: 1 1 auto;
+      min-width: 260px;
     }
-    #result { border-top: 3px solid #FFD54F; }
-    #chart-container { border-top: 3px solid #4CAF50; }
-    #warmMessage {
+    .brand img{
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+    }
+    .brand .t1{ font-weight: 1000; letter-spacing: .4px; }
+    .brand .t2{ font-size:.85rem; color: var(--muted); margin-left: 8px; }
+
+    .nav-toggle{
+      display:none;
+      background: var(--accent);
+      color:#111;
+      border:none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 1000;
+      cursor:pointer;
+      box-shadow: 0 10px 25px rgba(255,213,79,.18);
+      flex: 0 0 auto;
+    }
+    .nav-links{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 2 1 auto;
+    }
+    .nav-links a{
+      text-decoration:none;
+      color: var(--text);
+      font-weight: 900;
+      font-size: .95rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .nav-links a:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,213,79,.35);
+    }
+    .nav-links a.cta{
+      background: linear-gradient(135deg, rgba(255,213,79,.95), rgba(255,224,130,.92));
+      color:#121212;
+      border: none;
+      box-shadow: 0 14px 35px rgba(255,213,79,.18);
+    }
+    .nav-links a.cta:hover{ transform: translateY(-2px); }
+
+    @media (max-width: 980px){
+      .nav-toggle{ display:block; }
+      .nav-links{ display:none; width:100%; justify-content:center; padding-top: 10px; }
+      .nav-links.active{ display:flex; }
+    }
+
+    /* ===== 通用卡片 ===== */
+    .section{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 16px;
+    }
+    .step-title{
+      background: rgba(255,213,79,.14);
+      border: 1px solid rgba(255,213,79,.28);
+      display: inline-block;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 1000;
+      margin-bottom: 12px;
+    }
+    h1{
+      text-align:center;
+      margin: 10px 0 6px;
+      font-size: 1.9rem;
+      font-weight: 1000;
+      letter-spacing:.6px;
+    }
+    .sub{
+      text-align:center;
+      color: var(--muted);
+      margin: 0 0 14px;
+      line-height: 1.7;
+    }
+
+    /* input */
+    label{ display:block; font-weight: 1000; margin-top: 10px; color: rgba(234,242,244,.92); }
+    input{
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      outline:none;
+      background: rgba(2,9,17,.45);
+      color: var(--text);
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    input::placeholder{ color: rgba(234,242,244,.45); }
+    input:focus{
+      border-color: rgba(255,213,79,.45);
+      box-shadow: 0 0 0 4px rgba(255,213,79,.12);
+    }
+
+    /* Step3 options（保留你舊版結構：四卡 + 圖 + 標題 + 小字） */
+    .options{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 760px){ .options{ grid-template-columns: 1fr; } }
+
+    .option{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      padding: 14px;
       text-align: center;
-      font-size: 1.2rem;
-      background-color: #FFF8E1;
-      color: #2D3C2F;
-      padding: 1rem 1.5rem;
-      margin-top: 2rem;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .option.selected{
+      border-color: rgba(255,213,79,.75);
+      box-shadow: 0 0 0 4px rgba(255,213,79,.10), 0 18px 36px rgba(0,0,0,.35);
+      background: rgba(255,255,255,.06);
+    }
+
+    /* ✅ 這裡就是你截圖上面「舒服的舊版結構」：正方形圖、完整呈現、視覺飽滿 */
+    .option .img-wrap{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .option img{
+      width: 100%;
+      aspect-ratio: 1 / 1;     /* ✅ 正方形 */
+      object-fit: cover;        /* ✅ 保留你舒服的呈現方式（像舊版 Step3） */
       border-radius: 12px;
-      font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display:block;
     }
-    /* 心理測驗滑動 */
-    .quiz-wrap {
-      margin-top:4rem; padding:2rem 1rem; background-color:#FAFAF7;
-      border-top:2px solid #FFD54F; border-radius:16px;
+    .option .meta{
+      margin-top: 10px;
+      font-weight: 1000;
+      color: var(--text);
     }
-    .quiz-wrap h2 { font-size:1.6rem; margin-bottom:1rem; }
-    .quiz-images {
-      display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-      gap: 1rem; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;
+    .option small{
+      display:block;
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: .95rem;
     }
-    .quiz-images img {
-      scroll-snap-align: start; width: 300px; flex-shrink: 0;
-      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    /* 按鈕 */
+    button{
+      width:100%;
+      margin-top: 14px;
+      border:none;
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-size: 1.05rem;
+      font-weight: 1000;
+      cursor:pointer;
+      color:#111;
+      background: linear-gradient(135deg, rgba(255,213,79,.98), rgba(255,224,130,.96));
+      box-shadow: 0 18px 40px rgba(255,213,79,.14);
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .quiz-wrap p { text-align:center; font-size:0.9rem; color:#555; }
-    /* CTA & 風險提示 & 聯盟行銷 */
-    .cta-section, .risk-note, .affliate-note { max-width:700px; margin:2rem auto; text-align:center; }
-    .risk-note { font-size:0.85rem; color:#666; background-color:#fefefe; padding:1rem; border-top:1px solid #ccc; }
-    .affliate-note {
-      margin-top:2rem; padding:1rem; background-color:#FFF8E1;
-      border-left:4px solid #FFD54F; border-radius:0.5rem;
-      font-size:0.9rem; color:#5D4037;
+    button:hover{ transform: translateY(-2px); box-shadow: 0 22px 50px rgba(255,213,79,.18); }
+
+    /* 結果 */
+    #outputArea{ display:none; }
+    .result-container{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: start;
     }
-    /* 支持我 浮動按鈕 */
-    #supportButton { position: fixed; bottom:30px; right:30px; z-index:999; }
-    #supportButton button {
-      background-color:#FFD54F; color:#1A1A1A; font-weight:bold;
-      border:none; padding:0.7rem 1.2rem; border-radius:2rem;
-      box-shadow:0 2px 8px rgba(0,0,0,0.2); cursor:pointer;
+    @media (max-width: 900px){ .result-container{ grid-template-columns: 1fr; } }
+
+    #result, #chart-container{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.25);
+    }
+    #result{ border-top: 3px solid rgba(255,213,79,.9); }
+    #chart-container{ border-top: 3px solid rgba(78,184,255,.85); }
+
+    #warmMessage{
+      margin-top: 14px;
+      text-align:center;
+      background: rgba(255,213,79,.10);
+      border: 1px solid rgba(255,213,79,.22);
+      color: rgba(255,224,130,.96);
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 1000;
+    }
+
+    /* ===========================================================
+       ✅ 你說「怪」的區塊：心理測驗結果（舊版結構搬過來 + 新UI）
+       目標：1) 不要中間縮小 2) 不要巨大空白 3) 看起來跟 Step3 同一個系統
+       =========================================================== */
+
+    .quiz-wrap{
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(7,22,35,.62), rgba(6,37,44,.62));
+      box-shadow: var(--shadow);
+    }
+    .quiz-wrap h2{
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      font-weight: 1000;
+      letter-spacing: .3px;
+      text-align: center;
+    }
+    .quiz-wrap .hint{
+      text-align:center;
+      color: var(--muted);
+      margin-top: 10px;
+      font-size: .95rem;
+      line-height: 1.7;
+    }
+
+    /* ✅ 關鍵修正：用「內容寬度」當卡片寬，不要硬塞 16:9 */
+    .quiz-images{
+      display:flex;
+      gap: 14px;
+      overflow-x:auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 4px 12px;
+    }
+
+    /* ✅ 每張卡 = 舊版海報圖卡（直式比例），但外觀用新UI */
+    .quiz-poster{
+      flex: 0 0 auto;
+      width: 260px;                 /* ✅ 直式圖卡最舒服的寬度 */
+      scroll-snap-align: start;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      box-shadow: 0 14px 30px rgba(0,0,0,.30);
+      overflow: hidden;
+      padding: 10px;
+    }
+    .quiz-poster img{
+      width: 100%;
+      height: auto;                 /* ✅ 不鎖高度，讓圖卡「完整呈現」 */
+      object-fit: contain;           /* ✅ 完整、不裁切 */
+      display:block;
+      border-radius: 14px;
+      background: #F5F2E9;           /* ✅ 讓透明/留白時也不髒 */
+    }
+
+    /* ===== CTA & 風險提示 & 聯盟行銷（保留你原本結構） ===== */
+    .cta-section, .risk-note, .affliate-note{ max-width:900px; margin:18px auto 0; text-align:center; }
+    .cta-section{
+      padding: 16px;
+      border-radius: var(--r-xl);
+      border: 1px solid rgba(255,213,79,.18);
+      background: rgba(255,213,79,.08);
+      box-shadow: 0 14px 30px rgba(0,0,0,.22);
+    }
+    .cta-section h3{
+      margin:0;
+      font-size: 1.15rem;
+      font-weight: 1000;
+      color: rgba(255,224,130,.98);
+    }
+    .cta-section p{ margin: 10px 0 0; color: rgba(234,242,244,.82); line-height: 1.7; }
+    .cta-section a{
+      display:inline-block;
+      background-color:#1D4A35;
+      color:white;
+      padding:10px 20px;
+      text-decoration:none;
+      border-radius:999px;
+      margin:6px;
+      font-weight: 1000;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .risk-note{
+      font-size:0.9rem;
+      color: rgba(234,242,244,.72);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 14px;
+      border-radius: var(--r-xl);
+      line-height: 1.7;
+    }
+    .affliate-note{
+      margin-top:14px;
+      padding:14px;
+      background: rgba(255,213,79,.06);
+      border-left:4px solid rgba(255,213,79,.75);
+      border-radius: var(--r-xl);
+      font-size:0.95rem;
+      color: rgba(234,242,244,.78);
+      line-height: 1.7;
+      border: 1px solid rgba(255,255,255,.10);
+      text-align:left;
+    }
+
+    /* 支持我 浮動按鈕（保留你原本結構） */
+    #supportButton{ position: fixed; bottom:30px; right:30px; z-index:999; }
+    #supportButton button{
+      background: linear-gradient(135deg, rgba(255,213,79,.98), rgba(255,224,130,.96));
+      color:#111;
+      font-weight:1000;
+      border:none;
+      padding:0.8rem 1.1rem;
+      border-radius:999px;
+      box-shadow:0 18px 40px rgba(255,213,79,.18);
+      cursor:pointer;
       animation:pulse 1.5s infinite;
+      width:auto;
+      margin:0;
     }
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
-    #supportOverlay, #supportBox { position: fixed; right:30px; }
-    #supportOverlay {
-      inset:0; background:rgba(0,0,0,0.3); display:none; z-index:998;
+    #supportOverlay{
+      position: fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      z-index:998;
     }
-    #supportBox {
-      bottom:90px; width:300px; background-color:#2D3C2F;
-      color:#FFD54F; border-radius:1rem; box-shadow:0 4px 16px rgba(0,0,0,0.3);
-      padding:1.2rem; opacity:0; transform:translateY(20px);
-      transition:all 0.3s ease; z-index:9999; font-weight:500;
+    #supportBox{
+      position: fixed;
+      bottom:90px;
+      right:30px;
+      width:320px;
+      background: linear-gradient(135deg, rgba(6,37,44,.92), rgba(7,22,35,.92));
+      color: var(--text);
+      border-radius: 22px;
+      box-shadow:0 22px 60px rgba(0,0,0,.45);
+      padding:16px;
+      opacity:0;
+      transform:translateY(20px);
+      transition:all 0.28s ease;
+      z-index:9999;
+      display:none;
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      font-weight:500;
     }
-    #viewCounter { margin-top:2rem; text-align:center; font-size:0.9rem; color:#888; }
-  </style>
+    #supportBox a{ color: var(--accent); font-weight: 1000; }
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    #viewCounter{ margin-top:18px; text-align:center; font-size:0.95rem; color:rgba(234,242,244,.60); }
+  </style>
 </head>
 
 <body>
-  <!-- 漢堡選單按鈕 -->
-  <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
+  <div class="shell">
 
-  <!-- 導覽列 -->
-  <div class="nav-bar-wrapper">
-    <div class="nav-bar" id="navBar">
-      <a href="https://markmoneylife.com/etf-dividend-wall/">ETF配息圖卡瀑布牆</a>
-      <a href="https://markmoneylife.com/etf-compound/">複利試算工具</a>
-      <a href="https://markmoneylife.com/retire-reverse/">退休倒推</a>
-      <a href="https://markmoneylife.com/newbie-village/">新手投資村</a>
-      <a href="https://markmoneylife.com/etf-tracker-html/">ETF追蹤牆</a>
-      <a href="https://markmoneylife.com/retirement-calculator/" target="_blank">開始打造退休藍圖</a>
-      <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank">加入LINE社群</a>
-    </div>
-  </div>
+    <!-- Nav -->
+    <div class="nav-wrap">
+      <div class="nav-row">
+        <div class="brand" aria-label="吳馬克｜ETF 投資 × 幸福理財家">
+          <img src="https://github.com/markmoneylife/compound-interest-tool/blob/main/icon-512.png?raw=true" alt="Mark Logo" />
+          <div class="t1">吳馬克｜ETF 投資 × 幸福理財家 <span class="t2">工具基地</span></div>
+        </div>
 
-  <!-- 頁首 -->
-  <h1>退休試算工具</h1>
-  <p style="text-align:center;">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
-  <link rel="icon" href="https://markmoneylife.github.io/compound-interest-tool/logo-transparent.png" type="image/png">
+        <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
 
-  <!-- 流程指引 -->
-  <div class="flow-steps">
-    <span>Step 1｜基本資料</span>
-    <span class="arrow">➔</span>
-    <span>Step 2｜財務目標設定</span>
-    <span class="arrow">➔</span>
-    <span>Step 3｜理想退休生活</span>
-  </div>
-
-  <!-- Step 1 -->
-  <div class="section">
-    <h2 class="step-title">Step 1｜基本資料</h2>
-    <label>目前年齡：</label>
-    <input type="number" id="currentAge" placeholder="例如：30">
-    <label>預計退休年齡：</label>
-    <input type="number" id="retireAge" placeholder="例如：60">
-    <label>預計幾歲開始存退休金：</label>
-    <input type="number" id="startSavingAge" placeholder="例如：30">
-    <label>預計壽命（預設85歲）：</label>
-    <input type="number" id="lifeExpectancy" value="85">
-  </div>
-
-  <!-- Step 2 -->
-  <div class="section">
-    <h2 class="step-title">Step 2｜財務目標設定</h2>
-    <label>預計退休每月生活費（台幣）：</label>
-    <input type="number" id="monthlyExpense" placeholder="例如：40000">
-    <label>已累積退休金（台幣）：</label>
-    <input type="number" id="savedFund" placeholder="例如：500000">
-    <label>目前每月可投入金額（台幣）：</label>
-    <input type="number" id="currentMonthlySaving" placeholder="例如：10000">
-  </div>
-
-  <!-- Step 3 -->
-  <div class="section">
-    <h2 class="step-title">Step 3｜你的理想退休生活是什麼？</h2>
-    <p style="text-align:center;font-size:1rem;color:#555;">
-      選一張最符合你想像的圖片，讓我們根據你的夢想，為你量身打造退休計畫！🌟<br>
-      （每個選擇，都有屬於你的故事與步調。）
-    </p>
-    <div class="options">
-      <div class="option" onclick="selectLifestyle('獵豹型', 0.06, event)">
-        <img src="https://images.plurk.com/3cjwlXxhIVqYupHhQELwmw.png" alt="獵豹型">
-        <div><strong>獵豹型</strong><br><small>不設限人生，環遊世界、冒險闖蕩。</small></div>
-      </div>
-      <div class="option" onclick="selectLifestyle('大象型', 0.04, event)">
-        <img src="https://images.plurk.com/2LTuyzJ1zW1q3UCdDlztjR.png" alt="大象型">
-        <div><strong>大象型</strong><br><small>穩健走，享受生活品質。</small></div>
-      </div>
-      <div class="option" onclick="selectLifestyle('猴子型', 0.05, event)">
-        <img src="https://images.plurk.com/3nbsUsqNbMro2C6xtfMLpb.png" alt="猴子型">
-        <div><strong>猴子型</strong><br><small>創業副業，燃燒熱情。</small></div>
-      </div>
-      <div class="option" onclick="selectLifestyle('小狗型', 0.03, event)">
-        <img src="https://images.plurk.com/7ENPGAeY4Biet636M1leF4.png" alt="小狗型">
-        <div><strong>小狗型</strong><br><small>陪伴家人，悠閒自在。</small></div>
+        <div class="nav-links" id="navBar">
+          <a href="https://markmoneylife.com/etf-dividend-wall/">ETF配息圖卡瀑布牆</a>
+          <a href="https://markmoneylife.com/etf-compound/">複利試算工具</a>
+          <a href="https://markmoneylife.com/retire-reverse/">退休倒推</a>
+          <a href="https://markmoneylife.com/newbie-village/">新手投資村</a>
+          <a href="https://markmoneylife.com/etf-tracker-html/">ETF追蹤牆</a>
+          <a class="cta" href="https://markmoneylife.com/retirement-calculator/" target="_blank" rel="noopener">→ 開始打造退休藍圖</a>
+          <a href="https://forms.gle/CzCUhqJCrmdYk7iF6" target="_blank" rel="noopener">加入LINE社群</a>
+        </div>
       </div>
     </div>
-    <input type="hidden" id="lifestyle">
-    <input type="hidden" id="annualReturn">
-    <button onclick="calculateRetirement()">➔ 完成試算</button>
-  </div>
 
-  <!-- 結果顯示 -->
-  <div id="outputArea" style="display:none;">
-    <h2 style="text-align:center; color:#1D4A35; margin-bottom:1.2rem;">🎯 你的退休路徑分析</h2>
-    <div class="result-container">
-      <div id="result"></div>
-      <div id="chart-container"><canvas id="myChart"></canvas></div>
+    <!-- Header -->
+    <h1>退休試算工具</h1>
+    <p class="sub">馬克陪你一起規劃安心退休金，從現在開始準備更好的未來！</p>
+
+    <!-- Step 1 -->
+    <div class="section">
+      <div class="step-title">Step 1｜基本資料</div>
+
+      <label>目前年齡：</label>
+      <input type="number" id="currentAge" placeholder="例如：30">
+
+      <label>預計退休年齡：</label>
+      <input type="number" id="retireAge" placeholder="例如：60">
+
+      <label>預計幾歲開始存退休金：</label>
+      <input type="number" id="startSavingAge" placeholder="例如：30">
+
+      <label>預計壽命（預設85歲）：</label>
+      <input type="number" id="lifeExpectancy" value="85">
     </div>
-    <div id="warmMessage"></div>
-  </div>
 
-  <!-- 心理測驗圖卡滑動區塊 -->
-  <section class="quiz-wrap">
-    <h2>📖 心理測驗結果｜退休人格圖卡</h2>
-    <div class="quiz-images">
-      <img src="https://images.plurk.com/247S0RdLTWT6TXYlqDCvBB.png" alt="獵豹型">
-      <img src="https://images.plurk.com/4wPNYsbRaNO0I3JE41GQ46.png" alt="大象型">
-      <img src="https://images.plurk.com/B3bXouDVvGExTMGjxUqJ1.png" alt="猴子型">
-      <img src="https://images.plurk.com/1dbyFuJ6n1pnnUR4CvTxIm.png" alt="小狗型">
+    <!-- Step 2 -->
+    <div class="section">
+      <div class="step-title">Step 2｜財務目標設定</div>
+
+      <label>預計退休每月生活費（台幣）：</label>
+      <input type="number" id="monthlyExpense" placeholder="例如：40000">
+
+      <label>已累積退休金（台幣）：</label>
+      <input type="number" id="savedFund" placeholder="例如：500000">
+
+      <label>目前每月可投入金額（台幣）：</label>
+      <input type="number" id="currentMonthlySaving" placeholder="例如：10000">
     </div>
-    <p>👆 左右滑動看看你是哪型退休風格。每種選擇都沒有對錯，重點是「找到自己的節奏」。</p>
-  </section>
 
-  <!-- 支持 CTA -->
-  <section class="cta-section">
-    <h3>☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
-    <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
-    <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
-    <p>
-      <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank"
-         style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;text-decoration:none;border-radius:8px;margin:6px;">
-         🪐 加入會員星球
-      </a>
-      <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank"
-         style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;text-decoration:none;border-radius:8px;margin:6px;">
-         🛍️ 選購週邊
-      </a>
-      <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank"
-         style="display:inline-block;background-color:#1D4A35;color:white;padding:10px 20px;text-decoration:none;border-radius:8px;margin:6px;">
-         📱 貼圖支持
-      </a>
-    </p>
-    <p style="font-size:0.9rem;color:#555;">感謝你支持，讓這些工具陪你一起走更長遠 💛</p>
-  </section>
-
-  <!-- 風險提示 -->
-  <div class="risk-note">
-    📢 <strong>投資風險提示：</strong><br/>
-    本網站提供之試算與內容，僅供理財教育與參考，非個別化投資建議。ETF等金融商品可能因市場波動而損失本金。請詳閱公開說明書，並依自身風險承受度評估。
-  </div>
-
-  <!-- 聯盟行銷說明 -->
-  <div class="affliate-note">
-    🔗 本站部分連結為聯盟行銷連結（Affiliate Link），若您透過這些連結購買商品，站主可能會獲得少量回饋。<br/>
-    感謝您用實際行動支持內容創作 ❤️
-  </div>
-
-  <!-- 浮動支持按鈕 & 彈窗 -->
-  <div id="supportButton">
-    <button onclick="toggleSupportBox()">💰 支持我</button>
-  </div>
-  <div id="supportOverlay" onclick="toggleSupportBox()"></div>
-  <div id="supportBox">
-    <div style="text-align:center;">
-      <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
-           style="width:72px;height:72px;border-radius:50%;margin-bottom:0.8rem;" />
-      <p style="font-weight:bold;font-size:1rem;">我是吳馬克</p>
-      <p style="font-size:0.85rem;color:#F5F2E9;">一起打造安心的財務自由生活 💡</p>
-      <a href="https://open.firstory.me/join/investwithmark" target="_blank"
-         style="display:inline-block;padding:0.5rem 1rem;background:#FFD54F;color:#1A1A1A;border-radius:1.5rem;font-weight:bold;margin-bottom:1rem;">
-        💰 單筆贊助我
-      </a>
-      <p style="margin-bottom:0.5rem;font-weight:bold;">📲 社群連結</p>
-      <div style="font-size:0.9rem;line-height:1.8;text-align:left;">
-        📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" style="color:#FFD54F;font-weight:bold;">IG：@rengary0301</a><br/>
-        👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" style="color:#FFD54F;font-weight:bold;">FB 粉專</a><br/>
-        🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" style="color:#FFD54F;font-weight:bold;">Podcast</a><br/>
-        🌐 <a href="https://markmoneylife.com/" target="_blank" style="color:#FFD54F;font-weight:bold;">個人網站</a><br/>
-        👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" style="color:#FFD54F;font-weight:bold;">LINE 社群</a>
-      </div>
-      <p style="font-size:0.75rem;color:#F5F2E9;margin-top:1rem;">
-        📩 聯絡信箱：<a href="mailto:rengary0301@gmail.com" style="color:#FFD54F;">rengary0301@gmail.com</a>
+    <!-- Step 3（保留舊版結構：四張圖卡一樣的網格結構） -->
+    <div class="section">
+      <div class="step-title">Step 3｜你的理想退休生活是什麼？</div>
+      <p class="sub" style="margin-top:6px;">
+        選一張最符合你想像的圖片，讓我們根據你的夢想，為你量身打造退休計畫！🌟<br>
+        （每個選擇，都有屬於你的故事與步調。）
       </p>
+
+      <div class="options">
+        <div class="option" onclick="selectLifestyle('獵豹型', 0.06, event)">
+          <div class="img-wrap">
+            <img src="https://images.plurk.com/3cjwlXxhIVqYupHhQELwmw.png" alt="獵豹型">
+          </div>
+          <div class="meta">獵豹型</div>
+          <small>不設限人生，環遊世界、冒險闖蕩。</small>
+        </div>
+
+        <div class="option" onclick="selectLifestyle('大象型', 0.04, event)">
+          <div class="img-wrap">
+            <img src="https://images.plurk.com/2LTuyzJ1zW1q3UCdDlztjR.png" alt="大象型">
+          </div>
+          <div class="meta">大象型</div>
+          <small>穩健走，享受生活品質。</small>
+        </div>
+
+        <div class="option" onclick="selectLifestyle('猴子型', 0.05, event)">
+          <div class="img-wrap">
+            <img src="https://images.plurk.com/3nbsUsqNbMro2C6xtfMLpb.png" alt="猴子型">
+          </div>
+          <div class="meta">猴子型</div>
+          <small>創業副業，燃燒熱情。</small>
+        </div>
+
+        <div class="option" onclick="selectLifestyle('小狗型', 0.03, event)">
+          <div class="img-wrap">
+            <img src="https://images.plurk.com/7ENPGAeY4Biet636M1leF4.png" alt="小狗型">
+          </div>
+          <div class="meta">小狗型</div>
+          <small>陪伴家人，悠閒自在。</small>
+        </div>
+      </div>
+
+      <input type="hidden" id="lifestyle">
+      <input type="hidden" id="annualReturn">
+      <button onclick="calculateRetirement()">➔ 完成試算</button>
     </div>
-  </div>
 
-  <!-- 看板瀏覽計數 -->
-  <div id="viewCounter">
-    👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
-  </div>
+    <!-- 結果顯示 -->
+    <div id="outputArea">
+      <h2 style="text-align:center; margin-top:16px; font-weight:1000;">🎯 你的退休路徑分析</h2>
 
-  <!-- 控制腳本 -->
+      <div class="result-container">
+        <div id="result"></div>
+        <div id="chart-container"><canvas id="myChart"></canvas></div>
+      </div>
+
+      <div id="warmMessage"></div>
+    </div>
+
+    <!-- ✅ 心理測驗圖卡（保持舊版結構：橫向滑動 + 直式圖卡，不要怪空白） -->
+    <section class="quiz-wrap">
+      <h2>📖 心理測驗結果｜退休人格圖卡</h2>
+
+      <div class="quiz-images">
+        <div class="quiz-poster"><img src="https://images.plurk.com/247S0RdLTWT6TXYlqDCvBB.png" alt="獵豹型"></div>
+        <div class="quiz-poster"><img src="https://images.plurk.com/4wPNYsbRaNO0I3JE41GQ46.png" alt="大象型"></div>
+        <div class="quiz-poster"><img src="https://images.plurk.com/B3bXouDVvGExTMGjxUqJ1.png" alt="猴子型"></div>
+        <div class="quiz-poster"><img src="https://images.plurk.com/1dbyFuJ6n1pnnUR4CvTxIm.png" alt="小狗型"></div>
+      </div>
+
+      <div class="hint">👆 左右滑動看看你是哪型退休風格。每種選擇都沒有對錯，重點是「找到自己的節奏」。</div>
+    </section>
+
+    <!-- 支持 CTA（保留你原本區塊） -->
+    <section class="cta-section">
+      <h3>☕ 喜歡這些理財工具？歡迎支持我持續更新！</h3>
+      <p>這些試算工具、ETF追蹤牆與資產規劃模組，都是我一個一個慢慢寫出來的。</p>
+      <p><strong>如果你覺得實用，也許可以選一個方式支持我：</strong></p>
+      <p>
+        <a href="https://www.youtube.com/channel/UC6K_jdAGqW0atmXrIG5Pthw/join" target="_blank" rel="noopener">🪐 加入會員星球</a>
+        <a href="https://www.fandorashop.com/zh-TW/collections/吳馬克幸福理財家周邊" target="_blank" rel="noopener">🛍️ 選購週邊</a>
+        <a href="https://store.line.me/stickershop/author/5129398/zh-Hant" target="_blank" rel="noopener">📱 貼圖支持</a>
+      </p>
+      <p style="font-size:0.95rem;color:rgba(234,242,244,.7);margin-top:10px;">感謝你支持，讓這些工具陪你一起走更長遠 💛</p>
+    </section>
+
+    <!-- 風險提示 -->
+    <div class="risk-note">
+      📢 <strong>投資風險提示：</strong><br/>
+      本網站提供之試算與內容，僅供理財教育與參考，非個別化投資建議。ETF等金融商品可能因市場波動而損失本金。請詳閱公開說明書，並依自身風險承受度評估。
+    </div>
+
+    <!-- 聯盟行銷說明 -->
+    <div class="affliate-note">
+      🔗 本站部分連結為聯盟行銷連結（Affiliate Link），若您透過這些連結購買商品，站主可能會獲得少量回饋。<br/>
+      感謝您用實際行動支持內容創作 ❤️
+    </div>
+
+    <!-- 浮動支持按鈕 & 彈窗（保留你原本結構） -->
+    <div id="supportButton">
+      <button onclick="toggleSupportBox()">💰 支持我</button>
+    </div>
+    <div id="supportOverlay" onclick="toggleSupportBox()"></div>
+    <div id="supportBox">
+      <div style="text-align:center;">
+        <img src="https://images.plurk.com/3pHQAD7mBlcAwyLebMYr4j.jpg" alt="吳馬克"
+             style="width:72px;height:72px;border-radius:18px;margin-bottom:10px;border:1px solid rgba(255,255,255,.12);object-fit:cover;" />
+        <p style="font-weight:1000;font-size:1rem;margin:0;">我是吳馬克</p>
+        <p style="font-size:0.9rem;color:rgba(234,242,244,.72);margin:8px 0 10px;">一起打造安心的財務自由生活 💡</p>
+        <a href="https://open.firstory.me/join/investwithmark" target="_blank" rel="noopener"
+           style="display:inline-block;padding:0.55rem 1rem;background:rgba(255,213,79,.14);border:1px solid rgba(255,213,79,.24);color:rgba(255,224,130,.96);border-radius:999px;font-weight:1000;">
+          💰 單筆贊助我
+        </a>
+        <p style="margin:14px 0 8px;font-weight:1000;">📲 社群連結</p>
+        <div style="font-size:0.95rem;line-height:1.9;text-align:left;">
+          📸 <a href="https://www.instagram.com/rengary0301/" target="_blank" rel="noopener">IG：@rengary0301</a><br/>
+          👍 <a href="https://www.facebook.com/wumarkyoutube/" target="_blank" rel="noopener">FB 粉專</a><br/>
+          🎧 <a href="https://open.firstory.me/user/wumark/platforms" target="_blank" rel="noopener">Podcast</a><br/>
+          🌐 <a href="https://markmoneylife.com/" target="_blank" rel="noopener">個人網站</a><br/>
+          👥 <a href="https://docs.google.com/forms/d/1ssXYgwb88c7KNtW569MQvdEplbvloERyDlTMZAe3xRY/edit" target="_blank" rel="noopener">LINE 社群</a>
+        </div>
+        <p style="font-size:0.8rem;color:rgba(234,242,244,.65);margin-top:12px;">
+          📩 聯絡信箱：<a href="mailto:rengary0301@gmail.com">rengary0301@gmail.com</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- 看板瀏覽計數（保留你原本結構，數字來源未實作就先顯示字） -->
+    <div id="viewCounter">
+      👀 本頁已被瀏覽 <span id="viewCount">載入中…</span> 次
+    </div>
+
+  </div><!-- /shell -->
+
+  <!-- 控制腳本（保留你原本邏輯，只加上 Chart 防疊加） -->
   <script>
     function toggleNav() {
       document.getElementById('navBar').classList.toggle('active');
     }
+
     function toggleSupportBox() {
       const box = document.getElementById('supportBox');
       const overlay = document.getElementById('supportOverlay');
@@ -473,12 +720,15 @@
       event.currentTarget.classList.add('selected');
     }
 
+    let _chartInstance = null;
+
     function calculateRetirement() {
       const getVal = id => parseFloat(document.getElementById(id).value) || NaN;
       const [currentAge, retireAge, startSavingAge, lifeExpectancy, monthlyExpense, savedFund, currentMonthlySaving] =
         ['currentAge','retireAge','startSavingAge','lifeExpectancy','monthlyExpense','savedFund','currentMonthlySaving'].map(getVal);
       const annualReturn = parseFloat(document.getElementById('annualReturn').value);
       const lifestyle = document.getElementById('lifestyle').value;
+
       if ([currentAge, retireAge, startSavingAge, lifeExpectancy, monthlyExpense, savedFund, currentMonthlySaving].some(isNaN) || !lifestyle) {
         return alert('請完整填寫所有欄位！');
       }
@@ -486,16 +736,24 @@
       const yearsToRetire = retireAge - currentAge;
       const retireYears = lifeExpectancy - retireAge;
       const totalNeeded = monthlyExpense * 12 * retireYears;
+
       const futureSavedFund = savedFund * Math.pow(1 + annualReturn, yearsToRetire);
       const futureMonthly = currentMonthlySaving * (Math.pow(1 + annualReturn/12, yearsToRetire*12) - 1)/(annualReturn/12);
       const totalFutureFund = futureSavedFund + futureMonthly;
+
       const gap = totalNeeded - totalFutureFund;
+
       let addMonthly = 0;
       if (gap > 0) {
         const investYears = retireAge - startSavingAge;
         addMonthly = gap*(annualReturn/12)/(Math.pow(1+annualReturn/12,investYears*12)-1);
       }
-      let allocation = currentAge<40?'股票型ETF 80%｜債券型ETF 20%':currentAge<55?'股票型ETF 60%｜債券型ETF 40%':'股票型ETF 40%｜債券型ETF 60%';
+
+      let allocation =
+        currentAge<40 ? '股票型ETF 80%｜債券型ETF 20%' :
+        currentAge<55 ? '股票型ETF 60%｜債券型ETF 40%' :
+                        '股票型ETF 40%｜債券型ETF 60%';
+
       const warmTexts = {
         '獵豹型':'追夢的腳步永遠不嫌快，繼續全速前進吧！🌟',
         '大象型':'穩健地走，每一步都離幸福更近。🐘',
@@ -505,22 +763,37 @@
 
       document.getElementById('outputArea').style.display='block';
       document.getElementById('result').innerHTML=`
-        <strong>退休生活型態：</strong>${lifestyle}<br><br>
-        <strong>距離退休：</strong>${yearsToRetire} 年<br><br>
-        <strong>退休總需求：</strong>${Math.round(totalNeeded).toLocaleString()} 元<br><br>
-        <strong>退休時預估累積資金：</strong>${Math.round(totalFutureFund).toLocaleString()} 元<br><br>
-        <strong>建議配置：</strong>${allocation}<br><br>
-        ${gap<=0?`<strong style="color:#4CAF50;">資金充足，安心退休！</strong>`:
-          `<strong>尚需補充：</strong>${Math.round(gap).toLocaleString()} 元<br>
-           <strong>建議額外每月投入：</strong>${Math.round(addMonthly).toLocaleString()} 元`}<br><br>
-        <small style="color:#999;">（本試算以預設報酬率推估，實際結果將依市場變化。）</small>
+        <div style="font-weight:1000;margin-bottom:10px;">
+          退休生活型態：<span style="color:rgba(255,224,130,.96);">${lifestyle}</span>
+        </div>
+        <div style="color:rgba(234,242,244,.85);line-height:1.8;">
+          <strong>距離退休：</strong>${yearsToRetire} 年<br>
+          <strong>退休總需求：</strong>${Math.round(totalNeeded).toLocaleString()} 元<br>
+          <strong>退休時預估累積資金：</strong>${Math.round(totalFutureFund).toLocaleString()} 元<br>
+          <strong>建議配置：</strong>${allocation}<br><br>
+          ${gap<=0
+            ? `<strong style="color:rgba(147,255,199,.92);">資金充足，安心退休！</strong>`
+            : `<strong>尚需補充：</strong>${Math.round(gap).toLocaleString()} 元<br>
+               <strong>建議額外每月投入：</strong>${Math.round(addMonthly).toLocaleString()} 元`
+          }
+          <div style="margin-top:10px;color:rgba(234,242,244,.55);font-size:.92rem;">
+            （本試算以預設報酬率推估，實際結果將依市場變化。）
+          </div>
+        </div>
       `;
       document.getElementById('warmMessage').innerText=`💬 小提醒：${warmTexts[lifestyle]}`;
 
-      new Chart(document.getElementById('myChart'), {
+      if (_chartInstance) _chartInstance.destroy();
+      _chartInstance = new Chart(document.getElementById('myChart'), {
         type:'pie',
-        data:{ labels:['累積資金','差額或多餘資金'], datasets:[{ data:[totalFutureFund, gap>0?gap:0] }] },
-        options:{ responsive:true, plugins:{ legend:{ position:'bottom' } } }
+        data:{
+          labels:['累積資金','差額（若有）'],
+          datasets:[{ data:[totalFutureFund, gap>0?gap:0] }]
+        },
+        options:{
+          responsive:true,
+          plugins:{ legend:{ position:'bottom', labels:{ color:'rgba(234,242,244,.75)' } } }
+        }
       });
 
       document.getElementById('result').scrollIntoView({ behavior:'smooth' });
