@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>MPL API 最小測試</title>
+</head>
+<body>
+  <h2>MPL API 測試</h2>
+
+  <button id="send">送出測試資料</button>
+
+  <pre id="result"></pre>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTnRaGD7D16CMeMEP8pftfiw_zI2gqzdtdoGEvvQ0PSyTAYl0K8MsRaZXEkeJbbK4WYg/exec";
+
+    document.getElementById("send").addEventListener("click", () => {
+      const fd = new FormData();
+      fd.append("姓名", "HTML測試成功");
+      fd.append("檢測日期", "2025-12-16");
+      fd.append("性別", "男");
+      fd.append("年齡", 16);
+      fd.append("CMJ(cm)", 42.5);
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: fd
+      })
+      .then(r => r.text())
+      .then(t => {
+        document.getElementById("result").textContent = t;
+      })
+      .catch(err => {
+        document.getElementById("result").textContent = err.toString();
+      });
+    });
+  </script>
+</body>
+</html>
