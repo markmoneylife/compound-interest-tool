@@ -63,6 +63,7 @@
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
+    html{ scroll-behavior:smooth; } /* ✅ 全站 smooth scroll */
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
@@ -77,6 +78,7 @@
     ::selection{ background: rgba(255,213,79,.25); }
 
     .container{ max-width:1180px; margin:0 auto; padding: 22px 16px 64px; }
+    #pageTop{ position:relative; top:-10px; } /* ✅ 回頂部定位點 */
 
     /* ===== Topbar（頻道網站導覽）===== */
     .topbar{
@@ -317,6 +319,14 @@
       border:none;
     }
 
+    /* ✅ 新增：跳到圓餅總覽按鈕（強調但不搶戲） */
+    .filter-buttons button.jump{
+      border:none;
+      background: linear-gradient(135deg, rgba(14,165,122,.95), rgba(43,124,255,.85));
+      box-shadow: 0 12px 26px rgba(0,0,0,.26);
+    }
+    .filter-buttons button.jump:hover{ filter: brightness(1.05); }
+
     /* ===== Pie ===== */
     .pie-wrap{
       margin: 18px 0 14px;
@@ -327,6 +337,7 @@
       box-shadow: var(--shadow2);
       position:relative;
       overflow:hidden;
+      scroll-margin-top: 120px; /* ✅ 跳轉時避免被 sticky 遮到 */
     }
     .pie-wrap::before{
       content:"";
@@ -642,10 +653,63 @@
       box-shadow: var(--shadow2);
       line-height:1.6;
     }
+
+    /* ===== ✅ Mobile Floating Action Button (FAB) ===== */
+    .fab{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 3000;
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(14,165,122,.95), rgba(43,124,255,.95));
+      color: #fff;
+      font-weight: 950;
+      display:none; /* 預設不顯示，手機才開 */
+      place-items:center;
+      box-shadow: 0 16px 36px rgba(0,0,0,.38);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .fab:hover{ transform: translateY(-2px); filter: brightness(1.05); }
+    .fab:active{ transform: translateY(0px) scale(.98); }
+
+    .fab .fab-emoji{ font-size: 1.25rem; line-height: 1; }
+    .fab .fab-hint{
+      position:absolute;
+      right: 62px;
+      bottom: 10px;
+      white-space:nowrap;
+      font-size:.86rem;
+      color: rgba(234,243,255,.86);
+      background: rgba(2,9,17,.55);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: .35rem .55rem;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.30);
+      opacity:0;
+      transform: translateX(6px);
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .fab.show-hint .fab-hint{ opacity:1; transform: translateX(0); }
+
+    @media (max-width: 860px){
+      .fab{ display:grid; }
+      /* 手機底部空間：避免 FAB 壓到最後一段 */
+      .container{ padding-bottom: 84px; }
+    }
   </style>
 </head>
 
 <body>
+  <!-- ✅ 回頂部定位點 -->
+  <div id="pageTop" aria-hidden="true"></div>
+
   <!-- ✅ 頻道網站導覽 -->
   <header class="topbar">
     <div class="topbar-inner">
@@ -679,8 +743,8 @@
         <div>
           <h1>吳馬克的 ETF 投資追蹤牆｜真實投資紀錄公開</h1>
           <p>
-            這不是模擬帳戶，是我本人每月定期定額投入的 ETF 操作筆記。你可以用「類別篩選＋圓餅圖」快速看我現在的配置長什麼樣，
-            再用卡片細看每檔的成本、市值、報酬率與預估配息。（提醒：配息是現金流，不等於賺到這麼多）
+            這不是模擬帳戶，是我本人每月定期定額投入的 ETF 操作筆記。你可以先滑卡片看「你在意的那幾檔」，
+            最後再用「圓餅圖」收斂總結我目前的配置。（提醒：配息是現金流，不等於賺到這麼多）
           </p>
         </div>
         <div class="hero-cta">
@@ -697,7 +761,7 @@
       </div>
     </section>
 
-    <!-- ✅ Filter -->
+    <!-- ✅ Filter（加：跳到配置總覽） -->
     <div class="filter-buttons" aria-label="類別篩選">
       <button onclick="filterCards('全部')">全部</button>
       <button onclick="filterCards('高股息')">高股息</button>
@@ -706,19 +770,10 @@
       <button onclick="filterCards('REITs')">REITs</button>
       <button onclick="filterCards('債券型')">債券型</button>
       <button class="pinned" onclick="filterFavorites()">📌 我的追蹤清單</button>
+      <button class="jump" onclick="scrollToPie()">📊 跳到配置總覽</button>
     </div>
 
-    <!-- ✅ 類別市值圓餅圖 -->
-    <section class="pie-wrap" aria-label="投資組合市值分布">
-      <div class="pie-head">
-        <h2>📊 我的投資組合市值分布</h2>
-        <div id="pieTotal"></div>
-      </div>
-      <canvas id="categoryPie" height="120" style="position:relative; z-index:1;"></canvas>
-      <div id="pieLegend" class="pie-legend" aria-label="圓餅圖圖例"></div>
-    </section>
-
-    <!-- ✅ Cards -->
+    <!-- ✅ Cards（先看細節） -->
     <div id="etfCards"></div>
 
     <!-- ✅ CTA -->
@@ -746,7 +801,7 @@
         <div class="step">
           <h3>② 看馬克每月定期 ETF 投資紀錄</h3>
           <p>追蹤 00878、00713、00919 等 ETF，從投入金額到真實績效全公開。</p>
-          <span class="step-btn" aria-disabled="true">📌 往下滑看卡片</span>
+          <span class="step-btn" aria-disabled="true">📌 往上滑看卡片</span>
         </div>
 
         <div class="step">
@@ -755,6 +810,16 @@
           <a class="step-btn green" href="https://forms.gle/6kMr3apkhVh3qmb9A" target="_blank" rel="noopener">💬 加入 LINE 社群</a>
         </div>
       </div>
+    </section>
+
+    <!-- ✅ 圓餅圖（底部總結） -->
+    <section id="pieSection" class="pie-wrap" aria-label="投資組合市值分布">
+      <div class="pie-head">
+        <h2>📊 我的投資組合市值分布</h2>
+        <div id="pieTotal"></div>
+      </div>
+      <canvas id="categoryPie" height="120" style="position:relative; z-index:1;"></canvas>
+      <div id="pieLegend" class="pie-legend" aria-label="圓餅圖圖例"></div>
     </section>
 
     <!-- ✅ Disclaimer -->
@@ -766,16 +831,75 @@
     </div>
   </main>
 
+  <!-- ✅ 手機浮動按鈕（自動在「跳到底 / 回頂部」之間切換） -->
+  <button id="fabNav" class="fab" type="button" onclick="fabAction()" aria-label="跳到配置總覽或回到頂部">
+    <span class="fab-emoji" id="fabEmoji">📊</span>
+    <span class="fab-hint" id="fabHint">跳到配置總覽</span>
+  </button>
+
   <script>
     function toggleNav() {
       document.getElementById('navBar').classList.toggle('active');
     }
 
+    function scrollToPie(){
+      const el = document.getElementById('pieSection');
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function scrollToTop(){
+      const el = document.getElementById('pageTop');
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+      else window.scrollTo({ top:0, behavior:'smooth' });
+    }
+
+    // ===== FAB 行為（手機友善）=====
+    let fabMode = 'toPie'; // 'toPie' | 'toTop'
+    function setFabMode(mode){
+      fabMode = mode;
+      const emoji = document.getElementById('fabEmoji');
+      const hint = document.getElementById('fabHint');
+      const fab = document.getElementById('fabNav');
+      if (!emoji || !hint || !fab) return;
+
+      if (mode === 'toTop'){
+        emoji.textContent = '⬆️';
+        hint.textContent = '回到頂部';
+      }else{
+        emoji.textContent = '📊';
+        hint.textContent = '跳到配置總覽';
+      }
+
+      // 小提示：短暫出現（不吵）
+      fab.classList.add('show-hint');
+      clearTimeout(window.__fabHintTimer);
+      window.__fabHintTimer = setTimeout(()=>fab.classList.remove('show-hint'), 900);
+    }
+
+    function fabAction(){
+      if (fabMode === 'toTop') scrollToTop();
+      else scrollToPie();
+    }
+
+    // 監測：接近圓餅圖就切到「回頂部」
+    const pieObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting) setFabMode('toTop');
+        else setFabMode('toPie');
+      });
+    }, { root:null, threshold:0.15 });
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const pie = document.getElementById('pieSection');
+      if (pie) pieObserver.observe(pie);
+      setFabMode('toPie');
+    });
+
+    // ===== 你的資料與圖表邏輯（原封不動）=====
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=2137337223&single=true&output=csv";
     window.latestData = [];
     let pieChart = null;
 
-    // 友善數字轉換
     const toNumber = (v) => {
       if (v === null || v === undefined) return 0;
       const s = String(v).replace(/,/g, '').trim();
@@ -783,7 +907,6 @@
       return isNaN(n) ? 0 : n;
     };
 
-    // 類別 -> 顏色（品牌感配色）
     const CATEGORY_COLORS = {
       "高股息": "#ffd54f",
       "指數型": "#0ea57a",
@@ -793,7 +916,6 @@
       "其他": "#9fb2c7"
     };
 
-    // 聚合：依類別彙總「市值」
     function aggregateByCategory(data){
       const map = {};
       data.forEach(row=>{
@@ -808,17 +930,14 @@
       return { labels, values, colors, total };
     }
 
-    // 渲染圓餅圖 + 圖例
     function renderPie(data){
       const canvas = document.getElementById("categoryPie");
       const ctx = canvas.getContext("2d");
       const { labels, values, colors, total } = aggregateByCategory(data);
 
-      // 更新總市值顯示
       const totalBox = document.getElementById("pieTotal");
       totalBox.textContent = "總市值：$" + Math.round(total).toLocaleString();
 
-      // 若沒有資料
       if (!labels.length || total === 0){
         if (pieChart){ pieChart.destroy(); pieChart = null; }
         document.getElementById("pieLegend").innerHTML = '<span style="color: rgba(234,243,255,.70);">目前沒有可統計的資料</span>';
@@ -854,7 +973,6 @@
         }
       });
 
-      // 自訂圖例
       const legend = labels.map((label, i)=>{
         const pct = total ? (values[i]/total*100) : 0;
         return `
@@ -867,7 +985,6 @@
       document.getElementById("pieLegend").innerHTML = legend;
     }
 
-    // 初始載入資料
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(csv => Papa.parse(csv, { header: true }))
@@ -891,7 +1008,6 @@
         renderPie([]);
       });
 
-    // 篩選（圖表同步更新）
     function filterCards(type) {
       const data = window.latestData;
       const filtered = type === '全部' ? data : data.filter(row => row["類別"] === type);
@@ -916,7 +1032,6 @@
       favs = favs.includes(id) ? favs.filter(x=>x!==id) : [...favs,id];
       localStorage.setItem("favoriteETFs", JSON.stringify(favs));
 
-      // ✅ 讓星星即時更新（不然你會覺得我在偷懶）
       const btn = document.querySelector(`[data-fav="${id}"]`);
       if (btn) btn.textContent = favs.includes(id) ? '⭐' : '☆';
     }
