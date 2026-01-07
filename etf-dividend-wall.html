@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ETF配息圖卡瀑布牆＋配息入帳時間表｜吳馬克</title>
 
-  <!-- ✅ OG 網站縮圖 -->
   <link rel="icon" href="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" type="image/png">
 
-  <!-- ✅ OG for ETF配息圖卡瀑布牆 -->
   <meta property="og:title" content="ETF配息圖卡瀑布牆｜殖利率 × 入帳時間一眼掌握｜馬克理財" />
   <meta property="og:description" content="每月更新的ETF配息圖卡視覺瀑布牆，包含殖利率、發放日與收益組成，讓你輕鬆追蹤高股息資訊。" />
   <meta property="og:image" content="https://markmoney738404280.wordpress.com/wp-content/uploads/2025/06/e8a487e588a9e8a9a6e7ae97e5b7a5e585b7.png" />
@@ -18,7 +16,6 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="馬克理財工具箱" />
 
-  <!-- ✅ Twitter 預覽 -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ETF配息圖卡瀑布牆｜殖利率 × 入帳時間一眼掌握｜馬克理財">
   <meta name="twitter:description" content="每月更新的ETF配息圖卡瀑布牆，包含殖利率、發放日與收益組成，讓你輕鬆追蹤高股息資訊。">
@@ -774,10 +771,8 @@
 <body>
   <div class="starfield"></div>
 
-  <!-- 手機選單 -->
   <button class="nav-toggle" onclick="toggleNav()">☰ 選單</button>
 
-  <!-- 導覽 -->
   <div class="nav-bar-wrapper">
     <div class="nav-shell">
       <a class="brand" href="https://markmoneylife.com/" aria-label="回到馬克理財工具箱首頁">
@@ -802,7 +797,6 @@
   </div>
 
   <main class="page-shell">
-    <!-- Hero -->
     <section id="wall" class="hero">
       <h1>ETF 配息圖卡瀑布牆</h1>
       <p>殖利率、除息/配發日、收益組成一次看懂。配息是現金流，不是保證獲利——但至少先把數字看清楚。</p>
@@ -815,7 +809,6 @@
         <span class="meta-pill" id="last-update">更新時間：—</span>
       </div>
 
-      <!-- ✅ 工具列：顯示月份 + 看公告/看入帳 + 搜尋 + 排序 -->
       <div class="toolbar" aria-label="篩選工具列">
         <span class="chip">📅 <strong>顯示月份</strong></span>
         <select id="monthSelect" class="select" aria-label="顯示月份"></select>
@@ -833,7 +826,6 @@
 
       <div class="statusline" id="statusLine">載入中…</div>
 
-      <!-- ✅ 摘要卡 -->
       <div class="summary-grid" id="summaryGrid" style="display:none;">
         <div class="summary-card">
           <div class="k">本月有配息的 ETF</div>
@@ -849,14 +841,12 @@
         </div>
       </div>
 
-      <!-- 模式切換 -->
       <div class="mode-switch" id="mode-switch">
         <button data-mode="forecast" class="btn btn-primary">預估配息模式</button>
         <button data-mode="distribution" class="btn btn-ghost">收益組成模式</button>
       </div>
     </section>
 
-    <!-- 你的ETF這期配多少？ -->
     <section id="my-dividend" class="section-card">
       <div class="section-title">
         <h2>🧮 你的 ETF 這期配多少？</h2>
@@ -884,7 +874,6 @@
       <div id="my-dividend-result" class="tool-result">輸入後按下按鈕，我會把估算結果放在這裡。</div>
     </section>
 
-    <!-- 模式：預估配息 -->
     <section id="mode-forecast" class="section-card">
       <div class="section-title">
         <h2>🥇 前五名單期殖利率</h2>
@@ -896,7 +885,6 @@
       <div id="card-container" class="grid-cards" style="margin-top: 1rem;"></div>
     </section>
 
-    <!-- 模式：收益組成 -->
     <section id="mode-distribution" class="section-card" style="display:none;">
       <div class="section-title">
         <h2>📊 本月配息收益組成</h2>
@@ -916,7 +904,6 @@
       <div id="composition-container" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" style="margin-top: 1rem;"></div>
     </section>
 
-    <!-- 入帳時間表 -->
     <section id="timeline" class="section-card" style="margin-top: 1.2rem;">
       <div class="section-title">
         <h2 id="timeline-header">📅 本月 ETF 配息入帳時間表</h2>
@@ -929,7 +916,6 @@
     </section>
   </main>
 
-  <!-- Footer -->
   <footer>
     <div class="footer-shell">
       <div>
@@ -959,7 +945,7 @@
 
   <script>
     /***********************
-     * 2026 小升級 v1
+     * 2026 小升級 v1 (修正版)
      * ✅ 顯示月份下拉（只顯示資料庫裡真的有的月份）
      * ✅ 一鍵切換：看公告月 / 看入帳月（解決跨年）
      * ✅ 搜尋（代號/名稱）
@@ -969,7 +955,8 @@
      * ✅ 讀取失敗用 localStorage 快取降級（頁面不會空白）
      ***********************/
 
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?gid=122705340&single=true&output=csv';
+    // ✅ 已更新為你提供的正確連結
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv';
 
     // 快取 key
     const CACHE_KEY = 'mml_etf_div_wall_csv_cache_v1';
@@ -1479,7 +1466,7 @@
         });
     }
 
-    // 🔹 你的ETF配息試算（用「顯示月份」資料）
+    // 🔹 你的ETF配息試算（修正版）
     function handleMyDividendCalc() {
       const codeInput = document.getElementById('my-dividend-code').value;
       const lotsInput = document.getElementById('my-dividend-lots').value;
@@ -1490,17 +1477,16 @@
         return;
       }
 
+      // 1. 先定義持有股數
       const shares = parseFloat(lotsInput || '0');
+      if (!shares || shares <= 0) {
+        resultDiv.innerHTML = '請輸入正確的持有股數（可以是零股）';
+        return;
+      }
 
-if (!shares || shares <= 0) {
-  resultDiv.innerHTML = '請輸入正確的持有股數（可以是零股）';
-  return;
-}
-
-const total = perShare * shares;
       const norm = normalizeCode(codeInput);
 
-      // 用 selectedYM + axis 篩本期資料（跟你頁面一致）
+      // 用 selectedYM + axis 篩本期資料
       const candidates = allData.filter(r => {
         const ym = axis === 'announce' ? getAnnounceYM(r) : getPayYM(r);
         const code = normalizeCode(getCode(r));
@@ -1508,7 +1494,7 @@ const total = perShare * shares;
       });
 
       if (!candidates.length) {
-        resultDiv.innerHTML = `找不到這個月份代號 <strong style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">${codeInput}</strong> 的資料，可能本期沒有配息，或你目前在看「${axis === 'announce' ? '公告月' : '入帳月'}」。`;
+        resultDiv.innerHTML = `找不到這個月份代號 <strong style="font-family: monospace;">${codeInput}</strong> 的資料，可能本期沒有配息，或你目前在看「${axis === 'announce' ? '公告月' : '入帳月'}」。`;
         return;
       }
 
@@ -1526,11 +1512,10 @@ const total = perShare * shares;
         return;
       }
 
-      const perLot = perShare * 1000;
-      const total = perLot * lots;
+      const total = perShare * shares;
       const label = divInfo.label;
 
-      // 找上一筆配息（以公告月作比較才合理）
+      // 找上一筆配息
       const prev = findPreviousDividendRecord(code, getAnnounceYM(r));
       let prevText = '較上次配息：—';
       if (prev) {
@@ -1548,20 +1533,19 @@ const total = perShare * shares;
         }
       }
 
-  resultDiv.innerHTML = `
-  <div style="display:grid; gap:.35rem;">
-    <div>你持有 <strong>${shares.toLocaleString()}</strong> 股 <strong>${code}</strong>（${name}）。</div>
-    <div>本期每股${label}：<strong>${perShare.toFixed(3)} 元</strong></div>
-    <div>👉 本期預估可領配息約：
-      <span class="money">${formatAmount(total)} 元</span>
-    </div>
-    <div style="font-size:.8rem; color: rgba(232,238,246,.62);">
-      除息日：${exDate}｜配發日：${payDate}
-    </div>
-    <div style="font-size:.82rem;">${prevText}</div>
-  </div>
-`;
-
+      resultDiv.innerHTML = `
+      <div style="display:grid; gap:.35rem;">
+        <div>你持有 <strong>${shares.toLocaleString()}</strong> 股 <strong>${code}</strong>（${name}）。</div>
+        <div>本期每股${label}：<strong>${perShare.toFixed(3)} 元</strong></div>
+        <div>👉 本期預估可領配息約：
+          <span class="money">${formatAmount(total)} 元</span>
+        </div>
+        <div style="font-size:.8rem; color: rgba(232,238,246,.62);">
+          除息日：${exDate}｜配發日：${payDate}
+        </div>
+        <div style="font-size:.82rem;">${prevText}</div>
+      </div>
+      `;
     }
 
     // ✅ 一次渲染全部（依目前狀態）
