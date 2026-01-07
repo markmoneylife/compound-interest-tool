@@ -873,7 +873,7 @@
           <input id="my-dividend-code" class="field" type="text" placeholder="請輸入ETF代號" />
         </div>
         <div>
-          <div class="field-label">持有張數</div>
+          <div class="field-label">持有股數（含零股）</div>
           <input id="my-dividend-lots" class="field" type="number" min="1" step="1" value="1" />
         </div>
         <div>
@@ -1490,12 +1490,14 @@
         return;
       }
 
-      const lots = parseFloat(lotsInput || '0');
-      if (!codeInput || !lots || lots <= 0) {
-        resultDiv.innerHTML = '請輸入正確的 ETF 代號與持有張數哦！';
-        return;
-      }
+      const shares = parseFloat(lotsInput || '0');
 
+if (!shares || shares <= 0) {
+  resultDiv.innerHTML = '請輸入正確的持有股數（可以是零股）';
+  return;
+}
+
+const total = perShare * shares;
       const norm = normalizeCode(codeInput);
 
       // 用 selectedYM + axis 篩本期資料（跟你頁面一致）
@@ -1546,15 +1548,20 @@
         }
       }
 
-      resultDiv.innerHTML = `
-        <div style="display:grid; gap:.35rem;">
-          <div>你持有 <strong>${lots}</strong> 張 <strong>${code}</strong>（${name}）。</div>
-          <div>本期每股${label}：<strong>${perShare.toFixed(3)} 元</strong>，每張約：<strong>${formatAmount(perLot)} 元</strong>。</div>
-          <div>👉 本期預估可領配息約：<span class="money">${formatAmount(total)} 元</span></div>
-          <div style="font-size:.8rem; color: rgba(232,238,246,.62);">除息日：${exDate}｜配發日：${payDate}</div>
-          <div style="font-size:.82rem;">${prevText}</div>
-        </div>
-      `;
+  resultDiv.innerHTML = `
+  <div style="display:grid; gap:.35rem;">
+    <div>你持有 <strong>${shares.toLocaleString()}</strong> 股 <strong>${code}</strong>（${name}）。</div>
+    <div>本期每股${label}：<strong>${perShare.toFixed(3)} 元</strong></div>
+    <div>👉 本期預估可領配息約：
+      <span class="money">${formatAmount(total)} 元</span>
+    </div>
+    <div style="font-size:.8rem; color: rgba(232,238,246,.62);">
+      除息日：${exDate}｜配發日：${payDate}
+    </div>
+    <div style="font-size:.82rem;">${prevText}</div>
+  </div>
+`;
+
     }
 
     // ✅ 一次渲染全部（依目前狀態）
