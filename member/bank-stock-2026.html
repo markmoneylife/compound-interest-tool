@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>銀行股 2026｜配息預測 × 合理價觀察站</title>
+  <meta name="description" content="銀行股 2026 配息預測與合理價總整理，快速查看 114 年 EPS、預估配息、合理價(5%)、便宜價(7%) 與目前股價位置。" />
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    :root {
+      --bg: #071b1a;
+      --bg-2: #0b2530;
+      --panel: rgba(255,255,255,.06);
+      --line: rgba(255,255,255,.12);
+      --text: #edf7f5;
+      --muted: #aac6c0;
+      --green: #39c79a;
+      --green-2: #97f0cd;
+      --blue: #5fb8ff;
+      --yellow: #ffd66b;
+      --danger: #ff8a8a;
+      --shadow: 0 12px 40px rgba(0,0,0,.28);
+      --radius-xl: 28px;
+      --max: 1280px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at top left, rgba(57,199,154,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(95,184,255,.16), transparent 34%),
+        linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero, .card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(57,199,154,.16), rgba(95,184,255,.12));
+      padding: 34px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: var(--green-2);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -.03em;
+      max-width: 820px;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green), #2ea982);
+      color: #06231c;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.06);
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .focus-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 22px 0;
+    }
+
+    .focus-card {
+      padding: 22px;
+    }
+
+    .focus-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .focus-value {
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+
+    .focus-note {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 320px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .panel {
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .panel h2, .panel h3 {
+      margin: 0 0 14px;
+    }
+
+    .panel h2 { font-size: 22px; }
+    .panel h3 { font-size: 17px; }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .search {
+      width: 100%;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: rgba(57,199,154,.18);
+      border-color: rgba(57,199,154,.45);
+      color: var(--green-2);
+    }
+
+    .rank-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rank-item {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .rank-no {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #052019;
+      background: linear-gradient(135deg, var(--yellow), #ffefb7);
+    }
+
+    .rank-name { font-weight: 800; }
+
+    .rank-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #102730;
+      color: var(--green-2);
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 13px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: rgba(255,255,255,.04); }
+
+    .name-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .name-main {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .name-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .positive { color: var(--green-2); font-weight: 700; }
+    .negative { color: var(--danger); font-weight: 700; }
+    .neutral { color: var(--yellow); font-weight: 700; }
+
+    .price-zone {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .zone-cheap {
+      background: rgba(57,199,154,.16);
+      color: var(--green-2);
+    }
+
+    .zone-fair {
+      background: rgba(255,214,107,.13);
+      color: var(--yellow);
+    }
+
+    .zone-expensive {
+      background: rgba(255,138,138,.12);
+      color: #ffb4b4;
+    }
+
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 1080px) {
+      .focus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .wrap { padding: 16px; }
+      .hero { padding: 24px; }
+      .focus-grid { grid-template-columns: 1fr; }
+      table { min-width: 900px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">🏦 銀行股配息預測 × 合理價觀察站</div>
+      <h1>銀行股 2026<br>先看 114 年 EPS，再看預估配息與合理價</h1>
+      <p>
+        這頁把真正該站在第一排的重點拉出來：114 年 EPS、預估配息、合理價(5%)、便宜價(7%)。
+        先看今年大概能賺多少、可能配多少，再看現在股價離便宜價和合理價還有多遠。殖利率可以看，但不該搶主角。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#bank-table">→ 直接看配息預測總表</a>
+        <a class="btn btn-secondary" href="#topFocusList">→ 先看靠近便宜價名單</a>
+      </div>
+    </section>
+
+    <section class="focus-grid" id="summaryCards"></section>
+
+    <section class="content-grid">
+      <aside>
+        <div class="card panel">
+          <h2>快速篩選</h2>
+          <input id="searchInput" class="search" type="text" placeholder="輸入代號、名稱、關鍵字…" />
+          <div style="height:14px"></div>
+          <h3>價格區間</h3>
+          <div class="chip-group" id="statusFilters"></div>
+          <div style="height:14px"></div>
+          <h3>排序模式</h3>
+          <div class="chip-group" id="sortFilters"></div>
+          <p class="small" style="margin-top:14px;">
+            存銀行股不是閉眼領股利。這頁先幫你看獲利、配息和價格位置有沒有站在同一邊。
+          </p>
+        </div>
+
+        <div class="card panel" id="topFocusList">
+          <div class="section-title">
+            <div>
+              <h2>便宜價附近觀察名單</h2>
+              <p>先看誰離便宜價比較近，才不會只看配息就腦衝。</p>
+            </div>
+          </div>
+          <div class="rank-list" id="topYieldList"></div>
+        </div>
+
+        <div class="card panel">
+          <h2>銀行股觀察提醒</h2>
+          <p class="small">
+            • 114 年 EPS 是今年獲利的重要參考，但不是保證書。<br>
+            • 預估配息再漂亮，也要回頭看現在價格還有沒有安全邊際。<br>
+            • 便宜價、合理價是幫你拉回紀律，不是叫你看到數字就全押。<br><br>
+            配息是現金流，不等於你買在任何位置都合理。價格買太貴，抱起來一樣會悶。
+          </p>
+        </div>
+      </aside>
+
+      <main>
+        <div class="card panel" id="bank-table">
+          <div class="section-title">
+            <div>
+              <h2>銀行股 2026 配息預測總表</h2>
+              <p>這裡已鎖定 Google Sheet 的「銀行股2026」分頁資料，主軸以 114 年 EPS、預估配息、合理價與便宜價為主。</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="small" id="tableMeta">正在讀取銀行股2026分頁資料…</div>
+            <div class="small" id="activeSortLabel">目前排序：最接近便宜價</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr id="tableHeadRow"></tr></thead>
+              <tbody id="tableBody"><tr><td class="empty" colspan="11">資料讀取中…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="footer-note">
+            投資提醒：本頁僅為資料整理與教育用途，不構成買賣建議。銀行股的獲利、配息、股價與未來績效都可能變動，請搭配財報、資本適足率、逾放比、景氣循環與個人資金配置一起看。
+          </div>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    var PUBLISHED_CSV_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv';
+    var SHEET_GID = '605020940';
+
+    function getSheetCsvUrl() {
+      if (!SHEET_GID) return PUBLISHED_CSV_BASE;
+      return PUBLISHED_CSV_BASE + '&gid=' + encodeURIComponent(SHEET_GID);
+    }
+
+    var state = {
+      rawRows: [],
+      viewRows: [],
+      search: '',
+      status: '全部',
+      sort: 'cheap_gap_asc',
+      columns: [],
+      keys: {}
+    };
+
+    var searchInput = document.getElementById('searchInput');
+    var tableBody = document.getElementById('tableBody');
+    var tableHeadRow = document.getElementById('tableHeadRow');
+    var summaryCards = document.getElementById('summaryCards');
+    var topYieldList = document.getElementById('topYieldList');
+    var tableMeta = document.getElementById('tableMeta');
+    var activeSortLabel = document.getElementById('activeSortLabel');
+    var statusFilters = document.getElementById('statusFilters');
+    var sortFilters = document.getElementById('sortFilters');
+
+    var aliases = {
+      code: ['股票代號', '代號', '股號', 'code'],
+      name: ['股票名稱', '名稱', '股名', '公司', '銀行', 'name'],
+      price: ['收盤價', '股價', '現價', '價格', 'price'],
+      eps114: ['114年EPS', '114 EPS'],
+      dividend: ['預估配息', '股利', '現金股利', '配息', '每股股利'],
+      fair: ['合理價(5%)', '合理價'],
+      cheap: ['便宜價(7%)', '便宜價'],
+      yield: ['殖利率', '現金殖利率', '股息殖利率'],
+      growth: ['年增率(%)', '年增率'],
+      payoutRate: ['十年配息率', '配息率']
+    };
+
+    var sortOptions = [
+      { key: 'cheap_gap_asc', label: '最接近便宜價' },
+      { key: 'fair_gap_asc', label: '最接近合理價' },
+      { key: 'eps_desc', label: '114年EPS 由高到低' },
+      { key: 'dividend_desc', label: '預估配息由高到低' },
+      { key: 'price_asc', label: '收盤價由低到高' },
+      { key: 'name_asc', label: '代號／名稱排序' }
+    ];
+
+    var statusOptions = ['全部', '便宜價附近', '合理價附近', '高於合理價'];
+
+    function normalizeKey(str) {
+      return String(str || '').trim().toLowerCase().replace(/\s+/g, '');
+    }
+
+    function findColumn(columns, list) {
+      var normalizedColumns = columns.map(function(c) {
+        return { original: c, normalized: normalizeKey(c) };
+      });
+      for (var i = 0; i < list.length; i++) {
+        var target = normalizeKey(list[i]);
+        var found = normalizedColumns.find(function(c) {
+          return c.normalized === target || c.normalized.indexOf(target) >= 0 || target.indexOf(c.normalized) >= 0;
+        });
+        if (found) return found.original;
+      }
+      return '';
+    }
+
+    function parseNum(value) {
+      if (value === null || value === undefined) return null;
+      var cleaned = String(value).replace(/[,%$\s,]/g, '').trim();
+      if (!cleaned) return null;
+      var num = Number(cleaned);
+      return isFinite(num) ? num : null;
+    }
+
+    function pct(value) {
+      var n = parseNum(value);
+      return n === null ? '—' : n.toFixed(2) + '%';
+    }
+
+    function numText(value, digits) {
+      var n = parseNum(value);
+      var d = digits === undefined ? 2 : digits;
+      return n === null ? '—' : n.toFixed(d);
+    }
+
+    function gapValue(current, target) {
+      var c = parseNum(current);
+      var t = parseNum(target);
+      if (c === null || t === null || t === 0) return null;
+      return ((c - t) / t) * 100;
+    }
+
+    function gapText(current, target) {
+      var gap = gapValue(current, target);
+      if (gap === null) return '—';
+      return (gap > 0 ? '+' : '') + gap.toFixed(1) + '%';
+    }
+
+    function classify(row) {
+      var price = parseNum(row._price);
+      var cheap = parseNum(row._cheap);
+      var fair = parseNum(row._fair);
+      if (price === null || cheap === null || fair === null) return '全部';
+      if (price <= cheap * 1.03) return '便宜價附近';
+      if (price <= fair * 1.05) return '合理價附近';
+      return '高於合理價';
+    }
+
+    function zoneClass(status) {
+      if (status === '便宜價附近') return 'zone-cheap';
+      if (status === '合理價附近') return 'zone-fair';
+      return 'zone-expensive';
+    }
+
+    function buildSummary(rows) {
+      var epsNums = rows.map(function(r) { return parseNum(r._eps114); }).filter(function(v) { return v !== null; });
+      var dividendNums = rows.map(function(r) { return parseNum(r._dividend); }).filter(function(v) { return v !== null; });
+      var cheapCount = rows.filter(function(r) { return classify(r) === '便宜價附近'; }).length;
+      var fairCount = rows.filter(function(r) { return classify(r) === '合理價附近'; }).length;
+      var nearestCheap = null;
+
+      rows.forEach(function(r) {
+        var gap = gapValue(r._price, r._cheap);
+        if (gap === null) return;
+        var absGap = Math.abs(gap);
+        if (!nearestCheap || absGap < nearestCheap.gap) {
+          nearestCheap = { row: r, gap: absGap };
+        }
+      });
+
+      var avgEps = epsNums.length ? (epsNums.reduce(function(a, b) { return a + b; }, 0) / epsNums.length).toFixed(2) : '—';
+      var avgDividend = dividendNums.length ? (dividendNums.reduce(function(a, b) { return a + b; }, 0) / dividendNums.length).toFixed(2) : '—';
+
+      var cards = [
+        { label: '平均 114 年 EPS', value: avgEps, note: '先看今年大致賺多少，再談配多少' },
+        { label: '平均預估配息', value: avgDividend, note: '配息預測是主角，不是表格角落的配角' },
+        { label: '便宜價／合理價附近', value: cheapCount + ' / ' + fairCount, note: '先看價格區間，再決定要不要研究更深' },
+        { label: '最接近便宜價', value: nearestCheap ? ((nearestCheap.row._code || '') + ' ' + (nearestCheap.row._name || '')) : '—', note: nearestCheap ? ('距離便宜價 ' + nearestCheap.gap.toFixed(1) + '%') : '目前抓不到便宜價資料' }
+      ];
+
+      summaryCards.innerHTML = cards.map(function(card) {
+        return '<article class="card focus-card"><div class="focus-label">' + card.label + '</div><div class="focus-value">' + card.value + '</div><div class="focus-note">' + card.note + '</div></article>';
+      }).join('');
+    }
+
+    function buildTopYield(rows) {
+      var list = rows.map(function(r) {
+        var gap = gapValue(r._price, r._cheap);
+        if (gap === null) return null;
+        return { row: r, gap: gap };
+      }).filter(Boolean).sort(function(a, b) {
+        return Math.abs(a.gap) - Math.abs(b.gap);
+      }).slice(0, 5);
+
+      if (!list.length) {
+        topYieldList.innerHTML = '<div class="small">目前抓不到可用的便宜價資料。</div>';
+        return;
+      }
+
+      topYieldList.innerHTML = list.map(function(item, idx) {
+        var row = item.row;
+        var cls = item.gap <= 0 ? 'positive' : 'neutral';
+        var txt = (item.gap > 0 ? '+' : '') + item.gap.toFixed(1) + '%';
+        return '<div class="rank-item"><div class="rank-no">' + (idx + 1) + '</div><div><div class="rank-name">' + (row._code || '') + ' ' + (row._name || '未命名標的') + '</div><div class="rank-note">114年EPS ' + numText(row._eps114) + ' ／ 預估配息 ' + numText(row._dividend) + ' ／ 便宜價 ' + numText(row._cheap) + '</div></div><div class="' + cls + '">' + txt + '</div></div>';
+      }).join('');
+    }
+
+    function buildHead() {
+      var labels = ['銀行', '114年EPS', '預估配息', '收盤價', '便宜價(7%)', '合理價(5%)', '距便宜價', '價格區間', '殖利率', '年增率', '十年配息率'];
+      tableHeadRow.innerHTML = labels.map(function(label) { return '<th>' + label + '</th>'; }).join('');
+    }
+
+    function renderRows(rows) {
+      if (!rows.length) {
+        tableBody.innerHTML = '<tr><td class="empty" colspan="11">找不到符合條件的銀行股資料，可能是篩選太狠了。</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = rows.map(function(row) {
+        var status = classify(row);
+        var epsNum = parseNum(row._eps114);
+        var growthVal = parseNum(row._growth);
+        var gap = gapValue(row._price, row._cheap);
+        var gapCls = gap !== null && gap <= 0 ? 'positive' : 'neutral';
+        var growthCls = growthVal === null ? 'neutral' : (growthVal >= 0 ? 'positive' : 'negative');
+        var epsCls = epsNum === null ? 'neutral' : (epsNum >= 0 ? 'positive' : 'negative');
+
+        return '<tr>'
+          + '<td><div class="name-cell"><div class="name-main">' + (row._code ? row._code + ' ' : '') + (row._name || '未命名標的') + '</div><div class="name-sub">預估配息和價格帶一起看，別只盯殖利率</div></div></td>'
+          + '<td class="' + epsCls + '">' + numText(row._eps114) + '</td>'
+          + '<td class="positive">' + numText(row._dividend) + '</td>'
+          + '<td>' + numText(row._price) + '</td>'
+          + '<td>' + numText(row._cheap) + '</td>'
+          + '<td>' + numText(row._fair) + '</td>'
+          + '<td class="' + gapCls + '">' + gapText(row._price, row._cheap) + '</td>'
+          + '<td><span class="price-zone ' + zoneClass(status) + '">' + status + '</span></td>'
+          + '<td>' + pct(row._yield) + '</td>'
+          + '<td class="' + growthCls + '">' + (growthVal === null ? '—' : growthVal.toFixed(2) + '%') + '</td>'
+          + '<td>' + pct(row._payoutRate) + '</td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    function sortRows(rows) {
+      var copied = rows.slice();
+      copied.sort(function(a, b) {
+        function absGap(obj, key) {
+          var gap = key === 'cheap' ? gapValue(obj._price, obj._cheap) : gapValue(obj._price, obj._fair);
+          return gap === null ? Infinity : Math.abs(gap);
+        }
+        if (state.sort === 'cheap_gap_asc') return absGap(a, 'cheap') - absGap(b, 'cheap');
+        if (state.sort === 'fair_gap_asc') return absGap(a, 'fair') - absGap(b, 'fair');
+        if (state.sort === 'eps_desc') return (parseNum(b._eps114) || -Infinity) - (parseNum(a._eps114) || -Infinity);
+        if (state.sort === 'dividend_desc') return (parseNum(b._dividend) || -Infinity) - (parseNum(a._dividend) || -Infinity);
+        if (state.sort === 'price_asc') return (parseNum(a._price) || Infinity) - (parseNum(b._price) || Infinity);
+        return ((a._code || '') + (a._name || '')).localeCompare((b._code || '') + (b._name || ''), 'zh-Hant');
+      });
+      return copied;
+    }
+
+    function applyFilters() {
+      var rows = state.rawRows.slice();
+      var q = state.search.trim().toLowerCase();
+
+      if (q) {
+        rows = rows.filter(function(row) {
+          var blob = [row._code, row._name].concat(Object.values(row)).join(' ').toLowerCase();
+          return blob.indexOf(q) >= 0;
+        });
+      }
+
+      if (state.status !== '全部') {
+        rows = rows.filter(function(row) {
+          return classify(row) === state.status;
+        });
+      }
+
+      rows = sortRows(rows);
+      state.viewRows = rows;
+      renderRows(rows);
+      buildSummary(rows);
+      buildTopYield(rows);
+      tableMeta.textContent = '共 ' + rows.length + ' 筆銀行股資料' + (q ? '，關鍵字：「' + state.search + '」' : '');
+
+      var currentSort = sortOptions.find(function(s) {
+        return s.key === state.sort;
+      });
+      activeSortLabel.textContent = '目前排序：' + (currentSort ? currentSort.label : '最接近便宜價');
+    }
+
+    function renderControls() {
+      statusFilters.innerHTML = statusOptions.map(function(item) {
+        var active = state.status === item ? ' active' : '';
+        return '<button class="chip' + active + '" data-status="' + item + '">' + item + '</button>';
+      }).join('');
+
+      sortFilters.innerHTML = sortOptions.map(function(item) {
+        var active = state.sort === item.key ? ' active' : '';
+        return '<button class="chip' + active + '" data-sort="' + item.key + '">' + item.label + '</button>';
+      }).join('');
+
+      Array.prototype.forEach.call(statusFilters.querySelectorAll('[data-status]'), function(btn) {
+        btn.addEventListener('click', function() {
+          state.status = btn.getAttribute('data-status');
+          renderControls();
+          applyFilters();
+        });
+      });
+
+      Array.prototype.forEach.call(sortFilters.querySelectorAll('[data-sort]'), function(btn) {
+        btn.addEventListener('click', function() {
+          state.sort = btn.getAttribute('data-sort');
+          renderControls();
+          applyFilters();
+        });
+      });
+    }
+
+    function mapRows(rows) {
+      var columns = rows[0] ? Object.keys(rows[0]) : [];
+      state.columns = columns;
+      state.keys = {
+        code: findColumn(columns, aliases.code),
+        name: findColumn(columns, aliases.name),
+        price: findColumn(columns, aliases.price),
+        eps114: findColumn(columns, aliases.eps114),
+        dividend: findColumn(columns, aliases.dividend),
+        fair: findColumn(columns, aliases.fair),
+        cheap: findColumn(columns, aliases.cheap),
+        yield: findColumn(columns, aliases.yield),
+        growth: findColumn(columns, aliases.growth),
+        payoutRate: findColumn(columns, aliases.payoutRate)
+      };
+
+      return rows.filter(function(r) {
+        return Object.values(r).some(function(v) { return String(v).trim() !== ''; });
+      }).map(function(row) {
+        return {
+          _code: state.keys.code ? row[state.keys.code] : '',
+          _name: state.keys.name ? row[state.keys.name] : '',
+          _price: state.keys.price ? row[state.keys.price] : '',
+          _eps114: state.keys.eps114 ? row[state.keys.eps114] : '',
+          _dividend: state.keys.dividend ? row[state.keys.dividend] : '',
+          _fair: state.keys.fair ? row[state.keys.fair] : '',
+          _cheap: state.keys.cheap ? row[state.keys.cheap] : '',
+          _yield: state.keys.yield ? row[state.keys.yield] : '',
+          _growth: state.keys.growth ? row[state.keys.growth] : '',
+          _payoutRate: state.keys.payoutRate ? row[state.keys.payoutRate] : ''
+        };
+      }).filter(function(r) {
+        return r._code || r._name;
+      });
+    }
+
+    function loadCSV() {
+      Papa.parse(getSheetCsvUrl(), {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          try {
+            state.rawRows = mapRows(results.data || []);
+            buildHead();
+            renderControls();
+            applyFilters();
+          } catch (err) {
+            console.error(err);
+            tableBody.innerHTML = '<tr><td class="empty" colspan="11">資料有抓到，但欄位格式有點調皮，建議檢查表頭名稱。</td></tr>';
+            tableMeta.textContent = '資料格式需要調整';
+          }
+        },
+        error: function(err) {
+          console.error(err);
+          tableBody.innerHTML = '<tr><td class="empty" colspan="11">無法讀取 Google Sheet。請確認發布權限或 CSV 連結是否正確。</td></tr>';
+          tableMeta.textContent = '資料讀取失敗，請先確認銀行股2026分頁的 gid 是否正確';
+        }
+      });
+    }
+
+    searchInput.addEventListener('input', function(e) {
+      state.search = e.target.value;
+      applyFilters();
+    });
+
+    buildHead();
+    loadCSV();
+  </script>
+</body>
+</html>
