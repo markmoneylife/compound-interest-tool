@@ -38,12 +38,12 @@
       --text:#E8EEF6;
       --muted: rgba(232,238,246,.72);
 
-      --g1:#0B3B2E;    /* 深綠 */
-      --g2:#1D4A35;    /* 綠 */
-      --b1:#0A2A4A;    /* 深藍 */
-      --b2:#0B3A6A;    /* 藍 */
+      --g1:#0B3B2E;
+      --g2:#1D4A35;
+      --b1:#0A2A4A;
+      --b2:#0B3A6A;
 
-      --accent:#FFD54F;        /* 暖黃 */
+      --accent:#FFD54F;
       --accent2:#FFE082;
 
       --shadow: 0 18px 40px rgba(0,0,0,.45);
@@ -61,7 +61,6 @@
       color: var(--text);
     }
 
-    /* 小星點（很淡，不搶） */
     .starfield{
       position: fixed;
       inset: 0;
@@ -78,7 +77,6 @@
       filter: blur(.2px);
     }
 
-    /* ========= 頂部固定導覽 ========= */
     .nav-toggle{
       display:none;
       position: fixed;
@@ -140,9 +138,7 @@
       letter-spacing: .02em;
     }
 
-    .brand-title{
-      line-height:1.1;
-    }
+    .brand-title{ line-height:1.1; }
     .brand-title strong{
       display:block;
       font-size: .95rem;
@@ -200,7 +196,6 @@
       .nav-bar a{ width: 100%; text-align:center; border-radius: 14px; }
     }
 
-    /* ========= 版面容器 ========= */
     .page-shell{
       max-width: 1100px;
       margin: 0 auto;
@@ -260,7 +255,6 @@
     }
     .meta-row a:hover{ text-decoration: underline; }
 
-    /* ========= 區塊卡片 ========= */
     .section-card{
       margin-top: 1.2rem;
       border-radius: calc(var(--r) + 6px);
@@ -288,7 +282,6 @@
       color: rgba(232,238,246,.62);
     }
 
-    /* ========= 模式切換 ========= */
     .mode-switch{
       display:flex;
       gap:.6rem;
@@ -323,7 +316,6 @@
       box-shadow: 0 16px 30px rgba(0,0,0,.38);
     }
 
-    /* ========= 小工具列（顯示月份 / 搜尋 / 排序 / 軸切換） ========= */
     .toolbar{
       margin-top: 1rem;
       display:flex;
@@ -380,7 +372,6 @@
     }
     .axis-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 30px rgba(0,0,0,.38); }
 
-    /* ========= 摘要卡 ========= */
     .summary-grid{
       margin-top: 1rem;
       display:grid;
@@ -414,7 +405,6 @@
     }
     .summary-card .v.hl{ color: rgba(255,213,79,.98); }
 
-    /* ========= Top5 卡片 ========= */
     .top5-grid{
       display:grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -447,7 +437,6 @@
     .top5-card .name{ font-size: .78rem; color: rgba(232,238,246,.68); margin-top:.25rem; min-height: 2.2em; }
     .top5-card .rate{ font-weight: 950; font-size: 1.35rem; color: rgba(255,213,79,.98); margin-top:.35rem; }
 
-    /* ========= 瀑布牆卡片 ========= */
     .grid-cards{
       display:grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -563,7 +552,6 @@
       color: rgba(232,238,246,.58);
     }
 
-    /* ========= 你的ETF配多少（工具卡） ========= */
     .tool-card{
       border-radius: calc(var(--r) + 8px);
       padding: 1.05rem 1.05rem 1rem;
@@ -620,7 +608,6 @@
       font-size: 1.05rem;
     }
 
-    /* ========= 收益組成卡片 ========= */
     .card-common{
       border-radius: calc(var(--r) + 8px);
       background:
@@ -661,7 +648,6 @@
     .highlight .t{ font-size:.7rem; color: rgba(232,238,246,.62); font-weight: 800; }
     .highlight .v{ margin-top:.1rem; font-size: .95rem; font-weight: 1000; color: rgba(255,255,255,.90); }
 
-    /* ========= 二代健保區 ========= */
     .info-panel{
       border-radius: calc(var(--r) + 6px);
       background: rgba(2,9,17,.28);
@@ -682,7 +668,6 @@
       font-size: .86rem;
     }
 
-    /* ========= 配息時間表 ========= */
     .timeline-card{
       border-radius: calc(var(--r) + 8px);
       background:
@@ -729,7 +714,6 @@
       .timeline-val{ grid-column: 1 / -1; text-align:left; opacity:.9; }
     }
 
-    /* ========= Footer ========= */
     footer{
       margin-top: 2.5rem;
       padding: 2rem 1rem 2.5rem;
@@ -752,10 +736,8 @@
     .footer-shell a:hover{ text-decoration: underline; }
     .risk li{ margin:.25rem 0; line-height: 1.7; }
 
-    /* 讓 Tailwind 的 text-gray-XXX 不把深色UI弄灰到底 */
     .tw-muted{ color: rgba(232,238,246,.62) !important; }
 
-    /* 小提示列（成功/失敗/快取） */
     .statusline{
       margin-top:.9rem;
       text-align:center;
@@ -765,6 +747,132 @@
     .statusline .ok{ color: rgba(52,211,153,.95); font-weight: 950; }
     .statusline .warn{ color: rgba(255,213,79,.95); font-weight: 950; }
     .statusline .bad{ color: rgba(248,113,113,.95); font-weight: 950; }
+
+    .toolbar-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.7rem;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+    .favorites-box{
+      margin-bottom: 1rem;
+      padding: .9rem 1rem;
+      border-radius: var(--r);
+      background: rgba(2,9,17,.28);
+      border: 1px solid rgba(148,163,184,.16);
+      color: rgba(232,238,246,.78);
+      line-height: 1.8;
+      font-size: .88rem;
+    }
+    .fav-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      margin: .2rem .35rem .2rem 0;
+      padding:.45rem .72rem;
+      border-radius:999px;
+      background: rgba(255,213,79,.10);
+      border:1px solid rgba(255,213,79,.24);
+      color: rgba(255,255,255,.90);
+      font-weight:900;
+    }
+    .fav-chip button{
+      border:none;
+      background: transparent;
+      color: rgba(255,213,79,.98);
+      font-weight:1000;
+      cursor:pointer;
+      padding:0;
+      font-size:.9rem;
+    }
+    .portfolio-toolbar{
+      display:grid;
+      grid-template-columns: repeat(1, minmax(0,1fr));
+      gap: .9rem;
+      align-items:end;
+    }
+    @media (min-width: 768px){
+      .portfolio-toolbar{ grid-template-columns: 1fr 1fr auto; }
+    }
+    .portfolio-actions{
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+    }
+    .portfolio-summary{
+      display:grid;
+      grid-template-columns: repeat(1, minmax(0,1fr));
+      gap:.85rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 640px){
+      .portfolio-summary{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    .portfolio-table{
+      margin-top:1rem;
+      display:grid;
+      gap:.75rem;
+    }
+    .portfolio-row{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
+      gap:.75rem;
+      align-items:center;
+      padding:.85rem .9rem;
+      border-radius: var(--r);
+      background: rgba(2,9,17,.25);
+      border:1px solid rgba(148,163,184,.16);
+    }
+    @media (max-width: 900px){
+      .portfolio-row{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .portfolio-row .portfolio-remove{ grid-column: 1 / -1; }
+    }
+    .portfolio-label{ font-size:.72rem; color: rgba(232,238,246,.58); font-weight:800; }
+    .portfolio-value{ margin-top:.12rem; font-size:.95rem; font-weight:950; color: rgba(255,255,255,.90); }
+    .remove-btn{
+      border:none;
+      cursor:pointer;
+      padding:.62rem .9rem;
+      border-radius: 12px;
+      font-size:.82rem;
+      font-weight:900;
+      color: rgba(255,255,255,.92);
+      background: rgba(239,68,68,.18);
+      border:1px solid rgba(248,113,113,.32);
+    }
+    .remove-btn:hover{ background: rgba(239,68,68,.24); }
+    .inline-note{
+      margin-top:.9rem;
+      text-align:center;
+      color: rgba(232,238,246,.60);
+      font-size:.82rem;
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events:none;
+      z-index: 99999;
+      min-width: 220px;
+      max-width: calc(100vw - 24px);
+      padding: .8rem 1rem;
+      border-radius: 14px;
+      background: rgba(2,9,17,.92);
+      border:1px solid rgba(148,163,184,.18);
+      color: rgba(255,255,255,.94);
+      box-shadow: 0 18px 40px rgba(0,0,0,.46);
+      transition: opacity .25s, transform .25s;
+      text-align:center;
+      font-size:.9rem;
+      font-weight:900;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 
@@ -786,6 +894,7 @@
       <div id="navBar" class="nav-bar">
         <a href="#wall">瀑布牆</a>
         <a href="#my-dividend">這期配多少？</a>
+        <a href="#portfolio">持有清單</a>
         <a href="#timeline">入帳時間表</a>
         <a href="https://markmoneylife.com/etf-compound/">複利試算</a>
         <a href="https://markmoneylife.com/retire-reverse/">退休倒推</a>
@@ -841,6 +950,11 @@
         </div>
       </div>
 
+      <div class="toolbar-actions">
+        <button id="copyStateBtn" class="btn btn-ghost" type="button">複製目前篩選連結</button>
+        <button id="clearStateBtn" class="btn btn-ghost" type="button">清空篩選</button>
+      </div>
+
       <div class="mode-switch" id="mode-switch">
         <button data-mode="forecast" class="btn btn-primary">預估配息模式</button>
         <button data-mode="distribution" class="btn btn-ghost">收益組成模式</button>
@@ -850,11 +964,11 @@
     <section id="my-dividend" class="section-card">
       <div class="section-title">
         <h2>🧮 你的 ETF 這期配多少？</h2>
-        <div class="hint">用「顯示月份」資料估算（每股配息 × 1000 股 × 張數）</div>
+        <div class="hint">用「顯示月份」資料估算（每股配息 × 持有股數）</div>
       </div>
 
       <p style="color: rgba(232,238,246,.66); font-size:.88rem; line-height:1.7; margin-bottom:.9rem;">
-        輸入 ETF 代號＋持有張數，幫你估算本期大概可以領多少配息。若本期尚未公告「實際配息」，就用「預估配息」先抓個範圍。
+        輸入 ETF 代號＋持有股數，幫你估算本期大概可以領多少配息。若本期尚未公告「實際配息」，就用「預估配息」先抓個範圍。
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -874,11 +988,58 @@
       <div id="my-dividend-result" class="tool-result">輸入後按下按鈕，我會把估算結果放在這裡。</div>
     </section>
 
+    <section id="portfolio" class="section-card">
+      <div class="section-title">
+        <h2>📦 我的持有清單總配息</h2>
+        <div class="hint">存在瀏覽器本機，下次打開還在。這才像工具站，不是看完就走。</div>
+      </div>
+
+      <p style="color: rgba(232,238,246,.66); font-size:.88rem; line-height:1.7; margin-bottom:.9rem;">
+        把常看的 ETF 和持有股數先存起來，這個月大概能領多少、哪天比較有機會入帳，會直接幫你整理。資料是你自己存在瀏覽器裡，不會上傳到別的地方。
+      </p>
+
+      <div class="portfolio-toolbar">
+        <div>
+          <div class="field-label">ETF 代號</div>
+          <input id="portfolioCodeInput" class="field" type="text" placeholder="例如 00919" />
+        </div>
+        <div>
+          <div class="field-label">持有股數（可含零股）</div>
+          <input id="portfolioSharesInput" class="field" type="number" min="1" step="1" placeholder="例如 78009" />
+        </div>
+        <div class="portfolio-actions">
+          <button id="portfolioAddBtn" class="btn btn-primary" type="button">加入持有清單</button>
+          <button id="portfolioClearBtn" class="btn btn-ghost" type="button">清空清單</button>
+        </div>
+      </div>
+
+      <div class="portfolio-summary" id="portfolioSummary">
+        <div class="summary-card">
+          <div class="k">持有檔數</div>
+          <div class="v hl" id="portfolioCount">0 檔</div>
+        </div>
+        <div class="summary-card">
+          <div class="k">持有總股數</div>
+          <div class="v" id="portfolioShares">0 股</div>
+        </div>
+        <div class="summary-card">
+          <div class="k">本期預估總配息</div>
+          <div class="v hl" id="portfolioTotal">—</div>
+        </div>
+      </div>
+
+      <div id="portfolioTable" class="portfolio-table"></div>
+      <div id="portfolioSchedule" class="tool-result" style="margin-top: 1rem;">加入持有清單後，這裡會幫你整理最近可能的入帳節奏。</div>
+    </section>
+
     <section id="mode-forecast" class="section-card">
       <div class="section-title">
         <h2>🥇 前五名單期殖利率</h2>
         <div class="hint">以「預估配息 ÷ 收盤價」計算（僅供參考）</div>
       </div>
+
+      <div class="favorites-box" id="favoriteSummary">目前還沒有收藏 ETF。看到想追蹤的，就按卡片上的 ☆ 收藏。</div>
+
       <div id="top5-cards" class="top5-grid"></div>
 
       <div id="loading" class="text-center" style="color: rgba(232,238,246,.62); font-size:.9rem; margin: .9rem 0 0;">載入中...</div>
@@ -916,6 +1077,8 @@
     </section>
   </main>
 
+  <div id="toast" class="toast" aria-live="polite"></div>
+
   <footer>
     <div class="footer-shell">
       <div>
@@ -944,44 +1107,50 @@
   </footer>
 
   <script>
-    /***********************
-     * 2026 小升級 v1 (修正版)
-     * ✅ 顯示月份下拉（只顯示資料庫裡真的有的月份）
-     * ✅ 一鍵切換：看公告月 / 看入帳月（解決跨年）
-     * ✅ 搜尋（代號/名稱）
-     * ✅ 排序（殖利率/發放日/配息）
-     * ✅ 首屏摘要卡（三張）
-     * ✅ URL 參數保存狀態（分享連結好用）
-     * ✅ 讀取失敗用 localStorage 快取降級（頁面不會空白）
-     ***********************/
-
-    // ✅ 已更新為你提供的正確連結
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSYJzDEa1_U_eq_Wh_Sr6VcSLENN2-Uit1wHBmx5qZS_-2EOg0WNAeSBg1lK4blObR3R88nH08j074W/pub?output=csv';
+    const CACHE_KEY = 'mml_etf_div_wall_csv_cache_v2';
+    const CACHE_TS_KEY = 'mml_etf_div_wall_csv_cache_ts_v2';
+    const FAVORITES_KEY = 'mml_etf_div_wall_favorites_v1';
+    const PORTFOLIO_KEY = 'mml_etf_div_wall_portfolio_v1';
 
-    // 快取 key
-    const CACHE_KEY = 'mml_etf_div_wall_csv_cache_v1';
-    const CACHE_TS_KEY = 'mml_etf_div_wall_csv_cache_ts_v1';
-
-    // 🔹 全域變數：全部資料 + 狀態
     let allData = [];
-    let axis = 'announce';      // 'announce' | 'pay'
-    let selectedYM = null;      // 'YYYY-MM'
-    let mode = 'forecast';      // 'forecast' | 'distribution'
-    let q = '';                 // search query
-    let sortBy = 'yield_desc';  // yield_desc | pay_asc | div_desc
+    let axis = 'announce';
+    let selectedYM = null;
+    let mode = 'forecast';
+    let q = '';
+    let sortBy = 'yield_desc';
+    let quickFilter = 'all';
+    let favorites = [];
+    let portfolio = [];
+    let toastTimer = null;
 
-    // 手機選單
     function toggleNav() {
       const nav = document.getElementById('navBar');
       nav.classList.toggle('active');
     }
 
-    // 工具：代號去掉前置 0
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    function escapeHTML(str) {
+      return (str || '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function normalizeCode(code) {
       return (code || '').toString().trim().replace(/^0+/, '');
     }
 
-    // 工具：數字格式化
     function formatAmount(n, digits = 2) {
       if (n === null || n === undefined || isNaN(n)) return '-';
       return Number(n).toLocaleString('zh-TW', {
@@ -990,7 +1159,6 @@
       });
     }
 
-    // 工具：安全取欄位（避免表頭有時叫股號、有時叫股票代號）
     function getField(r, keys) {
       for (const k of keys) {
         if (r && r[k] !== undefined && r[k] !== null && String(r[k]).trim() !== '') return r[k];
@@ -998,7 +1166,6 @@
       return '';
     }
 
-    // 工具：解析公告年月（來自 西元/月份）
     function getAnnounceYM(r) {
       const yRaw = getField(r, ['西元', '西元年', '年']);
       const mRaw = getField(r, ['月份', '月']);
@@ -1008,54 +1175,34 @@
       return `${y}-${String(m).padStart(2,'0')}`;
     }
 
-    // 工具：解析入帳年月（來自 發放日，處理跨年：若公告=12 且 發放=1 -> 年+1）
     function getPayYM(r) {
       const pay = (getField(r, ['發放日','配發日','發放日期']) || '').toString().trim();
       if (!pay) return null;
-
-      // 允許 1/14、01/14、2026/01/14 這種
       const parts = pay.split('/').map(s => s.trim()).filter(Boolean);
-      let mon = null, day = null, yearFromPay = null;
-
+      let mon = null, yearFromPay = null;
       if (parts.length === 3) {
         yearFromPay = parseInt(parts[0], 10);
         mon = parseInt(parts[1], 10);
-        day = parseInt(parts[2], 10);
       } else if (parts.length === 2) {
         mon = parseInt(parts[0], 10);
-        day = parseInt(parts[1], 10);
       }
-
       if (!mon || mon < 1 || mon > 12) return null;
 
       const ann = getAnnounceYM(r);
       if (!ann) {
-        // 沒公告年月就用「當年」：這裡退而求其次用今年
         const now = new Date();
         return `${now.getFullYear()}-${String(mon).padStart(2,'0')}`;
       }
-
       const [ay, am] = ann.split('-').map(n => parseInt(n,10));
       let py = ay;
-
-      // ✅ 跨年規則：公告 12 月、入帳 1 月 -> 年 + 1
       if (am === 12 && mon === 1) py = ay + 1;
-
-      // 若發放日有帶年份，就尊重它（避免資料本身已經寫年份）
       if (yearFromPay && yearFromPay > 1900) py = yearFromPay;
-
       return `${py}-${String(mon).padStart(2,'0')}`;
     }
 
-    // 工具：取「資料列的代號/名稱」
-    function getCode(r) {
-      return (getField(r, ['股號','股票代號','代號']) || '').toString().trim();
-    }
-    function getName(r) {
-      return (getField(r, ['股票名稱','基金名稱','名稱']) || '').toString().trim();
-    }
+    function getCode(r) { return (getField(r, ['股號','股票代號','代號']) || '').toString().trim(); }
+    function getName(r) { return (getField(r, ['股票名稱','基金名稱','名稱']) || '').toString().trim(); }
 
-    // 工具：本期每股配息（實際優先、沒有就預估）
     function getPerShareDividend(r) {
       const actual = parseFloat(getField(r, ['實際配息']) || '');
       const est = parseFloat(getField(r, ['預估配息']) || '');
@@ -1064,36 +1211,151 @@
       return { value: 0, label: '配息', raw: '' };
     }
 
-    // 🔹 找「上一筆配息紀錄」（以公告年月排序：同代號、早於當期）
+    function parseMonthDay(value, baseYM) {
+      const v = (value || '').toString().trim();
+      if (!v) return null;
+      const parts = v.split('/').map(s => s.trim()).filter(Boolean).map(n => parseInt(n,10));
+      let y = null, m = null, d = null;
+      if (parts.length === 3) {
+        [y, m, d] = parts;
+      } else if (parts.length === 2) {
+        const [by, bm] = (baseYM || '').split('-').map(n => parseInt(n,10));
+        if (!by || !bm) return null;
+        [m, d] = parts;
+        y = by;
+        if (bm === 12 && m === 1) y = by + 1;
+      } else {
+        return null;
+      }
+      if (!y || !m || !d) return null;
+      const dt = new Date(y, m - 1, d);
+      if (isNaN(dt.getTime())) return null;
+      dt.setHours(0,0,0,0);
+      return dt;
+    }
+
+    function getExDateObj(r) { return parseMonthDay(getField(r, ['除息日']), getAnnounceYM(r)); }
+    function getLastBuyDateObj(r) { return parseMonthDay(getField(r, ['最後買進日']), getAnnounceYM(r)); }
+    function getPayDateObj(r) { return parseMonthDay(getField(r, ['發放日','配發日','發放日期']), getPayYM(r)); }
+
+    function todayStart() {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      return d;
+    }
+
+    function daysFromToday(dateObj) {
+      if (!dateObj) return null;
+      const diff = dateObj.getTime() - todayStart().getTime();
+      return Math.round(diff / 86400000);
+    }
+
+    function dateLabel(dateObj) {
+      if (!dateObj) return '—';
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}/${m}/${d}`;
+    }
+
+    function buildCountdownBadge(label, dateObj) {
+      return '';
+    }
+
     function findPreviousDividendRecord(etfCode, curYM) {
       const target = normalizeCode(etfCode);
       let best = null;
-
       const [cy, cm] = (curYM || '').split('-').map(n => parseInt(n,10));
       if (!cy || !cm) return null;
-
       allData.forEach(r => {
         const code = normalizeCode(getCode(r));
         if (!code || code !== target) return;
-
         const ym = getAnnounceYM(r);
         if (!ym) return;
         const [y, m] = ym.split('-').map(n => parseInt(n,10));
-
         if (y < cy || (y === cy && m < cm)) {
           if (!best) best = r;
           else {
             const bym = getAnnounceYM(best);
-            const [by,bm] = bym.split('-').map(n=>parseInt(n,10));
+            const [by, bm] = bym.split('-').map(n => parseInt(n,10));
             if (y > by || (y === by && m > bm)) best = r;
           }
         }
       });
-
       return best;
     }
 
-    // ✅ URL 參數：讀取/寫入
+    function parsePayDayForSort(s) {
+      if (!s) return 9999;
+      const parts = s.toString().trim().split('/').map(x=>x.trim()).filter(Boolean);
+      let mon = null, day = null;
+      if (parts.length === 3) { mon = parseInt(parts[1],10); day = parseInt(parts[2],10); }
+      if (parts.length === 2) { mon = parseInt(parts[0],10); day = parseInt(parts[1],10); }
+      if (!mon || !day) return 9999;
+      return mon * 100 + day;
+    }
+
+    function loadLocalState() {
+      try {
+        favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+        portfolio = JSON.parse(localStorage.getItem(PORTFOLIO_KEY) || '[]');
+      } catch {
+        favorites = [];
+        portfolio = [];
+      }
+      favorites = Array.from(new Set((favorites || []).map(normalizeCode).filter(Boolean)));
+      portfolio = (portfolio || []).map(item => ({
+        code: normalizeCode(item.code),
+        shares: Number(item.shares || 0)
+      })).filter(item => item.code && item.shares > 0);
+    }
+
+    function saveFavorites() { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites)); }
+    function savePortfolio() { localStorage.setItem(PORTFOLIO_KEY, JSON.stringify(portfolio)); }
+    function isFavorite(code) { return favorites.includes(normalizeCode(code)); }
+
+    function toggleFavorite(code) {
+      const norm = normalizeCode(code);
+      if (!norm) return;
+      if (isFavorite(norm)) {
+        favorites = favorites.filter(c => c !== norm);
+        showToast(`${norm} 已從收藏移除`);
+      } else {
+        favorites.push(norm);
+        favorites = Array.from(new Set(favorites));
+        showToast(`${norm} 已加入收藏`);
+      }
+      saveFavorites();
+      renderFavoriteSummary();
+      renderAll();
+    }
+
+    function upsertPortfolio(code, shares) {
+      const norm = normalizeCode(code);
+      const qty = Number(shares || 0);
+      if (!norm || qty <= 0) return false;
+      const idx = portfolio.findIndex(item => item.code === norm);
+      if (idx >= 0) portfolio[idx].shares = qty;
+      else portfolio.push({ code: norm, shares: qty });
+      savePortfolio();
+      return true;
+    }
+
+    function removePortfolio(code) {
+      const norm = normalizeCode(code);
+      portfolio = portfolio.filter(item => item.code !== norm);
+      savePortfolio();
+      renderPortfolio();
+      showToast(`${norm} 已從持有清單移除`);
+    }
+
+    function getLatestRowByCode(code) {
+      const norm = normalizeCode(code);
+      return [...allData]
+        .filter(r => normalizeCode(getCode(r)) === norm)
+        .sort((a,b) => (getAnnounceYM(b) || '').localeCompare(getAnnounceYM(a) || ''))[0] || null;
+    }
+
     function readStateFromURL() {
       const p = new URLSearchParams(location.search);
       const ax = p.get('axis');
@@ -1101,12 +1363,13 @@
       const ym = p.get('month');
       const qq = p.get('q');
       const so = p.get('sort');
-
+      const f = p.get('f');
       if (ax === 'announce' || ax === 'pay') axis = ax;
       if (mo === 'forecast' || mo === 'distribution') mode = mo;
       if (ym && /^\d{4}-\d{2}$/.test(ym)) selectedYM = ym;
       if (qq !== null) q = (qq || '').trim();
       if (so && ['yield_desc','pay_asc','div_desc'].includes(so)) sortBy = so;
+      if (f && ['all','upcoming_ex','upcoming_pay','monthly','quarterly','favorites'].includes(f)) quickFilter = f;
     }
 
     function writeStateToURL() {
@@ -1116,33 +1379,28 @@
       if (selectedYM) p.set('month', selectedYM);
       if (q) p.set('q', q); else p.delete('q');
       if (sortBy) p.set('sort', sortBy);
+      if (quickFilter && quickFilter !== 'all') p.set('f', quickFilter); else p.delete('f');
       const newUrl = `${location.pathname}?${p.toString()}${location.hash || ''}`;
       history.replaceState(null, '', newUrl);
     }
 
-    // ✅ 軸按鈕文字
     function refreshAxisBtn() {
       const btn = document.getElementById('axisBtn');
-      btn.textContent = axis === 'announce'
-        ? '看公告（點切換）'
-        : '看入帳（點切換）';
+      btn.textContent = axis === 'announce' ? '看公告（點切換）' : '看入帳（點切換）';
     }
 
-    // ✅ 取得「可用月份清單」（只顯示資料庫真的有的月份）
     function getAvailableMonths() {
       const set = new Set();
       allData.forEach(r => {
         const ym = axis === 'announce' ? getAnnounceYM(r) : getPayYM(r);
         if (ym) set.add(ym);
       });
-      // 新→舊
       return Array.from(set).sort((a,b) => b.localeCompare(a));
     }
 
     function renderMonthSelect() {
       const sel = document.getElementById('monthSelect');
       const list = getAvailableMonths();
-
       sel.innerHTML = '';
       list.forEach(ym => {
         const opt = document.createElement('option');
@@ -1150,13 +1408,10 @@
         opt.textContent = ym;
         sel.appendChild(opt);
       });
-
-      // 選不到就用最新一筆
       if (!selectedYM || !list.includes(selectedYM)) selectedYM = list[0] || null;
       if (selectedYM) sel.value = selectedYM;
     }
 
-    // ✅ 本月資料（依 axis 取對應月份）
     function getMonthData() {
       if (!selectedYM) return [];
       return allData.filter(r => {
@@ -1165,11 +1420,9 @@
       });
     }
 
-    // ✅ 搜尋篩選（代號/名稱）
     function applySearch(data) {
       const kw = (q || '').trim().toLowerCase();
       if (!kw) return data;
-
       return data.filter(r => {
         const code = (getCode(r) || '').toLowerCase();
         const name = (getName(r) || '').toLowerCase();
@@ -1177,10 +1430,27 @@
       });
     }
 
-    // ✅ 排序
+    function applyQuickFilter(data) {
+      if (quickFilter === 'all') return data;
+      return data.filter(r => {
+        const freq = (getField(r, ['配息頻率']) || '').toString();
+        if (quickFilter === 'monthly') return freq.includes('月');
+        if (quickFilter === 'quarterly') return freq.includes('季');
+        if (quickFilter === 'favorites') return isFavorite(getCode(r));
+        if (quickFilter === 'upcoming_ex') {
+          const d = daysFromToday(getExDateObj(r));
+          return d !== null && d >= 0 && d <= 14;
+        }
+        if (quickFilter === 'upcoming_pay') {
+          const d = daysFromToday(getPayDateObj(r));
+          return d !== null && d >= 0 && d <= 14;
+        }
+        return true;
+      });
+    }
+
     function applySort(data) {
       const arr = [...data];
-
       if (sortBy === 'yield_desc') {
         arr.sort((a,b) => {
           const ya = parseFloat(getField(a,['單期殖利率']) || '') || 0;
@@ -1188,43 +1458,22 @@
           return yb - ya;
         });
       } else if (sortBy === 'div_desc') {
-        arr.sort((a,b) => {
-          const da = getPerShareDividend(a).value || 0;
-          const db = getPerShareDividend(b).value || 0;
-          return db - da;
-        });
+        arr.sort((a,b) => (getPerShareDividend(b).value || 0) - (getPerShareDividend(a).value || 0));
       } else if (sortBy === 'pay_asc') {
-        arr.sort((a,b) => {
-          // 以「發放日」月份日排序（同月內）
-          const pa = (getField(a,['發放日','配發日']) || '').toString();
-          const pb = (getField(b,['發放日','配發日']) || '').toString();
-          const da = parsePayDayForSort(pa);
-          const db = parsePayDayForSort(pb);
-          return da - db;
-        });
+        arr.sort((a,b) => parsePayDayForSort(getField(a,['發放日','配發日'])) - parsePayDayForSort(getField(b,['發放日','配發日'])));
       }
-
       return arr;
     }
 
-    function parsePayDayForSort(s) {
-      if (!s) return 9999;
-      const parts = s.toString().trim().split('/').map(x=>x.trim()).filter(Boolean);
-      let mon=null, day=null;
-      if (parts.length === 3) { mon = parseInt(parts[1],10); day = parseInt(parts[2],10); }
-      if (parts.length === 2) { mon = parseInt(parts[0],10); day = parseInt(parts[1],10); }
-      if (!mon || !day) return 9999;
-      return mon*100 + day;
+    function getUpcomingCount(data) {
+      return 0;
     }
 
-    // ✅ 摘要卡
     function renderSummary(dataRaw) {
       const grid = document.getElementById('summaryGrid');
       const data = dataRaw.filter(r => getPerShareDividend(r).value > 0);
-
       document.getElementById('sumCount').textContent = `${data.length} 檔`;
 
-      // 中位數殖利率（用 單期殖利率 欄位，% 字串也 OK）
       const yields = data
         .map(r => {
           const y = (getField(r,['單期殖利率']) || '').toString().replace('%','').trim();
@@ -1242,7 +1491,6 @@
       }
       document.getElementById('sumMedian').textContent = median;
 
-      // 最高殖利率
       let top = { code: '-', y: -1 };
       data.forEach(r => {
         const code = getCode(r);
@@ -1250,54 +1498,46 @@
         if (y > top.y) top = { code, y };
       });
       document.getElementById('sumTop').textContent = top.y >= 0 ? `${top.code}｜${top.y.toFixed(2)}%` : '-';
-
+      
       grid.style.display = 'grid';
     }
 
-    // 前五名排行（用「預估配息 ÷ 收盤價」）
     function renderTop5(data) {
       const c = document.getElementById('top5-cards');
       c.innerHTML = '';
-
       const list = data
         .filter(r => getField(r,['預估配息']) && getField(r,['收盤價']))
         .map(r => {
           const est = parseFloat(getField(r,['預估配息']));
           const close = parseFloat(getField(r,['收盤價']));
           const rate = close ? (est / close) * 100 : NaN;
-          return {
-            code: getCode(r),
-            name: getName(r),
-            rate
-          };
+          return { code: getCode(r), name: getName(r), rate };
         })
         .filter(r => !isNaN(r.rate))
         .sort((a, b) => b.rate - a.rate)
         .slice(0, 5);
 
       const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-
       list.forEach((r, i) => {
         const card = document.createElement('div');
         card.className = 'top5-card';
         card.innerHTML = `
           <div style="font-size:2rem; margin-bottom:.2rem;">${medals[i]}</div>
-          <div class="code">${r.code}</div>
-          <div class="name">${r.name || ''}</div>
+          <div class="code">${escapeHTML(r.code)}</div>
+          <div class="name">${escapeHTML(r.name || '')}</div>
           <div class="rate">${r.rate.toFixed(2)}%</div>
         `;
         c.appendChild(card);
       });
     }
 
-    // 🔹 瀑布牆卡片（含「與上次配息比較」）
     function renderCards(data) {
       const c = document.getElementById('card-container');
       c.innerHTML = '';
       document.getElementById('loading').style.display = 'none';
 
       if (!data.length) {
-        c.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: rgba(232,238,246,.62); padding: 1rem 0;">這個月份找不到符合的資料（或被搜尋條件篩掉了）</div>`;
+        c.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: rgba(232,238,246,.62); padding: 1rem 0;">這個月份找不到符合的資料。</div>`;
         return;
       }
 
@@ -1305,76 +1545,75 @@
         const code = getCode(r);
         const name = getName(r);
         const freq = getField(r,['配息頻率']) || '';
-        const close = getField(r,['收盤價']) || '-';
         const yieldRate = getField(r,['單期殖利率']) || '-';
         const exDate = getField(r,['除息日']) || '-';
         const payDate = getField(r,['發放日','配發日']) || '-';
-
+        const lastBuy = getField(r,['最後買進日']) || '-';
         const divInfo = getPerShareDividend(r);
-        const perShare = divInfo.value;
         const actualDivRaw = getField(r,['實際配息']);
         const estDivRaw = getField(r,['預估配息']);
 
-        // 找上一筆（以公告年月比較最合理）
         const prev = findPreviousDividendRecord(code, getAnnounceYM(r));
         let diffHtml = '較上次配息：—';
-
         if (prev) {
           const prevInfo = getPerShareDividend(prev);
           const prevDiv = prevInfo.value;
-          if (perShare > 0 && prevDiv > 0) {
-            const diff = perShare - prevDiv;
+          if (divInfo.value > 0 && prevDiv > 0) {
+            const diff = divInfo.value - prevDiv;
             const pct = (diff / prevDiv) * 100;
-
             let arrow = '▬';
             let color = 'rgba(232,238,246,.62)';
             if (diff > 0) { arrow = '▲'; color = 'rgba(52,211,153,.95)'; }
             else if (diff < 0) { arrow = '▼'; color = 'rgba(248,113,113,.95)'; }
-
             diffHtml = `較上次配息：<span style="color:${color}; font-weight:1000;">${arrow} ${diff > 0 ? '+' : ''}${diff.toFixed(3)} 元（${diff > 0 ? '+' : ''}${pct.toFixed(1)}%）</span>`;
           }
         }
 
         const label = actualDivRaw ? '實際配息' : '預估配息';
         const showDiv = actualDivRaw || estDivRaw || '-';
-
         const card = document.createElement('div');
         card.className = 'etf-card';
         card.innerHTML = `
           <div class="head">
-            <div class="code-big">${code}</div>
-            <div class="badge-freq">${freq}</div>
+            <div>
+              <div class="code-big">${escapeHTML(code)}</div>
+              <div class="etf-name">${escapeHTML(name)}</div>
+            </div>
+            <div class="badge-freq">${escapeHTML(freq)}</div>
           </div>
-          <div class="etf-name">${name}</div>
 
           <div class="two-box">
             <div class="info-box accent">
               <div class="label">${label}</div>
-              <div class="value">${showDiv}</div>
+              <div class="value">${escapeHTML(showDiv)}</div>
             </div>
             <div class="info-box">
               <div class="label">最後買進日</div>
-              <div class="value" style="font-size:1.05rem;">${getField(r,['最後買進日']) || '-'}</div>
+              <div class="value" style="font-size:1.05rem;">${escapeHTML(lastBuy)}</div>
             </div>
           </div>
 
           <div class="mini-grid">
             <div class="mini">
-              <div class="k">收盤價</div>
-              <div class="v">${close}</div>
-            </div>
-            <div class="mini">
               <div class="k">殖利率</div>
-              <div class="v">${yieldRate}</div>
+              <div class="v">${escapeHTML(yieldRate)}</div>
             </div>
             <div class="mini">
               <div class="k">除息日</div>
-              <div class="v">${exDate}</div>
+              <div class="v">${escapeHTML(exDate)}</div>
+            </div>
+            <div class="mini">
+              <div class="k">入帳日</div>
+              <div class="v">${escapeHTML(payDate)}</div>
             </div>
           </div>
 
+          <div class="card-actions">
+            <button class="mini-action favorite-toggle ${isFavorite(code) ? 'active' : ''}" data-code="${escapeHTML(code)}" type="button">${isFavorite(code) ? '★ 已收藏' : '☆ 收藏'}</button>
+            <button class="mini-action add-holding" data-code="${escapeHTML(code)}" type="button">＋ 加入持有</button>
+          </div>
+
           <div class="footrow">
-            <div>配發日：${payDate}</div>
             <div>${diffHtml}</div>
           </div>
         `;
@@ -1382,53 +1621,44 @@
       });
     }
 
-    // 收益組成卡片
     function renderComposition(data) {
       const comp = document.getElementById('composition-container');
       comp.innerHTML = '';
-
       if (!data.length) {
-        comp.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: rgba(232,238,246,.62); padding: 1rem 0;">這個月份找不到符合的資料（或被搜尋條件篩掉了）</div>`;
+        comp.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: rgba(232,238,246,.62); padding: 1rem 0;">這個月份找不到符合的收益組成資料</div>`;
         return;
       }
-
       data.forEach(r => {
         const card = document.createElement('div');
         card.className = 'card-common';
         card.innerHTML = `
-          <h3>${getCode(r)}</h3>
-          <div class="etf-name">${getName(r) || ''}</div>
+          <h3>${escapeHTML(getCode(r))}</h3>
+          <div class="etf-name">${escapeHTML(getName(r) || '')}</div>
           <div class="grid grid-cols-3 gap-3">
-            <div class="highlight"><div class="t">年初至今報酬</div><div class="v">${getField(r,['年初至今報酬']) || '-'}</div></div>
-            <div class="highlight"><div class="t">實際配息</div><div class="v">${getField(r,['實際配息']) || '-'}</div></div>
-            <div class="highlight"><div class="t">股利所得</div><div class="v">${getField(r,['股利所得']) || '-'}</div></div>
-            <div class="highlight"><div class="t">54C</div><div class="v">${getField(r,['54C']) || '-'}</div></div>
-            <div class="highlight"><div class="t">利息所得</div><div class="v">${getField(r,['利息所得']) || '-'}</div></div>
-            <div class="highlight"><div class="t">收益平準金</div><div class="v">${getField(r,['收益平準金']) || '-'}</div></div>
-            <div class="highlight"><div class="t">資本利得</div><div class="v">${getField(r,['資本利得']) || '-'}</div></div>
-            <div class="highlight"><div class="t">其他所得</div><div class="v">${getField(r,['其他所得']) || '-'}</div></div>
-            <div class="highlight"><div class="t">健保應課張數</div><div class="v">${getField(r,['健保應課張數']) || '-'}</div></div>
+            <div class="highlight"><div class="t">年初至今報酬</div><div class="v">${escapeHTML(getField(r,['年初至今報酬']) || '-')}</div></div>
+            <div class="highlight"><div class="t">實際配息</div><div class="v">${escapeHTML(getField(r,['實際配息']) || '-')}</div></div>
+            <div class="highlight"><div class="t">股利所得</div><div class="v">${escapeHTML(getField(r,['股利所得']) || '-')}</div></div>
+            <div class="highlight"><div class="t">54C</div><div class="v">${escapeHTML(getField(r,['54C']) || '-')}</div></div>
+            <div class="highlight"><div class="t">利息所得</div><div class="v">${escapeHTML(getField(r,['利息所得']) || '-')}</div></div>
+            <div class="highlight"><div class="t">收益平準金</div><div class="v">${escapeHTML(getField(r,['收益平準金']) || '-')}</div></div>
+            <div class="highlight"><div class="t">資本利得</div><div class="v">${escapeHTML(getField(r,['資本利得']) || '-')}</div></div>
+            <div class="highlight"><div class="t">其他所得</div><div class="v">${escapeHTML(getField(r,['其他所得']) || '-')}</div></div>
+            <div class="highlight"><div class="t">健保應課張數</div><div class="v">${escapeHTML(getField(r,['健保應課張數']) || '-')}</div></div>
           </div>`;
         comp.appendChild(card);
       });
     }
 
-    // 配息時間表（永遠用「入帳月」邏輯呈現：即使你在看公告月，這塊還是看錢何時到）
-    function renderTimeline(allRowsInSelectedMonth) {
+    function renderTimeline() {
       const div = document.getElementById('dividendList');
       div.innerHTML = '';
-
-      // 這裡用 selectedYM 當作「入帳月」來抓
       const ym = selectedYM;
       if (!ym) return;
-
       const timelineRows = allData.filter(r => getPayYM(r) === ym);
-
       if (timelineRows.length === 0) {
         div.innerHTML = '<p style="text-align:center; color: rgba(232,238,246,.62);">⚠️ 這個月份沒有入帳資料</p>';
         return;
       }
-
       const groups = {};
       timelineRows.forEach(r => {
         const date = (getField(r,['發放日','配發日']) || '').toString().trim();
@@ -1436,27 +1666,24 @@
         groups[date] = groups[date] || [];
         groups[date].push(r);
       });
-
       Object.keys(groups)
         .sort((a, b) => parsePayDayForSort(a) - parsePayDayForSort(b))
         .forEach(date => {
           const card = document.createElement('div');
           card.className = 'timeline-card';
-
           card.innerHTML = `
             <div class="timeline-head">
               <span class="tag-date">發放日</span>
-              <span>${date}</span>
+              <span>${escapeHTML(date)}</span>
             </div>
             <div>
               ${groups[date].map(etf => {
-                const divInfo = getPerShareDividend(etf);
                 const show = getField(etf,['實際配息']) || getField(etf,['預估配息']) || '-';
                 return `
                   <div class="timeline-row">
-                    <div class="timeline-code">${getCode(etf)}</div>
-                    <div class="timeline-name">${getName(etf) || ''}</div>
-                    <div class="timeline-val">每股 ${show} 元</div>
+                    <div class="timeline-code">${escapeHTML(getCode(etf))}</div>
+                    <div class="timeline-name">${escapeHTML(getName(etf) || '')}</div>
+                    <div class="timeline-val">每股 ${escapeHTML(show)} 元</div>
                   </div>
                 `;
               }).join('')}
@@ -1466,154 +1693,180 @@
         });
     }
 
-    // 🔹 你的ETF配息試算（修正版）
     function handleMyDividendCalc() {
       const codeInput = document.getElementById('my-dividend-code').value;
-      const lotsInput = document.getElementById('my-dividend-lots').value;
+      const shares = parseFloat(document.getElementById('my-dividend-lots').value || '0');
       const resultDiv = document.getElementById('my-dividend-result');
-
       if (!allData || allData.length === 0) {
         resultDiv.innerHTML = '資料尚未載入完成，請稍候再試 🙏';
         return;
       }
-
-      // 1. 先定義持有股數
-      const shares = parseFloat(lotsInput || '0');
       if (!shares || shares <= 0) {
         resultDiv.innerHTML = '請輸入正確的持有股數（可以是零股）';
         return;
       }
-
       const norm = normalizeCode(codeInput);
-
-      // 用 selectedYM + axis 篩本期資料
       const candidates = allData.filter(r => {
         const ym = axis === 'announce' ? getAnnounceYM(r) : getPayYM(r);
         const code = normalizeCode(getCode(r));
         return ym === selectedYM && code === norm;
       });
-
       if (!candidates.length) {
-        resultDiv.innerHTML = `找不到這個月份代號 <strong style="font-family: monospace;">${codeInput}</strong> 的資料，可能本期沒有配息，或你目前在看「${axis === 'announce' ? '公告月' : '入帳月'}」。`;
+        resultDiv.innerHTML = `找不到這個月份代號 <strong style="font-family: monospace;">${escapeHTML(codeInput)}</strong> 的資料，可能本期沒有配息，或你現在切在另一個月份。`;
         return;
       }
-
       const r = candidates[0];
-      const code = getCode(r);
-      const name = getName(r);
-      const exDate = getField(r,['除息日']) || '-';
-      const payDate = getField(r,['發放日','配發日']) || '-';
-
       const divInfo = getPerShareDividend(r);
-      const perShare = divInfo.value;
-
-      if (!perShare) {
-        resultDiv.innerHTML = `有找到 <strong>${code}</strong>（${name}），但本期配息金額尚未公布（或資料為空），暫時無法估算 💭`;
+      if (!divInfo.value) {
+        resultDiv.innerHTML = `有找到 <strong>${escapeHTML(getCode(r))}</strong>（${escapeHTML(getName(r))}），但本期配息金額尚未公布，暫時無法估算。`;
         return;
       }
-
-      const total = perShare * shares;
-      const label = divInfo.label;
-
-      // 找上一筆配息
-      const prev = findPreviousDividendRecord(code, getAnnounceYM(r));
-      let prevText = '較上次配息：—';
-      if (prev) {
-        const prevInfo = getPerShareDividend(prev);
-        const prevDiv = prevInfo.value;
-        if (prevDiv > 0) {
-          const diff = perShare - prevDiv;
-          const pct = (diff / prevDiv) * 100;
-          let arrow = '▬';
-          let color = 'rgba(232,238,246,.62)';
-          if (diff > 0) { arrow = '▲'; color = 'rgba(52,211,153,.95)'; }
-          else if (diff < 0) { arrow = '▼'; color = 'rgba(248,113,113,.95)'; }
-
-          prevText = `較上次配息：<span style="color:${color}; font-weight:1000;">${arrow} ${diff > 0 ? '+' : ''}${diff.toFixed(3)} 元（${diff > 0 ? '+' : ''}${pct.toFixed(1)}%）</span>`;
-        }
-      }
-
+      const total = divInfo.value * shares;
       resultDiv.innerHTML = `
-      <div style="display:grid; gap:.35rem;">
-        <div>你持有 <strong>${shares.toLocaleString()}</strong> 股 <strong>${code}</strong>（${name}）。</div>
-        <div>本期每股${label}：<strong>${perShare.toFixed(3)} 元</strong></div>
-        <div>👉 本期預估可領配息約：
-          <span class="money">${formatAmount(total)} 元</span>
+        <div style="display:grid; gap:.35rem;">
+          <div>你持有 <strong>${shares.toLocaleString()}</strong> 股 <strong>${escapeHTML(getCode(r))}</strong>（${escapeHTML(getName(r))}）。</div>
+          <div>本期每股${divInfo.label}：<strong>${divInfo.value.toFixed(3)} 元</strong></div>
+          <div>👉 本期預估可領配息約：<span class="money">${formatAmount(total)} 元</span></div>
+          <div style="font-size:.8rem; color: rgba(232,238,246,.62);">除息日：${escapeHTML(getField(r,['除息日']) || '-')}｜配發日：${escapeHTML(getField(r,['發放日','配發日']) || '-')}</div>
         </div>
-        <div style="font-size:.8rem; color: rgba(232,238,246,.62);">
-          除息日：${exDate}｜配發日：${payDate}
-        </div>
-        <div style="font-size:.82rem;">${prevText}</div>
-      </div>
       `;
     }
 
-    // ✅ 一次渲染全部（依目前狀態）
+    function renderFavoriteSummary() {
+      const el = document.getElementById('favoriteSummary');
+      if (!favorites.length) {
+        el.innerHTML = '目前還沒有收藏 ETF。看到想追蹤的，就按卡片上的 ☆ 收藏。';
+        return;
+      }
+      const chips = favorites.map(code => {
+        const latest = getLatestRowByCode(code);
+        const label = latest ? `${code} ${getName(latest)}` : code;
+        return `<span class="fav-chip">${escapeHTML(label)} <button class="fav-remove" data-code="${escapeHTML(code)}" type="button">×</button></span>`;
+      }).join('');
+      el.innerHTML = `<div style="margin-bottom:.25rem;">你收藏了 <strong style="color: rgba(255,213,79,.98);">${favorites.length}</strong> 檔 ETF：</div>${chips}`;
+    }
+
+    function renderPortfolio() {
+      const countEl = document.getElementById('portfolioCount');
+      const sharesEl = document.getElementById('portfolioShares');
+      const totalEl = document.getElementById('portfolioTotal');
+      const table = document.getElementById('portfolioTable');
+      const schedule = document.getElementById('portfolioSchedule');
+
+      countEl.textContent = `${portfolio.length} 檔`;
+      sharesEl.textContent = `${formatAmount(portfolio.reduce((sum, item) => sum + item.shares, 0), 0)} 股`;
+
+      if (!portfolio.length) {
+        totalEl.textContent = '—';
+        table.innerHTML = '<div class="inline-note">你還沒有加入任何持有 ETF。先加幾檔，這區才會活起來。</div>';
+        schedule.innerHTML = '加入持有清單後，這裡會幫你整理最近可能的入帳節奏。';
+        return;
+      }
+
+      let total = 0;
+      const rows = portfolio.map(item => {
+        const row = allData.find(r => normalizeCode(getCode(r)) === item.code && getPayYM(r) === selectedYM)
+          || allData.find(r => normalizeCode(getCode(r)) === item.code && getAnnounceYM(r) === selectedYM)
+          || getLatestRowByCode(item.code);
+        if (!row) return { ...item, name: '', perShare: null, amount: 0, payDate: '-' };
+        const divInfo = getPerShareDividend(row);
+        const amount = divInfo.value * item.shares;
+        total += amount;
+        return { ...item, name: getName(row), perShare: divInfo.value || 0, amount, payDate: getField(row,['發放日','配發日']) || '-' };
+      });
+
+      totalEl.textContent = `${formatAmount(total)} 元`;
+      table.innerHTML = rows.map(item => `
+        <div class="portfolio-row">
+          <div>
+            <div class="portfolio-label">ETF</div>
+            <div class="portfolio-value">${escapeHTML(item.code)} ${escapeHTML(item.name || '')}</div>
+          </div>
+          <div>
+            <div class="portfolio-label">持有股數</div>
+            <div class="portfolio-value">${formatAmount(item.shares, 0)} 股</div>
+          </div>
+          <div>
+            <div class="portfolio-label">本期每股</div>
+            <div class="portfolio-value">${item.perShare ? `${item.perShare.toFixed(3)} 元` : '—'}</div>
+          </div>
+          <div>
+            <div class="portfolio-label">預估入帳</div>
+            <div class="portfolio-value">${item.amount ? `${formatAmount(item.amount)} 元` : '—'}</div>
+          </div>
+          <div class="portfolio-remove">
+            <button class="remove-btn remove-holding" data-code="${escapeHTML(item.code)}" type="button">移除</button>
+          </div>
+        </div>
+      `).join('');
+
+      const scheduleRows = rows.filter(item => item.amount > 0 && item.payDate && item.payDate !== '-').sort((a,b) => parsePayDayForSort(a.payDate) - parsePayDayForSort(b.payDate));
+      if (!scheduleRows.length) {
+        schedule.innerHTML = '你目前的持有清單裡，這個月份沒有對應的入帳資料。這不一定是壞事，也可能只是月份還沒輪到。';
+        return;
+      }
+      schedule.innerHTML = `
+        <div style="font-weight:1000; color: rgba(255,255,255,.92); margin-bottom:.35rem;">這個月份的持有清單入帳節奏</div>
+        ${scheduleRows.map(item => `
+          <div style="display:flex; justify-content:space-between; gap:.7rem; padding:.35rem 0; border-top:1px solid rgba(148,163,184,.10);">
+            <div><strong>${escapeHTML(item.code)}</strong> ${escapeHTML(item.name || '')}</div>
+            <div style="text-align:right;">
+              <div>${escapeHTML(item.payDate)}</div>
+              <div style="color: rgba(255,213,79,.96); font-weight:1000;">${formatAmount(item.amount)} 元</div>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function setQuickFilterButtons() {
+      document.querySelectorAll('#quickFilterRow .filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === quickFilter);
+      });
+    }
+
     function renderAll() {
       if (!allData.length) return;
-
       refreshAxisBtn();
       renderMonthSelect();
-
-      // 工具列回填
+      setQuickFilterButtons();
       document.getElementById('searchInput').value = q || '';
       document.getElementById('sortSelect').value = sortBy || 'yield_desc';
-
-      // Header
       const [yy, mm] = (selectedYM || '').split('-');
       document.getElementById('timeline-header').textContent = `📅 ${yy}年 ${mm}月 ETF配息入帳時間表`;
-
-      // 取本月（依 axis）
       let data = getMonthData();
-      // 搜尋 + 排序
       data = applySearch(data);
+      data = applyQuickFilter(data);
       data = applySort(data);
-
-      // 摘要（用搜尋後的資料更直覺）
       renderSummary(data);
-
-      // Top5（只在 forecast 模式顯示，但資料先算沒差）
       renderTop5(data);
-
-      // 卡片/組成/時間表
       renderCards(data);
       renderComposition(data);
-      renderTimeline(data);
-
-      // 記錄 URL 狀態
+      renderTimeline();
+      renderFavoriteSummary();
+      renderPortfolio();
       writeStateToURL();
     }
 
-    // ✅ 狀態提示列（取代你那段超長 debug）
     function setStatus(type, msg) {
       const el = document.getElementById('statusLine');
       const cls = type === 'ok' ? 'ok' : type === 'warn' ? 'warn' : 'bad';
       el.innerHTML = `<span class="${cls}">●</span> ${msg}`;
     }
 
-    // ✅ 讀取 CSV（先網路、失敗就用快取）
     async function loadCSVWithFallback() {
       setStatus('warn', '資料載入中…');
-
       try {
         const res = await fetch(csvUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const text = await res.text();
-
-        // 簡單判斷像不像 CSV
-        if (!text.includes(',') || !text.toLowerCase().includes('西元')) {
-          // 仍可能是 CSV，但至少不要直接當成功
-          throw new Error('內容不像CSV');
-        }
-
+        if (!text.includes(',') || !text.toLowerCase().includes('西元')) throw new Error('內容不像CSV');
         localStorage.setItem(CACHE_KEY, text);
         localStorage.setItem(CACHE_TS_KEY, String(Date.now()));
         return { text, fromCache: false };
       } catch (e) {
         const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          return { text: cached, fromCache: true };
-        }
+        if (cached) return { text: cached, fromCache: true };
         throw e;
       }
     }
@@ -1624,100 +1877,110 @@
     }
 
     function initModeButtons() {
-      // 按鈕預設
       document.querySelectorAll('#mode-switch button').forEach(btn => {
         const m = btn.dataset.mode;
-        if (m === mode) {
-          btn.classList.remove('btn-ghost');
-          btn.classList.add('btn-primary');
-        } else {
-          btn.classList.remove('btn-primary');
-          btn.classList.add('btn-ghost');
-        }
+        btn.classList.toggle('btn-primary', m === mode);
+        btn.classList.toggle('btn-ghost', m !== mode);
       });
-
-      // 顯示區塊
       document.getElementById('mode-forecast').style.display = mode === 'forecast' ? 'block' : 'none';
       document.getElementById('mode-distribution').style.display = mode === 'distribution' ? 'block' : 'none';
-
       document.querySelectorAll('#mode-switch button').forEach(btn => {
         btn.addEventListener('click', () => {
           mode = btn.dataset.mode;
-
           document.getElementById('mode-forecast').style.display = mode === 'forecast' ? 'block' : 'none';
           document.getElementById('mode-distribution').style.display = mode === 'distribution' ? 'block' : 'none';
-
           document.querySelectorAll('#mode-switch button').forEach(b => {
-            if (b.dataset.mode === mode) {
-              b.classList.remove('btn-ghost');
-              b.classList.add('btn-primary');
-            } else {
-              b.classList.remove('btn-primary');
-              b.classList.add('btn-ghost');
-            }
+            b.classList.toggle('btn-primary', b.dataset.mode === mode);
+            b.classList.toggle('btn-ghost', b.dataset.mode !== mode);
           });
-
           renderAll();
         });
       });
     }
 
-    // ✅ 初始化
+    function bindStaticEvents() {
+
+      document.getElementById('card-container').addEventListener('click', e => {
+        const favBtn = e.target.closest('.favorite-toggle');
+        const addBtn = e.target.closest('.add-holding');
+        if (favBtn) {
+          toggleFavorite(favBtn.dataset.code || '');
+          return;
+        }
+        if (addBtn) {
+          const code = addBtn.dataset.code || '';
+          const latest = getLatestRowByCode(code);
+          const defaultShares = portfolio.find(item => item.code === normalizeCode(code))?.shares || '';
+          const input = prompt(`請輸入 ${code}${latest ? ' ' + getName(latest) : ''} 的持有股數`, defaultShares);
+          if (input === null) return;
+          const shares = Number(input);
+          if (!shares || shares <= 0) {
+            showToast('請輸入正確的持有股數');
+            return;
+          }
+          upsertPortfolio(code, shares);
+          renderPortfolio();
+          showToast(`${code} 已加入持有清單`);
+        }
+      });
+
+      document.getElementById('favoriteSummary').addEventListener('click', e => {
+        const btn = e.target.closest('.fav-remove');
+        if (!btn) return;
+        toggleFavorite(btn.dataset.code || '');
+      });
+
+      document.getElementById('portfolioAddBtn').addEventListener('click', () => {
+        const code = document.getElementById('portfolioCodeInput').value;
+        const shares = Number(document.getElementById('portfolioSharesInput').value || 0);
+        if (!code || !shares || shares <= 0) {
+          showToast('請先輸入 ETF 代號與持有股數');
+          return;
+        }
+        upsertPortfolio(code, shares);
+        document.getElementById('portfolioCodeInput').value = '';
+        document.getElementById('portfolioSharesInput').value = '';
+        renderPortfolio();
+        showToast(`${normalizeCode(code)} 已加入持有清單`);
+      });
+
+      document.getElementById('portfolioClearBtn').addEventListener('click', () => {
+        portfolio = [];
+        savePortfolio();
+        renderPortfolio();
+        showToast('持有清單已清空');
+      });
+
+      document.getElementById('portfolioTable').addEventListener('click', e => {
+        const btn = e.target.closest('.remove-holding');
+        if (!btn) return;
+        removePortfolio(btn.dataset.code || '');
+      });
+
+      document.getElementById('portfolioSharesInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('portfolioAddBtn').click();
+      });
+    }
+
     (async function boot() {
       readStateFromURL();
+      loadLocalState();
       refreshAxisBtn();
       initModeButtons();
-
-      // 事件綁定：月份
-      document.getElementById('monthSelect').addEventListener('change', (e) => {
-        selectedYM = e.target.value;
-        renderAll();
-      });
-
-      // 事件綁定：軸切換（看公告/看入帳）
-      document.getElementById('axisBtn').addEventListener('click', () => {
-        axis = axis === 'announce' ? 'pay' : 'announce';
-        // 切軸後重新算「可用月份」，若原本月份不存在就自動跳到最新
-        renderAll();
-      });
-
-      // 事件綁定：搜尋
-      let searchTimer = null;
-      document.getElementById('searchInput').addEventListener('input', (e) => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-          q = (e.target.value || '').trim();
-          renderAll();
-        }, 120);
-      });
-
-      // 事件綁定：排序
-      document.getElementById('sortSelect').addEventListener('change', (e) => {
-        sortBy = e.target.value;
-        renderAll();
-      });
-
-      // 綁定「你的ETF配多少？」按鈕
-      document.getElementById('my-dividend-btn').addEventListener('click', handleMyDividendCalc);
-
-      // 讀取資料
+      bindStaticEvents();
       try {
         const { text, fromCache } = await loadCSVWithFallback();
         allData = parseCSVTextToData(text);
-
         const upd = (allData[0] && getField(allData[0], ['更新日期','更新時間'])) || '';
         if (upd) document.getElementById('last-update').textContent = `更新時間：${upd}`;
-
         const ts = localStorage.getItem(CACHE_TS_KEY);
         if (fromCache) {
           const t = ts ? new Date(parseInt(ts,10)) : null;
           const tStr = t ? `${t.getFullYear()}/${String(t.getMonth()+1).padStart(2,'0')}/${String(t.getDate()).padStart(2,'0')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}` : '—';
-          setStatus('warn', `目前使用快取資料（上次成功：${tStr}）。網路若正常，重新整理會自動更新。`);
+          setStatus('warn', `目前使用快取資料（上次成功：${tStr}）。`);
         } else {
           setStatus('ok', `資料載入完成（共 ${allData.length} 筆）。`);
         }
-
-        // 首次渲染：月下拉只顯示資料庫真的有的月份（不會再出現 2026-08 這種幽靈月）
         renderAll();
       } catch (e) {
         document.getElementById('loading').style.display = 'none';
