@@ -21,14 +21,11 @@
       --current: #f97316;
       --border-soft: #e5e7eb;
       --shadow-soft: 0 2px 8px rgba(0,0,0,0.05);
-
-      /* 會員牆專用色 */
       --tag-bg: #e0f2f1;
       --tag-text: #00695c;
       --info-label: #555;
     }
 
-    /* 星空基地主題 */
     body.theme-space {
       --dark: #2563eb;
       --light: #facc15;
@@ -39,8 +36,6 @@
       --current: #f97316;
       --border-soft: rgba(148,163,184,0.35);
       --shadow-soft: 0 18px 40px rgba(0,0,0,0.7);
-
-      /* 會員牆星空配色 */
       --tag-bg: rgba(56, 189, 248, 0.15);
       --tag-text: #7dd3fc;
       --info-label: #94a3b8;
@@ -59,7 +54,6 @@
       min-height: 100vh;
     }
 
-    /* 星空背景 */
     body.theme-space {
       background:
         radial-gradient(circle at 10% 20%, rgba(56,189,248,0.12) 0, transparent 45%),
@@ -97,7 +91,6 @@
       position: relative;
     }
 
-    /* 登入與主題切換 */
     .login-switch { display: flex; justify-content: center; margin-bottom: 1.2rem; }
     .login-switch input {
       width: 250px; padding: .5rem; font-size: .9rem;
@@ -111,6 +104,7 @@
       transition: filter .2s, transform .08s;
     }
     .login-switch button:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .login-switch button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .theme-switcher { display: flex; justify-content: center; gap: .4rem; margin-bottom: 1rem; color: var(--muted); font-size: .86rem; }
     .theme-btn {
@@ -122,7 +116,6 @@
     .theme-btn.active { background: var(--dark); color: #fefce8; border-color: transparent; box-shadow: 0 0 12px rgba(59,130,246,0.6); }
     .theme-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
-    /* Header */
     header { text-align: center; margin-bottom: 1.25rem; }
     header img.avatar {
       width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--light);
@@ -133,7 +126,6 @@
     body.theme-space header h1 { color: #e5e7eb; text-shadow: 0 0 18px rgba(96,165,250,0.5); }
     header p { margin: 0; font-size: 1rem; color: var(--muted); }
 
-    /* Verify Banner */
     .verify-banner {
       margin: 0 0 1.5rem; padding: 1rem 1.2rem; border-left: 6px solid var(--light);
       background: #fffbe7; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
@@ -150,7 +142,6 @@
     }
     .verify-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
-    /* Collapsible & Progress */
     .collapsible-card {
       background: var(--card); border-radius: 16px; box-shadow: var(--shadow-soft);
       margin-bottom: 1.5rem; overflow: hidden; border: 1px solid var(--border-soft);
@@ -166,7 +157,6 @@
     .collapsible-card.open .chevron { transform: rotate(90deg); }
     .collapsible-body { padding: 0.9rem 1.1rem 1.1rem; display: none; }
 
-    /* Progress Bar Styles (Simplified) */
     .progress-section { margin-bottom: 1rem; }
     .progress-header { display: flex; justify-content: space-between; margin-bottom: .8rem; gap: 1rem; }
     .progress-stats { text-align: right; font-size: .88rem; color: var(--muted); }
@@ -188,9 +178,6 @@
     .wish-section { border-top: 1px solid var(--border-soft); margin-top: 1rem; padding-top: 1rem; font-size: .9rem; }
     .wish-list { padding-left: 1.1rem; font-size: .88rem; color: var(--muted); }
 
-    /* =========================
-       ✅ 會員星球牆：水平滑動圖卡牆（你要的牆感）
-    ========================= */
     .member-wall-header {
       text-align: center; margin: 2rem 0 0.6rem;
       display: flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -198,45 +185,34 @@
     .member-wall-header h2 { font-size: 1.4rem; color: var(--dark); margin: 0; }
     body.theme-space .member-wall-header h2 { color: #e5e7eb; text-shadow: 0 0 15px rgba(96,165,250,0.5); }
 
-    .member-wall-subhint{
+    .member-wall-subhint {
       text-align:center;
       color: var(--muted);
       font-size: .86rem;
       margin: 0 0 .6rem;
     }
 
-    /* ✅ 重點：水平牆 */
-    .member-grid{
+    .member-grid {
       display: grid;
       grid-auto-flow: column;
       grid-auto-columns: minmax(240px, 280px);
       gap: 1rem;
-
       overflow-x: auto;
       overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory;
       scroll-padding-left: 8px;
       -webkit-overflow-scrolling: touch;
-
       padding: 10px 6px 14px;
       margin-bottom: 1.6rem;
-
       cursor: grab;
       user-select: none;
-
       border-radius: 14px;
     }
-    .member-grid.dragging{ cursor: grabbing; }
+    .member-grid.dragging { cursor: grabbing; }
 
-    .member-grid::-webkit-scrollbar{ height: 10px; }
-    .member-grid::-webkit-scrollbar-thumb{
-      background: rgba(148,163,184,0.35);
-      border-radius: 999px;
-    }
-    .member-grid::-webkit-scrollbar-track{
-      background: rgba(2,6,23,0.35);
-      border-radius: 999px;
-    }
+    .member-grid::-webkit-scrollbar { height: 10px; }
+    .member-grid::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.35); border-radius: 999px; }
+    .member-grid::-webkit-scrollbar-track { background: rgba(2,6,23,0.35); border-radius: 999px; }
 
     .member-card {
       scroll-snap-align: start;
@@ -258,9 +234,7 @@
       border-color: rgba(250,204,21,0.55);
       box-shadow: 0 0 18px rgba(250,204,21,0.16);
     }
-
-    /* 小星雲光暈，讓它更像圖卡 */
-    .member-card::before{
+    .member-card::before {
       content:"";
       position:absolute;
       inset:-70px -70px auto auto;
@@ -277,10 +251,7 @@
       display: block;
       letter-spacing: .2px;
     }
-    body.theme-space .member-name {
-      color: #facc15;
-      text-shadow: 0 0 6px rgba(250,204,21,0.25);
-    }
+    body.theme-space .member-name { color: #facc15; text-shadow: 0 0 6px rgba(250,204,21,0.25); }
 
     .member-tag {
       display: inline-block;
@@ -301,17 +272,8 @@
       line-height: 1.45;
       display: flex; align-items: flex-start; gap: 0.45rem;
     }
-    .member-data-label {
-      flex-shrink: 0;
-      color: var(--info-label);
-      font-weight: 800;
-      min-width: 3.5em;
-    }
-    .member-data-content {
-      color: var(--muted);
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
+    .member-data-label { flex-shrink: 0; color: var(--info-label); font-weight: 800; min-width: 3.5em; }
+    .member-data-content { color: var(--muted); word-break: break-word; white-space: pre-wrap; }
     body.theme-space .member-data-content { color: #cbd5e1; }
 
     .member-link-btn {
@@ -327,7 +289,7 @@
       margin-top: auto;
       background: rgba(2,6,23,0.12);
     }
-    body.theme-space .member-link-btn{ background: rgba(2,6,23,0.30); }
+    body.theme-space .member-link-btn { background: rgba(2,6,23,0.30); }
     .member-link-btn:hover {
       background: var(--light);
       color: #1f2933;
@@ -340,12 +302,9 @@
       .verify-banner, .progress-header { flex-direction: column; align-items: flex-start; }
       .verify-btn { width: 100%; text-align: center; }
       .progress-stats { text-align: left; }
-      .member-grid{
-        grid-auto-columns: minmax(220px, 78vw);
-      }
+      .member-grid { grid-auto-columns: minmax(220px, 78vw); }
     }
 
-    /* 功能卡片 Grid */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
     .card {
       background: #fff; border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden;
@@ -476,7 +435,6 @@
       </div>
     </section>
 
-    <!-- ✅ 會員牆 -->
     <div class="member-wall-header">
       <span>🚀</span><h2>會員星球牆</h2><span>🪐</span>
     </div>
@@ -489,31 +447,50 @@
 
   </div>
 
-  <!-- ✅ CSV parser：不怕逗號/換行 -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwzyc8O2dJFqZZRWk2t6MKehez-W2_rowkQCUtRWfZDIpnTZ0ELpVdokNmtuj0sxsnQIg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyfPOvrYT1dFuIqgy7qVpcEnIqbkGFKr0Letp2ru-ljGTGL9pOsJFyeUkIP_35-0umNrg/exec';
 
-    // 登入切換
+    // ✅ 登入（改為 POST + Token 儲存）
     document.getElementById('switchBtn').addEventListener('click', async () => {
-      const e = document.getElementById('switchEmail').value.trim();
-      if (!e) { alert('請輸入 Email'); return; }
-      try {
-        const res = await fetch(`${scriptURL}?email=${encodeURIComponent(e)}`);
-        const data = await res.json();
-        const lvl = parseInt(data.level, 10) || 0;
+      const email = document.getElementById('switchEmail').value.trim();
+      if (!email) { alert('請輸入 Email'); return; }
 
-        const pageMap = {
-          30: 'https://markmoneylife.github.io/compound-interest-tool/member/capsule-beta30.html',
-          75: 'https://markmoneylife.github.io/compound-interest-tool/member/mission-vault75.html',
-          300: 'https://markmoneylife.github.io/compound-interest-tool/member/wumark-x-core300.html'
-        };
-        if (pageMap[lvl]) location.href = pageMap[lvl];
-        else alert('此 Email 尚未加入會員');
+      const btn = document.getElementById('switchBtn');
+      btn.textContent = '驗證中...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(scriptURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.isMember && data.level && data.token) {
+          localStorage.setItem('mark_token', data.token);
+          localStorage.setItem('mark_level', String(data.level));
+          localStorage.setItem('mark_expiry', String(Date.now() + 7 * 24 * 60 * 60 * 1000));
+
+          const pageMap = {
+            30: 'https://markmoneylife.github.io/compound-interest-tool/member/capsule-beta30.html',
+            75: 'https://markmoneylife.github.io/compound-interest-tool/member/mission-vault75.html',
+            300: 'https://markmoneylife.github.io/compound-interest-tool/member/wumark-x-core300.html'
+          };
+          const lvl = parseInt(data.level, 10);
+          if (pageMap[lvl]) location.href = pageMap[lvl];
+          else alert('⚠️ 找不到對應頁面');
+        } else {
+          alert('此 Email 尚未加入會員');
+        }
       } catch (err) {
         console.error(err);
-        alert('驗證失敗');
+        alert('驗證失敗，請稍後再試');
+      } finally {
+        btn.textContent = '登入';
+        btn.disabled = false;
       }
     });
 
@@ -527,35 +504,26 @@
       missionCard.classList.toggle('open', !isOpen);
     });
 
-    // ✅ 資料來源
-    // 建議：進度條那個也最好指定到「表單回應」分頁 gid，避免未來多分頁混到
     const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQibgAjBqISgz2B7C1u0PwKYrawIQdHfm_GihRsTvMINCVi4XAnms2mUPBJd6LdFSEZxWgo3bTkXaXA/pub?output=csv';
-
-    // ✅ 這個就是你的宇宙牆（gid 要對、且最好是「公開分頁」）
     const wallCsvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQibgAjBqISgz2B7C1u0PwKYrawIQdHfm_GihRsTvMINCVi4XAnms2mUPBJd6LdFSEZxWgo3bTkXaXA/pub?gid=960038537&single=true&output=csv';
-
     const fallbackCount = 15;
 
-    function escapeHtml(str){
+    function escapeHtml(str) {
       return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+        .replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
-    // 進度條邏輯
     function updateProgress(count) {
       const maxGoal = 100;
       const goals = [5, 15, 25, 35, 50, 75, 100];
+      const safeCount = Math.max(0, count || 0);
 
       const memberCountSpan = document.getElementById('memberCount');
       const memberCountDetail = document.getElementById('memberCountDetail');
       const nextGoalSpan = document.getElementById('nextGoal');
       const progressFill = document.getElementById('memberProgressFill');
 
-      const safeCount = Math.max(0, count || 0);
       if (memberCountSpan) memberCountSpan.textContent = safeCount;
       if (memberCountDetail) memberCountDetail.textContent = safeCount;
 
@@ -587,17 +555,14 @@
       }
     }
 
-    // ✅ 會員牆：PapaParse + 動態抓欄位 + 安全輸出
     async function loadMemberWall() {
       const wallSection = document.getElementById('memberWallSection');
       const hint = document.getElementById('memberWallHint');
 
       try {
         if (hint) hint.textContent = '正在把星星撈上牆面...';
-
         const res = await fetch(wallCsvURL, { cache: "no-store" });
         if (!res.ok) throw new Error('Wall CSV Fail');
-
         const text = await res.text();
         const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
         const rows = parsed.data || [];
@@ -611,14 +576,13 @@
         const keys = Object.keys(rows[0] || {});
         const findKey = (pred) => keys.find(k => pred(k)) || null;
 
-        // 你截圖看得到的欄位：星星暱稱 / 專長主題 / 互動任務 / 期待活動 / 連結
         const kName = findKey(k => k.includes('星星暱稱') || k.includes('暱稱'));
         const kTag  = findKey(k => k.includes('專長') || k.includes('主題'));
         const kMission = findKey(k => k.includes('互動任務') || k.includes('任務'));
-        const kActivity= findKey(k => k.includes('期待') || k.includes('活動'));
+        const kActivity = findKey(k => k.includes('期待') || k.includes('活動'));
         const kLink = findKey(k => k.includes('連結'));
 
-        if (!kName) throw new Error('找不到「星星暱稱」欄位（欄位名稱可能不同）');
+        if (!kName) throw new Error('找不到「星星暱稱」欄位');
 
         let html = '';
         let count = 0;
@@ -626,34 +590,20 @@
         rows.forEach(r => {
           const name = (r[kName] || '').toString().trim();
           if (!name) return;
-
           const tag = (kTag && r[kTag]) ? r[kTag].toString().trim() : '星球居民';
           const mission = (kMission && r[kMission]) ? r[kMission].toString().trim() : '';
           const activity = (kActivity && r[kActivity]) ? r[kActivity].toString().trim() : '';
           let link = (kLink && r[kLink]) ? r[kLink].toString().trim() : '';
-
           if (link && !/^https?:\/\//i.test(link)) link = 'https://' + link;
 
           html += `
             <div class="member-card">
               <span class="member-name">${escapeHtml(name)}</span>
               <div><span class="member-tag">${escapeHtml(tag || '星球居民')}</span></div>
-
-              ${mission ? `
-                <div class="member-data-row">
-                  <div class="member-data-label">🤝 任務</div>
-                  <div class="member-data-content">${escapeHtml(mission)}</div>
-                </div>` : ''}
-
-              ${activity ? `
-                <div class="member-data-row">
-                  <div class="member-data-label">🎉 期待</div>
-                  <div class="member-data-content">${escapeHtml(activity)}</div>
-                </div>` : ''}
-
+              ${mission ? `<div class="member-data-row"><div class="member-data-label">🤝 任務</div><div class="member-data-content">${escapeHtml(mission)}</div></div>` : ''}
+              ${activity ? `<div class="member-data-row"><div class="member-data-label">🎉 期待</div><div class="member-data-content">${escapeHtml(activity)}</div></div>` : ''}
               ${link ? `<a href="${escapeHtml(link)}" target="_blank" rel="noopener" class="member-link-btn">🔗 傳送門</a>` : ''}
-            </div>
-          `;
+            </div>`;
           count++;
         });
 
@@ -662,61 +612,27 @@
 
       } catch (err) {
         console.error(err);
-        const wallSection = document.getElementById('memberWallSection');
-        const hint = document.getElementById('memberWallHint');
         if (wallSection) wallSection.innerHTML = '';
-        if (hint) hint.textContent = '載入失敗，可能是欄位名稱對不到或 CSV 未發佈（請檢查 gid）。';
+        if (hint) hint.textContent = '載入失敗，請檢查 CSV 是否已發佈。';
       }
     }
 
-    // ✅ 桌機拖曳 + 滾輪左右滑：很像在拖宇宙牆
-    function enableDragScroll(el){
-      let isDown = false;
-      let startX = 0;
-      let scrollLeft = 0;
-
-      el.addEventListener("mousedown", (e) => {
-        isDown = true;
-        el.classList.add("dragging");
-        startX = e.pageX - el.offsetLeft;
-        scrollLeft = el.scrollLeft;
-      });
-
-      window.addEventListener("mouseup", () => {
-        isDown = false;
-        el.classList.remove("dragging");
-      });
-
-      el.addEventListener("mouseleave", () => {
-        isDown = false;
-        el.classList.remove("dragging");
-      });
-
-      el.addEventListener("mousemove", (e) => {
-        if(!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - el.offsetLeft;
-        const walk = (x - startX) * 1.2;
-        el.scrollLeft = scrollLeft - walk;
-      });
-
-      el.addEventListener("wheel", (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          el.scrollLeft += e.deltaY;
-          e.preventDefault();
-        }
-      }, { passive:false });
+    function enableDragScroll(el) {
+      let isDown = false, startX = 0, scrollLeft = 0;
+      el.addEventListener("mousedown", (e) => { isDown = true; el.classList.add("dragging"); startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft; });
+      window.addEventListener("mouseup", () => { isDown = false; el.classList.remove("dragging"); });
+      el.addEventListener("mouseleave", () => { isDown = false; el.classList.remove("dragging"); });
+      el.addEventListener("mousemove", (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; el.scrollLeft = scrollLeft - (x - startX) * 1.2; });
+      el.addEventListener("wheel", (e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { el.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive:false });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       loadMemberProgress();
       loadMemberWall();
-
       const wallEl = document.getElementById('memberWallSection');
       if (wallEl) enableDragScroll(wallEl);
     });
 
-    // 主題與初始化
     const themeButtons = document.querySelectorAll('.theme-btn');
     const bodyEl = document.body;
 
@@ -727,8 +643,7 @@
     }
 
     themeButtons.forEach(btn => btn.addEventListener('click', () => {
-      const t = btn.dataset.theme === 'space' ? 'space' : 'default';
-      applyTheme(t);
+      applyTheme(btn.dataset.theme === 'space' ? 'space' : 'default');
     }));
 
     (function initTheme() {
