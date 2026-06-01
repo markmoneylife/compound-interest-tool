@@ -169,7 +169,7 @@
     body.theme-space .progress-bar-fill { background: linear-gradient(90deg, #38bdf8, #a855f7, #f97316); }
 
     .milestones { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .5rem; font-size: .85rem; }
-    .milestone-item { display: flex; gap: .4rem; padding: .35rem .4rem; border-radius: 8px; }
+    .milestones-item { display: flex; gap: .4rem; padding: .35rem .4rem; border-radius: 8px; }
     .milestone-icon { width: 1.2rem; text-align: center; }
     .milestone-item.done { background: rgba(34,197,94,0.10); }
     .milestone-item.done .milestone-icon { color: var(--done); }
@@ -427,7 +427,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-header">💬 專屬社群</div>
+        <div class="card-header">💬 專專屬社群</div>
         <div class="card-body">
           <p>加入 LINE 社群，一起聊理財與生活。</p>
           <a href="https://forms.gle/CxGYDeK3kRTNJG1Q7" target="_blank">立即加入</a>
@@ -450,9 +450,10 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
+    // ⚠️ 這裡請換成你「重新部署」後取得的 Web App 完整網址 (結尾必須是 /exec)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyfPOvrYT1dFuIqgy7qVpcEnIqbkGFKr0Letp2ru-ljGTGL9pOsJFyeUkIP_35-0umNrg/exec';
 
-    // ✅ 登入（改為 POST + Token 儲存）
+    // ✅ 登入按鈕監聽 (改為 URLSearchParams 格式發送，完美繞過 CORS 地雷)
     document.getElementById('switchBtn').addEventListener('click', async () => {
       const email = document.getElementById('switchEmail').value.trim();
       if (!email) { alert('請輸入 Email'); return; }
@@ -462,10 +463,14 @@
       btn.disabled = true;
 
       try {
+        // 使用表單欄位格式進行傳遞，防範 OPTIONS 預檢錯誤
+        const params = new URLSearchParams();
+        params.append('email', email);
+
         const res = await fetch(scriptURL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
         });
         const data = await res.json();
 
@@ -480,21 +485,24 @@
             300: 'https://markmoneylife.github.io/compound-interest-tool/member/wumark-x-core300.html'
           };
           const lvl = parseInt(data.level, 10);
-          if (pageMap[lvl]) location.href = pageMap[lvl];
-          else alert('⚠️ 找不到對應頁面');
+          if (pageMap[lvl]) {
+            location.href = pageMap[lvl];
+          } else {
+            alert('⚠️ 驗證成功，但找不到對應級別 (' + lvl + ') 的專屬頁面');
+          }
         } else {
-          alert('此 Email 尚未加入會員');
+          alert(data.error || '此 Email 尚未加入會員');
         }
       } catch (err) {
         console.error(err);
-        alert('驗證失敗，請稍後再試');
+        alert('連線失敗！請確認 GAS 是否已發佈為「所有人」皆可存取。');
       } finally {
         btn.textContent = '登入';
         btn.disabled = false;
       }
     });
 
-    // 摺疊
+    // 摺疊卡片控制
     const missionCard = document.getElementById('missionCard');
     const missionToggle = document.getElementById('missionToggle');
     const missionDetail = document.getElementById('missionDetail');
@@ -601,7 +609,7 @@
               <span class="member-name">${escapeHtml(name)}</span>
               <div><span class="member-tag">${escapeHtml(tag || '星球居民')}</span></div>
               ${mission ? `<div class="member-data-row"><div class="member-data-label">🤝 任務</div><div class="member-data-content">${escapeHtml(mission)}</div></div>` : ''}
-              ${activity ? `<div class="member-data-row"><div class="member-data-label">🎉 期待</div><div class="member-data-content">${escapeHtml(activity)}</div></div>` : ''}
+              ${activity ? `<div class="member-data-row"><div class="member-data-label">🎉 期待</div><div class="member-data-content">${escapeHtml(`銝` || activity)}</div></div>` : ''}
               ${link ? `<a href="${escapeHtml(link)}" target="_blank" rel="noopener" class="member-link-btn">🔗 傳送門</a>` : ''}
             </div>`;
           count++;
